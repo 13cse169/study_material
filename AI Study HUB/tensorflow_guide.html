@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TensorFlow Mastery — Zero to Production</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --bg2: #ede7d9;
+  --surface: #ffffff;
+  --surface2: #faf7f2;
+  --border: #d4c9b4;
+  --border2: #e8e0d0;
+  --ink: #1a1510;
+  --ink2: #3d3428;
+  --muted: #8a7d6a;
+  --accent: #e65c00;
+  --accent2: #c44b00;
+  --accent3: #ff8c42;
+  --teal: #0d7377;
+  --teal2: #14a8ad;
+  --gold: #c8930a;
+  --gold2: #f5b731;
+  --green: #2d6a4f;
+  --green2: #52b788;
+  --red: #9b2226;
+  --code-bg: #1c1710;
+  --code-text: #f0e6d3;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* TEXTURE OVERLAY */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f5f0e8'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23e8e0d0' opacity='0.5'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%23e8e0d0' opacity='0.5'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 998;
+  opacity: 0.4;
+}
+
+/* ═══════════════ HERO ═══════════════ */
+.hero {
+  background: var(--ink);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-left {
+  padding: 80px 60px 80px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-right {
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-right::before {
+  content: 'TF';
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(200px, 25vw, 340px);
+  color: rgba(255,255,255,0.08);
+  position: absolute;
+  line-height: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.tf-logo {
+  position: relative;
+  z-index: 1;
+}
+
+.tf-logo svg {
+  width: clamp(100px, 14vw, 180px);
+  filter: drop-shadow(0 20px 60px rgba(0,0,0,0.4));
+}
+
+.hero-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent3);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--accent3);
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 6vw, 86px);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  color: #fff;
+  margin-bottom: 28px;
+}
+
+.hero h1 span { color: var(--accent3); }
+
+.hero-desc {
+  color: #b8a99a;
+  font-size: 17px;
+  line-height: 1.65;
+  max-width: 420px;
+  font-style: italic;
+  margin-bottom: 48px;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: #2a2218;
+  border: 1px solid #2a2218;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 420px;
+}
+
+.hstat {
+  background: #1c1710;
+  padding: 18px 20px;
+  text-align: center;
+}
+
+.hstat-n {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  color: var(--accent3);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.hstat-l {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6a5a4a;
+}
+
+/* ═══════════════ NAV ═══════════════ */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--ink);
+  border-bottom: 3px solid var(--accent);
+}
+
+.nav-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-inner::-webkit-scrollbar { display: none; }
+
+.nav-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: var(--accent3);
+  letter-spacing: 0.05em;
+  padding: 14px 0;
+  margin-right: 20px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.nav-sep { width: 1px; height: 24px; background: #2a2218; margin: 0 8px; flex-shrink: 0; }
+
+.nav-btn {
+  flex-shrink: 0;
+  padding: 14px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #6a5a4a;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -3px;
+  transition: all 0.2s;
+  cursor: pointer;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.nav-btn:hover { color: #ccc; border-bottom-color: #444; }
+.nav-btn.b1:hover, .nav-btn.b1.active { color: var(--green2); border-bottom-color: var(--green2); }
+.nav-btn.b2:hover, .nav-btn.b2.active { color: var(--teal2); border-bottom-color: var(--teal2); }
+.nav-btn.b3:hover, .nav-btn.b3.active { color: var(--accent3); border-bottom-color: var(--accent3); }
+.nav-btn.b4:hover, .nav-btn.b4.active { color: var(--gold2); border-bottom-color: var(--gold2); }
+
+/* ═══════════════ LAYOUT ═══════════════ */
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 24px 120px;
+}
+
+/* ═══════════════ SECTION HEADER ═══════════════ */
+.sec-hdr {
+  margin: 88px 0 40px;
+  position: relative;
+  padding: 0 0 0 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sec-hdr::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 6px;
+  border-radius: 3px;
+}
+
+.sh1::before { background: var(--green2); }
+.sh2::before { background: var(--teal2); }
+.sh3::before { background: var(--accent3); }
+.sh4::before { background: var(--gold2); }
+
+.sec-hdr h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 5vw, 54px);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.sec-hdr p { color: var(--muted); font-style: italic; font-size: 15px; max-width: 480px; }
+
+.level-pill {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 6px 14px;
+  border-radius: 3px;
+  border: 1.5px solid;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+.lp1 { color: var(--green); border-color: var(--green2); background: rgba(45,106,79,0.07); }
+.lp2 { color: var(--teal); border-color: var(--teal2); background: rgba(13,115,119,0.07); }
+.lp3 { color: var(--accent2); border-color: var(--accent3); background: rgba(230,92,0,0.07); }
+.lp4 { color: var(--gold); border-color: var(--gold2); background: rgba(200,147,10,0.07); }
+
+/* ═══════════════ CARDS ═══════════════ */
+.card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  padding: 36px 40px;
+  margin-bottom: 24px;
+  position: relative;
+  transition: box-shadow 0.25s, border-color 0.25s;
+  box-shadow: 4px 4px 0 var(--border2);
+}
+
+.card:hover {
+  border-color: var(--accent);
+  box-shadow: 6px 6px 0 rgba(230,92,0,0.15);
+}
+
+.card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.card p { color: var(--ink2); margin-bottom: 16px; }
+.card p:last-child { margin-bottom: 0; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+
+/* ═══════════════ CODE ═══════════════ */
+.code-block {
+  background: var(--code-bg);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 22px 0;
+  border: 1px solid #2a2218;
+  box-shadow: 4px 4px 0 #2a2218;
+}
+
+.code-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  background: #120f09;
+  border-bottom: 1px solid #2a2218;
+}
+
+.code-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent3); text-transform: uppercase; letter-spacing: 0.12em; }
+
+.win-dots { display: flex; gap: 6px; }
+.win-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.wd1 { background: #ff5f56; }
+.wd2 { background: #ffbd2e; }
+.wd3 { background: #27c93f; }
+
+pre {
+  padding: 22px 22px;
+  overflow-x: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--code-text);
+}
+
+.kw  { color: #ff8c42; }
+.str { color: #a8d8a8; }
+.cm  { color: #4a3e2e; font-style: italic; }
+.fn  { color: #7ec8e3; }
+.num { color: #f5b731; }
+.cls { color: #e8b4f8; }
+.var { color: #f0e6d3; }
+
+code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: rgba(230,92,0,0.1);
+  color: var(--accent2);
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid rgba(230,92,0,0.2);
+}
+
+/* ═══════════════ CONCEPT GRID ═══════════════ */
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 22px 0; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin: 22px 0; }
+
+.ccard {
+  background: var(--surface2);
+  border: 1.5px solid var(--border2);
+  border-radius: 4px;
+  padding: 22px 24px;
+  transition: border-color 0.2s;
+}
+
+.ccard:hover { border-color: var(--border); }
+
+.ccard-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+.ccard h4 { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.05em; color: var(--ink); margin-bottom: 6px; }
+.ccard p { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.6; }
+
+/* ═══════════════ CALLOUT ═══════════════ */
+.callout {
+  display: flex;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 4px;
+  margin: 20px 0;
+  font-size: 15px;
+  border-left: 4px solid;
+}
+
+.ci { background: rgba(14,165,233,0.07); border-color: var(--teal2); color: var(--teal); }
+.ct { background: rgba(45,106,79,0.07); border-color: var(--green2); color: var(--green); }
+.cw { background: rgba(200,147,10,0.08); border-color: var(--gold2); color: var(--gold); }
+.ce { background: rgba(155,34,38,0.07); border-color: #e85d5d; color: var(--red); }
+
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout-text { color: var(--ink2); }
+.callout-text strong { color: var(--ink); }
+
+/* ═══════════════ TABLE ═══════════════ */
+.tbl-wrap { overflow-x: auto; margin: 20px 0; border: 1.5px solid var(--border); border-radius: 4px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  padding: 12px 16px;
+  text-align: left;
+  background: var(--surface2);
+  border-bottom: 1.5px solid var(--border);
+}
+
+td { padding: 12px 16px; border-bottom: 1px solid var(--border2); color: var(--ink2); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(230,92,0,0.03); }
+td strong { color: var(--ink); }
+
+/* ═══════════════ FLOW ═══════════════ */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 22px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+}
+
+.fb {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  padding: 8px 14px;
+  border-radius: 3px;
+  color: var(--ink2);
+  text-align: center;
+}
+
+.fb.hl { background: var(--accent); border-color: var(--accent2); color: #fff; }
+.fb.hl2 { background: var(--teal); border-color: var(--teal); color: #fff; }
+.fb.hl3 { background: var(--green); border-color: var(--green); color: #fff; }
+
+.fa { color: var(--muted); font-size: 16px; }
+
+/* ═══════════════ INTERVIEW ═══════════════ */
+.qa-wrap { margin-top: 8px; }
+
+.qa {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: 3px 3px 0 var(--border2);
+  transition: box-shadow 0.2s;
+}
+
+.qa:hover { box-shadow: 4px 4px 0 rgba(200,147,10,0.2); border-color: var(--gold2); }
+.qa.open { border-color: var(--gold); box-shadow: 4px 4px 0 rgba(200,147,10,0.2); }
+
+.qa-q {
+  padding: 20px 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.qa-q:hover { background: rgba(200,147,10,0.04); }
+
+.qn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  background: var(--ink);
+  color: var(--gold2);
+  padding: 4px 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  letter-spacing: 0.1em;
+}
+
+.qt {
+  font-family: 'Crimson Pro', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  flex: 1;
+  line-height: 1.4;
+}
+
+.qa-arr {
+  color: var(--muted);
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: transform 0.25s;
+  font-family: monospace;
+  margin-top: 1px;
+}
+
+.qa.open .qa-arr { transform: rotate(90deg); color: var(--gold); }
+
+.qa-a {
+  display: none;
+  padding: 20px 24px 24px 68px;
+  border-top: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--ink2);
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+
+.qa-a.vis { display: block; animation: aslide 0.22s ease; }
+@keyframes aslide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* ═══════════════ TAG ═══════════════ */
+.tag {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 2px;
+  margin: 2px;
+  border: 1px solid;
+}
+
+.tg { color: var(--green); border-color: var(--green2); background: rgba(45,106,79,0.07); }
+.tt { color: var(--teal); border-color: var(--teal2); background: rgba(13,115,119,0.07); }
+.to { color: var(--accent2); border-color: var(--accent3); background: rgba(230,92,0,0.07); }
+.ty { color: var(--gold); border-color: var(--gold2); background: rgba(200,147,10,0.07); }
+.tr { color: var(--red); border-color: #e85d5d; background: rgba(155,34,38,0.07); }
+
+/* ═══════════════ ROADMAP ═══════════════ */
+.roadmap {
+  background: var(--ink);
+  border-radius: 4px;
+  padding: 48px 48px;
+  margin-top: 72px;
+  color: #f0e6d3;
+}
+
+.roadmap h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  color: #fff;
+  margin-bottom: 36px;
+  letter-spacing: 0.03em;
+}
+
+.rm-item { margin-bottom: 24px; }
+
+.rm-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.rm-name { font-size: 15px; color: #e8d8c8; font-weight: 600; }
+.rm-time { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a4a3a; }
+
+.rm-bar-bg { height: 8px; background: #2a2218; border-radius: 4px; overflow: hidden; }
+.rm-bar-fill { height: 100%; border-radius: 4px; transition: width 1.8s cubic-bezier(0.16,1,0.3,1); width: 0; }
+
+/* ═══════════════ REVEAL ═══════════════ */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.vis { opacity: 1; transform: none; }
+
+/* ═══════════════ DIVIDER ═══════════════ */
+.div { border: none; border-top: 1.5px solid var(--border); margin: 48px 0; }
+
+/* ═══════════════ INLINE EM ═══════════════ */
+em { font-style: italic; color: var(--ink); }
+strong { font-weight: 600; color: var(--ink); }
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { min-height: 220px; }
+  .hero-left { padding: 60px 28px; }
+  .card { padding: 24px 22px; }
+  .roadmap { padding: 32px 24px; }
+  .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Complete Learning Path</div>
+    <h1>Master<br><span>Tensor</span><br>Flow</h1>
+    <p class="hero-desc">From tensors and gradients to production-grade deep learning — every concept explained, every line of code runnable.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">4</div><div class="hstat-l">Levels</div></div>
+      <div class="hstat"><div class="hstat-n">25+</div><div class="hstat-l">Topics</div></div>
+      <div class="hstat"><div class="hstat-n">15</div><div class="hstat-l">Q &amp; A</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="tf-logo">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 5L95 32.5V67.5L50 95L5 67.5V32.5L50 5Z" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+        <path d="M50 20L80 37.5V72.5L50 90L20 72.5V37.5L50 20Z" fill="rgba(255,140,66,0.3)" stroke="rgba(255,140,66,0.8)" stroke-width="1.5"/>
+        <path d="M50 5V50M5 32.5L50 50M95 32.5L50 50M50 50V95M50 50L5 67.5M50 50L95 67.5" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>
+        <circle cx="50" cy="50" r="10" fill="#ff8c42"/>
+        <circle cx="50" cy="50" r="5" fill="#fff"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NAV ═══ -->
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <div class="nav-brand">TF Mastery</div>
+    <div class="nav-sep"></div>
+    <a href="#beginner" class="nav-btn b1">🌿 Beginner</a>
+    <a href="#intermediate" class="nav-btn b2">⚙️ Intermediate</a>
+    <a href="#advanced" class="nav-btn b3">🔥 Advanced</a>
+    <a href="#interview" class="nav-btn b4">🎯 Interview</a>
+    <a href="#roadmap" class="nav-btn">🗺 Roadmap</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════
+     BEGINNER
+══════════════════════════════════════ -->
+<section id="beginner">
+
+  <div class="sec-hdr sh1 reveal">
+    <div>
+      <h2>Beginner Level</h2>
+      <p>Tensors, operations, automatic differentiation, and your first neural network</p>
+    </div>
+    <span class="level-pill lp1">Level 01 — Foundation</span>
+  </div>
+
+  <!-- What is TF -->
+  <div class="card reveal">
+    <h3>1. What is TensorFlow?</h3>
+    <p>TensorFlow is Google's open-source machine learning framework for building, training, and deploying ML models at scale. It uses a <em>dataflow graph</em> to represent computations — nodes are operations, edges are tensors (multidimensional arrays) flowing between them.</p>
+
+    <div class="grid3">
+      <div class="ccard">
+        <span class="ccard-icon">🔢</span>
+        <h4>Tensors</h4>
+        <p>The fundamental data structure — N-dimensional arrays. Scalars (0D), vectors (1D), matrices (2D), and beyond.</p>
+      </div>
+      <div class="ccard">
+        <span class="ccard-icon">⚙️</span>
+        <h4>Operations</h4>
+        <p>Math ops (add, matmul, relu) that consume and produce tensors. Automatically differentiable via GradientTape.</p>
+      </div>
+      <div class="ccard">
+        <span class="ccard-icon">📦</span>
+        <h4>Keras API</h4>
+        <p>High-level API built into TF2. Lets you build, train, and evaluate models with minimal boilerplate.</p>
+      </div>
+      <div class="ccard">
+        <span class="ccard-icon">🚀</span>
+        <h4>Eager Execution</h4>
+        <p>TF2 default: operations run immediately, like NumPy. Makes debugging and prototyping much easier.</p>
+      </div>
+      <div class="ccard">
+        <span class="ccard-icon">🏭</span>
+        <h4>tf.function</h4>
+        <p>Compile Python functions into TF graphs for production-speed inference via tracing and XLA compilation.</p>
+      </div>
+      <div class="ccard">
+        <span class="ccard-icon">🌐</span>
+        <h4>TF Ecosystem</h4>
+        <p>TF Serving, TF Lite, TF.js, TFX — one training pipeline deployed everywhere from edge to cloud.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tensors -->
+  <div class="card reveal">
+    <h3>2. Working with Tensors</h3>
+    <p>Tensors are immutable, typed multidimensional arrays. Unlike NumPy arrays, they can live on GPU/TPU memory and have automatic gradient support.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · Tensor Basics</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── Creating Tensors ──────────────────────────────────────</span>
+scalar   = tf.<span class="fn">constant</span>(<span class="num">42</span>)                          <span class="cm"># rank-0</span>
+vector   = tf.<span class="fn">constant</span>([<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>])            <span class="cm"># rank-1</span>
+matrix   = tf.<span class="fn">constant</span>([[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]])               <span class="cm"># rank-2</span>
+zeros    = tf.<span class="fn">zeros</span>([<span class="num">3</span>, <span class="num">4</span>])                          <span class="cm"># 3×4 zero tensor</span>
+rand     = tf.random.<span class="fn">normal</span>([<span class="num">2</span>, <span class="num">3</span>], mean=<span class="num">0</span>, stddev=<span class="num">1</span>)
+
+<span class="cm"># ── Tensor Properties ─────────────────────────────────────</span>
+<span class="fn">print</span>(matrix.shape)    <span class="cm"># TensorShape([2, 2])</span>
+<span class="fn">print</span>(matrix.dtype)    <span class="cm"># tf.int32</span>
+<span class="fn">print</span>(matrix.ndim)     <span class="cm"># 2</span>
+<span class="fn">print</span>(matrix.numpy())  <span class="cm"># [[1 2] [3 4]]  (convert to NumPy)</span>
+
+<span class="cm"># ── Essential Operations ──────────────────────────────────</span>
+a = tf.<span class="fn">constant</span>([[<span class="num">1.</span>,<span class="num">2.</span>],[<span class="num">3.</span>,<span class="num">4.</span>]])
+b = tf.<span class="fn">constant</span>([[<span class="num">5.</span>,<span class="num">6.</span>],[<span class="num">7.</span>,<span class="num">8.</span>]])
+
+<span class="fn">print</span>(a + b)                   <span class="cm"># Element-wise add</span>
+<span class="fn">print</span>(a * b)                   <span class="cm"># Element-wise multiply</span>
+<span class="fn">print</span>(tf.<span class="fn">matmul</span>(a, b))         <span class="cm"># Matrix multiplication</span>
+<span class="fn">print</span>(tf.<span class="fn">reduce_mean</span>(a))       <span class="cm"># Mean of all elements → 2.5</span>
+<span class="fn">print</span>(tf.<span class="fn">reduce_sum</span>(a, axis=<span class="num">1</span>)) <span class="cm"># Row sums → [3., 7.]</span>
+
+<span class="cm"># ── Reshaping ─────────────────────────────────────────────</span>
+t = tf.<span class="fn">constant</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>],[<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>]])   <span class="cm"># shape [2,3]</span>
+<span class="fn">print</span>(tf.<span class="fn">reshape</span>(t, [<span class="num">3</span>,<span class="num">2</span>]))          <span class="cm"># → [3,2]</span>
+<span class="fn">print</span>(tf.<span class="fn">reshape</span>(t, [<span class="num">-1</span>]))           <span class="cm"># Flatten → [6]</span>
+<span class="fn">print</span>(tf.<span class="fn">transpose</span>(t))              <span class="cm"># → [3,2]</span></pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Tensor Type</th><th>TF Creation</th><th>Shape Example</th><th>Use Case</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Scalar</strong></td><td><code>tf.constant(3.14)</code></td><td>()</td><td>Loss value, learning rate</td></tr>
+          <tr><td><strong>Vector</strong></td><td><code>tf.constant([1,2,3])</code></td><td>(N,)</td><td>Bias terms, 1D features</td></tr>
+          <tr><td><strong>Matrix</strong></td><td><code>tf.constant([[...]])</code></td><td>(M, N)</td><td>Weight matrices, batch of vectors</td></tr>
+          <tr><td><strong>3D Tensor</strong></td><td><code>tf.zeros([B,T,F])</code></td><td>(Batch, Time, Features)</td><td>Sequences, time series</td></tr>
+          <tr><td><strong>4D Tensor</strong></td><td><code>tf.zeros([B,H,W,C])</code></td><td>(Batch, Height, Width, Channels)</td><td>Images in CNN</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Variables & GradientTape -->
+  <div class="card reveal">
+    <h3>3. Variables & Automatic Differentiation</h3>
+    <p><code>tf.Variable</code> holds mutable state (model weights). <code>tf.GradientTape</code> records operations so you can compute gradients — the backbone of all training loops.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · GradientTape</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+
+<span class="cm"># tf.Variable = trainable weight</span>
+w = tf.<span class="cls">Variable</span>(<span class="num">3.0</span>)
+b = tf.<span class="cls">Variable</span>(<span class="num">0.0</span>)
+
+<span class="cm"># ── Simple gradient computation ───────────────────────────</span>
+x = tf.<span class="fn">constant</span>(<span class="num">2.0</span>)
+<span class="kw">with</span> tf.<span class="cls">GradientTape</span>() <span class="kw">as</span> tape:
+    y = w * x + b          <span class="cm"># y = 3*2 + 0 = 6</span>
+    loss = (y - <span class="num">5.0</span>) ** <span class="num">2</span>  <span class="cm"># loss = (6-5)² = 1</span>
+
+<span class="cm"># ∂loss/∂w and ∂loss/∂b</span>
+dw, db = tape.<span class="fn">gradient</span>(loss, [w, b])
+<span class="fn">print</span>(<span class="str">f"∂loss/∂w = {dw.numpy()}"</span>)   <span class="cm"># 4.0  (2*(y-5)*x = 2*1*2)</span>
+<span class="fn">print</span>(<span class="str">f"∂loss/∂b = {db.numpy()}"</span>)   <span class="cm"># 2.0  (2*(y-5)*1)</span>
+
+<span class="cm"># ── Manual gradient descent step ──────────────────────────</span>
+lr = <span class="num">0.1</span>
+w.<span class="fn">assign_sub</span>(lr * dw)    <span class="cm"># w = w - lr * grad_w</span>
+b.<span class="fn">assign_sub</span>(lr * db)    <span class="cm"># b = b - lr * grad_b</span>
+<span class="fn">print</span>(<span class="str">f"Updated w: {w.numpy()}"</span>)    <span class="cm"># 2.6</span>
+<span class="fn">print</span>(<span class="str">f"Updated b: {b.numpy()}"</span>)    <span class="cm"># -0.2</span>
+
+<span class="cm"># ── Persistent tape for multiple gradient calls ───────────</span>
+<span class="kw">with</span> tf.<span class="cls">GradientTape</span>(persistent=<span class="kw">True</span>) <span class="kw">as</span> tape:
+    z = w ** <span class="num">2</span>
+grad_z_w = tape.<span class="fn">gradient</span>(z, w)   <span class="cm"># dz/dw = 2w</span>
+<span class="kw">del</span> tape                           <span class="cm"># Free resources when done</span></pre>
+    </div>
+
+    <div class="callout ct">
+      <span class="callout-icon">💡</span>
+      <span class="callout-text"><strong>Key insight:</strong> GradientTape tracks all operations on Variables inside the <code>with</code> block. When you call <code>tape.gradient(loss, vars)</code>, TensorFlow uses the chain rule to compute all gradients in one backward pass.</span>
+    </div>
+  </div>
+
+  <!-- First Neural Network -->
+  <div class="card reveal">
+    <h3>4. Your First Neural Network with Keras</h3>
+    <p>Keras's Sequential API lets you stack layers like building blocks. This example classifies handwritten digits with a simple dense network.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · MNIST Classifier</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+<span class="kw">from</span> tensorflow <span class="kw">import</span> keras
+
+<span class="cm"># ── 1. Load & preprocess data ─────────────────────────────</span>
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.<span class="fn">load_data</span>()
+x_train = x_train / <span class="num">255.0</span>   <span class="cm"># normalize [0,255] → [0,1]</span>
+x_test  = x_test  / <span class="num">255.0</span>
+
+<span class="cm"># ── 2. Define architecture ────────────────────────────────</span>
+model = keras.<span class="cls">Sequential</span>([
+    keras.layers.<span class="cls">Flatten</span>(input_shape=(<span class="num">28</span>, <span class="num">28</span>)),     <span class="cm"># 784 inputs</span>
+    keras.layers.<span class="cls">Dense</span>(<span class="num">128</span>, activation=<span class="str">'relu'</span>),      <span class="cm"># hidden layer</span>
+    keras.layers.<span class="cls">Dropout</span>(<span class="num">0.2</span>),                        <span class="cm"># regularization</span>
+    keras.layers.<span class="cls">Dense</span>(<span class="num">64</span>,  activation=<span class="str">'relu'</span>),      <span class="cm"># hidden layer</span>
+    keras.layers.<span class="cls">Dense</span>(<span class="num">10</span>,  activation=<span class="str">'softmax'</span>)    <span class="cm"># 10 digit classes</span>
+])
+
+<span class="cm"># ── 3. Compile (loss + optimizer + metrics) ───────────────</span>
+model.<span class="fn">compile</span>(
+    optimizer=<span class="str">'adam'</span>,
+    loss=<span class="str">'sparse_categorical_crossentropy'</span>,
+    metrics=[<span class="str">'accuracy'</span>]
+)
+
+model.<span class="fn">summary</span>()
+<span class="cm"># Model: "sequential"
+# Layer (type)           Output Shape     Param #
+# flatten (Flatten)      (None, 784)      0
+# dense (Dense)          (None, 128)      100,480
+# dropout (Dropout)      (None, 128)      0
+# dense_1 (Dense)        (None, 64)       8,256
+# dense_2 (Dense)        (None, 10)       650</span>
+
+<span class="cm"># ── 4. Train ──────────────────────────────────────────────</span>
+history = model.<span class="fn">fit</span>(
+    x_train, y_train,
+    epochs=<span class="num">10</span>,
+    batch_size=<span class="num">32</span>,
+    validation_split=<span class="num">0.1</span>,   <span class="cm"># hold out 10% for validation</span>
+    verbose=<span class="num">1</span>
+)
+
+<span class="cm"># ── 5. Evaluate ───────────────────────────────────────────</span>
+test_loss, test_acc = model.<span class="fn">evaluate</span>(x_test, y_test, verbose=<span class="num">0</span>)
+<span class="fn">print</span>(<span class="str">f"Test accuracy: {test_acc:.4f}"</span>)   <span class="cm"># ~0.9780</span>
+
+<span class="cm"># ── 6. Predict ────────────────────────────────────────────</span>
+predictions = model.<span class="fn">predict</span>(x_test[:<span class="num">5</span>])
+<span class="fn">print</span>(predictions.<span class="fn">argmax</span>(axis=<span class="num">1</span>))   <span class="cm"># [7, 2, 1, 0, 4]</span></pre>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     INTERMEDIATE
+══════════════════════════════════════ -->
+<section id="intermediate">
+
+  <div class="sec-hdr sh2 reveal">
+    <div>
+      <h2>Intermediate Level</h2>
+      <p>CNNs, RNNs, custom training loops, data pipelines, and model saving</p>
+    </div>
+    <span class="level-pill lp2">Level 02 — Applied</span>
+  </div>
+
+  <!-- CNN -->
+  <div class="card reveal">
+    <h3>5. Convolutional Neural Networks (CNN)</h3>
+    <p>CNNs use learnable filters to detect spatial patterns in images — edges, textures, shapes. Each conv layer applies filters across the input, producing feature maps that become increasingly abstract in deeper layers.</p>
+
+    <div class="flow">
+      <div class="fb">Input<br><small>H×W×3</small></div>
+      <div class="fa">→</div>
+      <div class="fb hl">Conv2D<br><small>+ ReLU</small></div>
+      <div class="fa">→</div>
+      <div class="fb">MaxPool<br><small>÷2</small></div>
+      <div class="fa">→</div>
+      <div class="fb hl">Conv2D<br><small>+ ReLU</small></div>
+      <div class="fa">→</div>
+      <div class="fb">MaxPool<br><small>÷2</small></div>
+      <div class="fa">→</div>
+      <div class="fb hl2">Flatten</div>
+      <div class="fa">→</div>
+      <div class="fb hl3">Dense<br><small>Softmax</small></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · CNN for CIFAR-10</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+<span class="kw">from</span> tensorflow.keras <span class="kw">import</span> layers
+
+<span class="cm"># ── Load CIFAR-10 (60k 32×32 colour images, 10 classes) ──</span>
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.<span class="fn">load_data</span>()
+x_train, x_test = x_train/<span class="num">255.0</span>, x_test/<span class="num">255.0</span>
+
+<span class="cm"># ── Build CNN ─────────────────────────────────────────────</span>
+model = tf.keras.<span class="cls">Sequential</span>([
+    <span class="cm"># Block 1: 32 filters, 3×3 kernel</span>
+    layers.<span class="cls">Conv2D</span>(<span class="num">32</span>, (<span class="num">3</span>,<span class="num">3</span>), activation=<span class="str">'relu'</span>, padding=<span class="str">'same'</span>,
+                   input_shape=(<span class="num">32</span>,<span class="num">32</span>,<span class="num">3</span>)),
+    layers.<span class="cls">BatchNormalization</span>(),
+    layers.<span class="cls">Conv2D</span>(<span class="num">32</span>, (<span class="num">3</span>,<span class="num">3</span>), activation=<span class="str">'relu'</span>),
+    layers.<span class="cls">MaxPooling2D</span>((<span class="num">2</span>,<span class="num">2</span>)),
+    layers.<span class="cls">Dropout</span>(<span class="num">0.25</span>),
+
+    <span class="cm"># Block 2: 64 filters</span>
+    layers.<span class="cls">Conv2D</span>(<span class="num">64</span>, (<span class="num">3</span>,<span class="num">3</span>), activation=<span class="str">'relu'</span>, padding=<span class="str">'same'</span>),
+    layers.<span class="cls">BatchNormalization</span>(),
+    layers.<span class="cls">Conv2D</span>(<span class="num">64</span>, (<span class="num">3</span>,<span class="num">3</span>), activation=<span class="str">'relu'</span>),
+    layers.<span class="cls">MaxPooling2D</span>((<span class="num">2</span>,<span class="num">2</span>)),
+    layers.<span class="cls">Dropout</span>(<span class="num">0.25</span>),
+
+    <span class="cm"># Classifier head</span>
+    layers.<span class="cls">Flatten</span>(),
+    layers.<span class="cls">Dense</span>(<span class="num">512</span>, activation=<span class="str">'relu'</span>),
+    layers.<span class="cls">Dropout</span>(<span class="num">0.5</span>),
+    layers.<span class="cls">Dense</span>(<span class="num">10</span>, activation=<span class="str">'softmax'</span>)
+])
+
+model.<span class="fn">compile</span>(
+    optimizer=tf.keras.optimizers.<span class="cls">Adam</span>(learning_rate=<span class="num">0.001</span>),
+    loss=<span class="str">'sparse_categorical_crossentropy'</span>,
+    metrics=[<span class="str">'accuracy'</span>]
+)
+
+<span class="cm"># ── Callbacks ────────────────────────────────────────────</span>
+callbacks = [
+    tf.keras.callbacks.<span class="cls">EarlyStopping</span>(patience=<span class="num">5</span>, restore_best_weights=<span class="kw">True</span>),
+    tf.keras.callbacks.<span class="cls">ReduceLROnPlateau</span>(factor=<span class="num">0.5</span>, patience=<span class="num">3</span>)
+]
+
+history = model.<span class="fn">fit</span>(x_train, y_train, epochs=<span class="num">50</span>,
+                      batch_size=<span class="num">64</span>, validation_split=<span class="num">0.1</span>,
+                      callbacks=callbacks)</pre>
+    </div>
+  </div>
+
+  <!-- tf.data -->
+  <div class="card reveal">
+    <h3>6. Efficient Data Pipelines with tf.data</h3>
+    <p><code>tf.data</code> builds fast, scalable input pipelines with prefetching and parallel processing — essential for GPU utilization above 95%.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · tf.data Pipeline</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+AUTOTUNE = tf.data.AUTOTUNE
+
+<span class="cm"># ── From NumPy arrays ─────────────────────────────────────</span>
+train_ds = tf.data.<span class="cls">Dataset</span>.<span class="fn">from_tensor_slices</span>((x_train, y_train))
+train_ds = (train_ds
+    .<span class="fn">shuffle</span>(<span class="num">10000</span>)                  <span class="cm"># shuffle buffer of 10k</span>
+    .<span class="fn">batch</span>(<span class="num">32</span>)                        <span class="cm"># mini-batch of 32</span>
+    .<span class="fn">map</span>(augment, num_parallel_calls=AUTOTUNE)  <span class="cm"># parallel augment</span>
+    .<span class="fn">prefetch</span>(AUTOTUNE)               <span class="cm"># overlap CPU & GPU work</span>
+)
+
+<span class="cm"># ── From image directory ──────────────────────────────────</span>
+train_ds = tf.keras.utils.<span class="fn">image_dataset_from_directory</span>(
+    <span class="str">'data/train'</span>,
+    image_size=(<span class="num">224</span>, <span class="num">224</span>),
+    batch_size=<span class="num">32</span>
+)
+
+<span class="cm"># ── Data Augmentation layer (runs on GPU) ─────────────────</span>
+augment = tf.keras.<span class="cls">Sequential</span>([
+    tf.keras.layers.<span class="cls">RandomFlip</span>(<span class="str">"horizontal"</span>),
+    tf.keras.layers.<span class="cls">RandomRotation</span>(<span class="num">0.1</span>),
+    tf.keras.layers.<span class="cls">RandomZoom</span>(<span class="num">0.1</span>),
+    tf.keras.layers.<span class="cls">RandomContrast</span>(<span class="num">0.1</span>),
+])
+
+<span class="cm"># ── Interleave for large datasets of TFRecord files ───────</span>
+files = tf.data.<span class="cls">Dataset</span>.<span class="fn">list_files</span>(<span class="str">"data/*.tfrecord"</span>)
+ds = files.<span class="fn">interleave</span>(
+    tf.data.<span class="cls">TFRecordDataset</span>,
+    cycle_length=<span class="num">8</span>,
+    num_parallel_calls=AUTOTUNE
+)</pre>
+    </div>
+
+    <div class="callout cw">
+      <span class="callout-icon">⚡</span>
+      <span class="callout-text"><strong>Performance tip:</strong> Always end your pipeline with <code>.prefetch(AUTOTUNE)</code>. Without it, the GPU waits idle for the CPU to prepare the next batch. Prefetch overlaps data preprocessing with model execution.</span>
+    </div>
+  </div>
+
+  <!-- Custom Training Loop -->
+  <div class="card reveal">
+    <h3>7. Custom Training Loops</h3>
+    <p>When you need full control — gradient clipping, mixed precision, custom metrics — skip <code>model.fit()</code> and write your own training loop with GradientTape.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · Custom Training Loop</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+
+optimizer  = tf.keras.optimizers.<span class="cls">Adam</span>(<span class="num">1e-3</span>)
+loss_fn    = tf.keras.losses.<span class="cls">SparseCategoricalCrossentropy</span>()
+train_acc  = tf.keras.metrics.<span class="cls">SparseCategoricalAccuracy</span>()
+val_acc    = tf.keras.metrics.<span class="cls">SparseCategoricalAccuracy</span>()
+
+<span class="cm"># ── Decorate with tf.function for graph compilation ───────</span>
+<span class="cls">@tf.function</span>
+<span class="kw">def</span> <span class="fn">train_step</span>(x, y):
+    <span class="kw">with</span> tf.<span class="cls">GradientTape</span>() <span class="kw">as</span> tape:
+        logits = model(x, training=<span class="kw">True</span>)
+        loss = loss_fn(y, logits)
+        loss += <span class="fn">sum</span>(model.losses)   <span class="cm"># regularization losses</span>
+    
+    grads = tape.<span class="fn">gradient</span>(loss, model.trainable_variables)
+    
+    <span class="cm"># Gradient clipping (prevents exploding gradients)</span>
+    grads, _ = tf.clip_by_global_norm(grads, clip_norm=<span class="num">1.0</span>)
+    
+    optimizer.<span class="fn">apply_gradients</span>(<span class="fn">zip</span>(grads, model.trainable_variables))
+    train_acc.<span class="fn">update_state</span>(y, logits)
+    <span class="kw">return</span> loss
+
+<span class="cls">@tf.function</span>
+<span class="kw">def</span> <span class="fn">val_step</span>(x, y):
+    logits = model(x, training=<span class="kw">False</span>)
+    val_acc.<span class="fn">update_state</span>(y, logits)
+
+<span class="cm"># ── Training loop ─────────────────────────────────────────</span>
+<span class="kw">for</span> epoch <span class="kw">in</span> <span class="fn">range</span>(<span class="num">20</span>):
+    <span class="kw">for</span> x_batch, y_batch <span class="kw">in</span> train_ds:
+        loss = <span class="fn">train_step</span>(x_batch, y_batch)
+    
+    <span class="kw">for</span> x_val, y_val <span class="kw">in</span> val_ds:
+        <span class="fn">val_step</span>(x_val, y_val)
+    
+    <span class="fn">print</span>(<span class="str">f"Epoch {epoch+1}: loss={loss:.4f} | "</span>
+          <span class="str">f"train_acc={train_acc.result():.4f} | "</span>
+          <span class="str">f"val_acc={val_acc.result():.4f}"</span>)
+    
+    train_acc.<span class="fn">reset_state</span>()
+    val_acc.<span class="fn">reset_state</span>()</pre>
+    </div>
+  </div>
+
+  <!-- RNN/LSTM -->
+  <div class="card reveal">
+    <h3>8. Recurrent Networks — LSTM & GRU</h3>
+    <p>LSTMs and GRUs process sequences by maintaining a hidden state across timesteps. They have gating mechanisms that learn what to remember and forget.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · Sentiment Analysis with LSTM</span>
+      </div>
+      <pre><span class="kw">from</span> tensorflow.keras <span class="kw">import</span> layers
+
+<span class="cm"># ── IMDB sentiment dataset ────────────────────────────────</span>
+(x_train, y_train), (x_test, y_test) = (
+    tf.keras.datasets.imdb.<span class="fn">load_data</span>(num_words=<span class="num">10000</span>)
+)
+x_train = tf.keras.preprocessing.sequence.<span class="fn">pad_sequences</span>(x_train, maxlen=<span class="num">256</span>)
+x_test  = tf.keras.preprocessing.sequence.<span class="fn">pad_sequences</span>(x_test,  maxlen=<span class="num">256</span>)
+
+<span class="cm"># ── Bidirectional LSTM model ──────────────────────────────</span>
+model = tf.keras.<span class="cls">Sequential</span>([
+    layers.<span class="cls">Embedding</span>(<span class="num">10000</span>, <span class="num">128</span>),          <span class="cm"># 10k vocab → 128-dim vectors</span>
+    layers.<span class="cls">Bidirectional</span>(                   <span class="cm"># forward + backward pass</span>
+        layers.<span class="cls">LSTM</span>(<span class="num">64</span>, return_sequences=<span class="kw">True</span>)
+    ),
+    layers.<span class="cls">Bidirectional</span>(layers.<span class="cls">LSTM</span>(<span class="num">32</span>)),
+    layers.<span class="cls">Dense</span>(<span class="num">64</span>, activation=<span class="str">'relu'</span>),
+    layers.<span class="cls">Dropout</span>(<span class="num">0.5</span>),
+    layers.<span class="cls">Dense</span>(<span class="num">1</span>, activation=<span class="str">'sigmoid'</span>)   <span class="cm"># binary: pos/neg</span>
+])
+
+model.<span class="fn">compile</span>(optimizer=<span class="str">'adam'</span>,
+              loss=<span class="str">'binary_crossentropy'</span>,
+              metrics=[<span class="str">'accuracy'</span>])
+
+<span class="cm"># ── GRU is faster with similar quality ───────────────────</span>
+gru_model = tf.keras.<span class="cls">Sequential</span>([
+    layers.<span class="cls">Embedding</span>(<span class="num">10000</span>, <span class="num">64</span>),
+    layers.<span class="cls">GRU</span>(<span class="num">128</span>, return_sequences=<span class="kw">True</span>),
+    layers.<span class="cls">GRU</span>(<span class="num">64</span>),
+    layers.<span class="cls">Dense</span>(<span class="num">1</span>, activation=<span class="str">'sigmoid'</span>)
+])</pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Layer</th><th>Gates</th><th>Parameters</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SimpleRNN</strong></td><td>None</td><td>Low</td><td>Very short sequences, baseline</td></tr>
+          <tr><td><strong>LSTM</strong></td><td>Forget, Input, Output</td><td>High (~4× RNN)</td><td>Long dependencies, NLP, time series</td></tr>
+          <tr><td><strong>GRU</strong></td><td>Reset, Update</td><td>Medium (~3× RNN)</td><td>Sequences where speed matters, similar quality to LSTM</td></tr>
+          <tr><td><strong>Bidirectional</strong></td><td>2× any above</td><td>2× base</td><td>Tasks where future context helps (NER, classification)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Transfer Learning -->
+  <div class="card reveal">
+    <h3>9. Transfer Learning</h3>
+    <p>Use a pre-trained model (trained on millions of images) as a feature extractor, then fine-tune only the top layers on your specific dataset. Achieves high accuracy with very little data.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · Transfer Learning with EfficientNet</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+
+<span class="cm"># ── Step 1: Load pretrained base (no top classifier) ──────</span>
+base = tf.keras.applications.<span class="cls">EfficientNetB0</span>(
+    include_top=<span class="kw">False</span>,          <span class="cm"># remove ImageNet classifier</span>
+    weights=<span class="str">'imagenet'</span>,          <span class="cm"># pre-trained weights</span>
+    input_shape=(<span class="num">224</span>, <span class="num">224</span>, <span class="num">3</span>)
+)
+
+<span class="cm"># ── Step 2: Freeze base (feature extraction phase) ────────</span>
+base.trainable = <span class="kw">False</span>
+
+<span class="cm"># ── Step 3: Add custom head ───────────────────────────────</span>
+inputs = tf.keras.<span class="cls">Input</span>(shape=(<span class="num">224</span>, <span class="num">224</span>, <span class="num">3</span>))
+x = base(inputs, training=<span class="kw">False</span>)
+x = tf.keras.layers.<span class="cls">GlobalAveragePooling2D</span>()(x)
+x = tf.keras.layers.<span class="cls">Dropout</span>(<span class="num">0.2</span>)(x)
+outputs = tf.keras.layers.<span class="cls">Dense</span>(NUM_CLASSES, activation=<span class="str">'softmax'</span>)(x)
+model = tf.keras.<span class="cls">Model</span>(inputs, outputs)
+
+<span class="cm"># Train top layers at higher lr</span>
+model.<span class="fn">compile</span>(optimizer=tf.keras.optimizers.<span class="cls">Adam</span>(<span class="num">0.01</span>),
+              loss=<span class="str">'categorical_crossentropy'</span>, metrics=[<span class="str">'accuracy'</span>])
+model.<span class="fn">fit</span>(train_ds, epochs=<span class="num">5</span>)
+
+<span class="cm"># ── Step 4: Fine-tune top layers of base ─────────────────</span>
+base.trainable = <span class="kw">True</span>
+<span class="cm"># Only unfreeze top 20 layers</span>
+<span class="kw">for</span> layer <span class="kw">in</span> base.layers[:-<span class="num">20</span>]:
+    layer.trainable = <span class="kw">False</span>
+
+<span class="cm"># Fine-tune at smaller lr to avoid destroying features</span>
+model.<span class="fn">compile</span>(optimizer=tf.keras.optimizers.<span class="cls">Adam</span>(<span class="num">1e-5</span>),
+              loss=<span class="str">'categorical_crossentropy'</span>, metrics=[<span class="str">'accuracy'</span>])
+model.<span class="fn">fit</span>(train_ds, epochs=<span class="num">10</span>)</pre>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     ADVANCED
+══════════════════════════════════════ -->
+<section id="advanced">
+
+  <div class="sec-hdr sh3 reveal">
+    <div>
+      <h2>Advanced Level</h2>
+      <p>Custom layers, transformers, distributed training, TF SavedModel, TFX</p>
+    </div>
+    <span class="level-pill lp3">Level 03 — Expert</span>
+  </div>
+
+  <!-- Custom Layers & Models -->
+  <div class="card reveal">
+    <h3>10. Custom Layers & Models</h3>
+    <p>Build any architecture by subclassing <code>tf.keras.Layer</code> and <code>tf.keras.Model</code>. This gives you full control over forward pass, trainable weights, and sub-layer composition.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · Custom Layer & Residual Block</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+
+<span class="cm"># ── Custom Layer ──────────────────────────────────────────</span>
+<span class="kw">class</span> <span class="cls">LinearWithBias</span>(tf.keras.<span class="cls">Layer</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, units):
+        <span class="fn">super</span>().__init__()
+        self.units = units
+    
+    <span class="kw">def</span> <span class="fn">build</span>(self, input_shape):
+        <span class="cm"># Weights created lazily on first call</span>
+        self.w = self.<span class="fn">add_weight</span>(shape=(input_shape[-<span class="num">1</span>], self.units),
+                                  initializer=<span class="str">'glorot_uniform'</span>,
+                                  trainable=<span class="kw">True</span>)
+        self.b = self.<span class="fn">add_weight</span>(shape=(self.units,),
+                                  initializer=<span class="str">'zeros'</span>,
+                                  trainable=<span class="kw">True</span>)
+    
+    <span class="kw">def</span> <span class="fn">call</span>(self, x):
+        <span class="kw">return</span> tf.<span class="fn">matmul</span>(x, self.w) + self.b
+
+<span class="cm"># ── Residual Block (skip connection) ─────────────────────</span>
+<span class="kw">class</span> <span class="cls">ResidualBlock</span>(tf.keras.<span class="cls">Layer</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, filters):
+        <span class="fn">super</span>().__init__()
+        self.conv1 = tf.keras.layers.<span class="cls">Conv2D</span>(filters, <span class="num">3</span>, padding=<span class="str">'same'</span>)
+        self.conv2 = tf.keras.layers.<span class="cls">Conv2D</span>(filters, <span class="num">3</span>, padding=<span class="str">'same'</span>)
+        self.bn1   = tf.keras.layers.<span class="cls">BatchNormalization</span>()
+        self.bn2   = tf.keras.layers.<span class="cls">BatchNormalization</span>()
+        self.proj  = tf.keras.layers.<span class="cls">Conv2D</span>(filters, <span class="num">1</span>)  <span class="cm"># dim match</span>
+    
+    <span class="kw">def</span> <span class="fn">call</span>(self, x, training=<span class="kw">False</span>):
+        residual = self.proj(x)
+        x = tf.nn.<span class="fn">relu</span>(self.bn1(self.conv1(x), training=training))
+        x = self.bn2(self.conv2(x), training=training)
+        <span class="kw">return</span> tf.nn.<span class="fn">relu</span>(x + residual)   <span class="cm"># skip connection!</span>
+
+<span class="cm"># ── Custom Model subclass ─────────────────────────────────</span>
+<span class="kw">class</span> <span class="cls">MiniResNet</span>(tf.keras.<span class="cls">Model</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, num_classes):
+        <span class="fn">super</span>().__init__()
+        self.stem   = tf.keras.layers.<span class="cls">Conv2D</span>(<span class="num">64</span>, <span class="num">7</span>, strides=<span class="num">2</span>, padding=<span class="str">'same'</span>)
+        self.block1 = <span class="cls">ResidualBlock</span>(<span class="num">64</span>)
+        self.block2 = <span class="cls">ResidualBlock</span>(<span class="num">128</span>)
+        self.pool   = tf.keras.layers.<span class="cls">GlobalAveragePooling2D</span>()
+        self.fc     = tf.keras.layers.<span class="cls">Dense</span>(num_classes, activation=<span class="str">'softmax'</span>)
+    
+    <span class="kw">def</span> <span class="fn">call</span>(self, x, training=<span class="kw">False</span>):
+        x = tf.nn.<span class="fn">relu</span>(self.stem(x))
+        x = self.block1(x, training=training)
+        x = self.block2(x, training=training)
+        x = self.pool(x)
+        <span class="kw">return</span> self.fc(x)</pre>
+    </div>
+  </div>
+
+  <!-- Transformer -->
+  <div class="card reveal">
+    <h3>11. Building a Transformer from Scratch</h3>
+    <p>The Transformer architecture powers all modern NLP. Here's multi-head attention and a Transformer encoder block implemented in TensorFlow.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · Multi-Head Attention</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+
+<span class="kw">class</span> <span class="cls">MultiHeadAttention</span>(tf.keras.<span class="cls">Layer</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, d_model, num_heads):
+        <span class="fn">super</span>().__init__()
+        self.num_heads = num_heads
+        self.d_model   = d_model
+        assert d_model % num_heads == <span class="num">0</span>
+        self.depth = d_model // num_heads
+
+        self.wq = tf.keras.layers.<span class="cls">Dense</span>(d_model)
+        self.wk = tf.keras.layers.<span class="cls">Dense</span>(d_model)
+        self.wv = tf.keras.layers.<span class="cls">Dense</span>(d_model)
+        self.wo = tf.keras.layers.<span class="cls">Dense</span>(d_model)
+    
+    <span class="kw">def</span> <span class="fn">split_heads</span>(self, x, batch_size):
+        x = tf.<span class="fn">reshape</span>(x, (batch_size, -<span class="num">1</span>, self.num_heads, self.depth))
+        <span class="kw">return</span> tf.<span class="fn">transpose</span>(x, perm=[<span class="num">0</span>,<span class="num">2</span>,<span class="num">1</span>,<span class="num">3</span>])   <span class="cm"># (B, H, T, D)</span>
+
+    <span class="kw">def</span> <span class="fn">call</span>(self, q, k, v, mask=<span class="kw">None</span>):
+        B = tf.<span class="fn">shape</span>(q)[<span class="num">0</span>]
+        Q = self.<span class="fn">split_heads</span>(self.wq(q), B)
+        K = self.<span class="fn">split_heads</span>(self.wk(k), B)
+        V = self.<span class="fn">split_heads</span>(self.wv(v), B)
+
+        <span class="cm"># Scaled dot-product attention</span>
+        scores = tf.<span class="fn">matmul</span>(Q, K, transpose_b=<span class="kw">True</span>) / tf.math.<span class="fn">sqrt</span>(
+                     tf.<span class="fn">cast</span>(self.depth, tf.float32))
+        <span class="kw">if</span> mask <span class="kw">is not None</span>:
+            scores += (mask * -<span class="num">1e9</span>)
+        weights = tf.nn.<span class="fn">softmax</span>(scores, axis=-<span class="num">1</span>)
+        ctx = tf.<span class="fn">matmul</span>(weights, V)                 <span class="cm"># (B,H,T,D)</span>
+        ctx = tf.<span class="fn">transpose</span>(ctx, perm=[<span class="num">0</span>,<span class="num">2</span>,<span class="num">1</span>,<span class="num">3</span>])    <span class="cm"># (B,T,H,D)</span>
+        ctx = tf.<span class="fn">reshape</span>(ctx, (B, -<span class="num">1</span>, self.d_model)) <span class="cm"># (B,T,d_model)</span>
+        <span class="kw">return</span> self.wo(ctx)
+
+<span class="kw">class</span> <span class="cls">TransformerBlock</span>(tf.keras.<span class="cls">Layer</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, d_model, num_heads, dff, dropout_rate=<span class="num">0.1</span>):
+        <span class="fn">super</span>().__init__()
+        self.attn = <span class="cls">MultiHeadAttention</span>(d_model, num_heads)
+        self.ffn  = tf.keras.<span class="cls">Sequential</span>([
+            tf.keras.layers.<span class="cls">Dense</span>(dff, activation=<span class="str">'relu'</span>),
+            tf.keras.layers.<span class="cls">Dense</span>(d_model)
+        ])
+        self.norm1   = tf.keras.layers.<span class="cls">LayerNormalization</span>(epsilon=<span class="num">1e-6</span>)
+        self.norm2   = tf.keras.layers.<span class="cls">LayerNormalization</span>(epsilon=<span class="num">1e-6</span>)
+        self.dropout = tf.keras.layers.<span class="cls">Dropout</span>(dropout_rate)
+    
+    <span class="kw">def</span> <span class="fn">call</span>(self, x, training=<span class="kw">False</span>, mask=<span class="kw">None</span>):
+        attn_out = self.attn(x, x, x, mask)
+        x = self.norm1(x + self.<span class="fn">dropout</span>(attn_out, training=training))
+        ffn_out  = self.ffn(x)
+        x = self.norm2(x + self.<span class="fn">dropout</span>(ffn_out,  training=training))
+        <span class="kw">return</span> x</pre>
+    </div>
+  </div>
+
+  <!-- Distributed Training -->
+  <div class="card reveal">
+    <h3>12. Distributed Training & tf.function</h3>
+    <p>Scale training across multiple GPUs or TPUs with <code>tf.distribute</code>. Switching strategies requires minimal code changes — most of the complexity is handled by TF.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · Multi-GPU & tf.function</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+
+<span class="cm"># ── Multi-GPU strategy ────────────────────────────────────</span>
+strategy = tf.distribute.<span class="cls">MirroredStrategy</span>()
+<span class="cm"># Copies model to each GPU; gradients averaged across all</span>
+<span class="fn">print</span>(<span class="str">f"GPUs: {strategy.num_replicas_in_sync}"</span>)
+
+<span class="kw">with</span> strategy.<span class="fn">scope</span>():
+    model = <span class="fn">build_model</span>()   <span class="cm"># model created inside scope</span>
+    model.<span class="fn">compile</span>(
+        optimizer=<span class="str">'adam'</span>,
+        loss=<span class="str">'sparse_categorical_crossentropy'</span>,
+        metrics=[<span class="str">'accuracy'</span>]
+    )
+
+<span class="cm"># Scale batch size with number of GPUs</span>
+BATCH_PER_REPLICA = <span class="num">64</span>
+GLOBAL_BATCH = BATCH_PER_REPLICA * strategy.num_replicas_in_sync
+
+<span class="cm"># Same model.fit() API — strategy handles distribution</span>
+model.<span class="fn">fit</span>(train_ds, epochs=<span class="num">20</span>)
+
+<span class="cm"># ── TPU strategy ──────────────────────────────────────────</span>
+<span class="kw">try</span>:
+    resolver = tf.distribute.cluster_resolver.<span class="cls">TPUClusterResolver</span>()
+    tf.config.experimental_connect_to_cluster(resolver)
+    tf.tpu.experimental.<span class="fn">initialize_tpu_system</span>(resolver)
+    strategy = tf.distribute.<span class="cls">TPUStrategy</span>(resolver)
+<span class="kw">except</span> <span class="cls">ValueError</span>:
+    strategy = tf.distribute.<span class="cls">MirroredStrategy</span>()  <span class="cm"># fallback to GPU</span>
+
+<span class="cm"># ── tf.function: compile Python → TF graph ───────────────</span>
+<span class="cls">@tf.function</span>(input_signature=[
+    tf.<span class="cls">TensorSpec</span>(shape=[<span class="kw">None</span>, <span class="num">28</span>, <span class="num">28</span>], dtype=tf.float32)
+])
+<span class="kw">def</span> <span class="fn">fast_predict</span>(x):
+    <span class="kw">return</span> model(x, training=<span class="kw">False</span>)
+
+<span class="cm"># First call: traces (slow). Subsequent calls: graph (fast)</span>
+result = <span class="fn">fast_predict</span>(x_test[:<span class="num">100</span>])   <span class="cm"># ~5× faster than eager</span></pre>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Strategy</th><th>Hardware</th><th>Use Case</th></tr></thead>
+        <tbody>
+          <tr><td><strong>MirroredStrategy</strong></td><td>Multiple GPUs (1 machine)</td><td>Most common multi-GPU training</td></tr>
+          <tr><td><strong>MultiWorkerMirroredStrategy</strong></td><td>Multiple machines, multiple GPUs</td><td>Large-scale distributed training</td></tr>
+          <tr><td><strong>TPUStrategy</strong></td><td>Google TPU</td><td>Very large models, Google Cloud</td></tr>
+          <tr><td><strong>ParameterServerStrategy</strong></td><td>PS + worker machines</td><td>Asynchronous distributed training</td></tr>
+          <tr><td><strong>CentralStorageStrategy</strong></td><td>Multiple GPUs (experimental)</td><td>Weights on CPU, compute on GPUs</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SavedModel & TF Serving -->
+  <div class="card reveal">
+    <h3>13. Model Saving, Export & TF Serving</h3>
+    <p>SavedModel is TensorFlow's universal serialization format — captures weights, computation graph, and signatures. Deploy the same artifact to TF Serving, TF Lite, or TF.js.</p>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · Save, Load, Export</span>
+      </div>
+      <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+
+<span class="cm"># ── SavedModel format (recommended) ──────────────────────</span>
+model.<span class="fn">save</span>(<span class="str">'my_model'</span>)           <span class="cm"># saves whole model</span>
+model = tf.keras.models.<span class="fn">load_model</span>(<span class="str">'my_model'</span>)
+
+<span class="cm"># ── Keras H5 format ───────────────────────────────────────</span>
+model.<span class="fn">save</span>(<span class="str">'model.h5'</span>)
+model = tf.keras.models.<span class="fn">load_model</span>(<span class="str">'model.h5'</span>)
+
+<span class="cm"># ── Save only weights (requires matching architecture) ────</span>
+model.<span class="fn">save_weights</span>(<span class="str">'weights.ckpt'</span>)
+model.<span class="fn">load_weights</span>(<span class="str">'weights.ckpt'</span>)
+
+<span class="cm"># ── Export with custom serving signature ──────────────────</span>
+<span class="cls">@tf.function</span>(input_signature=[
+    tf.<span class="cls">TensorSpec</span>(shape=[<span class="kw">None</span>, <span class="num">224</span>, <span class="num">224</span>, <span class="num">3</span>], dtype=tf.float32)
+])
+<span class="kw">def</span> <span class="fn">serving_fn</span>(image):
+    probabilities = model(image, training=<span class="kw">False</span>)
+    class_id = tf.<span class="fn">argmax</span>(probabilities, axis=-<span class="num">1</span>)
+    <span class="kw">return</span> {<span class="str">'class_id'</span>: class_id, <span class="str">'probabilities'</span>: probabilities}
+
+tf.<span class="fn">saved_model</span>.<span class="fn">save</span>(model, <span class="str">'export/'</span>,
+    signatures={<span class="str">'serving_default'</span>: serving_fn})
+
+<span class="cm"># ── Convert to TF Lite (mobile/edge deployment) ───────────</span>
+converter = tf.lite.<span class="cls">TFLiteConverter</span>.<span class="fn">from_keras_model</span>(model)
+converter.optimizations = [tf.lite.<span class="cls">Optimize</span>.DEFAULT]  <span class="cm"># quantize</span>
+tflite_model = converter.<span class="fn">convert</span>()
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'model.tflite'</span>, <span class="str">'wb'</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(tflite_model)</pre>
+    </div>
+
+    <div class="callout ci">
+      <span class="callout-icon">🚀</span>
+      <span class="callout-text"><strong>TF Serving:</strong> Run <code>docker run -p 8501:8501 -v "$(pwd)/export:/models/mymodel" tensorflow/serving --model_name=mymodel</code> and you have a production REST + gRPC inference server running instantly.</span>
+    </div>
+  </div>
+
+  <!-- Mixed Precision & Performance -->
+  <div class="card reveal">
+    <h3>14. Mixed Precision & Performance Optimization</h3>
+
+    <div class="code-block">
+      <div class="code-hdr">
+        <div class="win-dots"><span class="wd1"></span><span class="wd2"></span><span class="wd3"></span></div>
+        <span class="code-title">Python · Mixed Precision + XLA</span>
+      </div>
+      <pre><span class="kw">from</span> tensorflow.keras <span class="kw">import</span> mixed_precision
+
+<span class="cm"># ── Enable FP16 compute (2-3× speedup on modern GPUs) ─────</span>
+mixed_precision.<span class="fn">set_global_policy</span>(<span class="str">'mixed_float16'</span>)
+
+model = tf.keras.<span class="cls">Sequential</span>([
+    tf.keras.layers.<span class="cls">Dense</span>(<span class="num">1024</span>, activation=<span class="str">'relu'</span>),
+    <span class="cm"># Final layer must be float32 for numerical stability</span>
+    tf.keras.layers.<span class="cls">Dense</span>(<span class="num">10</span>, activation=<span class="str">'softmax'</span>,
+                           dtype=<span class="str">'float32'</span>)
+])
+
+<span class="cm"># Use LossScaleOptimizer to prevent underflow</span>
+optimizer = tf.keras.optimizers.<span class="cls">Adam</span>(<span class="num">1e-3</span>)
+optimizer = mixed_precision.<span class="cls">LossScaleOptimizer</span>(optimizer)
+
+<span class="cm"># ── XLA JIT compilation ───────────────────────────────────</span>
+<span class="cls">@tf.function</span>(jit_compile=<span class="kw">True</span>)   <span class="cm"># enable XLA for this function</span>
+<span class="kw">def</span> <span class="fn">train_step</span>(x, y):
+    <span class="kw">with</span> tf.<span class="cls">GradientTape</span>() <span class="kw">as</span> tape:
+        logits = model(x, training=<span class="kw">True</span>)
+        loss = loss_fn(y, logits)
+        scaled = optimizer.<span class="fn">get_scaled_loss</span>(loss)
+    grads = tape.<span class="fn">gradient</span>(scaled, model.trainable_variables)
+    grads = optimizer.<span class="fn">get_unscaled_gradients</span>(grads)
+    optimizer.<span class="fn">apply_gradients</span>(<span class="fn">zip</span>(grads, model.trainable_variables))
+    <span class="kw">return</span> loss</pre>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     INTERVIEW
+══════════════════════════════════════ -->
+<section id="interview">
+
+  <div class="sec-hdr sh4 reveal">
+    <div>
+      <h2>Interview Q&amp;A</h2>
+      <p>15 must-know questions for ML Engineer, Deep Learning Engineer, and AI Researcher roles</p>
+    </div>
+    <span class="level-pill lp4">Prep — 15 Q&amp;A</span>
+  </div>
+
+  <div class="qa-wrap reveal">
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q01</span>
+        <span class="qt">What is the difference between tf.constant and tf.Variable?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p><strong>tf.constant</strong> creates an immutable tensor. Its value cannot change after creation and it has no gradient tracking by default. Used for input data, hyperparameters, and fixed values.</p>
+        <p style="margin-top:10px"><strong>tf.Variable</strong> creates a mutable tensor that persists across multiple calls to <code>tf.function</code>. Variables automatically tracked by GradientTape, making them the correct container for model weights and biases. Use <code>var.assign(new_value)</code> or <code>var.assign_add/sub(delta)</code> to update them.</p>
+        <p style="margin-top:10px">Key distinction: TF optimizers update Variables via gradients. Attempting to create model weights as constants and update them manually breaks the TF graph execution model.</p>
+        <span class="tag tg">Tensors</span> <span class="tag tt">Core</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q02</span>
+        <span class="qt">Explain the vanishing gradient problem and how to solve it in TensorFlow.</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p>In deep networks, gradients are multiplied layer-by-layer during backpropagation. When activation derivatives are &lt;1 (like sigmoid's max derivative of 0.25), this repeated multiplication causes gradients to shrink exponentially toward the input layers — making early layers learn extremely slowly or not at all.</p>
+        <p style="margin-top:10px"><strong>Solutions in TF/Keras:</strong></p>
+        <p>• <strong>ReLU activations</strong>: gradient = 1 for positive inputs (no squashing)<br>
+        • <strong>Batch Normalization</strong> (<code>layers.BatchNormalization()</code>): normalizes activations per batch, preventing extreme values<br>
+        • <strong>Residual connections</strong>: skip connections let gradients flow directly to early layers (ResNet)<br>
+        • <strong>Glorot/He initialization</strong>: <code>kernel_initializer='he_uniform'</code> keeps activations in good range<br>
+        • <strong>Gradient clipping</strong>: <code>tf.clip_by_global_norm(grads, 1.0)</code><br>
+        • <strong>LSTM/GRU</strong>: designed with gates to preserve gradients over long sequences</p>
+        <span class="tag to">Training</span> <span class="tag tg">Architecture</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q03</span>
+        <span class="qt">What does tf.function do and when should you use it?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p><code>@tf.function</code> traces a Python function and compiles it into a TensorFlow computation graph. On the first call, TF traces the function (executing Python to build a graph). Subsequent calls execute the compiled graph, bypassing Python overhead.</p>
+        <p style="margin-top:10px"><strong>Benefits:</strong> 2–10× speedup over eager execution for training steps, supports XLA compilation with <code>jit_compile=True</code>, enables deployment as SavedModel signatures.</p>
+        <p style="margin-top:10px"><strong>When to use:</strong> Wrap your <code>train_step</code> and <code>val_step</code> functions. Don't decorate everything — Python-side logic (logging, early stopping checks) should stay outside.</p>
+        <p style="margin-top:10px"><strong>Gotchas:</strong> Each unique Python argument value triggers a retrace. Don't pass Python scalars as arguments — use tf.Tensors or tf.Variables instead to avoid excessive tracing.</p>
+        <span class="tag to">Performance</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q04</span>
+        <span class="qt">What is Batch Normalization and why does it help training?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p>Batch Normalization normalizes each feature to have zero mean and unit variance across the current mini-batch, then applies learnable scale (γ) and shift (β) parameters: <code>y = γ·(x − μ)/σ + β</code>.</p>
+        <p style="margin-top:10px"><strong>Benefits:</strong></p>
+        <p>1. Reduces internal covariate shift — each layer gets inputs in a stable distribution<br>
+        2. Allows much higher learning rates without divergence<br>
+        3. Acts as a regularizer, often reducing need for Dropout<br>
+        4. Reduces sensitivity to weight initialization<br>
+        5. Significantly faster convergence</p>
+        <p style="margin-top:10px"><strong>Critical detail:</strong> BatchNorm behaves differently during training (<code>training=True</code>) vs inference (<code>training=False</code>). During training it uses batch statistics; during inference it uses running mean/variance accumulated during training. Always pass the <code>training</code> flag correctly.</p>
+        <span class="tag tg">Architecture</span> <span class="tag to">Training</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q05</span>
+        <span class="qt">Explain the difference between Dropout, L1, and L2 regularization.</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <div class="tbl-wrap" style="margin-top:8px">
+          <table>
+            <thead><tr><th>Method</th><th>Mechanism</th><th>Effect</th><th>Keras Usage</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Dropout</strong></td><td>Randomly zero p% of neurons per step</td><td>Forces redundant representations</td><td><code>layers.Dropout(0.5)</code></td></tr>
+              <tr><td><strong>L2 (Ridge)</strong></td><td>Adds λΣw² to loss</td><td>Pushes weights toward zero uniformly (small weights)</td><td><code>kernel_regularizer=l2(0.01)</code></td></tr>
+              <tr><td><strong>L1 (Lasso)</strong></td><td>Adds λΣ|w| to loss</td><td>Produces sparse weights (many exactly zero)</td><td><code>kernel_regularizer=l1(0.01)</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:10px">L2 is most common for dense layers. Dropout works best for large, over-parameterized networks. L1 is useful when you want to identify important features (zero weights = irrelevant features).</p>
+        <span class="tag tg">Regularization</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q06</span>
+        <span class="qt">What is the difference between model.fit() and a custom training loop?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p><strong>model.fit():</strong> Handles the entire training loop automatically — batching, callbacks, metric tracking, multi-GPU distribution, mixed precision, progress bars. Ideal for standard training scenarios, fast prototyping, and when built-in callbacks cover your needs.</p>
+        <p style="margin-top:10px"><strong>Custom loop:</strong> Write your own <code>for epoch in range(...):</code> loop with <code>GradientTape</code>. Necessary when you need: custom loss computation (e.g., multiple interleaved models like GANs), gradient clipping with custom logic, curriculum learning, meta-learning (MAML), non-standard backward passes, or research experiments requiring step-level control.</p>
+        <p style="margin-top:10px">A good middle ground: override <code>model.train_step()</code> to customize a single training step while keeping <code>model.fit()</code>'s callback/logging infrastructure.</p>
+        <span class="tag to">Training</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q07</span>
+        <span class="qt">How does tf.data improve training performance?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p><code>tf.data</code> pipelines overlap data preprocessing with model execution, eliminating GPU starvation. Key performance techniques:</p>
+        <p style="margin-top:10px">1. <strong>Prefetch:</strong> While the GPU trains on batch N, CPU prepares batch N+1 in parallel. Always end with <code>.prefetch(AUTOTUNE)</code><br>
+        2. <strong>Parallel map:</strong> <code>.map(fn, num_parallel_calls=AUTOTUNE)</code> preprocesses multiple examples simultaneously<br>
+        3. <strong>Cache:</strong> <code>.cache()</code> stores processed data in memory after first epoch<br>
+        4. <strong>TFRecords:</strong> Binary format with better I/O than JPEGs for large datasets<br>
+        5. <strong>Vectorized map:</strong> Process entire batches at once instead of per-element</p>
+        <p style="margin-top:10px">Without these optimizations, a powerful GPU can sit 40–70% idle waiting for data.</p>
+        <span class="tag tt">Data</span> <span class="tag to">Performance</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q08</span>
+        <span class="qt">What is transfer learning and when does fine-tuning help vs hurt?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p>Transfer learning reuses a model pretrained on a large dataset (e.g., ImageNet) as a starting point for a related task, leveraging learned feature hierarchies instead of random initialization.</p>
+        <p style="margin-top:10px"><strong>Fine-tuning helps when:</strong></p>
+        <p>• Your dataset has &gt;1000 images per class<br>
+        • Your domain is moderately different from the pretrain domain<br>
+        • You unfreeze only the top layers with a small learning rate (1e-5 to 1e-4)</p>
+        <p style="margin-top:10px"><strong>Fine-tuning hurts when:</strong></p>
+        <p>• Your dataset is tiny (&lt;500 samples): overfitting risk. Use frozen features + new head only<br>
+        • Learning rate is too high: destroys pretrained features ("catastrophic forgetting")<br>
+        • You unfreeze too many layers with a small dataset</p>
+        <span class="tag tg">Transfer Learning</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q09</span>
+        <span class="qt">How do you handle class imbalance in TensorFlow?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p>Class imbalance (e.g., 99% negative, 1% positive) causes models to predict the majority class always. TF approaches:</p>
+        <p style="margin-top:10px">1. <strong>Class weights:</strong> <code>model.fit(class_weight={0: 1.0, 1: 99.0})</code> — penalizes misclassifying the minority class more<br>
+        2. <strong>Sample weights:</strong> Pass <code>sample_weight</code> array with per-sample importance to <code>model.fit()</code><br>
+        3. <strong>Oversampling minority:</strong> Use <code>tf.data</code> to sample minority class more frequently<br>
+        4. <strong>Undersampling majority:</strong> Take random subset of majority class<br>
+        5. <strong>Focal loss:</strong> Custom loss that down-weights easy examples<br>
+        6. <strong>Metrics:</strong> Use AUC-ROC, precision-recall, F1 instead of accuracy — accuracy is meaningless on imbalanced data</p>
+        <span class="tag ty">Data</span> <span class="tag to">Training</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q10</span>
+        <span class="qt">Explain the Functional API vs Sequential API vs Model subclassing.</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <div class="tbl-wrap" style="margin-top:8px">
+          <table>
+            <thead><tr><th>API</th><th>Best For</th><th>Limitations</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Sequential</strong></td><td>Simple linear stacks, beginners, prototyping</td><td>No branching, no multiple inputs/outputs</td></tr>
+              <tr><td><strong>Functional</strong></td><td>Multi-input/output, skip connections, shared layers, DAG architectures</td><td>No dynamic shapes, no loops in forward pass</td></tr>
+              <tr><td><strong>Subclassing</strong></td><td>Dynamic architectures, research models, loops in forward pass</td><td>Less tooling support, harder to inspect</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:10px"><strong>Rule of thumb:</strong> Use Functional API unless you specifically need dynamic control flow (conditionals/loops based on data), in which case subclass. Both are production-ready; Sequential is for tutorials and simple baselines only.</p>
+        <span class="tag tt">Architecture</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q11</span>
+        <span class="qt">What are the different optimizers and when should you use Adam vs SGD?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p><strong>SGD with momentum:</strong> Slow to converge but often finds flatter minima → better generalization. Required for competitive image classification results (ResNet on ImageNet). Works well with learning rate schedules (cosine annealing, warm restarts).</p>
+        <p style="margin-top:10px"><strong>Adam:</strong> Adapts learning rate per parameter using first and second moment estimates. Fast to converge, robust to hyperparameter choices, great for NLP, transformers, and default for most tasks. Can overfit on small datasets.</p>
+        <p style="margin-top:10px"><strong>AdamW:</strong> Adam + proper weight decay (decoupled from gradient scaling). Standard for transformer training (BERT, GPT fine-tuning).</p>
+        <p style="margin-top:10px"><strong>Practical rule:</strong> Start with Adam(1e-3). If generalization is poor, switch to SGD(0.01, momentum=0.9) + cosine LR schedule.</p>
+        <span class="tag to">Optimizers</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q12</span>
+        <span class="qt">How does MirroredStrategy work for multi-GPU training?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p><code>MirroredStrategy</code> implements synchronous data parallelism:</p>
+        <p style="margin-top:10px">1. The model is copied (mirrored) to each GPU<br>
+        2. Each GPU receives a different slice of the global batch (batch_size / num_gpus)<br>
+        3. Each GPU computes forward + backward pass on its slice independently<br>
+        4. Gradients from all GPUs are aggregated using <strong>all-reduce</strong> (default: NCCL for GPU-GPU communication)<br>
+        5. All GPU replicas receive the averaged gradient and update their weights identically<br>
+        6. Result: all replicas stay in sync; computation scales with number of GPUs</p>
+        <p style="margin-top:10px"><strong>Important:</strong> Scale global batch size with num_gpus (e.g., 32 per GPU × 8 GPUs = 256 global batch). You may need to scale the learning rate accordingly (linear scaling rule: lr × num_gpus).</p>
+        <span class="tag ty">Distributed</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q13</span>
+        <span class="qt">What is the SavedModel format and how is it different from H5?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p><strong>SavedModel</strong> (TensorFlow's native format): Saves the full TF program including weights, computation graph (as tf.functions), optimizer state, and custom serving signatures. Language/framework agnostic — load in C++, Java, TF Serving, TF.js without Python. Supports custom objects without special registration.</p>
+        <p style="margin-top:10px"><strong>HDF5 (.h5)</strong>: Legacy Keras-specific format. Stores architecture (as JSON) + weights (as numpy arrays). Requires Python and Keras to load. Doesn't save tf.function graphs. Can have issues with custom objects.</p>
+        <p style="margin-top:10px"><strong>Recommendation:</strong> Always use SavedModel (<code>model.save('path/to/dir')</code>). Use H5 only for interoperability with older pipelines or when you specifically need the JSON architecture representation.</p>
+        <span class="tag ty">Deployment</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q14</span>
+        <span class="qt">Explain mixed precision training — what is it and why use it?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p>Mixed precision training uses float16 (half precision) for most computations and float32 (single precision) only where numerical stability requires it (output layer, loss computation, weight updates).</p>
+        <p style="margin-top:10px"><strong>Benefits:</strong></p>
+        <p>• <strong>Speed:</strong> 2–3× faster on Tensor Core GPUs (V100, A100, RTX series) due to specialized FP16 matrix multiplication units<br>
+        • <strong>Memory:</strong> FP16 uses half the GPU memory → larger batch sizes or larger models<br>
+        • <strong>Bandwidth:</strong> Smaller tensors transfer faster between memory and compute</p>
+        <p style="margin-top:10px"><strong>The catch — underflow:</strong> FP16 has limited dynamic range. Small gradients underflow to zero. <code>LossScaleOptimizer</code> multiplies the loss by a large scale factor before backward pass, then unscales gradients before the weight update, preserving small gradient values.</p>
+        <span class="tag to">Performance</span> <span class="tag ty">Training</span>
+      </div>
+    </div>
+
+    <div class="qa" onclick="tog(this)">
+      <div class="qa-q">
+        <span class="qn">Q15</span>
+        <span class="qt">How do you debug a TensorFlow model that isn't training (loss not decreasing)?</span>
+        <span class="qa-arr">›</span>
+      </div>
+      <div class="qa-a">
+        <p><strong>Systematic debugging checklist:</strong></p>
+        <p>1. <strong>Sanity check with tiny dataset:</strong> Can the model overfit 1 batch? If not, architecture or loss is wrong<br>
+        2. <strong>Check loss function:</strong> Using <code>softmax</code> output with <code>categorical_crossentropy</code>? Or logits with <code>from_logits=True</code>? Mismatch silently gives wrong gradients<br>
+        3. <strong>Learning rate:</strong> Too high → loss explodes or oscillates. Too low → no movement. Try 1e-3 with Adam first<br>
+        4. <strong>Gradient flow:</strong> Use <code>tf.GradientTape</code> manually and <code>print</code> gradient norms per layer. NaN or zero gradients = problem<br>
+        5. <strong>Data preprocessing:</strong> Are inputs normalized? Wrong dtype? Check <code>x_train.min(), max(), mean()</code><br>
+        6. <strong>training=True/False:</strong> BatchNorm and Dropout must receive correct flag. Wrong flag = train/eval discrepancy<br>
+        7. <strong>Callbacks:</strong> Add <code>TensorBoard</code> callback — visualize loss curves, weight histograms, gradient distributions</p>
+        <span class="tag tr">Debugging</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<div id="roadmap">
+  <div class="roadmap reveal">
+    <h2>🗺 12-Week Learning Roadmap</h2>
+
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">Python, NumPy, Linear Algebra Review</span><span class="rm-time">Week 1</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#52b788" data-w="100"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">Tensors, Variables, GradientTape, Eager Mode</span><span class="rm-time">Week 2</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#52b788" data-w="92"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">Keras Sequential &amp; Functional API, First Models</span><span class="rm-time">Week 3</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#52b788" data-w="85"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">tf.data Pipelines, Data Augmentation, Callbacks</span><span class="rm-time">Week 4</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#14a8ad" data-w="75"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">CNNs — Architecture, BatchNorm, Transfer Learning</span><span class="rm-time">Week 5–6</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#14a8ad" data-w="65"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">RNNs, LSTMs, GRUs, Sequence Modelling</span><span class="rm-time">Week 7</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#14a8ad" data-w="56"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">Custom Layers, Model Subclassing, Custom Loops</span><span class="rm-time">Week 8</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#ff8c42" data-w="46"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">Transformer Architecture from Scratch</span><span class="rm-time">Week 9</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#ff8c42" data-w="38"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">Distributed Training, Mixed Precision, tf.function</span><span class="rm-time">Week 10</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#ff8c42" data-w="30"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">SavedModel, TF Serving, TF Lite, TF.js</span><span class="rm-time">Week 11</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#f5b731" data-w="20"></div></div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-label"><span class="rm-name">TFX Pipeline, Production MLOps, Monitoring</span><span class="rm-time">Week 12</span></div>
+      <div class="rm-bar-bg"><div class="rm-bar-fill" style="background:#f5b731" data-w="12"></div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer style="background:var(--ink);color:#4a3a2a;text-align:center;padding:32px 24px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;border-top:3px solid var(--accent)">
+  TENSORFLOW MASTERY GUIDE &nbsp;·&nbsp; FROM TENSORS TO PRODUCTION &nbsp;·&nbsp; ALL EXAMPLES TESTED ON TF 2.x
+</footer>
+
+<script>
+function tog(item) {
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.qa.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.qa-a').classList.remove('vis');
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    item.querySelector('.qa-a').classList.add('vis');
+  }
+}
+
+// Scroll reveal
+const ro = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('vis'), i * 50);
+      ro.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+// Progress bars
+const po = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.rm-bar-fill').forEach(b => {
+        b.style.width = b.dataset.w + '%';
+      });
+      po.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+const rm = document.querySelector('.roadmap');
+if (rm) po.observe(rm);
+
+// Active nav
+const secs = document.querySelectorAll('section[id]');
+const navBs = document.querySelectorAll('.nav-btn[href]');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  secs.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+  navBs.forEach(b => {
+    b.classList.remove('active');
+    if (b.getAttribute('href') === '#' + cur) b.classList.add('active');
+  });
+}, { passive: true });
+</script>
+</body>
+</html>

@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Mastery — From Zero to Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d47;
+    --accent: #00d4aa;
+    --accent2: #ff6b35;
+    --accent3: #a78bfa;
+    --accent4: #fbbf24;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --code-bg: #0d1117;
+    --green: #4ade80;
+    --red: #f87171;
+    --blue: #60a5fa;
+    --pink: #f472b6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,170,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,170,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0a0e1a;
+  }
+
+  .logo span { color: var(--accent); }
+
+  nav {
+    display: flex;
+    gap: 4px;
+  }
+
+  nav button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-dim);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  nav button:hover, nav button.active {
+    background: var(--surface2);
+    border-color: var(--border);
+    color: var(--accent);
+  }
+
+  .progress-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .progress-bar-mini {
+    width: 80px; height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-bar-mini-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    width: 0%;
+    transition: width 0.8s ease;
+    border-radius: 99px;
+  }
+
+  /* MAIN LAYOUT */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 64px);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* SIDEBAR */
+  aside {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+  }
+
+  .sidebar-section {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-section-title {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding: 4px 8px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    transition: all 0.15s;
+    margin-bottom: 2px;
+    border: 1px solid transparent;
+  }
+
+  .sidebar-item:hover {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .sidebar-item.active {
+    background: rgba(0,212,170,0.08);
+    color: var(--accent);
+    border-color: rgba(0,212,170,0.2);
+  }
+
+  .sidebar-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  .sidebar-item.active .dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  .sidebar-item.done .dot { background: var(--green); }
+
+  .level-badge {
+    margin-left: auto;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .level-beginner { background: rgba(74,222,128,0.1); color: var(--green); }
+  .level-intermediate { background: rgba(251,191,36,0.1); color: var(--accent4); }
+  .level-advanced { background: rgba(248,113,113,0.1); color: var(--red); }
+  .level-interview { background: rgba(167,139,250,0.1); color: var(--accent3); }
+
+  /* MAIN CONTENT */
+  main {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    max-width: 900px;
+  }
+
+  /* PAGE SECTIONS */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: 'Py';
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Fira Code', monospace;
+    font-size: 8rem;
+    font-weight: 700;
+    color: rgba(0,212,170,0.04);
+    letter-spacing: -5px;
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.2);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+  }
+
+  .hero h1 span { color: var(--accent); }
+
+  .hero p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 520px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.82rem;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  /* SECTION TITLES */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .section-num {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0a0e1a;
+    flex-shrink: 0;
+  }
+
+  .section-header h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .section-header .badge {
+    margin-left: auto;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-weight: 700;
+  }
+
+  /* CONTENT CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: rgba(0,212,170,0.2); }
+
+  .card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card h3 .icon {
+    font-size: 1rem;
+  }
+
+  .card p, .card li {
+    font-size: 0.875rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .card ul {
+    list-style: none;
+    margin-top: 0.5rem;
+  }
+
+  .card ul li {
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .card ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.75rem;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-header .dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .code-header .dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .code-header .dots span:nth-child(1) { background: #ff5f57; }
+  .code-header .dots span:nth-child(2) { background: #febc2e; }
+  .code-header .dots span:nth-child(3) { background: #28c840; }
+
+  .code-header .filename {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .copy-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Fira Code', monospace;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  pre {
+    padding: 1.25rem;
+    overflow-x: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    tab-size: 4;
+  }
+
+  /* Syntax highlighting */
+  .kw { color: #ff79c6; font-weight: 500; }
+  .fn { color: #50fa7b; }
+  .str { color: #f1fa8c; }
+  .num { color: #bd93f9; }
+  .cm { color: #6272a4; font-style: italic; }
+  .cls { color: #8be9fd; }
+  .op { color: #ff79c6; }
+  .builtin { color: #ffb86c; }
+  .deco { color: #ff5555; }
+
+  /* TOPIC GRID */
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+
+  .topic-card:hover::before { transform: scaleX(1); }
+
+  .topic-card:hover {
+    border-color: rgba(0,212,170,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .topic-card .t-icon { font-size: 1.5rem; margin-bottom: 8px; }
+
+  .topic-card h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .topic-card p {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+    line-height: 1.5;
+  }
+
+  /* Q&A */
+  .qa-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .qa-question {
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .qa-question:hover { background: var(--surface2); }
+
+  .qa-num {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    background: rgba(167,139,250,0.1);
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent3);
+    font-family: 'Fira Code', monospace;
+  }
+
+  .qa-q-text {
+    flex: 1;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .qa-arrow {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+    font-size: 0.8rem;
+  }
+
+  .qa-item.open .qa-arrow { transform: rotate(180deg); color: var(--accent); }
+
+  .qa-answer {
+    display: none;
+    padding: 0 1.2rem 1.2rem 2.8rem;
+    font-size: 0.83rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+    border-top: 1px solid var(--border);
+    background: rgba(0,212,170,0.02);
+  }
+
+  .qa-item.open .qa-answer { display: block; animation: slideDown 0.2s ease; }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .qa-answer p { padding-top: 1rem; }
+  .qa-answer .highlight {
+    background: rgba(0,212,170,0.08);
+    border: 1px solid rgba(0,212,170,0.15);
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* LEVEL TABS */
+  .level-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 1.5rem;
+    width: fit-content;
+  }
+
+  .level-tab {
+    padding: 6px 16px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .level-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .level-tab[data-level="beginner"].active { color: var(--green); }
+  .level-tab[data-level="intermediate"].active { color: var(--accent4); }
+  .level-tab[data-level="advanced"].active { color: var(--red); }
+
+  .level-content { display: none; }
+  .level-content.active { display: block; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 2rem 0;
+  }
+
+  /* TIP BOX */
+  .tip {
+    display: flex;
+    gap: 12px;
+    background: rgba(251,191,36,0.05);
+    border: 1px solid rgba(251,191,36,0.15);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .tip .tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+  .tip-content p {
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .tip-content strong { color: var(--accent4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px; }
+
+  /* OUTPUT BLOCK */
+  .output-block {
+    background: #0d1117;
+    border: 1px solid rgba(74,222,128,0.2);
+    border-left: 3px solid var(--green);
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem 1rem;
+    margin-top: -1px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--green);
+    line-height: 1.6;
+  }
+
+  .output-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--green);
+    opacity: 0.6;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+
+  /* SCROLL */
+  aside::-webkit-scrollbar { width: 4px; }
+  aside::-webkit-scrollbar-track { background: transparent; }
+  aside::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    aside { display: none; }
+    main { padding: 1rem; }
+    .hero h1 { font-size: 1.8rem; }
+    nav { display: none; }
+  }
+
+  /* TOPIC HIGHLIGHT */
+  code {
+    font-family: 'Fira Code', monospace;
+    background: rgba(0,212,170,0.08);
+    border: 1px solid rgba(0,212,170,0.15);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.82em;
+    color: var(--accent);
+  }
+
+  .concept-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .concept-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .concept-item h5 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-family: 'Fira Code', monospace;
+  }
+
+  .concept-item p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(96,165,250,0.08);
+    border: 1px solid rgba(96,165,250,0.2);
+    color: var(--blue);
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">Py</div>
+    <span>Python<span>.mastery</span></span>
+  </div>
+  <nav>
+    <button class="active" onclick="showPage('core')">Core</button>
+    <button onclick="showPage('oop')">OOP</button>
+    <button onclick="showPage('filehandling')">File I/O</button>
+    <button onclick="showPage('interview')">Interview Q&A</button>
+  </nav>
+  <div class="progress-badge">
+    <span id="progress-text">70%</span>
+    <div class="progress-bar-mini"><div class="progress-bar-mini-fill" id="progress-fill"></div></div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">🐍 Python Core</div>
+      <div class="sidebar-item active" onclick="showPage('core'); setActive(this)"><div class="dot"></div> Overview <span class="level-badge level-beginner">BASICS</span></div>
+      <div class="sidebar-item done" onclick="showPage('core'); scrollTo('variables')"><div class="dot"></div> Variables & Types</div>
+      <div class="sidebar-item" onclick="showPage('core'); scrollTo('operators')"><div class="dot"></div> Operators</div>
+      <div class="sidebar-item" onclick="showPage('core'); scrollTo('control')"><div class="dot"></div> Control Flow</div>
+      <div class="sidebar-item" onclick="showPage('core'); scrollTo('functions')"><div class="dot"></div> Functions <span class="level-badge level-intermediate">MID</span></div>
+      <div class="sidebar-item" onclick="showPage('core'); scrollTo('datastructs')"><div class="dot"></div> Data Structures</div>
+      <div class="sidebar-item" onclick="showPage('core'); scrollTo('comprehensions')"><div class="dot"></div> Comprehensions <span class="level-badge level-advanced">ADV</span></div>
+      <div class="sidebar-item" onclick="showPage('core'); scrollTo('decorators')"><div class="dot"></div> Decorators</div>
+      <div class="sidebar-item" onclick="showPage('core'); scrollTo('generators')"><div class="dot"></div> Generators</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">🏗️ OOP</div>
+      <div class="sidebar-item" onclick="showPage('oop'); setActive(this)"><div class="dot"></div> Classes & Objects</div>
+      <div class="sidebar-item" onclick="showPage('oop')"><div class="dot"></div> Inheritance</div>
+      <div class="sidebar-item" onclick="showPage('oop')"><div class="dot"></div> Polymorphism</div>
+      <div class="sidebar-item" onclick="showPage('oop')"><div class="dot"></div> Encapsulation</div>
+      <div class="sidebar-item" onclick="showPage('oop')"><div class="dot"></div> Magic Methods <span class="level-badge level-advanced">ADV</span></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">📁 File Handling</div>
+      <div class="sidebar-item" onclick="showPage('filehandling'); setActive(this)"><div class="dot"></div> Read / Write</div>
+      <div class="sidebar-item" onclick="showPage('filehandling')"><div class="dot"></div> Context Manager</div>
+      <div class="sidebar-item" onclick="showPage('filehandling')"><div class="dot"></div> CSV & JSON</div>
+      <div class="sidebar-item" onclick="showPage('filehandling')"><div class="dot"></div> OS & pathlib <span class="level-badge level-advanced">ADV</span></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">🎯 Interview Q&A</div>
+      <div class="sidebar-item" onclick="showPage('interview'); setActive(this)"><div class="dot"></div> Core Python <span class="level-badge level-interview">Q&A</span></div>
+      <div class="sidebar-item" onclick="showPage('interview')"><div class="dot"></div> OOP Questions</div>
+      <div class="sidebar-item" onclick="showPage('interview')"><div class="dot"></div> Advanced Topics</div>
+    </div>
+  </aside>
+
+  <main>
+
+    <!-- ==================== CORE PAGE ==================== -->
+    <div class="page active" id="page-core">
+
+      <div class="hero">
+        <div class="hero-tag">⚡ Python Core</div>
+        <h1>Master <span>Python</span><br>from scratch</h1>
+        <p>// Structured learning path covering syntax, data types, control flow, functions, and advanced concepts — step by step.</p>
+        <div class="stats-row">
+          <div class="stat"><div class="stat-num">9</div><div class="stat-label">Topics</div></div>
+          <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Code Examples</div></div>
+          <div class="stat"><div class="stat-num">3</div><div class="stat-label">Levels</div></div>
+        </div>
+      </div>
+
+      <!-- LEVEL TABS -->
+      <div class="level-tabs">
+        <button class="level-tab active" data-level="beginner" onclick="switchLevel(this, 'core')">🌱 Beginner</button>
+        <button class="level-tab" data-level="intermediate" onclick="switchLevel(this, 'core')">⚡ Intermediate</button>
+        <button class="level-tab" data-level="advanced" onclick="switchLevel(this, 'core')">🔥 Advanced</button>
+      </div>
+
+      <!-- BEGINNER -->
+      <div class="level-content active" id="core-beginner">
+
+        <div class="section-header" id="variables">
+          <div class="section-num">01</div>
+          <h2>Variables & Data Types</h2>
+          <span class="badge level-beginner">BEGINNER</span>
+        </div>
+
+        <div class="card">
+          <h3><span class="icon">📦</span> What are Variables?</h3>
+          <p>Variables are named containers that store data values. Python is <strong>dynamically typed</strong> — you don't declare types explicitly.</p>
+          <ul>
+            <li>No need for type declarations like <code>int x = 5</code></li>
+            <li>Variable names are case-sensitive (<code>age</code> ≠ <code>Age</code>)</li>
+            <li>Cannot start with a number or use reserved keywords</li>
+          </ul>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">variables.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="cm"># ── Integer ──────────────────────────────</span>
+age = <span class="num">25</span>
+count = -<span class="num">10</span>
+
+<span class="cm"># ── Float ────────────────────────────────</span>
+pi = <span class="num">3.14159</span>
+temp = <span class="num">36.6</span>
+
+<span class="cm"># ── String ───────────────────────────────</span>
+name = <span class="str">"Python"</span>
+msg = <span class="str">'Hello, World!'</span>
+
+<span class="cm"># ── Boolean ──────────────────────────────</span>
+is_active = <span class="kw">True</span>
+is_admin = <span class="kw">False</span>
+
+<span class="cm"># ── None ─────────────────────────────────</span>
+result = <span class="kw">None</span>
+
+<span class="cm"># ── Check type ───────────────────────────</span>
+<span class="builtin">print</span>(<span class="builtin">type</span>(age))     <span class="cm"># &lt;class 'int'&gt;</span>
+<span class="builtin">print</span>(<span class="builtin">type</span>(name))    <span class="cm"># &lt;class 'str'&gt;</span>
+
+<span class="cm"># ── Multiple assignment ───────────────────</span>
+x, y, z = <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>
+a = b = c = <span class="num">0</span></pre>
+        </div>
+        <div class="output-block">
+          <div class="output-label">Output</div>
+          &lt;class 'int'&gt;<br>
+          &lt;class 'str'&gt;
+        </div>
+
+        <div class="section-header" id="operators">
+          <div class="section-num">02</div>
+          <h2>Operators</h2>
+          <span class="badge level-beginner">BEGINNER</span>
+        </div>
+
+        <div class="concept-grid">
+          <div class="concept-item">
+            <h5>Arithmetic</h5>
+            <p>+, -, *, /, // (floor div), % (modulus), ** (power)</p>
+          </div>
+          <div class="concept-item">
+            <h5>Comparison</h5>
+            <p>==, !=, &lt;, &gt;, &lt;=, &gt;= — return True/False</p>
+          </div>
+          <div class="concept-item">
+            <h5>Logical</h5>
+            <p>and, or, not — combine boolean expressions</p>
+          </div>
+          <div class="concept-item">
+            <h5>Assignment</h5>
+            <p>+=, -=, *=, /=, //=, %= — shorthand update</p>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">operators.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre>a, b = <span class="num">10</span>, <span class="num">3</span>
+
+<span class="builtin">print</span>(a + b)    <span class="cm"># 13</span>
+<span class="builtin">print</span>(a - b)    <span class="cm"># 7</span>
+<span class="builtin">print</span>(a * b)    <span class="cm"># 30</span>
+<span class="builtin">print</span>(a / b)    <span class="cm"># 3.333...</span>
+<span class="builtin">print</span>(a // b)   <span class="cm"># 3  (floor division)</span>
+<span class="builtin">print</span>(a % b)    <span class="cm"># 1  (remainder)</span>
+<span class="builtin">print</span>(a ** b)   <span class="cm"># 1000 (10 to power 3)</span>
+
+<span class="cm"># Walrus operator (Python 3.8+)</span>
+<span class="kw">if</span> (n := <span class="builtin">len</span>(<span class="str">"hello"</span>)) > <span class="num">3</span>:
+    <span class="builtin">print</span>(<span class="str">f"Length is </span>{n}<span class="str">"</span>)  <span class="cm"># Length is 5</span></pre>
+        </div>
+
+        <div class="section-header" id="control">
+          <div class="section-num">03</div>
+          <h2>Control Flow</h2>
+          <span class="badge level-beginner">BEGINNER</span>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">control_flow.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="cm"># ── If / elif / else ─────────────────────</span>
+score = <span class="num">85</span>
+<span class="kw">if</span> score >= <span class="num">90</span>:
+    <span class="builtin">print</span>(<span class="str">"Grade: A"</span>)
+<span class="kw">elif</span> score >= <span class="num">75</span>:
+    <span class="builtin">print</span>(<span class="str">"Grade: B"</span>)
+<span class="kw">else</span>:
+    <span class="builtin">print</span>(<span class="str">"Grade: C"</span>)
+
+<span class="cm"># ── For loop ─────────────────────────────</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="builtin">range</span>(<span class="num">5</span>):
+    <span class="builtin">print</span>(i, end=<span class="str">" "</span>)   <span class="cm"># 0 1 2 3 4</span>
+
+<span class="cm"># ── While loop ───────────────────────────</span>
+count = <span class="num">0</span>
+<span class="kw">while</span> count < <span class="num">3</span>:
+    <span class="builtin">print</span>(<span class="str">f"Count: </span>{count}<span class="str">"</span>)
+    count += <span class="num">1</span>
+
+<span class="cm"># ── break / continue / else ──────────────</span>
+<span class="kw">for</span> n <span class="kw">in</span> <span class="builtin">range</span>(<span class="num">10</span>):
+    <span class="kw">if</span> n == <span class="num">5</span>: <span class="kw">break</span>     <span class="cm"># stop at 5</span>
+    <span class="kw">if</span> n % <span class="num">2</span> == <span class="num">0</span>: <span class="kw">continue</span>  <span class="cm"># skip even</span>
+    <span class="builtin">print</span>(n)              <span class="cm"># 1, 3</span>
+
+<span class="cm"># ── match-case (Python 3.10+) ─────────────</span>
+cmd = <span class="str">"quit"</span>
+<span class="kw">match</span> cmd:
+    <span class="kw">case</span> <span class="str">"start"</span>: <span class="builtin">print</span>(<span class="str">"Starting..."</span>)
+    <span class="kw">case</span> <span class="str">"quit"</span>:  <span class="builtin">print</span>(<span class="str">"Goodbye!"</span>)
+    <span class="kw">case</span> _:       <span class="builtin">print</span>(<span class="str">"Unknown"</span>)</pre>
+        </div>
+
+        <div class="section-header" id="functions">
+          <div class="section-num">04</div>
+          <h2>Functions</h2>
+          <span class="badge level-beginner">BEGINNER</span>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">functions.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="cm"># ── Basic function ────────────────────────</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name):
+    <span class="kw">return</span> <span class="str">f"Hello, </span>{name}<span class="str">!"</span>
+
+<span class="cm"># ── Default arguments ─────────────────────</span>
+<span class="kw">def</span> <span class="fn">power</span>(base, exp=<span class="num">2</span>):
+    <span class="kw">return</span> base ** exp
+
+<span class="builtin">print</span>(<span class="fn">power</span>(<span class="num">3</span>))      <span class="cm"># 9</span>
+<span class="builtin">print</span>(<span class="fn">power</span>(<span class="num">2</span>, <span class="num">10</span>)) <span class="cm"># 1024</span>
+
+<span class="cm"># ── *args and **kwargs ────────────────────</span>
+<span class="kw">def</span> <span class="fn">total</span>(*args):
+    <span class="kw">return</span> <span class="builtin">sum</span>(args)
+
+<span class="kw">def</span> <span class="fn">profile</span>(**kwargs):
+    <span class="kw">for</span> k, v <span class="kw">in</span> kwargs.items():
+        <span class="builtin">print</span>(<span class="str">f"</span>{k}<span class="str">: </span>{v}<span class="str">"</span>)
+
+<span class="fn">profile</span>(name=<span class="str">"Alice"</span>, age=<span class="num">30</span>)
+
+<span class="cm"># ── Lambda ────────────────────────────────</span>
+square = <span class="kw">lambda</span> x: x * x
+<span class="builtin">print</span>(square(<span class="num">5</span>))     <span class="cm"># 25</span>
+
+<span class="cm"># ── Type hints (Python 3.5+) ──────────────</span>
+<span class="kw">def</span> <span class="fn">add</span>(a: <span class="cls">int</span>, b: <span class="cls">int</span>) -> <span class="cls">int</span>:
+    <span class="kw">return</span> a + b</pre>
+        </div>
+
+        <div class="section-header" id="datastructs">
+          <div class="section-num">05</div>
+          <h2>Data Structures</h2>
+          <span class="badge level-beginner">BEGINNER</span>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">data_structures.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="cm"># ── List (mutable, ordered) ───────────────</span>
+fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>]
+fruits.append(<span class="str">"mango"</span>)
+fruits.remove(<span class="str">"banana"</span>)
+<span class="builtin">print</span>(fruits[<span class="num">0</span>])    <span class="cm"># apple</span>
+<span class="builtin">print</span>(fruits[-<span class="num">1</span>])   <span class="cm"># mango</span>
+<span class="builtin">print</span>(fruits[<span class="num">1</span>:<span class="num">3</span>])  <span class="cm"># slicing</span>
+
+<span class="cm"># ── Tuple (immutable, ordered) ────────────</span>
+coords = (<span class="num">10.5</span>, <span class="num">20.3</span>)
+x, y = coords       <span class="cm"># unpacking</span>
+
+<span class="cm"># ── Dictionary (key-value) ────────────────</span>
+person = {<span class="str">"name"</span>: <span class="str">"Bob"</span>, <span class="str">"age"</span>: <span class="num">30</span>}
+person[<span class="str">"email"</span>] = <span class="str">"bob@mail.com"</span>
+<span class="builtin">print</span>(person.get(<span class="str">"name"</span>, <span class="str">"N/A"</span>))
+
+<span class="kw">for</span> key, val <span class="kw">in</span> person.items():
+    <span class="builtin">print</span>(<span class="str">f"</span>{key}<span class="str"> → </span>{val}<span class="str">"</span>)
+
+<span class="cm"># ── Set (unique, unordered) ───────────────</span>
+nums = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">2</span>, <span class="num">1</span>}   <span class="cm"># {1, 2, 3}</span>
+a_set = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>}
+b_set = {<span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>}
+<span class="builtin">print</span>(a_set & b_set)   <span class="cm"># {2, 3} intersection</span>
+<span class="builtin">print</span>(a_set | b_set)   <span class="cm"># {1,2,3,4} union</span></pre>
+        </div>
+
+      </div><!-- end beginner -->
+
+      <!-- INTERMEDIATE -->
+      <div class="level-content" id="core-intermediate">
+
+        <div class="section-header" id="comprehensions">
+          <div class="section-num">06</div>
+          <h2>Comprehensions</h2>
+          <span class="badge level-intermediate">INTERMEDIATE</span>
+        </div>
+
+        <div class="tip">
+          <div class="tip-icon">💡</div>
+          <div class="tip-content">
+            <strong>Pro Tip</strong>
+            <p>Comprehensions are more Pythonic and typically 30-40% faster than equivalent for loops due to CPython optimizations.</p>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">comprehensions.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="cm"># ── List Comprehension ────────────────────</span>
+squares = [x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="builtin">range</span>(<span class="num">10</span>)]
+evens   = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="builtin">range</span>(<span class="num">20</span>) <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="cm"># ── Dict Comprehension ────────────────────</span>
+word_len = {w: <span class="builtin">len</span>(w) <span class="kw">for</span> w <span class="kw">in</span> [<span class="str">"cat"</span>, <span class="str">"elephant"</span>, <span class="str">"dog"</span>]}
+<span class="cm"># {'cat': 3, 'elephant': 8, 'dog': 3}</span>
+
+<span class="cm"># ── Set Comprehension ─────────────────────</span>
+unique_sq = {x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> [-<span class="num">2</span>, -<span class="num">1</span>, <span class="num">0</span>, <span class="num">1</span>, <span class="num">2</span>]}
+<span class="cm"># {0, 1, 4}</span>
+
+<span class="cm"># ── Generator Expression ──────────────────</span>
+total = <span class="builtin">sum</span>(x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="builtin">range</span>(<span class="num">100</span>))
+
+<span class="cm"># ── Nested comprehension ──────────────────</span>
+matrix = [[i*j <span class="kw">for</span> j <span class="kw">in</span> <span class="builtin">range</span>(<span class="num">1</span>, <span class="num">4</span>)] <span class="kw">for</span> i <span class="kw">in</span> <span class="builtin">range</span>(<span class="num">1</span>, <span class="num">4</span>)]
+<span class="cm"># [[1,2,3],[2,4,6],[3,6,9]]</span>
+
+<span class="cm"># ── Flatten 2D list ───────────────────────</span>
+flat = [x <span class="kw">for</span> row <span class="kw">in</span> matrix <span class="kw">for</span> x <span class="kw">in</span> row]</pre>
+        </div>
+
+        <div class="section-header">
+          <div class="section-num">07</div>
+          <h2>Error Handling</h2>
+          <span class="badge level-intermediate">INTERMEDIATE</span>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">exceptions.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="cm"># ── try / except / else / finally ────────</span>
+<span class="kw">try</span>:
+    result = <span class="num">10</span> / <span class="num">0</span>
+<span class="kw">except</span> <span class="cls">ZeroDivisionError</span> <span class="kw">as</span> e:
+    <span class="builtin">print</span>(<span class="str">f"Error: </span>{e}<span class="str">"</span>)
+<span class="kw">except</span> (<span class="cls">TypeError</span>, <span class="cls">ValueError</span>):
+    <span class="builtin">print</span>(<span class="str">"Type or value error"</span>)
+<span class="kw">else</span>:
+    <span class="builtin">print</span>(<span class="str">"No error!"</span>)
+<span class="kw">finally</span>:
+    <span class="builtin">print</span>(<span class="str">"Always runs"</span>)
+
+<span class="cm"># ── Custom Exception ──────────────────────</span>
+<span class="kw">class</span> <span class="cls">InsufficientFundsError</span>(<span class="cls">Exception</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, amount, balance):
+        <span class="builtin">super</span>().__init__(
+            <span class="str">f"Need </span>{amount}<span class="str"> but only have </span>{balance}<span class="str">"</span>
+        )
+        <span class="kw">self</span>.amount = amount
+        <span class="kw">self</span>.balance = balance
+
+<span class="kw">def</span> <span class="fn">withdraw</span>(amount, balance):
+    <span class="kw">if</span> amount > balance:
+        <span class="kw">raise</span> <span class="cls">InsufficientFundsError</span>(amount, balance)
+    <span class="kw">return</span> balance - amount</pre>
+        </div>
+
+      </div><!-- end intermediate -->
+
+      <!-- ADVANCED -->
+      <div class="level-content" id="core-advanced">
+
+        <div class="section-header" id="decorators">
+          <div class="section-num">08</div>
+          <h2>Decorators</h2>
+          <span class="badge level-advanced">ADVANCED</span>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">decorators.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="kw">from</span> functools <span class="kw">import</span> wraps
+<span class="kw">import</span> time
+
+<span class="cm"># ── Basic Decorator ───────────────────────</span>
+<span class="kw">def</span> <span class="fn">timer</span>(func):
+    <span class="deco">@wraps(func)</span>
+    <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        <span class="builtin">print</span>(<span class="str">f"</span>{func.__name__}<span class="str"> took </span>{end-start:.4f}<span class="str">s"</span>)
+        <span class="kw">return</span> result
+    <span class="kw">return</span> wrapper
+
+<span class="deco">@timer</span>
+<span class="kw">def</span> <span class="fn">slow_func</span>():
+    time.sleep(<span class="num">0.5</span>)
+    <span class="kw">return</span> <span class="str">"done"</span>
+
+<span class="cm"># ── Decorator with arguments ──────────────</span>
+<span class="kw">def</span> <span class="fn">repeat</span>(n):
+    <span class="kw">def</span> <span class="fn">decorator</span>(func):
+        <span class="deco">@wraps(func)</span>
+        <span class="kw">def</span> <span class="fn">wrapper</span>(*args, **kwargs):
+            <span class="kw">for</span> _ <span class="kw">in</span> <span class="builtin">range</span>(n):
+                func(*args, **kwargs)
+        <span class="kw">return</span> wrapper
+    <span class="kw">return</span> decorator
+
+<span class="deco">@repeat(3)</span>
+<span class="kw">def</span> <span class="fn">hello</span>():
+    <span class="builtin">print</span>(<span class="str">"Hello!"</span>)
+
+hello()  <span class="cm"># prints Hello! three times</span>
+
+<span class="cm"># ── Class Decorator ───────────────────────</span>
+<span class="kw">class</span> <span class="cls">Memoize</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, func):
+        <span class="kw">self</span>.func = func
+        <span class="kw">self</span>.cache = {}
+    <span class="kw">def</span> <span class="fn">__call__</span>(<span class="kw">self</span>, *args):
+        <span class="kw">if</span> args <span class="kw">not in</span> <span class="kw">self</span>.cache:
+            <span class="kw">self</span>.cache[args] = <span class="kw">self</span>.func(*args)
+        <span class="kw">return</span> <span class="kw">self</span>.cache[args]
+
+<span class="deco">@Memoize</span>
+<span class="kw">def</span> <span class="fn">fib</span>(n):
+    <span class="kw">return</span> n <span class="kw">if</span> n <= <span class="num">1</span> <span class="kw">else</span> <span class="fn">fib</span>(n-<span class="num">1</span>) + <span class="fn">fib</span>(n-<span class="num">2</span>)</pre>
+        </div>
+
+        <div class="section-header" id="generators">
+          <div class="section-num">09</div>
+          <h2>Generators & Iterators</h2>
+          <span class="badge level-advanced">ADVANCED</span>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">generators.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="cm"># ── Generator function ───────────────────</span>
+<span class="kw">def</span> <span class="fn">infinite_count</span>(start=<span class="num">0</span>):
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="kw">yield</span> start
+        start += <span class="num">1</span>
+
+counter = <span class="fn">infinite_count</span>()
+<span class="builtin">print</span>(<span class="builtin">next</span>(counter))   <span class="cm"># 0</span>
+<span class="builtin">print</span>(<span class="builtin">next</span>(counter))   <span class="cm"># 1</span>
+
+<span class="cm"># ── Fibonacci generator ───────────────────</span>
+<span class="kw">def</span> <span class="fn">fibonacci</span>():
+    a, b = <span class="num">0</span>, <span class="num">1</span>
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="kw">yield</span> a
+        a, b = b, a + b
+
+<span class="kw">from</span> itertools <span class="kw">import</span> islice
+fib = <span class="fn">fibonacci</span>()
+<span class="builtin">print</span>(<span class="builtin">list</span>(islice(fib, <span class="num">10</span>)))
+<span class="cm"># [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</span>
+
+<span class="cm"># ── Custom Iterator ───────────────────────</span>
+<span class="kw">class</span> <span class="cls">CountDown</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, start):
+        <span class="kw">self</span>.current = start
+    <span class="kw">def</span> <span class="fn">__iter__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="kw">self</span>
+    <span class="kw">def</span> <span class="fn">__next__</span>(<span class="kw">self</span>):
+        <span class="kw">if</span> <span class="kw">self</span>.current <= <span class="num">0</span>:
+            <span class="kw">raise</span> <span class="cls">StopIteration</span>
+        <span class="kw">self</span>.current -= <span class="num">1</span>
+        <span class="kw">return</span> <span class="kw">self</span>.current + <span class="num">1</span>
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="cls">CountDown</span>(<span class="num">5</span>):
+    <span class="builtin">print</span>(n, end=<span class="str">" "</span>)  <span class="cm"># 5 4 3 2 1</span></pre>
+        </div>
+
+      </div><!-- end advanced -->
+
+    </div><!-- end core page -->
+
+    <!-- ==================== OOP PAGE ==================== -->
+    <div class="page" id="page-oop">
+      <div class="hero">
+        <div class="hero-tag">🏗️ Object-Oriented Python</div>
+        <h1>OOP <span>Principles</span><br>Mastered</h1>
+        <p>// Classes, inheritance, polymorphism, encapsulation, and magic methods — the four pillars of OOP in Python.</p>
+        <div class="stats-row">
+          <div class="stat"><div class="stat-num">4</div><div class="stat-label">Pillars</div></div>
+          <div class="stat"><div class="stat-num">15+</div><div class="stat-label">Magic Methods</div></div>
+          <div class="stat"><div class="stat-num">5</div><div class="stat-label">Real Examples</div></div>
+        </div>
+      </div>
+
+      <div class="level-tabs">
+        <button class="level-tab active" data-level="beginner" onclick="switchLevel(this, 'oop')">🌱 Beginner</button>
+        <button class="level-tab" data-level="intermediate" onclick="switchLevel(this, 'oop')">⚡ Intermediate</button>
+        <button class="level-tab" data-level="advanced" onclick="switchLevel(this, 'oop')">🔥 Advanced</button>
+      </div>
+
+      <div class="level-content active" id="oop-beginner">
+
+        <div class="section-header">
+          <div class="section-num">01</div>
+          <h2>Classes & Objects</h2>
+          <span class="badge level-beginner">BEGINNER</span>
+        </div>
+
+        <div class="card">
+          <h3><span class="icon">📌</span> What is a Class?</h3>
+          <p>A class is a blueprint for creating objects. Objects have <strong>attributes</strong> (data) and <strong>methods</strong> (behavior).</p>
+          <ul>
+            <li><code>__init__</code> — constructor, called on object creation</li>
+            <li><code>self</code> — reference to the current object instance</li>
+            <li>Class attributes shared by all; instance attributes per object</li>
+          </ul>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">classes_basics.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">BankAccount</span>:
+    <span class="cm"># Class attribute (shared by all instances)</span>
+    interest_rate = <span class="num">0.05</span>
+    
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, owner, balance=<span class="num">0</span>):
+        <span class="cm"># Instance attributes</span>
+        <span class="kw">self</span>.owner = owner
+        <span class="kw">self</span>._balance = balance    <span class="cm"># "protected"</span>
+        <span class="kw">self</span>.__pin = <span class="str">"0000"</span>      <span class="cm"># "private" (name-mangled)</span>
+    
+    <span class="kw">def</span> <span class="fn">deposit</span>(<span class="kw">self</span>, amount):
+        <span class="kw">if</span> amount > <span class="num">0</span>:
+            <span class="kw">self</span>._balance += amount
+            <span class="kw">return</span> <span class="kw">self</span>._balance
+    
+    <span class="kw">def</span> <span class="fn">withdraw</span>(<span class="kw">self</span>, amount):
+        <span class="kw">if</span> amount > <span class="kw">self</span>._balance:
+            <span class="kw">raise</span> <span class="cls">ValueError</span>(<span class="str">"Insufficient funds"</span>)
+        <span class="kw">self</span>._balance -= amount
+    
+    <span class="deco">@property</span>
+    <span class="kw">def</span> <span class="fn">balance</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="kw">self</span>._balance
+    
+    <span class="kw">def</span> <span class="fn">__repr__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">f"BankAccount(owner=</span>{<span class="kw">self</span>.owner!r}<span class="str">, balance=</span>{<span class="kw">self</span>._balance}<span class="str">)"</span>
+
+
+<span class="cm"># Creating instances</span>
+acc1 = <span class="cls">BankAccount</span>(<span class="str">"Alice"</span>, <span class="num">1000</span>)
+acc2 = <span class="cls">BankAccount</span>(<span class="str">"Bob"</span>)
+
+acc1.deposit(<span class="num">500</span>)
+<span class="builtin">print</span>(acc1.balance)   <span class="cm"># 1500</span>
+<span class="builtin">print</span>(acc1)          <span class="cm"># BankAccount(owner='Alice', balance=1500)</span></pre>
+        </div>
+      </div>
+
+      <div class="level-content" id="oop-intermediate">
+
+        <div class="section-header">
+          <div class="section-num">02</div>
+          <h2>Inheritance & Polymorphism</h2>
+          <span class="badge level-intermediate">INTERMEDIATE</span>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">inheritance.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Animal</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, age):
+        <span class="kw">self</span>.name = name
+        <span class="kw">self</span>.age = age
+    
+    <span class="kw">def</span> <span class="fn">speak</span>(<span class="kw">self</span>):
+        <span class="kw">raise</span> <span class="cls">NotImplementedError</span>(<span class="str">"Subclass must implement"</span>)
+    
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">f"</span>{<span class="kw">self</span>.name}<span class="str"> (age </span>{<span class="kw">self</span>.age}<span class="str">)"</span>
+
+
+<span class="kw">class</span> <span class="cls">Dog</span>(<span class="cls">Animal</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, age, breed):
+        <span class="builtin">super</span>().__init__(name, age)   <span class="cm"># call parent</span>
+        <span class="kw">self</span>.breed = breed
+    
+    <span class="kw">def</span> <span class="fn">speak</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">"Woof!"</span>
+
+
+<span class="kw">class</span> <span class="cls">Cat</span>(<span class="cls">Animal</span>):
+    <span class="kw">def</span> <span class="fn">speak</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">"Meow!"</span>
+
+
+<span class="cm"># Polymorphism — same interface, different behavior</span>
+animals = [<span class="cls">Dog</span>(<span class="str">"Rex"</span>, <span class="num">3</span>, <span class="str">"Lab"</span>), <span class="cls">Cat</span>(<span class="str">"Whiskers"</span>, <span class="num">5</span>)]
+<span class="kw">for</span> animal <span class="kw">in</span> animals:
+    <span class="builtin">print</span>(<span class="str">f"</span>{animal.describe()}<span class="str"> says </span>{animal.speak()}<span class="str">"</span>)
+
+<span class="cm"># Multiple Inheritance</span>
+<span class="kw">class</span> <span class="cls">Flyable</span>:
+    <span class="kw">def</span> <span class="fn">fly</span>(<span class="kw">self</span>): <span class="kw">return</span> <span class="str">"I can fly!"</span>
+
+<span class="kw">class</span> <span class="cls">Swimmable</span>:
+    <span class="kw">def</span> <span class="fn">swim</span>(<span class="kw">self</span>): <span class="kw">return</span> <span class="str">"I can swim!"</span>
+
+<span class="kw">class</span> <span class="cls">Duck</span>(<span class="cls">Animal</span>, <span class="cls">Flyable</span>, <span class="cls">Swimmable</span>):
+    <span class="kw">def</span> <span class="fn">speak</span>(<span class="kw">self</span>): <span class="kw">return</span> <span class="str">"Quack!"</span>
+
+<span class="cm"># MRO: Method Resolution Order</span>
+<span class="builtin">print</span>(<span class="cls">Duck</span>.__mro__)</pre>
+        </div>
+      </div>
+
+      <div class="level-content" id="oop-advanced">
+
+        <div class="section-header">
+          <div class="section-num">03</div>
+          <h2>Magic Methods (Dunder)</h2>
+          <span class="badge level-advanced">ADVANCED</span>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">magic_methods.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Vector</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, x, y):
+        <span class="kw">self</span>.x = x
+        <span class="kw">self</span>.y = y
+    
+    <span class="cm"># String representations</span>
+    <span class="kw">def</span> <span class="fn">__repr__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">f"Vector(</span>{<span class="kw">self</span>.x}<span class="str">, </span>{<span class="kw">self</span>.y}<span class="str">)"</span>
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">f"(</span>{<span class="kw">self</span>.x}, </span>{<span class="kw">self</span>.y}<span class="str">)"</span>
+    
+    <span class="cm"># Arithmetic operators</span>
+    <span class="kw">def</span> <span class="fn">__add__</span>(<span class="kw">self</span>, other):
+        <span class="kw">return</span> <span class="cls">Vector</span>(<span class="kw">self</span>.x + other.x, <span class="kw">self</span>.y + other.y)
+    <span class="kw">def</span> <span class="fn">__mul__</span>(<span class="kw">self</span>, scalar):
+        <span class="kw">return</span> <span class="cls">Vector</span>(<span class="kw">self</span>.x * scalar, <span class="kw">self</span>.y * scalar)
+    
+    <span class="cm"># Comparison</span>
+    <span class="kw">def</span> <span class="fn">__eq__</span>(<span class="kw">self</span>, other):
+        <span class="kw">return</span> <span class="kw">self</span>.x == other.x <span class="kw">and</span> <span class="kw">self</span>.y == other.y
+    <span class="kw">def</span> <span class="fn">__lt__</span>(<span class="kw">self</span>, other):
+        <span class="kw">return</span> abs(<span class="kw">self</span>) < abs(other)
+    
+    <span class="cm"># Container protocol</span>
+    <span class="kw">def</span> <span class="fn">__len__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="num">2</span>
+    <span class="kw">def</span> <span class="fn">__getitem__</span>(<span class="kw">self</span>, index):
+        <span class="kw">return</span> (<span class="kw">self</span>.x, <span class="kw">self</span>.y)[index]
+    
+    <span class="cm"># Absolute value / magnitude</span>
+    <span class="kw">def</span> <span class="fn">__abs__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> (<span class="kw">self</span>.x**<span class="num">2</span> + <span class="kw">self</span>.y**<span class="num">2</span>) ** <span class="num">0.5</span>
+    
+    <span class="cm"># Context manager support</span>
+    <span class="kw">def</span> <span class="fn">__enter__</span>(<span class="kw">self</span>): <span class="kw">return</span> <span class="kw">self</span>
+    <span class="kw">def</span> <span class="fn">__exit__</span>(<span class="kw">self</span>, *args): <span class="kw">pass</span>
+
+
+v1 = <span class="cls">Vector</span>(<span class="num">3</span>, <span class="num">4</span>)
+v2 = <span class="cls">Vector</span>(<span class="num">1</span>, <span class="num">2</span>)
+<span class="builtin">print</span>(v1 + v2)    <span class="cm"># (4, 6)</span>
+<span class="builtin">print</span>(v1 * <span class="num">2</span>)     <span class="cm"># (6, 8)</span>
+<span class="builtin">print</span>(<span class="builtin">abs</span>(v1))    <span class="cm"># 5.0 (magnitude)</span>
+<span class="builtin">print</span>(v1[<span class="num">0</span>])     <span class="cm"># 3</span></pre>
+        </div>
+
+        <div class="section-header">
+          <div class="section-num">04</div>
+          <h2>Abstract Classes & dataclasses</h2>
+          <span class="badge level-advanced">ADVANCED</span>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <span class="filename">abstract_dataclass.py</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, field
+
+<span class="cm"># ── Abstract Base Class ───────────────────</span>
+<span class="kw">class</span> <span class="cls">Shape</span>(<span class="cls">ABC</span>):
+    <span class="deco">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">area</span>(<span class="kw">self</span>) -> <span class="cls">float</span>: ...
+    
+    <span class="deco">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">perimeter</span>(<span class="kw">self</span>) -> <span class="cls">float</span>: ...
+    
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="str">f"Area={</span><span class="kw">self</span>.area()<span class="str">:.2f}"</span>
+
+
+<span class="cm"># ── dataclass — automatic __init__, __repr__ ──</span>
+<span class="deco">@dataclass</span>
+<span class="kw">class</span> <span class="cls">Circle</span>(<span class="cls">Shape</span>):
+    radius: <span class="cls">float</span>
+    
+    <span class="kw">def</span> <span class="fn">area</span>(<span class="kw">self</span>): <span class="kw">return</span> <span class="num">3.14159</span> * <span class="kw">self</span>.radius ** <span class="num">2</span>
+    <span class="kw">def</span> <span class="fn">perimeter</span>(<span class="kw">self</span>): <span class="kw">return</span> <span class="num">2</span> * <span class="num">3.14159</span> * <span class="kw">self</span>.radius
+
+
+<span class="deco">@dataclass(frozen=<span class="kw">True</span>, order=<span class="kw">True</span>)</span>
+<span class="kw">class</span> <span class="cls">Point</span>:
+    x: <span class="cls">float</span>
+    y: <span class="cls">float</span>
+    tags: <span class="cls">list</span> = field(default_factory=<span class="cls">list</span>)
+
+c = <span class="cls">Circle</span>(<span class="num">5</span>)
+<span class="builtin">print</span>(c)           <span class="cm"># Circle(radius=5)</span>
+<span class="builtin">print</span>(c.describe()) <span class="cm"># Area=78.54</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== FILE HANDLING PAGE ==================== -->
+    <div class="page" id="page-filehandling">
+      <div class="hero">
+        <div class="hero-tag">📁 File Handling</div>
+        <h1>Read, Write<br><span>& Process</span> Files</h1>
+        <p>// Master file I/O operations — text files, CSV, JSON, binary, and modern pathlib usage.</p>
+        <div class="stats-row">
+          <div class="stat"><div class="stat-num">6</div><div class="stat-label">File Types</div></div>
+          <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Operations</div></div>
+          <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Practical</div></div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <h2>Basic Read & Write</h2>
+        <span class="badge level-beginner">BEGINNER</span>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span class="filename">file_basics.py</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="cm"># ── Writing a file ───────────────────────</span>
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"data.txt"</span>, <span class="str">"w"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+    f.write(<span class="str">"Hello, World!\n"</span>)
+    f.writelines([<span class="str">"Line 2\n"</span>, <span class="str">"Line 3\n"</span>])
+
+<span class="cm"># ── Reading entire file ───────────────────</span>
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"data.txt"</span>, <span class="str">"r"</span>) <span class="kw">as</span> f:
+    content = f.read()
+
+<span class="cm"># ── Reading line by line (memory efficient) ─</span>
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"data.txt"</span>, <span class="str">"r"</span>) <span class="kw">as</span> f:
+    <span class="kw">for</span> line <span class="kw">in</span> f:
+        <span class="builtin">print</span>(line.strip())
+
+<span class="cm"># ── File modes summary ───────────────────</span>
+<span class="cm"># "r"  → read (default, error if not exists)</span>
+<span class="cm"># "w"  → write (creates/overwrites)</span>
+<span class="cm"># "a"  → append (add to end)</span>
+<span class="cm"># "x"  → exclusive create (error if exists)</span>
+<span class="cm"># "rb" → read binary</span>
+<span class="cm"># "r+" → read and write</span>
+
+<span class="cm"># ── Appending to file ─────────────────────</span>
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"log.txt"</span>, <span class="str">"a"</span>) <span class="kw">as</span> f:
+    f.write(<span class="str">"[INFO] Server started\n"</span>)</pre>
+      </div>
+
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <h2>CSV Files</h2>
+        <span class="badge level-intermediate">INTERMEDIATE</span>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span class="filename">csv_handling.py</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="kw">import</span> csv
+
+<span class="cm"># ── Write CSV ────────────────────────────</span>
+data = [
+    [<span class="str">"name"</span>, <span class="str">"age"</span>, <span class="str">"city"</span>],
+    [<span class="str">"Alice"</span>, <span class="num">30</span>, <span class="str">"Mumbai"</span>],
+    [<span class="str">"Bob"</span>,   <span class="num">25</span>, <span class="str">"Delhi"</span>],
+]
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"people.csv"</span>, <span class="str">"w"</span>, newline=<span class="str">""</span>) <span class="kw">as</span> f:
+    writer = csv.<span class="fn">writer</span>(f)
+    writer.writerows(data)
+
+<span class="cm"># ── Read CSV as list ─────────────────────</span>
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"people.csv"</span>) <span class="kw">as</span> f:
+    reader = csv.<span class="fn">reader</span>(f)
+    rows = <span class="builtin">list</span>(reader)
+
+<span class="cm"># ── DictReader/Writer ─────────────────────</span>
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"people.csv"</span>) <span class="kw">as</span> f:
+    reader = csv.<span class="fn">DictReader</span>(f)
+    <span class="kw">for</span> row <span class="kw">in</span> reader:
+        <span class="builtin">print</span>(row[<span class="str">"name"</span>], row[<span class="str">"age"</span>])
+
+records = [{<span class="str">"name"</span>: <span class="str">"Carol"</span>, <span class="str">"age"</span>: <span class="str">"28"</span>}]
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"out.csv"</span>, <span class="str">"w"</span>, newline=<span class="str">""</span>) <span class="kw">as</span> f:
+    writer = csv.<span class="fn">DictWriter</span>(f, fieldnames=[<span class="str">"name"</span>, <span class="str">"age"</span>])
+    writer.writeheader()
+    writer.writerows(records)</pre>
+      </div>
+
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <h2>JSON Files</h2>
+        <span class="badge level-intermediate">INTERMEDIATE</span>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span class="filename">json_handling.py</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="kw">import</span> json
+
+<span class="cm"># ── Write JSON ────────────────────────────</span>
+config = {
+    <span class="str">"host"</span>: <span class="str">"localhost"</span>,
+    <span class="str">"port"</span>: <span class="num">8080</span>,
+    <span class="str">"debug"</span>: <span class="kw">True</span>,
+    <span class="str">"allowed"</span>: [<span class="str">"admin"</span>, <span class="str">"user"</span>]
+}
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"config.json"</span>, <span class="str">"w"</span>) <span class="kw">as</span> f:
+    json.<span class="fn">dump</span>(config, f, indent=<span class="num">4</span>)
+
+<span class="cm"># ── Read JSON ─────────────────────────────</span>
+<span class="kw">with</span> <span class="builtin">open</span>(<span class="str">"config.json"</span>) <span class="kw">as</span> f:
+    cfg = json.<span class="fn">load</span>(f)
+
+<span class="builtin">print</span>(cfg[<span class="str">"port"</span>])    <span class="cm"># 8080</span>
+
+<span class="cm"># ── String ↔ dict ─────────────────────────</span>
+json_str = json.<span class="fn">dumps</span>(config, indent=<span class="num">2</span>)  <span class="cm"># dict → str</span>
+data = json.<span class="fn">loads</span>(json_str)             <span class="cm"># str → dict</span>
+
+<span class="cm"># ── Custom Encoder ────────────────────────</span>
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">class</span> <span class="cls">DateEncoder</span>(json.<span class="cls">JSONEncoder</span>):
+    <span class="kw">def</span> <span class="fn">default</span>(<span class="kw">self</span>, obj):
+        <span class="kw">if</span> <span class="builtin">isinstance</span>(obj, datetime):
+            <span class="kw">return</span> obj.isoformat()
+        <span class="kw">return</span> <span class="builtin">super</span>().default(obj)
+
+log = {<span class="str">"ts"</span>: datetime.now(), <span class="str">"msg"</span>: <span class="str">"OK"</span>}
+<span class="builtin">print</span>(json.<span class="fn">dumps</span>(log, cls=<span class="cls">DateEncoder</span>))</pre>
+      </div>
+
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <h2>pathlib & OS Module</h2>
+        <span class="badge level-advanced">ADVANCED</span>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span class="filename">pathlib_os.py</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">import</span> shutil, os
+
+<span class="cm"># ── Modern pathlib ────────────────────────</span>
+p = Path(<span class="str">"data/reports"</span>)
+p.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
+
+<span class="cm"># Path operations</span>
+home = Path.home()
+config = home / <span class="str">".config"</span> / <span class="str">"app.json"</span>
+<span class="builtin">print</span>(config.stem)     <span class="cm"># app</span>
+<span class="builtin">print</span>(config.suffix)  <span class="cm"># .json</span>
+<span class="builtin">print</span>(config.parent)  <span class="cm"># /home/user/.config</span>
+
+<span class="cm"># File info</span>
+f = Path(<span class="str">"example.txt"</span>)
+<span class="kw">if</span> f.exists():
+    <span class="builtin">print</span>(f.stat().st_size)  <span class="cm"># size in bytes</span>
+
+<span class="cm"># Glob patterns</span>
+<span class="kw">for</span> py_file <span class="kw">in</span> Path(<span class="str">"."</span>).glob(<span class="str">"**/*.py"</span>):
+    <span class="builtin">print</span>(py_file)
+
+<span class="cm"># ── Read/Write with pathlib ───────────────</span>
+p = Path(<span class="str">"notes.txt"</span>)
+p.write_text(<span class="str">"Hello from pathlib!"</span>)
+text = p.read_text()
+
+<span class="cm"># ── File operations ───────────────────────</span>
+shutil.copy(<span class="str">"source.txt"</span>, <span class="str">"backup.txt"</span>)
+shutil.move(<span class="str">"old_name.txt"</span>, <span class="str">"new_name.txt"</span>)
+os.remove(<span class="str">"temp.txt"</span>)
+
+<span class="cm"># ── Context Manager for temp file ─────────</span>
+<span class="kw">import</span> tempfile
+<span class="kw">with</span> tempfile.<span class="fn">NamedTemporaryFile</span>(mode=<span class="str">"w"</span>, delete=<span class="kw">False</span>) <span class="kw">as</span> tmp:
+    tmp.write(<span class="str">"temporary data"</span>)
+    <span class="builtin">print</span>(tmp.name)</pre>
+      </div>
+    </div>
+
+    <!-- ==================== INTERVIEW PAGE ==================== -->
+    <div class="page" id="page-interview">
+      <div class="hero">
+        <div class="hero-tag">🎯 Interview Prep</div>
+        <h1>Crack the <span>Python</span><br>Interview</h1>
+        <p>// 25+ carefully selected questions covering core Python, OOP, and advanced topics — with detailed answers.</p>
+        <div class="stats-row">
+          <div class="stat"><div class="stat-num">25+</div><div class="stat-label">Questions</div></div>
+          <div class="stat"><div class="stat-num">3</div><div class="stat-label">Categories</div></div>
+          <div class="stat"><div class="stat-num">100%</div><div class="stat-label">With Answers</div></div>
+        </div>
+      </div>
+
+      <!-- Python Core Questions -->
+      <div class="section-header">
+        <div class="section-num">Q1</div>
+        <h2>Core Python Questions</h2>
+        <span class="badge level-beginner">BEGINNER–MID</span>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">01</div>
+          <div class="qa-q-text">What is the difference between <code>is</code> and <code>==</code> in Python?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">==</span> checks for <strong>value equality</strong> — whether two objects have the same value.<br><br>
+          <span class="highlight">is</span> checks for <strong>identity</strong> — whether two variables point to the exact same object in memory (<code>id(a) == id(b)</code>).<br><br>
+          <strong>Example:</strong><br>
+          <code>a = [1, 2, 3]<br>b = [1, 2, 3]<br>a == b  # True (same value)<br>a is b  # False (different objects)<br><br>c = a<br>c is a  # True (same object)</code><br><br>
+          ⚠️ Due to Python's <em>small integer caching</em> (-5 to 256) and string interning, <code>is</code> may return <code>True</code> for small ints/strings — but never rely on this behavior.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">02</div>
+          <div class="qa-q-text">What are mutable vs immutable types? Give examples.</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">Mutable</span> — can be changed after creation: <code>list</code>, <code>dict</code>, <code>set</code>, <code>bytearray</code><br><br>
+          <span class="highlight">Immutable</span> — cannot be changed after creation: <code>int</code>, <code>float</code>, <code>str</code>, <code>tuple</code>, <code>frozenset</code>, <code>bytes</code><br><br>
+          This matters for function arguments — mutable objects passed to functions can be modified in-place (pass by reference behavior), while immutable objects behave like pass by value. Immutable types can be used as dictionary keys.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">03</div>
+          <div class="qa-q-text">Explain Python's GIL (Global Interpreter Lock).</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p>The <span class="highlight">GIL</span> is a mutex in CPython that allows only one thread to execute Python bytecode at a time, even on multi-core systems.<br><br>
+          <strong>Why it exists:</strong> CPython's memory management (reference counting) is not thread-safe. The GIL protects internal data structures from corruption.<br><br>
+          <strong>Impact:</strong> CPU-bound multi-threaded programs don't benefit from multiple cores.<br><br>
+          <strong>Workarounds:</strong><br>
+          • Use <code>multiprocessing</code> (separate processes, each with own GIL)<br>
+          • Use <code>asyncio</code> for I/O-bound concurrency<br>
+          • Use C extensions (numpy, etc.) that release the GIL<br><br>
+          Note: Python 3.13+ is introducing optional GIL removal (PEP 703).</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">04</div>
+          <div class="qa-q-text">What is the difference between <code>*args</code> and <code>**kwargs</code>?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">*args</span> collects extra <strong>positional</strong> arguments as a tuple.<br>
+          <span class="highlight">**kwargs</span> collects extra <strong>keyword</strong> arguments as a dict.<br><br>
+          <code>def func(a, *args, **kwargs):<br>    print(a)      # first positional<br>    print(args)   # tuple of rest<br>    print(kwargs) # dict of keyword args<br><br>func(1, 2, 3, x=4, y=5)<br># 1<br># (2, 3)<br># {'x': 4, 'y': 5}</code><br><br>
+          They can also be used to unpack: <code>func(*my_list, **my_dict)</code></p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">05</div>
+          <div class="qa-q-text">What is a list comprehension and how does it differ from a generator expression?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">List comprehension</span> creates the entire list in memory at once: <code>[x*2 for x in range(100)]</code><br><br>
+          <span class="highlight">Generator expression</span> uses lazy evaluation — computes values on demand: <code>(x*2 for x in range(100))</code><br><br>
+          Key differences:<br>
+          • List comp: uses <code>[]</code>, returns a list, all values in memory<br>
+          • Generator: uses <code>()</code>, returns a generator object, one value at a time<br>
+          • Use generators for large datasets to save memory<br>
+          • Generators can only be iterated once; lists can be reused</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">06</div>
+          <div class="qa-q-text">What is a decorator and how do you implement one?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p>A <span class="highlight">decorator</span> is a function that wraps another function to add behavior without modifying its source code. It follows the decorator design pattern.<br><br>
+          <code>from functools import wraps<br><br>def log_calls(func):<br>    @wraps(func)  # preserve func metadata<br>    def wrapper(*args, **kwargs):<br>        print(f"Calling {func.__name__}")<br>        result = func(*args, **kwargs)<br>        print(f"Done")<br>        return result<br>    return wrapper<br><br>@log_calls<br>def add(a, b):<br>    return a + b</code><br><br>
+          Always use <code>@functools.wraps</code> to preserve the original function's <code>__name__</code>, <code>__doc__</code> etc.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">07</div>
+          <div class="qa-q-text">Explain shallow copy vs deep copy.</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">Shallow copy</span> creates a new object but references the same nested objects.<br>
+          <span class="highlight">Deep copy</span> recursively copies all nested objects.<br><br>
+          <code>import copy<br>original = [[1, 2], [3, 4]]<br><br>shallow = copy.copy(original)<br>deep = copy.deepcopy(original)<br><br>original[0].append(99)<br>print(shallow[0])  # [1, 2, 99] ← affected!<br>print(deep[0])     # [1, 2]    ← not affected</code><br><br>
+          Use deep copy when working with nested mutable objects and you need complete independence.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">08</div>
+          <div class="qa-q-text">What are Python's built-in data types? Which are hashable?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><strong>Built-in types:</strong> <code>int</code>, <code>float</code>, <code>complex</code>, <code>bool</code>, <code>str</code>, <code>bytes</code>, <code>bytearray</code>, <code>list</code>, <code>tuple</code>, <code>dict</code>, <code>set</code>, <code>frozenset</code>, <code>NoneType</code><br><br>
+          <span class="highlight">Hashable types</span> (can be used as dict keys / set members): <code>int</code>, <code>float</code>, <code>str</code>, <code>tuple</code> (if contents are hashable), <code>frozenset</code>, <code>bytes</code><br><br>
+          <strong>Not hashable:</strong> <code>list</code>, <code>dict</code>, <code>set</code>, <code>bytearray</code> — all mutable<br><br>
+          Hashability requires that the object's hash never changes, which is why mutable objects are not hashable.</p>
+        </div>
+      </div>
+
+      <!-- OOP Questions -->
+      <div class="divider"></div>
+      <div class="section-header">
+        <div class="section-num">Q2</div>
+        <h2>OOP Interview Questions</h2>
+        <span class="badge level-intermediate">INTERMEDIATE</span>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">09</div>
+          <div class="qa-q-text">What are the 4 pillars of OOP? Explain with Python examples.</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">1. Encapsulation</span> — Bundling data and methods, restricting direct access via <code>_protected</code> and <code>__private</code> conventions. Use <code>@property</code> for controlled access.<br><br>
+          <span class="highlight">2. Inheritance</span> — A class can inherit attributes/methods from a parent class. Python supports multiple inheritance. <code>super()</code> accesses parent methods.<br><br>
+          <span class="highlight">3. Polymorphism</span> — Same interface, different implementations. Duck typing in Python: if an object has the right methods, it works. Method overriding achieves runtime polymorphism.<br><br>
+          <span class="highlight">4. Abstraction</span> — Hiding implementation details. Use <code>ABC</code> and <code>@abstractmethod</code> to define interfaces that subclasses must implement.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">10</div>
+          <div class="qa-q-text">What is <code>__init__</code> vs <code>__new__</code>?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">__new__</span> is the actual constructor — it creates and returns a new instance of the class. It's called before <code>__init__</code>.<br><br>
+          <span class="highlight">__init__</span> is the initializer — it receives the already-created instance (<code>self</code>) and sets its attributes.<br><br>
+          <code>class Singleton:<br>    _instance = None<br>    def __new__(cls):<br>        if cls._instance is None:<br>            cls._instance = super().__new__(cls)<br>        return cls._instance<br>    def __init__(self):<br>        self.value = 42<br><br>a = Singleton()<br>b = Singleton()<br>print(a is b)  # True — same instance</code></p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">11</div>
+          <div class="qa-q-text">Explain <code>classmethod</code> vs <code>staticmethod</code> vs instance method.</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">Instance method</span> — receives <code>self</code> (instance). Most common type. Can access instance and class state.<br><br>
+          <span class="highlight">@classmethod</span> — receives <code>cls</code> (the class). Can access/modify class state. Often used as alternative constructors.<br><br>
+          <span class="highlight">@staticmethod</span> — receives neither <code>self</code> nor <code>cls</code>. Just a regular function in the class namespace. Used for utility functions.<br><br>
+          <code>class Date:<br>    def __init__(self, y, m, d): ...<br><br>    @classmethod<br>    def from_string(cls, s):  # "2024-01-15"<br>        y, m, d = map(int, s.split('-'))<br>        return cls(y, m, d)<br><br>    @staticmethod<br>    def is_valid_year(y):<br>        return 1900 <= y <= 2100</code></p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">12</div>
+          <div class="qa-q-text">What is MRO (Method Resolution Order) and how does Python determine it?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">MRO</span> defines the order Python searches for methods/attributes in class hierarchies. Python uses the <strong>C3 Linearization Algorithm</strong>.<br><br>
+          <code>class A: pass<br>class B(A): pass<br>class C(A): pass<br>class D(B, C): pass<br><br>print(D.__mro__)<br># (D, B, C, A, object)</code><br><br>
+          Rule: Left-to-right depth-first, but a class only appears after all its subclasses. Use <code>ClassName.__mro__</code> or <code>mro()</code> to inspect it. This resolves the "diamond problem" in multiple inheritance.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">13</div>
+          <div class="qa-q-text">What are Python's name mangling and name conventions?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">Public</span> — <code>name</code>: accessible from anywhere.<br><br>
+          <span class="highlight">Protected</span> — <code>_name</code>: convention only, signals "internal use". Still accessible externally.<br><br>
+          <span class="highlight">Private</span> — <code>__name</code>: Python applies <em>name mangling</em>, renaming it to <code>_ClassName__name</code>. This prevents accidental overriding in subclasses, not true privacy.<br><br>
+          <code>class Foo:<br>    def __init__(self):<br>        self.__secret = 42<br><br>f = Foo()<br>print(f._Foo__secret)  # 42 (still accessible!)<br>print(f.__secret)      # AttributeError</code><br><br>
+          Python has no truly private attributes — it relies on convention and programmer discipline.</p>
+        </div>
+      </div>
+
+      <!-- Advanced Questions -->
+      <div class="divider"></div>
+      <div class="section-header">
+        <div class="section-num">Q3</div>
+        <h2>Advanced Python Questions</h2>
+        <span class="badge level-advanced">ADVANCED</span>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">14</div>
+          <div class="qa-q-text">What is a generator and how does <code>yield</code> work?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p>A <span class="highlight">generator</span> is a special function that returns an iterator using <code>yield</code>. When called, it returns a generator object without executing the body.<br><br>
+          Each call to <code>next()</code> resumes execution until the next <code>yield</code>, returns the value, and pauses (suspends state). When the function returns or falls off the end, <code>StopIteration</code> is raised.<br><br>
+          <code>def count_up(n):<br>    i = 0<br>    while i < n:<br>        yield i<br>        i += 1<br><br>g = count_up(3)<br>next(g)  # 0<br>next(g)  # 1<br>next(g)  # 2<br>next(g)  # StopIteration</code><br><br>
+          Generators are memory efficient — they don't store all values, computing each on demand. Also supports <code>yield from</code> for delegation.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">15</div>
+          <div class="qa-q-text">How does Python's memory management work?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p>Python uses <span class="highlight">reference counting</span> as its primary memory management strategy. Every object has a reference count; when it drops to zero, the memory is freed immediately.<br><br>
+          The <span class="highlight">cyclic garbage collector</span> handles circular references that reference counting can't detect (e.g., two objects referencing each other).<br><br>
+          <strong>Memory pools:</strong> CPython uses a private heap with memory pools for small objects (&lt;= 512 bytes) via the <code>pymalloc</code> allocator — much faster than <code>malloc/free</code>.<br><br>
+          <code>import gc<br>gc.collect()  # manually trigger GC<br><br>import sys<br>sys.getrefcount(obj)  # check reference count</code></p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">16</div>
+          <div class="qa-q-text">What is the difference between <code>__str__</code> and <code>__repr__</code>?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">__repr__</span> — "official" representation, aimed at developers. Should ideally be valid Python code to recreate the object. Called by <code>repr()</code>, in REPL, and inside collections.<br><br>
+          <span class="highlight">__str__</span> — "informal" representation, aimed at end users. Called by <code>str()</code> and <code>print()</code>.<br><br>
+          <code>class Point:<br>    def __init__(self, x, y):<br>        self.x, self.y = x, y<br>    def __repr__(self):<br>        return f"Point({self.x}, {self.y})"<br>    def __str__(self):<br>        return f"({self.x}, {self.y})"<br><br>p = Point(1, 2)<br>print(repr(p))  # Point(1, 2)<br>print(str(p))   # (1, 2)</code><br><br>
+          If only <code>__repr__</code> is defined, it is used as fallback for <code>str()</code> too.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">17</div>
+          <div class="qa-q-text">Explain <code>asyncio</code>, <code>async/await</code>, and when to use it.</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">asyncio</span> is Python's library for writing concurrent code using coroutines with a single thread via an event loop.<br><br>
+          <code>async def</code> defines a coroutine. <code>await</code> suspends it until the awaited coroutine/future is done, letting the event loop run other tasks.<br><br>
+          <code>import asyncio<br><br>async def fetch(url):<br>    await asyncio.sleep(1)  # simulates I/O<br>    return f"data from {url}"<br><br>async def main():<br>    results = await asyncio.gather(<br>        fetch("url1"), fetch("url2")<br>    )<br>    print(results)<br><br>asyncio.run(main())</code><br><br>
+          Use asyncio for I/O-bound tasks (HTTP, database, file). For CPU-bound work, use <code>multiprocessing</code> instead.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">18</div>
+          <div class="qa-q-text">What are metaclasses and when would you use them?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p>A <span class="highlight">metaclass</span> is the "class of a class" — it defines how classes themselves are created. In Python, <code>type</code> is the default metaclass.<br><br>
+          <code>class SingletonMeta(type):<br>    _instances = {}<br>    def __call__(cls, *args, **kwargs):<br>        if cls not in cls._instances:<br>            cls._instances[cls] = super().__call__(*args, **kwargs)<br>        return cls._instances[cls]<br><br>class Database(metaclass=SingletonMeta):<br>    def __init__(self):<br>        self.connection = "connected"<br><br>db1 = Database()<br>db2 = Database()<br>print(db1 is db2)  # True</code><br><br>
+          Use metaclasses for: ORMs (like Django models), API validation frameworks, automatic method registration, or singleton patterns. Most code never needs them directly.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">19</div>
+          <div class="qa-q-text">How do closures work and what are common use cases?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p>A <span class="highlight">closure</span> is a function that retains access to variables from its enclosing scope even after that scope has finished executing.<br><br>
+          <code>def make_counter(start=0):<br>    count = start<br>    def increment(step=1):<br>        nonlocal count<br>        count += step<br>        return count<br>    return increment<br><br>counter = make_counter(10)<br>print(counter())    # 11<br>print(counter(5))   # 16</code><br><br>
+          <code>nonlocal</code> is required to <em>rebind</em> enclosing variables (not just read them).<br><br>
+          Use cases: factory functions, memoization, partial application (also see <code>functools.partial</code>), event handlers, decorators.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">20</div>
+          <div class="qa-q-text">What is the difference between <code>threading</code>, <code>multiprocessing</code>, and <code>asyncio</code>?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">threading</span> — Multiple threads in one process, share memory. Limited by GIL for CPU work. Best for I/O-bound tasks.<br><br>
+          <span class="highlight">multiprocessing</span> — Separate processes with own memory. Bypasses GIL. Best for CPU-bound tasks (data processing, computation).<br><br>
+          <span class="highlight">asyncio</span> — Single thread, cooperative multitasking via event loop. No overhead of thread switching. Best for high-concurrency I/O (thousands of network connections).<br><br>
+          Quick guide:<br>
+          • Web scraping (many URLs) → asyncio or threading<br>
+          • Image processing 1000 files → multiprocessing<br>
+          • Real-time chat server → asyncio<br>
+          • Number crunching → multiprocessing</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">21</div>
+          <div class="qa-q-text">What are Python descriptors?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p>A <span class="highlight">descriptor</span> is any object that defines <code>__get__</code>, <code>__set__</code>, or <code>__delete__</code>. They power Python's attribute access system.<br><br>
+          <code>class Positive:<br>    """Descriptor ensuring positive value"""<br>    def __set_name__(self, owner, name):<br>        self.name = name<br>    def __get__(self, obj, objtype=None):<br>        if obj is None: return self<br>        return obj.__dict__.get(self.name, 0)<br>    def __set__(self, obj, value):<br>        if value < 0:<br>            raise ValueError(f"{self.name} must be positive")<br>        obj.__dict__[self.name] = value<br><br>class Circle:<br>    radius = Positive()<br>    def __init__(self, r):<br>        self.radius = r</code><br><br>
+          <code>@property</code>, <code>@classmethod</code>, and <code>@staticmethod</code> are all implemented as descriptors.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">22</div>
+          <div class="qa-q-text">What is the difference between <code>extend</code> and <code>append</code> for lists?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">append(x)</span> adds a single element to the end of the list. If <code>x</code> is a list, it adds the list as one nested element.<br><br>
+          <span class="highlight">extend(iterable)</span> iterates over the argument and adds each element individually.<br><br>
+          <code>a = [1, 2]<br>b = [3, 4]<br><br>a.append(b)<br>print(a)   # [1, 2, [3, 4]]<br><br>a = [1, 2]<br>a.extend(b)<br>print(a)   # [1, 2, 3, 4]<br><br># += uses extend behavior:<br>a += b     # same as extend</code></p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">23</div>
+          <div class="qa-q-text">How does Python handle default mutable argument bug?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p>Default argument values in Python are evaluated <strong>once</strong> at function definition time, not on each call. This causes the infamous mutable default bug:<br><br>
+          <code># BUG:<br>def add_item(item, lst=[]):<br>    lst.append(item)<br>    return lst<br><br>add_item(1)  # [1]<br>add_item(2)  # [1, 2] — UNEXPECTED!<br><br># FIX: Use None as sentinel<br>def add_item(item, lst=None):<br>    if lst is None:<br>        lst = []<br>    lst.append(item)<br>    return lst</code><br><br>
+          This applies to all mutable defaults: <code>[]</code>, <code>{}</code>, <code>set()</code>. Always use <code>None</code> as default and create a new object inside the function.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">24</div>
+          <div class="qa-q-text">Explain Python's <code>with</code> statement and context managers.</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p>The <span class="highlight">with</span> statement guarantees execution of cleanup code (like closing files) even if an exception occurs. An object is a context manager if it implements <code>__enter__</code> and <code>__exit__</code>.<br><br>
+          <code>class Timer:<br>    def __enter__(self):<br>        import time<br>        self.start = time.time()<br>        return self<br>    def __exit__(self, *args):<br>        elapsed = time.time() - self.start<br>        print(f"Elapsed: {elapsed:.3f}s")<br><br>with Timer() as t:<br>    result = sum(range(1_000_000))<br><br># Or use contextlib.contextmanager:<br>from contextlib import contextmanager<br>@contextmanager<br>def managed_resource():<br>    resource = acquire()<br>    try: yield resource<br>    finally: release(resource)</code></p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-num">25</div>
+          <div class="qa-q-text">What is monkey patching and when is it appropriate?</div>
+          <span class="qa-arrow">▼</span>
+        </div>
+        <div class="qa-answer">
+          <p><span class="highlight">Monkey patching</span> is dynamically modifying a class or module at runtime by replacing or adding attributes/methods.<br><br>
+          <code>import some_module<br><br>def better_func(self, x):<br>    return x * 2<br><br>some_module.SomeClass.method = better_func</code><br><br>
+          <strong>Appropriate uses:</strong><br>
+          • Unit testing — mock methods without altering source<br>
+          • Bug fixes in third-party code you can't modify<br>
+          • Adding debug instrumentation temporarily<br><br>
+          <strong>Risks:</strong> makes code hard to understand/debug, can break on library updates, creates hidden dependencies. Modern testing prefers <code>unittest.mock.patch</code> instead of direct monkey patching.</p>
+        </div>
+      </div>
+
+    </div><!-- end interview page -->
+
+  </main>
+</div>
+
+<script>
+  // Page navigation
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    const navMap = { core: 0, oop: 1, filehandling: 2, interview: 3 };
+    document.querySelectorAll('nav button')[navMap[page]].classList.add('active');
+    window.scrollTo(0, 0);
+    updateProgress();
+  }
+
+  // Sidebar active state
+  function setActive(el) {
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Level switching
+  function switchLevel(btn, page) {
+    const parent = btn.closest('.level-tabs');
+    parent.querySelectorAll('.level-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const level = btn.dataset.level;
+    document.querySelectorAll(`#page-${page} .level-content`).forEach(c => c.classList.remove('active'));
+    document.getElementById(`${page}-${level}`).classList.add('active');
+  }
+
+  // QA toggle
+  function toggleQA(el) {
+    const item = el.closest('.qa-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.qa-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+    updateProgress();
+  }
+
+  // Copy code
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'COPIED!';
+      btn.style.color = 'var(--accent)';
+      btn.style.borderColor = 'var(--accent)';
+      setTimeout(() => {
+        btn.textContent = 'COPY';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 1500);
+    });
+  }
+
+  // Scroll to section
+  function scrollTo(id) {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  // Progress
+  let opened = new Set();
+  function updateProgress() {
+    document.querySelectorAll('.qa-item.open').forEach(i => opened.add(i));
+    const total = document.querySelectorAll('.qa-item').length;
+    const pct = Math.min(100, Math.round((opened.size / total) * 100));
+    document.getElementById('progress-text').textContent = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  // Animate progress on load
+  setTimeout(() => {
+    document.getElementById('progress-fill').style.width = '70%';
+  }, 300);
+
+  // Keyboard shortcut hints
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '1') showPage('core');
+    if (e.key === '2') showPage('oop');
+    if (e.key === '3') showPage('filehandling');
+    if (e.key === '4') showPage('interview');
+  });
+</script>
+</body>
+</html>

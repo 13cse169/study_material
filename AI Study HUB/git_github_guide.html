@@ -1,0 +1,2689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub — Complete Mastery Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400&family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --bg2: #ede8df;
+    --surface: #ffffff;
+    --surface2: #f9f5ef;
+    --border: #d4c9b4;
+    --border2: #c2b49a;
+    --ink: #1a1410;
+    --ink2: #3d3328;
+    --ink3: #6b5e4e;
+    --ink-muted: #9a8a78;
+    --orange: #e85d04;
+    --orange2: #f48c06;
+    --red: #c1121f;
+    --green: #386641;
+    --blue: #1a3a5c;
+    --purple: #5c3d8f;
+    --yellow: #e9c46a;
+    --code-bg: #1c1710;
+    --code-text: #e8dcc8;
+    --accent: #e85d04;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* GRAIN TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* RULED LINE BACKGROUND */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 27px,
+      rgba(180,160,130,0.12) 27px,
+      rgba(180,160,130,0.12) 28px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ───────────────────────────── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    background: var(--ink);
+    border-bottom: 3px solid var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 58px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    color: var(--bg);
+    line-height: 1;
+  }
+
+  .logo-mark span { color: var(--orange); }
+
+  .logo-sep {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .logo-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  nav {
+    display: flex;
+    gap: 2px;
+  }
+
+  nav button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: rgba(255,255,255,0.5);
+    padding: 5px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  nav button:hover {
+    color: rgba(255,255,255,0.9);
+    border-color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+  }
+
+  nav button.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: white;
+    font-weight: 700;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .progress-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 1px;
+  }
+
+  .progress-bar {
+    width: 72px;
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--orange);
+    width: 0%;
+    transition: width 0.6s ease;
+    border-radius: 99px;
+  }
+
+  /* ── LAYOUT ───────────────────────────── */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 58px);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SIDEBAR ──────────────────────────── */
+  aside {
+    width: 256px;
+    flex-shrink: 0;
+    background: var(--ink2);
+    border-right: 2px solid var(--ink);
+    overflow-y: auto;
+    position: sticky;
+    top: 58px;
+    height: calc(100vh - 58px);
+  }
+
+  .sb-section {
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 14px 0;
+  }
+
+  .sb-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: rgba(255,255,255,0.25);
+    padding: 0 16px 8px;
+    font-weight: 700;
+  }
+
+  .sb-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.45);
+    transition: all 0.12s;
+    border-left: 2px solid transparent;
+    font-family: 'Barlow', sans-serif;
+  }
+
+  .sb-item:hover {
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.8);
+    border-left-color: rgba(232,93,4,0.4);
+  }
+
+  .sb-item.active {
+    background: rgba(232,93,4,0.1);
+    color: var(--orange);
+    border-left-color: var(--orange);
+    font-weight: 600;
+  }
+
+  .sb-bullet {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    flex-shrink: 0;
+  }
+
+  .sb-item.active .sb-bullet { background: var(--orange); }
+
+  .sb-tag {
+    margin-left: auto;
+    font-size: 0.55rem;
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .tag-beg { background: rgba(56,102,65,0.3); color: #6fcf5a; }
+  .tag-mid { background: rgba(233,196,106,0.15); color: var(--orange2); }
+  .tag-adv { background: rgba(193,18,31,0.2); color: #ff6b6b; }
+  .tag-qa  { background: rgba(92,61,143,0.3); color: #b39ddb; }
+
+  /* ── MAIN ─────────────────────────────── */
+  main {
+    flex: 1;
+    padding: 2.5rem 2.5rem 4rem;
+    max-width: 920px;
+    overflow-y: auto;
+  }
+
+  /* ── PAGES ────────────────────────────── */
+  .page { display: none; }
+  .page.active { display: block; animation: pgIn 0.25s ease; }
+
+  @keyframes pgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── HERO BANNER ──────────────────────── */
+  .hero {
+    background: var(--ink);
+    border-radius: 0;
+    padding: 3rem 3rem 2.5rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--orange);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 300px; height: 100%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(232,93,4,0.04) 8px,
+      rgba(232,93,4,0.04) 16px
+    );
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 20px; height: 1px;
+    background: var(--orange);
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    color: var(--bg);
+    line-height: 0.95;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 span { color: var(--orange); }
+
+  .hero p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(245,240,232,0.5);
+    line-height: 1.8;
+    max-width: 480px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .h-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--orange);
+    line-height: 1;
+    letter-spacing: 2px;
+  }
+
+  .h-stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ── SECTION HEADER ───────────────────── */
+  .sec-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .sec-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--border2);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    flex-shrink: 0;
+    margin-top: -4px;
+  }
+
+  .sec-title-wrap h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .sec-title-wrap p {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .sec-badge {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .badge-beg { background: rgba(56,102,65,0.15); color: var(--green); border: 1px solid rgba(56,102,65,0.3); }
+  .badge-mid { background: rgba(233,196,106,0.15); color: #b8860b; border: 1px solid rgba(233,196,106,0.3); }
+  .badge-adv { background: rgba(193,18,31,0.1); color: var(--red); border: 1px solid rgba(193,18,31,0.2); }
+  .badge-qa  { background: rgba(92,61,143,0.1); color: var(--purple); border: 1px solid rgba(92,61,143,0.2); }
+
+  /* ── LEVEL TABS ───────────────────────── */
+  .level-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+    border: 2px solid var(--border);
+    border-radius: 0;
+    overflow: hidden;
+    width: fit-content;
+    background: var(--surface);
+  }
+
+  .level-tab {
+    padding: 7px 20px;
+    border: none;
+    background: transparent;
+    color: var(--ink3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+
+  .level-tab:last-child { border-right: none; }
+
+  .level-tab:hover { background: var(--bg2); }
+
+  .level-tab.active {
+    color: white;
+  }
+
+  .level-tab[data-level="beginner"].active { background: var(--green); }
+  .level-tab[data-level="intermediate"].active { background: #8b6914; }
+  .level-tab[data-level="advanced"].active { background: var(--red); }
+
+  .level-content { display: none; }
+  .level-content.active { display: block; animation: pgIn 0.2s ease; }
+
+  /* ── CARD ─────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 0;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    box-shadow: 3px 3px 0 var(--border2);
+    transition: box-shadow 0.15s;
+  }
+
+  .card:hover { box-shadow: 5px 5px 0 var(--border2); }
+
+  .card h3 {
+    font-family: 'Barlow', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card p, .card li {
+    font-size: 0.85rem;
+    line-height: 1.85;
+    color: var(--ink3);
+  }
+
+  .card ul { list-style: none; margin-top: 0.5rem; }
+
+  .card ul li {
+    padding: 3px 0 3px 18px;
+    position: relative;
+  }
+
+  .card ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  /* ── CODE BLOCK ───────────────────────── */
+  .code-wrap {
+    background: var(--code-bg);
+    border: 1.5px solid #2a2218;
+    border-radius: 0;
+    margin: 1.25rem 0;
+    overflow: hidden;
+    box-shadow: 4px 4px 0 #2a2218;
+  }
+
+  .code-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 14px;
+    background: #120f0a;
+    border-bottom: 1px solid #2a2218;
+  }
+
+  .code-hdr-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .term-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .term-dots span {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+  }
+
+  .term-dots span:nth-child(1) { background: #ff5f57; }
+  .term-dots span:nth-child(2) { background: #febc2e; }
+  .term-dots span:nth-child(3) { background: #28c840; }
+
+  .code-fname {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(232,220,200,0.35);
+    letter-spacing: 0.5px;
+  }
+
+  .code-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    background: rgba(232,93,4,0.15);
+    color: var(--orange);
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .copy-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.3);
+    font-size: 0.6rem;
+    padding: 3px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: rgba(232,93,4,0.08);
+  }
+
+  pre {
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.75;
+    color: var(--code-text);
+    tab-size: 2;
+  }
+
+  pre::-webkit-scrollbar { height: 4px; }
+  pre::-webkit-scrollbar-track { background: transparent; }
+  pre::-webkit-scrollbar-thumb { background: #3a3020; border-radius: 2px; }
+
+  /* syntax */
+  .g-cmd  { color: #e8c56a; font-weight: 600; }
+  .g-flag { color: #8cb4e8; }
+  .g-str  { color: #b8e0a8; }
+  .g-cmt  { color: #5c5040; font-style: italic; }
+  .g-sha  { color: #d4a8e8; }
+  .g-br   { color: #f4a46a; font-weight: 600; }
+  .g-url  { color: #80d8e8; text-decoration: underline; }
+  .g-out  { color: #e8dcc8; opacity: 0.7; }
+  .g-err  { color: #ff8080; }
+  .g-ok   { color: #80e880; }
+  .g-prompt { color: var(--orange); font-weight: 700; }
+
+  /* ── OUTPUT BLOCK ─────────────────────── */
+  .output {
+    background: #0a0906;
+    border: 1px solid #1a1610;
+    border-top: none;
+    padding: 0.75rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: #6fcf5a;
+    line-height: 1.7;
+  }
+
+  .out-label {
+    font-size: 0.55rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(111,207,90,0.45);
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+
+  /* ── TIP / NOTE / WARNING ─────────────── */
+  .callout {
+    display: flex;
+    gap: 12px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    border-left: 3px solid;
+    font-size: 0.82rem;
+    line-height: 1.75;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .callout.tip {
+    background: rgba(56,102,65,0.06);
+    border-color: var(--green);
+    color: var(--ink3);
+  }
+
+  .callout.warn {
+    background: rgba(232,93,4,0.05);
+    border-color: var(--orange);
+    color: var(--ink3);
+  }
+
+  .callout.info {
+    background: rgba(26,58,92,0.06);
+    border-color: var(--blue);
+    color: var(--ink3);
+  }
+
+  .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .callout strong {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-weight: 800;
+  }
+
+  .callout.tip strong { color: var(--green); }
+  .callout.warn strong { color: var(--orange); }
+  .callout.info strong { color: var(--blue); }
+
+  /* ── CONCEPT GRID ─────────────────────── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .concept-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1rem;
+  }
+
+  .concept-box h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--orange);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .concept-box p {
+    font-size: 0.78rem;
+    color: var(--ink3);
+    line-height: 1.65;
+  }
+
+  /* ── FLOW DIAGRAM ─────────────────────── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    padding: 1rem 0;
+  }
+
+  .flow-step {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    padding: 10px 16px;
+    text-align: center;
+    flex-shrink: 0;
+    box-shadow: 3px 3px 0 var(--border2);
+  }
+
+  .flow-step .f-icon { font-size: 1.2rem; margin-bottom: 4px; }
+
+  .flow-step .f-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.5px;
+  }
+
+  .flow-step .f-desc {
+    font-size: 0.65rem;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+
+  .flow-arrow {
+    font-size: 1.2rem;
+    color: var(--orange);
+    padding: 0 6px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  /* ── COMMAND TABLE ────────────────────── */
+  .cmd-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.82rem;
+  }
+
+  .cmd-table th {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 8px 14px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .cmd-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .cmd-table tr:nth-child(even) td { background: var(--surface2); }
+  .cmd-table tr:hover td { background: rgba(232,93,4,0.04); }
+
+  .cmd-table code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--orange);
+    font-weight: 600;
+    background: rgba(232,93,4,0.07);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  .cmd-table td:last-child {
+    color: var(--ink3);
+    font-size: 0.8rem;
+  }
+
+  /* ── BRANCH VISUAL ────────────────────── */
+  .branch-viz {
+    background: var(--code-bg);
+    border: 1.5px solid #2a2218;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 2;
+    color: var(--code-text);
+    box-shadow: 4px 4px 0 #2a2218;
+  }
+
+  .bv-main { color: #6fcf5a; }
+  .bv-feat  { color: #f4a46a; }
+  .bv-hot   { color: #ff8080; }
+  .bv-sha   { color: #d4a8e8; font-size: 0.72rem; }
+  .bv-msg   { color: #e8dcc8; }
+  .bv-dim   { color: #5c5040; }
+
+  /* ── Q&A ──────────────────────────────── */
+  .qa-block {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    margin-bottom: 0.75rem;
+    box-shadow: 3px 3px 0 var(--border2);
+    transition: box-shadow 0.15s;
+  }
+
+  .qa-block.open { box-shadow: 5px 5px 0 var(--orange); border-color: var(--border2); }
+
+  .qa-q {
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: background 0.12s;
+    user-select: none;
+  }
+
+  .qa-q:hover { background: var(--surface2); }
+
+  .qa-num-badge {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    color: var(--orange);
+    letter-spacing: 1px;
+  }
+
+  .qa-question-text {
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  .qa-arrow {
+    flex-shrink: 0;
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-muted);
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    margin-top: 2px;
+  }
+
+  .qa-block.open .qa-arrow {
+    transform: rotate(180deg);
+    color: var(--orange);
+  }
+
+  .qa-a {
+    display: none;
+    padding: 0 1.25rem 1.25rem 3.75rem;
+    border-top: 1px solid var(--border);
+    background: rgba(232,93,4,0.02);
+  }
+
+  .qa-block.open .qa-a { display: block; animation: pgIn 0.18s ease; }
+
+  .qa-a p {
+    font-size: 0.84rem;
+    line-height: 1.85;
+    color: var(--ink3);
+    padding-top: 1rem;
+  }
+
+  .qa-a code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78em;
+    background: rgba(26,20,16,0.08);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    color: var(--orange);
+    border-radius: 2px;
+  }
+
+  .hl { color: var(--orange); font-weight: 700; }
+
+  /* ── DIVIDER ──────────────────────────── */
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin: 2.5rem 0;
+  }
+
+  /* ── TAGS ─────────────────────────────── */
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0.75rem 0;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 3px 9px;
+    border: 1px solid;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  /* ── SCROLLBAR ────────────────────────── */
+  aside::-webkit-scrollbar { width: 3px; }
+  aside::-webkit-scrollbar-track { background: transparent; }
+  aside::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+
+  /* ── GITHUB CARD ──────────────────────── */
+  .gh-card {
+    background: var(--ink);
+    color: var(--code-text);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0;
+    border: 1.5px solid #2a2218;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    box-shadow: 4px 4px 0 #2a2218;
+  }
+
+  .gh-card .gh-hdr {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #2a2218;
+  }
+
+  .gh-icon { font-size: 1.1rem; }
+
+  .gh-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #80d8e8;
+  }
+
+  .gh-desc { color: rgba(232,220,200,0.5); font-size: 0.72rem; }
+
+  .gh-card .gh-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .gh-stat {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    color: rgba(232,220,200,0.6);
+  }
+
+  /* ── RESPONSIVE ───────────────────────── */
+  @media (max-width: 800px) {
+    aside { display: none; }
+    main  { padding: 1.5rem; }
+    .hero h1 { font-size: 2.8rem; }
+    nav button span { display: none; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .flow { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">GIT<span>&</span>HUB</div>
+    <div class="logo-sep"></div>
+    <div class="logo-sub">Complete<br>Mastery Guide</div>
+  </div>
+  <nav>
+    <button class="active" onclick="showPage('basics')">Basics</button>
+    <button onclick="showPage('branching')">Branching</button>
+    <button onclick="showPage('remote')">Remote</button>
+    <button onclick="showPage('advanced')">Advanced</button>
+    <button onclick="showPage('github')">GitHub</button>
+    <button onclick="showPage('interview')">Interview</button>
+  </nav>
+  <div class="header-right">
+    <div class="progress-wrap">
+      <span class="progress-label" id="prog-txt">0%</span>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ LAYOUT ═══════════════════════════ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sb-section">
+      <div class="sb-title">Git Basics</div>
+      <div class="sb-item active" onclick="showPage('basics'); setActive(this)">
+        <div class="sb-bullet"></div> What is Git? <span class="sb-tag tag-beg">BEG</span>
+      </div>
+      <div class="sb-item" onclick="showPage('basics'); setActive(this)">
+        <div class="sb-bullet"></div> Installation & Setup
+      </div>
+      <div class="sb-item" onclick="showPage('basics'); setActive(this)">
+        <div class="sb-bullet"></div> Core Workflow
+      </div>
+      <div class="sb-item" onclick="showPage('basics'); setActive(this)">
+        <div class="sb-bullet"></div> Staging & Commits
+      </div>
+      <div class="sb-item" onclick="showPage('basics'); setActive(this)">
+        <div class="sb-bullet"></div> Viewing History
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Branching</div>
+      <div class="sb-item" onclick="showPage('branching'); setActive(this)">
+        <div class="sb-bullet"></div> Branches <span class="sb-tag tag-mid">MID</span>
+      </div>
+      <div class="sb-item" onclick="showPage('branching'); setActive(this)">
+        <div class="sb-bullet"></div> Merging
+      </div>
+      <div class="sb-item" onclick="showPage('branching'); setActive(this)">
+        <div class="sb-bullet"></div> Rebasing
+      </div>
+      <div class="sb-item" onclick="showPage('branching'); setActive(this)">
+        <div class="sb-bullet"></div> Conflict Resolution
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Remote & GitHub</div>
+      <div class="sb-item" onclick="showPage('remote'); setActive(this)">
+        <div class="sb-bullet"></div> Remote Repos <span class="sb-tag tag-mid">MID</span>
+      </div>
+      <div class="sb-item" onclick="showPage('remote'); setActive(this)">
+        <div class="sb-bullet"></div> Push & Pull & Fetch
+      </div>
+      <div class="sb-item" onclick="showPage('github'); setActive(this)">
+        <div class="sb-bullet"></div> Pull Requests
+      </div>
+      <div class="sb-item" onclick="showPage('github'); setActive(this)">
+        <div class="sb-bullet"></div> GitHub Actions
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Advanced</div>
+      <div class="sb-item" onclick="showPage('advanced'); setActive(this)">
+        <div class="sb-bullet"></div> Stash & Tags <span class="sb-tag tag-adv">ADV</span>
+      </div>
+      <div class="sb-item" onclick="showPage('advanced'); setActive(this)">
+        <div class="sb-bullet"></div> Reset & Revert
+      </div>
+      <div class="sb-item" onclick="showPage('advanced'); setActive(this)">
+        <div class="sb-bullet"></div> Cherry-pick
+      </div>
+      <div class="sb-item" onclick="showPage('advanced'); setActive(this)">
+        <div class="sb-bullet"></div> Submodules & Hooks
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Interview Q&A</div>
+      <div class="sb-item" onclick="showPage('interview'); setActive(this)">
+        <div class="sb-bullet"></div> Core Concepts <span class="sb-tag tag-qa">Q&A</span>
+      </div>
+      <div class="sb-item" onclick="showPage('interview'); setActive(this)">
+        <div class="sb-bullet"></div> Branching & Merging
+      </div>
+      <div class="sb-item" onclick="showPage('interview'); setActive(this)">
+        <div class="sb-bullet"></div> Advanced Topics
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════ MAIN CONTENT ═══════════════════════ -->
+  <main>
+
+    <!-- ████████████ BASICS PAGE ████████████ -->
+    <div class="page active" id="page-basics">
+
+      <div class="hero">
+        <div class="hero-eyebrow">Version Control System</div>
+        <h1>GIT & <span>GITHUB</span><br>FROM ZERO</h1>
+        <p>// The definitive step-by-step guide — from your first commit to advanced workflows, branching strategies, and GitHub collaboration.</p>
+        <div class="hero-stats">
+          <div>
+            <div class="h-stat-num">120+</div>
+            <div class="h-stat-label">Commands</div>
+          </div>
+          <div>
+            <div class="h-stat-num">30+</div>
+            <div class="h-stat-label">Interview Q&A</div>
+          </div>
+          <div>
+            <div class="h-stat-num">6</div>
+            <div class="h-stat-label">Sections</div>
+          </div>
+          <div>
+            <div class="h-stat-num">3</div>
+            <div class="h-stat-label">Levels</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-tabs">
+        <button class="level-tab active" data-level="beginner" onclick="switchLevel(this,'basics')">🌱 Beginner</button>
+        <button class="level-tab" data-level="intermediate" onclick="switchLevel(this,'basics')">⚡ Intermediate</button>
+        <button class="level-tab" data-level="advanced" onclick="switchLevel(this,'basics')">🔥 Advanced</button>
+      </div>
+
+      <!-- BEGINNER -->
+      <div class="level-content active" id="basics-beginner">
+
+        <div class="sec-header">
+          <div class="sec-num">01</div>
+          <div class="sec-title-wrap">
+            <h2>What is Git?</h2>
+            <p>// Distributed version control fundamentals</p>
+          </div>
+          <span class="sec-badge badge-beg">BEGINNER</span>
+        </div>
+
+        <div class="card">
+          <h3>📁 Version Control System</h3>
+          <p>Git is a <strong>distributed version control system</strong> (DVCS) created by Linus Torvalds in 2005. It tracks changes in source code during software development, enabling multiple developers to collaborate without overwriting each other's work.</p>
+          <ul>
+            <li>Every developer has the full project history locally</li>
+            <li>Works offline — no network needed for most operations</li>
+            <li>Fast branching and merging compared to older VCS tools</li>
+            <li>GitHub, GitLab, Bitbucket are hosting platforms for Git repos</li>
+          </ul>
+        </div>
+
+        <div class="grid-2">
+          <div class="concept-box">
+            <h5>Repository (repo)</h5>
+            <p>A directory tracked by Git. Contains all files plus hidden <code>.git/</code> folder with full history and config.</p>
+          </div>
+          <div class="concept-box">
+            <h5>Working Directory</h5>
+            <p>Your local files. Changes here are "untracked" until you add them to staging.</p>
+          </div>
+          <div class="concept-box">
+            <h5>Staging Area (Index)</h5>
+            <p>A holding zone for changes you plan to commit. Lets you craft precise commits.</p>
+          </div>
+          <div class="concept-box">
+            <h5>Commit</h5>
+            <p>A snapshot of staged changes with a SHA-1 hash, author, timestamp, and message.</p>
+          </div>
+        </div>
+
+        <!-- Git workflow diagram -->
+        <div class="flow">
+          <div class="flow-step"><div class="f-icon">📝</div><div class="f-name">Working Dir</div><div class="f-desc">Edit files</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="f-icon">📋</div><div class="f-name">Staging</div><div class="f-desc">git add</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="f-icon">💾</div><div class="f-name">Local Repo</div><div class="f-desc">git commit</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="f-icon">☁️</div><div class="f-name">Remote</div><div class="f-desc">git push</div></div>
+        </div>
+
+        <div class="sec-header">
+          <div class="sec-num">02</div>
+          <div class="sec-title-wrap">
+            <h2>Installation & Config</h2>
+            <p>// Setting up Git for the first time</p>
+          </div>
+          <span class="sec-badge badge-beg">BEGINNER</span>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-hdr">
+            <div class="code-hdr-left">
+              <div class="term-dots"><span></span><span></span><span></span></div>
+              <span class="code-fname">terminal</span>
+              <span class="code-type">BASH</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="g-cmt"># ── Install ─────────────────────────────────</span>
+<span class="g-cmt"># Ubuntu / Debian</span>
+<span class="g-prompt">$</span> sudo apt install git
+
+<span class="g-cmt"># macOS (Homebrew)</span>
+<span class="g-prompt">$</span> brew install git
+
+<span class="g-cmt"># Windows — download from git-scm.com</span>
+<span class="g-cmt"># or: winget install --id Git.Git</span>
+
+<span class="g-cmt"># ── Global Config ───────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git config</span> <span class="g-flag">--global</span> user.name  <span class="g-str">"Your Name"</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git config</span> <span class="g-flag">--global</span> user.email <span class="g-str">"you@email.com"</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git config</span> <span class="g-flag">--global</span> core.editor <span class="g-str">"code --wait"</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git config</span> <span class="g-flag">--global</span> init.defaultBranch <span class="g-str">main</span>
+
+<span class="g-cmt"># View all settings</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git config</span> <span class="g-flag">--list</span>
+
+<span class="g-cmt"># Config levels: --system > --global > --local</span>
+<span class="g-cmt"># --local applies only to current repo</span></pre>
+        </div>
+
+        <div class="sec-header">
+          <div class="sec-num">03</div>
+          <div class="sec-title-wrap">
+            <h2>Core Workflow</h2>
+            <p>// Init → Add → Commit — the daily cycle</p>
+          </div>
+          <span class="sec-badge badge-beg">BEGINNER</span>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-hdr">
+            <div class="code-hdr-left">
+              <div class="term-dots"><span></span><span></span><span></span></div>
+              <span class="code-fname">core_workflow.sh</span>
+              <span class="code-type">GIT</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="g-cmt"># ── Initialize a repository ─────────────────</span>
+<span class="g-prompt">$</span> mkdir my-project && cd my-project
+<span class="g-prompt">$</span> <span class="g-cmd">git init</span>
+<span class="g-out">Initialized empty Git repository in /my-project/.git/</span>
+
+<span class="g-cmt"># ── Check status ────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git status</span>
+
+<span class="g-cmt"># ── Stage files ─────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git add</span> index.html          <span class="g-cmt"># specific file</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git add</span> src/                 <span class="g-cmt"># entire directory</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git add</span> <span class="g-flag">-A</span>                  <span class="g-cmt"># all changes (new/mod/del)</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git add</span> <span class="g-flag">-p</span>                  <span class="g-cmt"># interactive patch mode</span>
+
+<span class="g-cmt"># ── Commit ──────────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git commit</span> <span class="g-flag">-m</span> <span class="g-str">"feat: add homepage layout"</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git commit</span> <span class="g-flag">-am</span> <span class="g-str">"fix: update nav links"</span>  <span class="g-cmt"># add+commit tracked files</span>
+
+<span class="g-cmt"># ── Amend last commit ───────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git commit</span> <span class="g-flag">--amend</span> <span class="g-flag">-m</span> <span class="g-str">"feat: improved homepage"</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git commit</span> <span class="g-flag">--amend --no-edit</span> <span class="g-cmt"># keep same message</span>
+
+<span class="g-cmt"># ── Unstage / discard ───────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git restore</span> <span class="g-flag">--staged</span> file.js  <span class="g-cmt"># unstage (keep changes)</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git restore</span> file.js           <span class="g-cmt"># discard working dir changes</span></pre>
+        </div>
+
+        <div class="callout tip">
+          <span class="callout-icon">✅</span>
+          <div>
+            <strong>Conventional Commits</strong>
+            Use a prefix: <code>feat:</code> new feature, <code>fix:</code> bug fix, <code>docs:</code> documentation, <code>chore:</code> maintenance, <code>refactor:</code> code restructure, <code>test:</code> test changes. This enables automated changelogs and semantic versioning.
+          </div>
+        </div>
+
+        <div class="sec-header">
+          <div class="sec-num">04</div>
+          <div class="sec-title-wrap">
+            <h2>Viewing History</h2>
+            <p>// Navigating your commit log</p>
+          </div>
+          <span class="sec-badge badge-beg">BEGINNER</span>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-hdr">
+            <div class="code-hdr-left">
+              <div class="term-dots"><span></span><span></span><span></span></div>
+              <span class="code-fname">git_log.sh</span>
+              <span class="code-type">GIT</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="g-cmt"># ── Log formats ─────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git log</span>                          <span class="g-cmt"># full log</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git log</span> <span class="g-flag">--oneline</span>               <span class="g-cmt"># compact one-line</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git log</span> <span class="g-flag">--oneline --graph --all</span>  <span class="g-cmt"># visual branch graph</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git log</span> <span class="g-flag">--author=</span><span class="g-str">"Alice"</span>         <span class="g-cmt"># filter by author</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git log</span> <span class="g-flag">--since=</span><span class="g-str">"2 weeks ago"</span>    <span class="g-cmt"># time filter</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git log</span> <span class="g-flag">-p</span>                       <span class="g-cmt"># show diffs</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git log</span> <span class="g-flag">-- src/app.js</span>            <span class="g-cmt"># log for one file</span>
+
+<span class="g-cmt"># ── Diff ────────────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git diff</span>                 <span class="g-cmt"># working dir vs staged</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git diff</span> <span class="g-flag">--staged</span>        <span class="g-cmt"># staged vs last commit</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git diff</span> main..feature   <span class="g-cmt"># between branches</span>
+
+<span class="g-cmt"># ── Inspect ─────────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git show</span> <span class="g-sha">a1b2c3d</span>         <span class="g-cmt"># show commit details</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git blame</span> app.js          <span class="g-cmt"># line-by-line authorship</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git shortlog</span> <span class="g-flag">-sn</span>         <span class="g-cmt"># commit count by author</span></pre>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">💡</span>
+          <div>
+            <strong>Pretty Log Alias</strong>
+            Add to your git config: <code>git config --global alias.lg "log --oneline --graph --all --decorate"</code> — then just type <code>git lg</code> for a beautiful tree view.
+          </div>
+        </div>
+
+        <!-- .gitignore -->
+        <div class="sec-header">
+          <div class="sec-num">05</div>
+          <div class="sec-title-wrap">
+            <h2>.gitignore</h2>
+            <p>// Excluding files from tracking</p>
+          </div>
+          <span class="sec-badge badge-beg">BEGINNER</span>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-hdr">
+            <div class="code-hdr-left">
+              <div class="term-dots"><span></span><span></span><span></span></div>
+              <span class="code-fname">.gitignore</span>
+              <span class="code-type">CONFIG</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="g-cmt"># Dependencies</span>
+node_modules/
+vendor/
+
+<span class="g-cmt"># Build outputs</span>
+dist/
+build/
+*.min.js
+
+<span class="g-cmt"># Environment & secrets</span>
+.env
+.env.local
+*.pem
+secrets.json
+
+<span class="g-cmt"># OS files</span>
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+<span class="g-cmt"># Editor files</span>
+.vscode/
+*.swp
+*~
+
+<span class="g-cmt"># Logs</span>
+*.log
+logs/
+
+<span class="g-cmt"># Pattern syntax:</span>
+<span class="g-cmt"># *     = wildcard</span>
+<span class="g-cmt"># **    = any depth</span>
+<span class="g-cmt"># !     = negate (un-ignore)</span>
+<span class="g-cmt"># /     prefix = root only</span>
+!important.log  <span class="g-cmt"># track this despite *.log rule</span></pre>
+        </div>
+
+      </div><!-- end basics-beginner -->
+
+      <!-- INTERMEDIATE basics -->
+      <div class="level-content" id="basics-intermediate">
+        <div class="sec-header">
+          <div class="sec-num">06</div>
+          <div class="sec-title-wrap"><h2>Git Internals</h2><p>// How Git stores data under the hood</p></div>
+          <span class="sec-badge badge-mid">INTERMEDIATE</span>
+        </div>
+
+        <div class="grid-2">
+          <div class="concept-box">
+            <h5>Blob</h5>
+            <p>Stores raw file content as a compressed object. Two identical files share one blob (content-addressable).</p>
+          </div>
+          <div class="concept-box">
+            <h5>Tree</h5>
+            <p>Maps filenames/dirs to blobs and other trees. Represents a directory snapshot.</p>
+          </div>
+          <div class="concept-box">
+            <h5>Commit Object</h5>
+            <p>Points to a root tree + parent commits + author/committer/message metadata.</p>
+          </div>
+          <div class="concept-box">
+            <h5>Tag Object</h5>
+            <p>Annotated tag: points to a commit with extra metadata (tagger, message, GPG sig).</p>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-hdr">
+            <div class="code-hdr-left">
+              <div class="term-dots"><span></span><span></span><span></span></div>
+              <span class="code-fname">internals.sh</span>
+              <span class="code-type">GIT</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="g-cmt"># Inspect objects directly</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git cat-file</span> <span class="g-flag">-t</span> <span class="g-sha">HEAD</span>       <span class="g-cmt"># type: commit</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git cat-file</span> <span class="g-flag">-p</span> <span class="g-sha">HEAD</span>       <span class="g-cmt"># print commit object</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git ls-tree</span> HEAD           <span class="g-cmt"># list files in HEAD tree</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git rev-parse</span> HEAD         <span class="g-cmt"># full SHA-1 of HEAD</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git rev-parse</span> HEAD~2        <span class="g-cmt"># SHA of grandparent</span>
+
+<span class="g-cmt"># HEAD is a pointer to current branch tip</span>
+<span class="g-cmt"># HEAD~1 = one commit back (parent)</span>
+<span class="g-cmt"># HEAD^1 = same (first parent)</span>
+<span class="g-cmt"># HEAD@{2} = HEAD 2 moves ago (reflog)</span>
+
+<span class="g-cmt"># Reflog — history of HEAD movements</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git reflog</span>
+<span class="g-out">a1b2c3d HEAD@{0}: commit: feat: new button
+e4f5g6h HEAD@{1}: checkout: moving from main to feature
+...</span></pre>
+        </div>
+
+        <div class="sec-header">
+          <div class="sec-num">07</div>
+          <div class="sec-title-wrap"><h2>Interactive Staging</h2><p>// Precision control over what you commit</p></div>
+          <span class="sec-badge badge-mid">INTERMEDIATE</span>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-hdr">
+            <div class="code-hdr-left">
+              <div class="term-dots"><span></span><span></span><span></span></div>
+              <span class="code-fname">staging.sh</span>
+              <span class="code-type">GIT</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="g-cmt"># Stage parts of a file (hunks)</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git add</span> <span class="g-flag">-p</span> app.js
+<span class="g-out">y = stage this hunk
+n = skip
+s = split hunk
+e = manually edit hunk
+q = quit</span>
+
+<span class="g-cmt"># Interactive mode</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git add</span> <span class="g-flag">-i</span>
+
+<span class="g-cmt"># Stage only modified (not new) files</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git add</span> <span class="g-flag">-u</span>
+
+<span class="g-cmt"># Check what will be committed</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git diff</span> <span class="g-flag">--staged</span> <span class="g-flag">--stat</span></pre>
+        </div>
+      </div>
+
+      <!-- ADVANCED basics -->
+      <div class="level-content" id="basics-advanced">
+        <div class="sec-header">
+          <div class="sec-num">08</div>
+          <div class="sec-title-wrap"><h2>Bisect & Search</h2><p>// Binary search to find the breaking commit</p></div>
+          <span class="sec-badge badge-adv">ADVANCED</span>
+        </div>
+        <div class="code-wrap">
+          <div class="code-hdr">
+            <div class="code-hdr-left">
+              <div class="term-dots"><span></span><span></span><span></span></div>
+              <span class="code-fname">bisect.sh</span>
+              <span class="code-type">GIT</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre><span class="g-cmt"># ── Manual bisect ───────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git bisect</span> start
+<span class="g-prompt">$</span> <span class="g-cmd">git bisect</span> bad                    <span class="g-cmt"># current is broken</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git bisect</span> good <span class="g-sha">v1.2.0</span>            <span class="g-cmt"># this tag was good</span>
+<span class="g-out">Bisecting: 15 revisions left (14 steps)</span>
+<span class="g-cmt"># Test → then mark good or bad</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git bisect</span> good
+<span class="g-prompt">$</span> <span class="g-cmd">git bisect</span> bad
+<span class="g-out">a1b2c3d is the first bad commit</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git bisect</span> reset
+
+<span class="g-cmt"># ── Automated bisect ────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git bisect</span> start HEAD <span class="g-sha">v1.2.0</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git bisect</span> run npm test           <span class="g-cmt"># auto-runs test each step</span>
+
+<span class="g-cmt"># ── Search ──────────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git grep</span> <span class="g-str">"TODO"</span>                   <span class="g-cmt"># search across tracked files</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git log</span> <span class="g-flag">-S</span> <span class="g-str">"functionName"</span>          <span class="g-cmt"># pickaxe: commits that added/removed string</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git log</span> <span class="g-flag">-G</span> <span class="g-str">"regex.*pattern"</span>        <span class="g-cmt"># regex pickaxe</span></pre>
+        </div>
+      </div>
+
+    </div><!-- end basics page -->
+
+    <!-- ████████████ BRANCHING PAGE ████████████ -->
+    <div class="page" id="page-branching">
+
+      <div class="hero">
+        <div class="hero-eyebrow">Branch & Merge Strategies</div>
+        <h1>BRANCHING<br><span>MASTERY</span></h1>
+        <p>// Create, switch, merge, and rebase branches. Understand fast-forward vs 3-way merges and solve conflicts like a pro.</p>
+        <div class="hero-stats">
+          <div><div class="h-stat-num">20+</div><div class="h-stat-label">Commands</div></div>
+          <div><div class="h-stat-num">3</div><div class="h-stat-label">Merge Types</div></div>
+          <div><div class="h-stat-num">4</div><div class="h-stat-label">Strategies</div></div>
+        </div>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">01</div>
+        <div class="sec-title-wrap"><h2>Branch Basics</h2><p>// Create, list, switch, delete</p></div>
+        <span class="sec-badge badge-beg">BEGINNER</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">branches.sh</span>
+            <span class="code-type">GIT</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># ── List branches ───────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git branch</span>               <span class="g-cmt"># local branches</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git branch</span> <span class="g-flag">-r</span>            <span class="g-cmt"># remote branches</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git branch</span> <span class="g-flag">-a</span>            <span class="g-cmt"># all branches</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git branch</span> <span class="g-flag">-v</span>            <span class="g-cmt"># last commit per branch</span>
+
+<span class="g-cmt"># ── Create & switch ─────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git branch</span> <span class="g-br">feature/login</span>           <span class="g-cmt"># create</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git switch</span> <span class="g-br">feature/login</span>           <span class="g-cmt"># switch</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git switch</span> <span class="g-flag">-c</span> <span class="g-br">feature/signup</span>      <span class="g-cmt"># create + switch (preferred)</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git checkout</span> <span class="g-flag">-b</span> <span class="g-br">feature/signup</span>  <span class="g-cmt"># older equivalent</span>
+
+<span class="g-cmt"># ── Delete branches ─────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git branch</span> <span class="g-flag">-d</span> <span class="g-br">feature/login</span>    <span class="g-cmt"># safe delete (merged only)</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git branch</span> <span class="g-flag">-D</span> <span class="g-br">feature/login</span>    <span class="g-cmt"># force delete</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git push</span> origin <span class="g-flag">--delete</span> <span class="g-br">feature/login</span>  <span class="g-cmt"># delete remote</span>
+
+<span class="g-cmt"># ── Rename ──────────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git branch</span> <span class="g-flag">-m</span> old-name new-name</pre>
+      </div>
+
+      <!-- Branch visual -->
+      <div class="branch-viz">
+<span class="bv-dim">main    </span> <span class="bv-sha">A──B──C────────────────M</span>
+<span class="bv-dim">               </span>         <span class="bv-sha">\                  /</span>
+<span class="bv-feat">feature </span>         <span class="bv-sha">D──E──F──G</span>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">02</div>
+        <div class="sec-title-wrap"><h2>Merging</h2><p>// Fast-forward, 3-way merge, and squash</p></div>
+        <span class="sec-badge badge-mid">INTERMEDIATE</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">merging.sh</span>
+            <span class="code-type">GIT</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># ── Fast-forward merge (no divergence) ──────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git switch</span> main
+<span class="g-prompt">$</span> <span class="g-cmd">git merge</span> <span class="g-br">feature/login</span>
+<span class="g-out">Fast-forward
+ login.html | 45 ++++++
+ 1 file changed, 45 insertions(+)</span>
+
+<span class="g-cmt"># ── 3-way merge (explicit merge commit) ─────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git merge</span> <span class="g-flag">--no-ff</span> <span class="g-br">feature/signup</span>
+<span class="g-cmt"># Opens editor for merge commit message</span>
+
+<span class="g-cmt"># ── Squash merge (one clean commit) ─────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git merge</span> <span class="g-flag">--squash</span> <span class="g-br">feature/dashboard</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git commit</span> <span class="g-flag">-m</span> <span class="g-str">"feat: add dashboard (#42)"</span>
+
+<span class="g-cmt"># ── Abort a merge ───────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git merge</span> <span class="g-flag">--abort</span></pre>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">03</div>
+        <div class="sec-title-wrap"><h2>Conflict Resolution</h2><p>// Handling merge conflicts step by step</p></div>
+        <span class="sec-badge badge-mid">INTERMEDIATE</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">conflict.sh</span>
+            <span class="code-type">GIT</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># A conflict looks like this in the file:</span>
+<span class="g-err">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="g-out">const greeting = "Hello World";</span>
+<span class="g-err">=======</span>
+<span class="g-out">const greeting = "Hi there!";</span>
+<span class="g-err">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/update-greeting</span>
+
+<span class="g-cmt"># Step 1: See conflicted files</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git status</span>
+<span class="g-out">both modified: src/greeting.js</span>
+
+<span class="g-cmt"># Step 2: Edit file to resolve (pick/combine)</span>
+<span class="g-cmt"># Remove markers, keep correct code</span>
+
+<span class="g-cmt"># Step 3: Mark as resolved & commit</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git add</span> src/greeting.js
+<span class="g-prompt">$</span> <span class="g-cmd">git commit</span>
+
+<span class="g-cmt"># ── Use mergetool ────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git mergetool</span>                    <span class="g-cmt"># opens configured tool</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git config</span> <span class="g-flag">--global</span> merge.tool vscode
+
+<span class="g-cmt"># ── Checkout version ─────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git checkout</span> <span class="g-flag">--ours</span>   conflict.js  <span class="g-cmt"># keep our version</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git checkout</span> <span class="g-flag">--theirs</span> conflict.js  <span class="g-cmt"># keep their version</span></pre>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">04</div>
+        <div class="sec-title-wrap"><h2>Rebasing</h2><p>// Rewrite history for a cleaner timeline</p></div>
+        <span class="sec-badge badge-adv">ADVANCED</span>
+      </div>
+
+      <div class="callout warn">
+        <span class="callout-icon">⚠️</span>
+        <div>
+          <strong>Golden Rule of Rebasing</strong>
+          Never rebase commits that have been pushed to a shared public branch. Rebase only local commits or on feature branches others aren't using. Rebasing rewrites commit SHA hashes.
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">rebase.sh</span>
+            <span class="code-type">GIT</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># ── Standard rebase ─────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git switch</span> <span class="g-br">feature/api</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git rebase</span> main         <span class="g-cmt"># replay feature commits on top of main</span>
+
+<span class="g-cmt"># Result: linear history instead of merge commit</span>
+<span class="g-out">Before: A──B──C──M   (M is merge commit)
+               \ /
+                D──E
+
+After:  A──B──C──D'──E'  (D' and E' are replayed)</span>
+
+<span class="g-cmt"># ── Interactive rebase (rewrite history) ─────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git rebase</span> <span class="g-flag">-i</span> HEAD~4    <span class="g-cmt"># edit last 4 commits</span>
+<span class="g-out">pick a1b2c3d feat: add login
+pick e4f5g6h fix: typo in login form   ← squash into above
+pick h7i8j9k feat: add logout
+reword k1l2m3n chore: cleanup           ← rename this</span>
+
+<span class="g-cmt"># Commands in interactive rebase:</span>
+<span class="g-cmt"># pick   = keep as is</span>
+<span class="g-cmt"># reword = keep, edit message</span>
+<span class="g-cmt"># edit   = pause to amend</span>
+<span class="g-cmt"># squash = merge into previous commit</span>
+<span class="g-cmt"># fixup  = squash, discard message</span>
+<span class="g-cmt"># drop   = remove commit entirely</span>
+
+<span class="g-cmt"># ── Rebase --onto ───────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git rebase</span> <span class="g-flag">--onto</span> main server client</pre>
+      </div>
+
+    </div><!-- end branching page -->
+
+    <!-- ████████████ REMOTE PAGE ████████████ -->
+    <div class="page" id="page-remote">
+
+      <div class="hero">
+        <div class="hero-eyebrow">Remote Repositories</div>
+        <h1>PUSH PULL<br><span>& FETCH</span></h1>
+        <p>// Connect your local repo to remote servers. Understand origin, upstream, fetch vs pull, and remote tracking branches.</p>
+        <div class="hero-stats">
+          <div><div class="h-stat-num">15+</div><div class="h-stat-label">Commands</div></div>
+          <div><div class="h-stat-num">2</div><div class="h-stat-label">Remotes</div></div>
+          <div><div class="h-stat-num">SSH</div><div class="h-stat-label">Auth</div></div>
+        </div>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">01</div>
+        <div class="sec-title-wrap"><h2>Working with Remotes</h2><p>// Add, view, rename, remove remotes</p></div>
+        <span class="sec-badge badge-beg">BEGINNER</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">remotes.sh</span>
+            <span class="code-type">GIT</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># ── Clone a repo ────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git clone</span> <span class="g-url">https://github.com/user/repo.git</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git clone</span> <span class="g-url">git@github.com:user/repo.git</span>   <span class="g-cmt"># SSH</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git clone</span> <span class="g-flag">--depth=1</span> <span class="g-url">https://...</span>          <span class="g-cmt"># shallow clone</span>
+
+<span class="g-cmt"># ── Manage remotes ──────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git remote</span> <span class="g-flag">-v</span>                         <span class="g-cmt"># list remotes with URLs</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git remote add</span> origin <span class="g-url">git@github.com:user/repo.git</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git remote add</span> upstream <span class="g-url">https://github.com/orig/repo.git</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git remote rename</span> origin github
+<span class="g-prompt">$</span> <span class="g-cmd">git remote remove</span> upstream
+<span class="g-prompt">$</span> <span class="g-cmd">git remote set-url</span> origin <span class="g-url">new-url.git</span> <span class="g-cmt"># change URL</span>
+
+<span class="g-cmt"># ── Push ────────────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git push</span> origin main
+<span class="g-prompt">$</span> <span class="g-cmd">git push</span> <span class="g-flag">-u</span> origin <span class="g-br">feature/auth</span>      <span class="g-cmt"># set upstream tracking</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git push</span> <span class="g-flag">--force-with-lease</span>          <span class="g-cmt"># safer force push</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git push</span> <span class="g-flag">--tags</span>                      <span class="g-cmt"># push all tags</span>
+
+<span class="g-cmt"># ── Fetch vs Pull ───────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git fetch</span> origin        <span class="g-cmt"># download, don't integrate</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git fetch</span> <span class="g-flag">--all</span>         <span class="g-cmt"># fetch all remotes</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git pull</span>                <span class="g-cmt"># fetch + merge (or rebase)</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git pull</span> <span class="g-flag">--rebase</span>       <span class="g-cmt"># fetch + rebase (cleaner)</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git pull</span> <span class="g-flag">--ff-only</span>      <span class="g-cmt"># only if fast-forward</span></pre>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">✅</span>
+        <div>
+          <strong>SSH vs HTTPS</strong>
+          Use SSH (<code>git@github.com:user/repo.git</code>) to avoid entering passwords. Generate a key with <code>ssh-keygen -t ed25519 -C "you@email.com"</code> and add the public key to GitHub Settings → SSH keys.
+        </div>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">02</div>
+        <div class="sec-title-wrap"><h2>Fork Workflow</h2><p>// Contributing to open source</p></div>
+        <span class="sec-badge badge-mid">INTERMEDIATE</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">fork_workflow.sh</span>
+            <span class="code-type">GIT</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># 1. Fork the repo on GitHub (click Fork)</span>
+<span class="g-cmt"># 2. Clone YOUR fork</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git clone</span> <span class="g-url">git@github.com:YOURNAME/repo.git</span>
+
+<span class="g-cmt"># 3. Add original as upstream</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git remote add</span> upstream <span class="g-url">https://github.com/ORIG/repo.git</span>
+
+<span class="g-cmt"># 4. Create a feature branch</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git switch</span> <span class="g-flag">-c</span> <span class="g-br">fix/typo-in-readme</span>
+
+<span class="g-cmt"># 5. Make changes, commit</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git commit</span> <span class="g-flag">-am</span> <span class="g-str">"fix: correct typo in README"</span>
+
+<span class="g-cmt"># 6. Keep your fork synced</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git fetch</span> upstream
+<span class="g-prompt">$</span> <span class="g-cmd">git rebase</span> upstream/main
+
+<span class="g-cmt"># 7. Push to your fork</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git push</span> origin <span class="g-br">fix/typo-in-readme</span>
+
+<span class="g-cmt"># 8. Open Pull Request on GitHub</span></pre>
+      </div>
+
+    </div><!-- end remote page -->
+
+    <!-- ████████████ ADVANCED PAGE ████████████ -->
+    <div class="page" id="page-advanced">
+
+      <div class="hero">
+        <div class="hero-eyebrow">Advanced Git</div>
+        <h1>POWER USER<br><span>COMMANDS</span></h1>
+        <p>// Stash, tags, reset, revert, cherry-pick, submodules, hooks, and worktrees — the toolkit of a Git expert.</p>
+        <div class="hero-stats">
+          <div><div class="h-stat-num">40+</div><div class="h-stat-label">Commands</div></div>
+          <div><div class="h-stat-num">4</div><div class="h-stat-label">Reset Modes</div></div>
+          <div><div class="h-stat-num">∞</div><div class="h-stat-label">Power</div></div>
+        </div>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">01</div>
+        <div class="sec-title-wrap"><h2>Stash</h2><p>// Temporarily shelve changes</p></div>
+        <span class="sec-badge badge-mid">INTERMEDIATE</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">stash.sh</span>
+            <span class="code-type">GIT</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># ── Stash operations ────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span>                       <span class="g-cmt"># stash tracked changes</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span> <span class="g-flag">-u</span>                    <span class="g-cmt"># include untracked files</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span> push <span class="g-flag">-m</span> <span class="g-str">"WIP: login"</span> <span class="g-cmt"># with description</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span> list                  <span class="g-cmt"># view all stashes</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span> show <span class="g-flag">-p</span> stash@{1}     <span class="g-cmt"># inspect stash</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span> pop                   <span class="g-cmt"># apply + delete latest</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span> apply stash@{2}       <span class="g-cmt"># apply without deleting</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span> drop stash@{0}        <span class="g-cmt"># delete a stash</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span> clear                 <span class="g-cmt"># delete all stashes</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git stash</span> branch <span class="g-br">new-branch</span>    <span class="g-cmt"># create branch from stash</span></pre>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">02</div>
+        <div class="sec-title-wrap"><h2>Reset, Revert & Restore</h2><p>// Undo changes — know the difference</p></div>
+        <span class="sec-badge badge-adv">ADVANCED</span>
+      </div>
+
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Moves HEAD?</th><th>Staging</th><th>Working Dir</th><th>Use When</th></tr></thead>
+        <tbody>
+          <tr><td><code>reset --soft</code></td><td>✓ Yes</td><td>Keeps staged</td><td>Untouched</td><td>Undo commit, keep staged</td></tr>
+          <tr><td><code>reset --mixed</code></td><td>✓ Yes</td><td>Clears staged</td><td>Untouched</td><td>Default — unstage changes</td></tr>
+          <tr><td><code>reset --hard</code></td><td>✓ Yes</td><td>Clears staged</td><td>OVERWRITTEN</td><td>Nuke everything ⚠️</td></tr>
+          <tr><td><code>revert</code></td><td>New commit</td><td>N/A</td><td>Safe</td><td>Undo pushed commits safely</td></tr>
+          <tr><td><code>restore</code></td><td>No</td><td>Can unstage</td><td>Can discard</td><td>File-level undo</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">undo.sh</span>
+            <span class="code-type">GIT</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># ── Reset ───────────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git reset</span> <span class="g-flag">--soft</span> HEAD~1   <span class="g-cmt"># undo last commit, keep staged</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git reset</span> HEAD~1          <span class="g-cmt"># undo last commit, unstage</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git reset</span> <span class="g-flag">--hard</span> HEAD~1   <span class="g-cmt"># undo + discard all changes ⚠️</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git reset</span> <span class="g-flag">--hard</span> <span class="g-sha">a1b2c3d</span>  <span class="g-cmt"># go to specific commit</span>
+
+<span class="g-cmt"># ── Revert (safe for shared branches) ───────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git revert</span> <span class="g-sha">a1b2c3d</span>        <span class="g-cmt"># creates inverse commit</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git revert</span> HEAD~3..HEAD   <span class="g-cmt"># revert a range</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git revert</span> <span class="g-flag">--no-commit</span> <span class="g-sha">abc</span> <span class="g-cmt"># stage revert, don't commit yet</span>
+
+<span class="g-cmt"># ── Cherry-pick ─────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git cherry-pick</span> <span class="g-sha">a1b2c3d</span>   <span class="g-cmt"># apply one commit</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git cherry-pick</span> <span class="g-sha">abc</span>..<span class="g-sha">def</span>   <span class="g-cmt"># range (exclusive..inclusive)</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git cherry-pick</span> <span class="g-flag">-n</span> <span class="g-sha">abc</span>    <span class="g-cmt"># apply without committing</span></pre>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">03</div>
+        <div class="sec-title-wrap"><h2>Tags</h2><p>// Marking release versions</p></div>
+        <span class="sec-badge badge-mid">INTERMEDIATE</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">tags.sh</span>
+            <span class="code-type">GIT</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># ── Lightweight tag (just a pointer) ────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git tag</span> v1.0.0
+
+<span class="g-cmt"># ── Annotated tag (full object, recommended) ─</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git tag</span> <span class="g-flag">-a</span> v1.0.0 <span class="g-flag">-m</span> <span class="g-str">"Release v1.0.0 - initial"</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git tag</span> <span class="g-flag">-a</span> v1.0.1 <span class="g-sha">abc123</span>    <span class="g-cmt"># tag old commit</span>
+
+<span class="g-cmt"># ── View & push ─────────────────────────────</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git tag</span>                     <span class="g-cmt"># list all tags</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git tag</span> <span class="g-flag">-l</span> <span class="g-str">"v1.*"</span>           <span class="g-cmt"># filter tags</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git show</span> v1.0.0              <span class="g-cmt"># show tag details</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git push</span> origin v1.0.0      <span class="g-cmt"># push one tag</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git push</span> origin <span class="g-flag">--tags</span>      <span class="g-cmt"># push all tags</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git tag</span> <span class="g-flag">-d</span> v1.0.0           <span class="g-cmt"># delete local tag</span>
+<span class="g-prompt">$</span> <span class="g-cmd">git push</span> origin <span class="g-flag">--delete</span> v1.0.0 <span class="g-cmt"># delete remote</span></pre>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">04</div>
+        <div class="sec-title-wrap"><h2>Git Hooks</h2><p>// Automate tasks at Git lifecycle events</p></div>
+        <span class="sec-badge badge-adv">ADVANCED</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">.git/hooks/pre-commit</span>
+            <span class="code-type">BASH</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt">#!/bin/sh</span>
+<span class="g-cmt"># Pre-commit hook: run linting before every commit</span>
+<span class="g-cmt"># Make executable: chmod +x .git/hooks/pre-commit</span>
+
+echo <span class="g-str">"Running linter..."</span>
+npm run lint
+
+<span class="g-cmt"># Exit 1 to abort the commit</span>
+<span class="g-kw">if</span> [ $? -ne 0 ]; then
+  echo <span class="g-str">"❌ Lint failed. Commit aborted."</span>
+  exit 1
+fi
+
+echo <span class="g-str">"✅ Lint passed."</span>
+exit 0
+
+<span class="g-cmt"># ── Common hooks ────────────────────────────</span>
+<span class="g-cmt"># pre-commit      — before commit is created</span>
+<span class="g-cmt"># commit-msg      — validate commit message</span>
+<span class="g-cmt"># post-commit     — notification after commit</span>
+<span class="g-cmt"># pre-push        — before push to remote</span>
+<span class="g-cmt"># post-merge      — after merge completes</span>
+
+<span class="g-cmt"># Use Husky for shareable hooks in JS projects:</span>
+<span class="g-cmt"># npx husky init</span></pre>
+      </div>
+
+    </div><!-- end advanced page -->
+
+    <!-- ████████████ GITHUB PAGE ████████████ -->
+    <div class="page" id="page-github">
+
+      <div class="hero">
+        <div class="hero-eyebrow">GitHub Platform</div>
+        <h1>GITHUB<br><span>WORKFLOWS</span></h1>
+        <p>// Pull requests, code review, GitHub Actions CI/CD, protected branches, secrets, and GitHub-specific features.</p>
+        <div class="hero-stats">
+          <div><div class="h-stat-num">PR</div><div class="h-stat-label">Workflow</div></div>
+          <div><div class="h-stat-num">CI/CD</div><div class="h-stat-label">Actions</div></div>
+          <div><div class="h-stat-num">SSH</div><div class="h-stat-label">Secure</div></div>
+        </div>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">01</div>
+        <div class="sec-title-wrap"><h2>Pull Request Workflow</h2><p>// From feature branch to merged PR</p></div>
+        <span class="sec-badge badge-mid">INTERMEDIATE</span>
+      </div>
+
+      <div class="flow">
+        <div class="flow-step"><div class="f-icon">🌿</div><div class="f-name">Feature Branch</div><div class="f-desc">git switch -c</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="f-icon">💾</div><div class="f-name">Commit & Push</div><div class="f-desc">git push -u</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="f-icon">🔃</div><div class="f-name">Open PR</div><div class="f-desc">GitHub UI</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="f-icon">👁️</div><div class="f-name">Code Review</div><div class="f-desc">Comments</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="f-icon">✅</div><div class="f-name">Merge</div><div class="f-desc">Squash/Merge</div></div>
+      </div>
+
+      <div class="card">
+        <h3>🔃 PR Best Practices</h3>
+        <ul>
+          <li>Keep PRs small and focused — one feature or bug fix per PR</li>
+          <li>Write a clear PR description with context, screenshots if UI change</li>
+          <li>Link to the issue: "Closes #42" auto-closes the issue on merge</li>
+          <li>Request specific reviewers; use CODEOWNERS for auto-assignment</li>
+          <li>Respond to review comments; re-request review after changes</li>
+          <li>Ensure CI passes before merging; use required status checks</li>
+        </ul>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">02</div>
+        <div class="sec-title-wrap"><h2>GitHub Actions</h2><p>// CI/CD automation built into GitHub</p></div>
+        <span class="sec-badge badge-adv">ADVANCED</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">.github/workflows/ci.yml</span>
+            <span class="code-type">YAML</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-str">name</span>: CI Pipeline
+
+<span class="g-str">on</span>:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+<span class="g-str">jobs</span>:
+  test:
+    <span class="g-str">runs-on</span>: ubuntu-latest
+    <span class="g-str">strategy</span>:
+      <span class="g-str">matrix</span>:
+        node-version: [18.x, 20.x]
+
+    <span class="g-str">steps</span>:
+      - <span class="g-str">uses</span>: actions/checkout@v4
+
+      - <span class="g-str">name</span>: Setup Node.js ${{ matrix.node-version }}
+        <span class="g-str">uses</span>: actions/setup-node@v4
+        <span class="g-str">with</span>:
+          node-version: ${{ matrix.node-version }}
+          cache: <span class="g-str">'npm'</span>
+
+      - <span class="g-str">name</span>: Install dependencies
+        <span class="g-str">run</span>: npm ci
+
+      - <span class="g-str">name</span>: Run linter
+        <span class="g-str">run</span>: npm run lint
+
+      - <span class="g-str">name</span>: Run tests
+        <span class="g-str">run</span>: npm test -- --coverage
+
+      - <span class="g-str">name</span>: Upload coverage
+        <span class="g-str">uses</span>: codecov/codecov-action@v4
+        <span class="g-str">with</span>:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  deploy:
+    <span class="g-str">needs</span>: test
+    <span class="g-str">runs-on</span>: ubuntu-latest
+    <span class="g-str">if</span>: github.ref == 'refs/heads/main'
+    <span class="g-str">steps</span>:
+      - <span class="g-str">uses</span>: actions/checkout@v4
+      - <span class="g-str">name</span>: Deploy to production
+        <span class="g-str">run</span>: ./deploy.sh
+        <span class="g-str">env</span>:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}</pre>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-num">03</div>
+        <div class="sec-title-wrap"><h2>GitHub CLI</h2><p>// GitHub in your terminal</p></div>
+        <span class="sec-badge badge-mid">INTERMEDIATE</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <div class="code-hdr-left">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <span class="code-fname">github_cli.sh</span>
+            <span class="code-type">BASH</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="g-cmt"># Install: https://cli.github.com</span>
+<span class="g-prompt">$</span> gh auth login
+
+<span class="g-cmt"># ── Repos ───────────────────────────────────</span>
+<span class="g-prompt">$</span> gh repo create my-app <span class="g-flag">--public</span>
+<span class="g-prompt">$</span> gh repo clone user/repo
+<span class="g-prompt">$</span> gh repo view <span class="g-flag">--web</span>
+
+<span class="g-cmt"># ── Pull Requests ───────────────────────────</span>
+<span class="g-prompt">$</span> gh pr create <span class="g-flag">--title</span> <span class="g-str">"feat: add login"</span> <span class="g-flag">--body</span> <span class="g-str">"Closes #12"</span>
+<span class="g-prompt">$</span> gh pr list
+<span class="g-prompt">$</span> gh pr view 42
+<span class="g-prompt">$</span> gh pr checkout 42       <span class="g-cmt"># checkout PR branch locally</span>
+<span class="g-prompt">$</span> gh pr merge 42 <span class="g-flag">--squash</span>
+<span class="g-prompt">$</span> gh pr review 42 <span class="g-flag">--approve</span>
+
+<span class="g-cmt"># ── Issues ──────────────────────────────────</span>
+<span class="g-prompt">$</span> gh issue create <span class="g-flag">--title</span> <span class="g-str">"Bug: crash on login"</span>
+<span class="g-prompt">$</span> gh issue list <span class="g-flag">--assignee</span> <span class="g-str">"@me"</span>
+<span class="g-prompt">$</span> gh issue close 15
+
+<span class="g-cmt"># ── Workflows ───────────────────────────────</span>
+<span class="g-prompt">$</span> gh run list
+<span class="g-prompt">$</span> gh run watch
+<span class="g-prompt">$</span> gh workflow run deploy.yml</pre>
+      </div>
+
+    </div><!-- end github page -->
+
+    <!-- ████████████ INTERVIEW PAGE ████████████ -->
+    <div class="page" id="page-interview">
+
+      <div class="hero">
+        <div class="hero-eyebrow">Interview Preparation</div>
+        <h1>CRACK THE<br><span>GIT INTERVIEW</span></h1>
+        <p>// 30+ real interview questions on Git internals, branching strategies, workflows, and GitHub — with detailed expert answers.</p>
+        <div class="hero-stats">
+          <div><div class="h-stat-num">30+</div><div class="h-stat-label">Questions</div></div>
+          <div><div class="h-stat-num">3</div><div class="h-stat-label">Categories</div></div>
+          <div><div class="h-stat-num">100%</div><div class="h-stat-label">Explained</div></div>
+        </div>
+      </div>
+
+      <!-- CORE CONCEPTS -->
+      <div class="sec-header">
+        <div class="sec-num">Q1</div>
+        <div class="sec-title-wrap"><h2>Core Git Concepts</h2><p>// Fundamentals every developer must know</p></div>
+        <span class="sec-badge badge-beg">BEGINNER–MID</span>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">01</div>
+          <div class="qa-question-text">What is the difference between Git and GitHub?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">Git</span> is a free, open-source distributed version control system — a command-line tool installed locally that tracks file changes, manages branches, and maintains history. It works entirely offline.<br><br>
+          <span class="hl">GitHub</span> is a cloud-based hosting platform for Git repositories. It adds collaboration features: pull requests, code review, issues, project boards, GitHub Actions (CI/CD), and a web interface. Alternatives include GitLab and Bitbucket.<br><br>
+          Analogy: Git is like the engine; GitHub is the car built around it that makes driving easier for a team.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">02</div>
+          <div class="qa-question-text">Explain the three states of files in Git.</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>Files in Git exist in one of three states:<br><br>
+          <span class="hl">Modified</span> — File has been changed in the working directory but not yet staged. Git sees the difference but hasn't recorded it.<br><br>
+          <span class="hl">Staged</span> — File changes are marked (via <code>git add</code>) to go into the next commit. The staging area (index) holds this snapshot.<br><br>
+          <span class="hl">Committed</span> — Changes are safely stored in the local Git database (repository) as a commit object with a unique SHA-1 hash.<br><br>
+          There's also the <span class="hl">Untracked</span> state — new files Git doesn't know about yet (before any <code>git add</code>).</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">03</div>
+          <div class="qa-question-text">What is HEAD in Git?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">HEAD</span> is a special pointer (reference) that points to the currently checked-out commit or branch. It represents "where you are now."<br><br>
+          Normally HEAD points to a branch name (e.g., <code>main</code>), and that branch points to the latest commit — this is an "attached HEAD."<br><br>
+          A <span class="hl">detached HEAD</span> occurs when you checkout a specific commit hash directly (<code>git checkout abc123</code>). HEAD points to the commit itself rather than a branch. New commits won't belong to any branch and can be lost. Fix by creating a branch: <code>git switch -c new-branch</code><br><br>
+          Notation: <code>HEAD~1</code> = one parent back, <code>HEAD~3</code> = three parents back, <code>HEAD^2</code> = second parent of a merge commit.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">04</div>
+          <div class="qa-question-text">What is the difference between <code>git fetch</code> and <code>git pull</code>?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git fetch</span> downloads changes from the remote into your remote-tracking branches (e.g., <code>origin/main</code>) but does <strong>not</strong> change your local working branch. It's safe — you can inspect what changed before integrating.<br><br>
+          <span class="hl">git pull</span> = <code>git fetch</code> + <code>git merge</code> (or rebase). It downloads and immediately integrates changes into your current branch.<br><br>
+          Best practice: prefer <code>git fetch</code> + <code>git log origin/main</code> to see what's new, then <code>git merge</code> or <code>git rebase</code> when ready. Or use <code>git pull --rebase</code> for a cleaner linear history.<br><br>
+          <code>git fetch</code> is especially useful in CI pipelines and when you want to compare branches without modifying local state.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">05</div>
+          <div class="qa-question-text">How does Git store data? What is SHA-1?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>Git uses a <span class="hl">content-addressable filesystem</span>. Every piece of data is stored as an object, identified by its <span class="hl">SHA-1 hash</span> — a 40-character hexadecimal string computed from the object's content.<br><br>
+          Four object types: <code>blob</code> (file content), <code>tree</code> (directory), <code>commit</code> (snapshot + metadata), <code>tag</code> (annotated tag).<br><br>
+          If two files have identical content, they share one blob. Renaming a file doesn't create a new blob — only content changes do. This makes Git extremely space-efficient.<br><br>
+          SHA-1 ensures integrity — any corruption changes the hash, and Git detects it. Note: Git is transitioning to SHA-256 for new repositories (for security), though SHA-1 is still default in most installations.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">06</div>
+          <div class="qa-question-text">What is a <code>.gitignore</code> file and how does it work?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>A <span class="hl">.gitignore</span> file specifies intentionally untracked files that Git should ignore. Patterns are matched against file paths relative to the .gitignore location.<br><br>
+          Key rules: <code>*</code> matches anything except slash, <code>**</code> matches any path, <code>!</code> negates a pattern, <code>/</code> prefix anchors to directory, trailing <code>/</code> means directory only.<br><br>
+          Important: <strong>.gitignore only works for untracked files</strong>. If a file was already committed, adding it to .gitignore doesn't stop tracking. You must: <code>git rm --cached filename</code> then commit the removal.<br><br>
+          Levels: repo <code>.gitignore</code>, global <code>~/.gitignore_global</code> (via <code>git config --global core.excludesfile</code>), and <code>.git/info/exclude</code> for local-only rules.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">07</div>
+          <div class="qa-question-text">What is the difference between <code>git stash pop</code> and <code>git stash apply</code>?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>Both apply the stashed changes to the working directory, but:<br><br>
+          <span class="hl">git stash pop</span> — applies the most recent stash (stash@{0}) and then <strong>removes it from the stash list</strong>. One-step operation.<br><br>
+          <span class="hl">git stash apply</span> — applies the stash but <strong>keeps it in the stash list</strong>. You can apply the same stash to multiple branches. You must manually drop it later with <code>git stash drop</code>.<br><br>
+          Use <code>apply</code> when you want to re-apply the same stash to different branches or keep it as a safety net. Use <code>pop</code> when you're done and want cleanup.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">08</div>
+          <div class="qa-question-text">What is <code>git reflog</code> and when is it useful?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git reflog</span> (reference log) records every time HEAD moves — checkouts, commits, resets, merges, rebases. It's a local safety net that Git keeps for ~90 days by default.<br><br>
+          It's invaluable for recovering "lost" commits after a <code>git reset --hard</code> or accidental branch deletion:<br><br>
+          <code>git reflog         # see HEAD history<br>git reset --hard HEAD@{3}  # jump back to earlier state<br>git checkout -b rescue HEAD@{5}  # recover from specific point</code><br><br>
+          Reflog is local only — not shared with remotes — so it only works if you haven't wiped your local repo.</p>
+        </div>
+      </div>
+
+      <!-- BRANCHING & MERGING Q&A -->
+      <div class="divider"></div>
+      <div class="sec-header">
+        <div class="sec-num">Q2</div>
+        <div class="sec-title-wrap"><h2>Branching & Merging</h2><p>// Questions on collaboration workflows</p></div>
+        <span class="sec-badge badge-mid">INTERMEDIATE</span>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">09</div>
+          <div class="qa-question-text">What is the difference between merge and rebase?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git merge</span> creates a new "merge commit" that joins two branch histories. It preserves the exact history of what happened and when. Non-destructive — doesn't rewrite commits. Best for public/shared branches.<br><br>
+          <span class="hl">git rebase</span> moves (replays) your commits onto the tip of another branch, rewriting their SHA hashes. Creates a perfectly linear history as if you'd started your work from the latest commit. Best for private feature branches.<br><br>
+          <strong>When to use what:</strong><br>
+          • Merging main into a long-lived feature branch → <code>merge</code> (preserves context)<br>
+          • Updating a personal feature branch with latest main → <code>rebase</code> (stays linear)<br>
+          • Never rebase commits that are pushed to a shared remote branch.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">10</div>
+          <div class="qa-question-text">What is a fast-forward merge?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>A <span class="hl">fast-forward merge</span> occurs when the target branch (e.g., main) has no new commits since the feature branch was created — the branch histories haven't diverged.<br><br>
+          Instead of creating a merge commit, Git simply moves the branch pointer forward to the feature branch's tip. No new commit is created; history appears perfectly linear.<br><br>
+          To force a merge commit even when FF is possible: <code>git merge --no-ff feature</code>. This is useful when you want to preserve the record that a feature branch existed, especially in team workflows where you want to see feature groupings in history.<br><br>
+          GitHub's "Squash and merge" and "Rebase and merge" buttons both produce linear histories similar to fast-forward.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">11</div>
+          <div class="qa-question-text">How do you resolve a merge conflict?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>A merge conflict occurs when two branches modify the same lines in a file differently. Git pauses the merge and marks conflicts in the file with:<br><br>
+          <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD — your changes<br>======= — divider<br>&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch — incoming changes</code><br><br>
+          <strong>Step-by-step resolution:</strong><br>
+          1. <code>git status</code> — identify conflicted files<br>
+          2. Open each file, manually edit to resolve (remove markers, keep correct code)<br>
+          3. <code>git add &lt;resolved-file&gt;</code> — mark as resolved<br>
+          4. <code>git commit</code> — complete the merge<br><br>
+          Tools: VS Code has built-in merge editor (Accept Current / Accept Incoming / Accept Both). <code>git mergetool</code> opens configured visual tool. <code>git checkout --ours/--theirs</code> accepts one version wholesale.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">12</div>
+          <div class="qa-question-text">What is interactive rebase and what can you do with it?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">Interactive rebase</span> (<code>git rebase -i HEAD~N</code>) opens an editor listing the last N commits with action keywords. You can reorder, modify, or remove commits before they're applied.<br><br>
+          Available actions:<br>
+          • <code>pick</code> — keep commit as-is<br>
+          • <code>reword</code> — keep commit, edit the message<br>
+          • <code>edit</code> — pause to amend the commit (add files, split it)<br>
+          • <code>squash</code> — combine with previous commit, merge messages<br>
+          • <code>fixup</code> — combine with previous commit, discard message<br>
+          • <code>drop</code> — delete the commit entirely<br><br>
+          Common use cases: clean up messy WIP commits before a PR, squash related commits, fix a commit message, reorder commits for logical grouping.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">13</div>
+          <div class="qa-question-text">What branching strategies have you used? Explain GitFlow.</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>Common branching strategies:<br><br>
+          <span class="hl">GitFlow</span> — Uses long-lived branches: <code>main</code> (production), <code>develop</code> (integration), plus short-lived <code>feature/</code>, <code>release/</code>, and <code>hotfix/</code> branches. Merges are heavily structured. Good for software with explicit releases. Complex overhead for small teams.<br><br>
+          <span class="hl">GitHub Flow</span> — Simple: <code>main</code> is always deployable. Feature branches off main, PR → review → merge → deploy. Best for continuous deployment teams. No <code>develop</code> branch.<br><br>
+          <span class="hl">GitLab Flow</span> — Adds environment branches (<code>staging</code>, <code>production</code>) to GitHub Flow. Deploy by merging main into environment branches.<br><br>
+          <span class="hl">Trunk-Based Development</span> — All developers commit to <code>main</code> (trunk) frequently (daily). Feature flags hide incomplete features. Requires strong CI/CD. Used at Google and Facebook.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">14</div>
+          <div class="qa-question-text">What is <code>git cherry-pick</code> and when would you use it?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git cherry-pick</span> applies a specific commit (or range of commits) from one branch onto your current branch. It creates a new commit with the same changes but a different SHA-1.<br><br>
+          <code>git cherry-pick abc123       # apply one commit<br>git cherry-pick abc..def     # apply a range<br>git cherry-pick -n abc123    # apply changes without committing</code><br><br>
+          <strong>When to use:</strong><br>
+          • You merged a feature but need just one bug fix from it on main now<br>
+          • A hotfix was made on a release branch and needs to go to develop too<br>
+          • You accidentally committed to the wrong branch<br>
+          • Backporting a specific fix to an older release branch<br><br>
+          Avoid overusing it — if you need many cherry-picks, a full merge may be more appropriate.</p>
+        </div>
+      </div>
+
+      <!-- ADVANCED Q&A -->
+      <div class="divider"></div>
+      <div class="sec-header">
+        <div class="sec-num">Q3</div>
+        <div class="sec-title-wrap"><h2>Advanced Topics</h2><p>// Internals, workflows, and expert questions</p></div>
+        <span class="sec-badge badge-adv">ADVANCED</span>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">15</div>
+          <div class="qa-question-text">What is the difference between <code>git reset</code> and <code>git revert</code>?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git reset</span> moves the branch pointer backwards, effectively removing commits from history. Has three modes: <code>--soft</code> (keep staged), <code>--mixed</code> (unstage), <code>--hard</code> (discard all). <strong>Rewrites history — dangerous on shared branches.</strong><br><br>
+          <span class="hl">git revert</span> creates a new commit that undoes the changes of a specific previous commit. History is preserved — the original commit still exists, and a new "inverse" commit is added. <strong>Safe for public branches because it doesn't rewrite history.</strong><br><br>
+          Rule of thumb: <code>reset</code> for local/private history cleanup; <code>revert</code> for undoing pushed commits on shared branches. If colleagues have already pulled your commits, resetting forces them to deal with diverged histories.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">16</div>
+          <div class="qa-question-text">What is <code>git bisect</code> and how does it work?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git bisect</span> performs a binary search through commit history to find the exact commit that introduced a bug. Instead of manually checking commits one-by-one, it narrows down the culprit in O(log n) steps.<br><br>
+          <code>git bisect start<br>git bisect bad           # current is broken<br>git bisect good v1.0     # this version was fine</code><br><br>
+          Git checks out a midpoint commit. You test it, then mark <code>good</code> or <code>bad</code>. Git narrows down and repeats. After ~7 steps for 100 commits, it identifies the exact first-bad commit.<br><br>
+          It can even be automated: <code>git bisect run npm test</code> — Git runs your test suite automatically at each step, marking good/bad based on exit code (0 = good, non-zero = bad). Extremely powerful for debugging regressions.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">17</div>
+          <div class="qa-question-text">What is <code>--force-with-lease</code> and why is it safer than <code>--force</code>?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git push --force</span> overwrites the remote branch unconditionally. If a teammate pushed commits while you were rebasing, their work is silently overwritten. Very dangerous on shared branches.<br><br>
+          <span class="hl">git push --force-with-lease</span> checks that your local knowledge of the remote matches what's actually on the remote before pushing. If someone else pushed in between, Git refuses and you must first fetch and integrate their changes.<br><br>
+          It's like an optimistic lock: "force push, but only if the remote is still at the commit I last saw." Always prefer <code>--force-with-lease</code> over plain <code>--force</code> when you must force push (e.g., after interactive rebase).<br><br>
+          Optionally add <code>--force-if-includes</code> (Git 2.30+) for an even stricter check.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">18</div>
+          <div class="qa-question-text">How does GitHub pull request review work? What are protected branches?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">Pull Request review</span>: Reviewers can leave line comments, suggest changes (which the author can apply with one click), approve, or request changes. PRs can require N approvals before merging. Conversations can be resolved to track progress.<br><br>
+          <span class="hl">Protected branches</span> are configured in GitHub Settings → Branches. Rules include:<br>
+          • Require pull request before merging (no direct push)<br>
+          • Require N approving reviews<br>
+          • Require status checks to pass (CI/CD must be green)<br>
+          • Require linear history (no merge commits)<br>
+          • Require signed commits (GPG verification)<br>
+          • Restrict who can push or force-push<br><br>
+          This enforces code quality and prevents accidental direct commits to main/production.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">19</div>
+          <div class="qa-question-text">What are Git submodules? When would you use them?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">Submodules</span> allow you to include one Git repository inside another as a subdirectory, pinned to a specific commit. The parent repo stores just a reference (the SHA of the submodule commit) rather than the full submodule contents.<br><br>
+          <code>git submodule add https://github.com/lib/utils.git libs/utils<br>git submodule update --init --recursive   # clone submodule contents<br>git submodule update --remote             # update to latest</code><br><br>
+          <strong>Use cases:</strong> Shared libraries used across multiple projects, third-party dependencies you want at a specific version, monorepo-like setups.<br><br>
+          <strong>Downsides:</strong> Complex workflows — team must remember to run <code>--recurse-submodules</code> on clone/pull. Most teams prefer package managers (npm, pip) over submodules for dependencies.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">20</div>
+          <div class="qa-question-text">How do you undo a git commit that has already been pushed?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>The safest way is <span class="hl">git revert</span>:<br>
+          <code>git revert HEAD          # undo last commit<br>git push origin main     # push the revert commit</code><br><br>
+          This creates a new commit that is the inverse of the bad commit. History is preserved; colleagues are not affected.<br><br>
+          If you need to completely erase history (rare, e.g., accidentally committed secrets):<br>
+          <code>git reset --hard HEAD~1<br>git push --force-with-lease</code><br><br>
+          ⚠️ This rewrites history. Every collaborator must then reset their local branch: <code>git fetch && git reset --hard origin/main</code>. Coordinate with the whole team first. For exposed secrets, also rotate them immediately — even after force-push, secrets may be cached in GitHub's history or other clones.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">21</div>
+          <div class="qa-question-text">What is <code>git worktree</code>?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git worktree</span> lets you check out multiple branches simultaneously in different directories, all sharing the same single <code>.git</code> repository. No need to clone the repo multiple times.<br><br>
+          <code>git worktree add ../hotfix-branch hotfix/critical-bug<br>git worktree list<br>git worktree remove ../hotfix-branch</code><br><br>
+          <strong>Use case:</strong> You're deep in a feature branch and need to quickly switch to fix a hotfix without stashing. Open the hotfix in a separate directory, fix it, while your feature branch stays open untouched in the original directory.<br><br>
+          Each worktree has its own working directory and index, but they share the object database and config. You cannot check out the same branch in two worktrees simultaneously.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">22</div>
+          <div class="qa-question-text">Explain Conventional Commits and Semantic Versioning.</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">Conventional Commits</span> is a specification for commit messages: <code>type(scope): description</code><br><br>
+          Types: <code>feat</code> (new feature), <code>fix</code> (bug fix), <code>docs</code>, <code>style</code>, <code>refactor</code>, <code>perf</code>, <code>test</code>, <code>chore</code>, <code>ci</code>, <code>build</code><br>
+          Breaking change: add <code>!</code> after type: <code>feat!: remove old API</code> or add <code>BREAKING CHANGE:</code> in footer.<br><br>
+          <span class="hl">Semantic Versioning</span> (SemVer): <code>MAJOR.MINOR.PATCH</code><br>
+          • <code>fix</code> commits → bump PATCH (1.0.1)<br>
+          • <code>feat</code> commits → bump MINOR (1.1.0)<br>
+          • Breaking change → bump MAJOR (2.0.0)<br><br>
+          Tools like <code>semantic-release</code> or <code>standard-version</code> parse commit messages and automatically bump versions, generate changelogs, and publish releases in CI/CD pipelines.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">23</div>
+          <div class="qa-question-text">What is <code>git clean</code> and when is it useful?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git clean</span> removes untracked files from the working directory. Unlike <code>git restore</code> which handles tracked files, <code>git clean</code> targets files Git doesn't know about.<br><br>
+          <code>git clean -n    # dry run — show what would be deleted<br>git clean -f    # force delete untracked files<br>git clean -fd   # also delete untracked directories<br>git clean -fX   # delete only ignored files (.gitignore'd)<br>git clean -fdx  # delete ALL untracked (including ignored)</code><br><br>
+          Always run with <code>-n</code> first! Once deleted, these files are gone — unlike tracked changes, they don't go to trash. Useful for cleaning build artifacts, resetting to a pristine state, or removing leftover generated files after switching branches.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">24</div>
+          <div class="qa-question-text">How do Git hooks work and how do you share them with a team?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">Git hooks</span> are scripts in <code>.git/hooks/</code> that run automatically at lifecycle events. They're executable shell scripts named after the event (pre-commit, commit-msg, pre-push, etc.).<br><br>
+          Problem: <code>.git/</code> is not tracked by Git, so hooks aren't shared automatically.<br><br>
+          <strong>Solutions for sharing hooks:</strong><br>
+          1. <span class="hl">Husky</span> (JavaScript): <code>npx husky init</code> — stores hooks in <code>.husky/</code> which IS tracked. npm lifecycle script runs <code>husky install</code> on <code>npm install</code>.<br>
+          2. <span class="hl">pre-commit</span> (Python): multi-language hook manager with <code>.pre-commit-config.yaml</code><br>
+          3. <span class="hl">lefthook</span>: fast Go-based hook manager for any language<br>
+          4. Set <code>core.hooksPath</code>: <code>git config core.hooksPath .githooks</code> — stores hooks in tracked <code>.githooks/</code> folder</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">25</div>
+          <div class="qa-question-text">What is the difference between <code>origin</code> and <code>upstream</code>?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>These are just remote names (aliases for URLs) — Git itself has no special meaning for them, but they follow a strong convention:<br><br>
+          <span class="hl">origin</span> — the primary remote, typically your own fork or the repo you cloned. When you run <code>git clone</code>, Git automatically names the source remote "origin".<br><br>
+          <span class="hl">upstream</span> — the original repository that you forked from. Used in open-source workflows to sync your fork with the original project's changes.<br><br>
+          Typical fork workflow:<br>
+          <code>origin   → git@github.com:YOU/repo.git   (your fork)<br>upstream → https://github.com/ORIG/repo.git (original)</code><br><br>
+          Syncing: <code>git fetch upstream && git rebase upstream/main</code> — then push to origin to keep your fork up-to-date.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">26</div>
+          <div class="qa-question-text">What is <code>git blame</code> and how do you use it effectively?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">git blame</span> annotates each line of a file with the commit SHA, author, and date that last modified that line. Useful for understanding why code was written a certain way and who to ask for context.<br><br>
+          <code>git blame app.js<br>git blame -L 20,40 app.js    # lines 20-40 only<br>git blame -w app.js           # ignore whitespace changes<br>git blame --follow -C app.js  # track through renames/copies</code><br><br>
+          <strong>Limitations:</strong> <code>git blame</code> only shows who last modified a line, not necessarily who originally wrote the logic (a code formatter might show as "last modified"). Use <code>-C</code> to track moved code.<br><br>
+          VS Code, GitHub UI, and GitLens all have visual blame that shows hover info on each line. Remember: blame is for understanding, not assigning fault — hence some prefer the term "git annotate."</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">27</div>
+          <div class="qa-question-text">How do you handle large binary files in Git?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>Git is designed for text files — binary files (images, videos, datasets, design files) don't diff or compress well, and every version of a binary is stored in full, bloating the repository.<br><br>
+          <span class="hl">Git LFS (Large File Storage)</span> is the standard solution. It replaces large files in your repo with small text pointers, while storing actual file content on a separate LFS server (GitHub, Bitbucket, or self-hosted).<br><br>
+          <code>git lfs install<br>git lfs track "*.psd" "*.mp4" "*.zip"<br>git add .gitattributes<br>git add design.psd<br>git commit -m "add design file"<br>git push   # LFS uploads automatically</code><br><br>
+          Alternatives: store assets on S3/CDN and reference them by URL; use separate repos for assets; use <code>.gitignore</code> for generated binaries.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">28</div>
+          <div class="qa-question-text">What is a GitHub Action and how does CI/CD work with Git?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">GitHub Actions</span> is a CI/CD platform built into GitHub. Workflows are defined in <code>.github/workflows/*.yml</code> files and trigger on Git events (push, PR, tag, schedule, manual).<br><br>
+          <strong>CI (Continuous Integration):</strong> Every push/PR triggers automated tests, linting, build checks. This ensures code quality before merging. Required status checks on protected branches enforce that CI must pass.<br><br>
+          <strong>CD (Continuous Delivery/Deployment):</strong> Merges to main automatically deploy to staging/production. Tagging a release can trigger a production deployment.<br><br>
+          Key concepts: <code>workflow</code> (YAML file), <code>trigger</code> (on event), <code>job</code> (runs on a runner VM), <code>step</code> (individual command or action), <code>action</code> (reusable step from marketplace), <code>secret</code> (encrypted env vars for credentials).<br><br>
+          Alternatives: GitLab CI, Jenkins, CircleCI, Travis CI, Buildkite.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">29</div>
+          <div class="qa-question-text">What is the difference between <code>git merge --squash</code> and regular merge?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p><span class="hl">Regular merge</span> preserves all individual commits from the feature branch. You can see every step that was taken. Merge commit (if non-FF) records the junction point.<br><br>
+          <span class="hl">Squash merge</span> (<code>git merge --squash</code>) combines all commits from the feature branch into a single staged change, which you then commit as one clean commit. The individual commits are not preserved in the target branch history.<br><br>
+          <strong>Pros of squash:</strong> Clean, linear main branch history; each feature is one tidy commit; easy to revert an entire feature.<br><br>
+          <strong>Cons of squash:</strong> Lose granular commit history; harder to understand what changed step-by-step; the original feature branch isn't "merged" per se (it still shows as unmerged in git log).<br><br>
+          GitHub's "Squash and merge" button is essentially <code>--squash</code>. Many teams use squash for small PRs and regular merge for large/complex features.</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <div class="qa-num-badge">30</div>
+          <div class="qa-question-text">How would you recover a deleted branch in Git?</div>
+          <div class="qa-arrow">▼</div>
+        </div>
+        <div class="qa-a">
+          <p>Since branch labels are just pointers to commits, deleting a branch doesn't delete the commits — they're still in the object database until garbage collected (GC runs after ~30 days by default).<br><br>
+          <strong>Recovery using reflog:</strong><br>
+          <code>git reflog              # find the SHA of the last commit on deleted branch<br>git checkout -b recovered-branch HEAD@{4}  # recreate branch at that SHA</code><br><br>
+          <strong>Recovery using ORIG_HEAD:</strong> After an accidental merge/reset, <code>ORIG_HEAD</code> still points to where you were: <code>git branch recovered ORIG_HEAD</code><br><br>
+          <strong>From remote:</strong> If the branch was pushed: <code>git fetch origin deleted-branch:deleted-branch</code><br><br>
+          <strong>GitHub UI:</strong> GitHub keeps deleted branches for 30 days. Go to the PR → "Restore branch" button. Fast and foolproof.</p>
+        </div>
+      </div>
+
+    </div><!-- end interview page -->
+
+  </main>
+</div><!-- end layout -->
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    const idx = ['basics','branching','remote','advanced','github','interview'].indexOf(id);
+    document.querySelectorAll('nav button')[idx].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateProgress();
+  }
+
+  function setActive(el) {
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function switchLevel(btn, page) {
+    btn.closest('.level-tabs').querySelectorAll('.level-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const level = btn.dataset.level;
+    document.querySelectorAll(`#page-${page} .level-content`).forEach(c => c.classList.remove('active'));
+    document.getElementById(`${page}-${level}`).classList.add('active');
+  }
+
+  function toggleQA(el) {
+    const block = el.closest('.qa-block');
+    const isOpen = block.classList.contains('open');
+    document.querySelectorAll('.qa-block').forEach(b => b.classList.remove('open'));
+    if (!isOpen) block.classList.add('open');
+    updateProgress();
+  }
+
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = 'COPIED!';
+      btn.style.borderColor = '#4ade80';
+      btn.style.color = '#4ade80';
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 1600);
+    });
+  }
+
+  const opened = new Set();
+  function updateProgress() {
+    document.querySelectorAll('.qa-block.open').forEach(b => opened.add(b));
+    const total = document.querySelectorAll('.qa-block').length;
+    const pct = Math.round((opened.size / total) * 100);
+    document.getElementById('prog-txt').textContent = pct + '%';
+    document.getElementById('prog-fill').style.width = pct + '%';
+  }
+
+  // keyboard nav
+  document.addEventListener('keydown', e => {
+    const map = { '1':'basics','2':'branching','3':'remote','4':'advanced','5':'github','6':'interview' };
+    if (map[e.key]) showPage(map[e.key]);
+  });
+</script>
+</body>
+</html>

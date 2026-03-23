@@ -1,0 +1,2752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Machine Learning Study Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Karla:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* =============================================
+   CSS VARIABLES & RESET
+   ============================================= */
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1525;
+  --bg3: #151c30;
+  --bg4: #1c2540;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8eaf6;
+  --text2: #9ca3c9;
+  --text3: #6b7499;
+  --accent: #00d4aa;
+  --accent2: #6c63ff;
+  --accent3: #ff6b6b;
+  --accent4: #ffd166;
+  --accent5: #06c0ff;
+  --grad1: linear-gradient(135deg, #00d4aa, #06c0ff);
+  --grad2: linear-gradient(135deg, #6c63ff, #00d4aa);
+  --grad3: linear-gradient(135deg, #ff6b6b, #ffd166);
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --radius: 12px;
+  --radius2: 8px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Karla', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+  --transition: 0.2s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
+
+/* =============================================
+   LAYOUT
+   ============================================= */
+#app { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+#sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition);
+}
+.sidebar-logo {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg2);
+  z-index: 10;
+}
+.logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--grad1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+.logo-icon {
+  background: var(--grad1);
+  -webkit-text-fill-color: transparent;
+  font-size: 1.3rem;
+}
+.sidebar-progress {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.progress-label {
+  font-size: 0.7rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+.progress-label span { color: var(--accent); font-weight: 600; }
+.progress-bar {
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--grad1);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+.sidebar-section { padding: 16px 12px 8px; }
+.sidebar-section-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 0 8px;
+  margin-bottom: 6px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius2);
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text2);
+  transition: all var(--transition);
+  position: relative;
+  user-select: none;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active {
+  background: rgba(0,212,170,0.1);
+  color: var(--accent);
+  font-weight: 600;
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+.nav-item .nav-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
+.nav-item .nav-done {
+  margin-left: auto;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border2);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem;
+  transition: all var(--transition);
+}
+.nav-item.done .nav-done { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+/* MAIN */
+#main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* HEADER */
+#header {
+  height: var(--header-h);
+  background: rgba(10,14,26,0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0; z-index: 50;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 16px;
+}
+.header-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+  flex: 1;
+}
+.header-title span { color: var(--accent); }
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  transition: border-color var(--transition);
+}
+.search-box:focus-within { border-color: var(--accent2); }
+.search-box input {
+  background: none; border: none; outline: none;
+  color: var(--text); font-family: var(--font-body);
+  font-size: 0.85rem; width: 200px;
+}
+.search-box input::placeholder { color: var(--text3); }
+.search-icon { color: var(--text3); font-size: 0.9rem; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.theme-btn {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 10px;
+  cursor: pointer; color: var(--text2);
+  font-size: 0.9rem; transition: all var(--transition);
+}
+.theme-btn:hover { border-color: var(--accent4); color: var(--accent4); }
+.menu-btn {
+  display: none;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 10px;
+  cursor: pointer; color: var(--text2); font-size: 1rem;
+}
+
+/* CONTENT */
+#content { flex: 1; padding: 32px 36px; max-width: 1000px; }
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg3);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  padding: 8px 18px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text3);
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { background: var(--bg); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* TOPIC HEADER */
+.topic-header {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.topic-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+.topic-header h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+.topic-header p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  max-width: 640px;
+  line-height: 1.7;
+}
+.topic-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.meta-badge {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.75rem; color: var(--text3);
+}
+.meta-badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+
+/* PROSE */
+.prose h2 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 28px 0 12px;
+  color: var(--text);
+}
+.prose h2:first-child { margin-top: 0; }
+.prose h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 20px 0 8px;
+  color: var(--text);
+}
+.prose p { color: var(--text2); margin-bottom: 14px; font-size: 0.92rem; line-height: 1.75; }
+.prose ul, .prose ol { color: var(--text2); padding-left: 20px; margin-bottom: 14px; }
+.prose li { font-size: 0.92rem; line-height: 1.75; margin-bottom: 4px; }
+.prose strong { color: var(--text); font-weight: 600; }
+
+/* INFO CARDS */
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0; }
+.info-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  transition: border-color var(--transition);
+}
+.info-card:hover { border-color: var(--border2); }
+.info-card-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.info-card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+.info-card p { font-size: 0.82rem; color: var(--text2); margin: 0; line-height: 1.6; }
+
+/* STEPS */
+.steps { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+.step {
+  display: flex; gap: 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  transition: border-color var(--transition);
+}
+.step:hover { border-color: var(--border2); }
+.step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--grad1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700; color: var(--bg);
+  flex-shrink: 0;
+}
+.step-body h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+.step-body p { font-size: 0.83rem; color: var(--text2); margin: 0; line-height: 1.6; }
+
+/* CODE BLOCKS */
+.code-block {
+  position: relative;
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 16px 0;
+  overflow: hidden;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+}
+.code-lang {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.code-dots { display: flex; gap: 5px; }
+.code-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.copy-btn {
+  font-size: 0.72rem; font-weight: 600;
+  padding: 4px 10px; border-radius: 5px;
+  background: var(--bg4); border: 1px solid var(--border);
+  color: var(--text3); cursor: pointer;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+}
+.copy-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.copy-btn.copied { border-color: var(--accent); color: var(--accent); }
+code {
+  font-family: var(--font-code);
+  display: block;
+  padding: 20px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  color: #e6edf3;
+  white-space: pre;
+}
+.kw { color: #ff7b72; }
+.fn { color: #d2a8ff; }
+.st { color: #a5d6ff; }
+.cm { color: #8b949e; font-style: italic; }
+.nm { color: #79c0ff; }
+.op { color: #ffa657; }
+
+/* ALERTS */
+.alert {
+  display: flex; gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius2);
+  margin: 16px 0;
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+.alert-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.alert-tip { background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.2); color: var(--text2); }
+.alert-warn { background: rgba(255,214,102,0.08); border: 1px solid rgba(255,214,102,0.2); color: var(--text2); }
+.alert-err { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); color: var(--text2); }
+.alert-info { background: rgba(108,99,255,0.08); border: 1px solid rgba(108,99,255,0.2); color: var(--text2); }
+
+/* MISTAKES */
+.mistakes { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.mistake {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 13px 15px;
+  background: rgba(255,107,107,0.06);
+  border: 1px solid rgba(255,107,107,0.15);
+  border-radius: var(--radius2);
+}
+.mistake-icon { color: var(--accent3); font-size: 1rem; flex-shrink: 0; }
+.mistake-text { font-size: 0.86rem; color: var(--text2); line-height: 1.6; }
+.mistake-text strong { color: var(--text); }
+
+/* USE CASES */
+.use-cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0; }
+.use-case {
+  padding: 14px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  font-size: 0.84rem;
+  color: var(--text2);
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.use-case .uc-icon { font-size: 1rem; flex-shrink: 0; }
+
+/* QA */
+.qa-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.qa-item {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+.qa-item:hover { border-color: var(--border2); }
+.qa-q {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+}
+.qa-num {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  background: rgba(108,99,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 700; color: var(--accent2);
+  flex-shrink: 0;
+}
+.qa-text { font-size: 0.88rem; font-weight: 500; flex: 1; }
+.qa-arrow { color: var(--text3); font-size: 0.8rem; transition: transform var(--transition); }
+.qa-item.open .qa-arrow { transform: rotate(180deg); color: var(--accent2); }
+.qa-a {
+  display: none;
+  padding: 0 18px 16px 54px;
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.75;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.qa-item.open .qa-a { display: block; animation: fadeIn 0.2s ease; }
+
+/* TABLE */
+.data-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin: 16px 0;
+}
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+.data-table th {
+  background: var(--bg3);
+  padding: 11px 14px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* BADGE */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.badge-green { background: rgba(0,212,170,0.15); color: var(--accent); }
+.badge-blue { background: rgba(6,192,255,0.15); color: var(--accent5); }
+.badge-purple { background: rgba(108,99,255,0.15); color: var(--accent2); }
+.badge-red { background: rgba(255,107,107,0.15); color: var(--accent3); }
+.badge-yellow { background: rgba(255,209,102,0.15); color: var(--accent4); }
+
+/* HOME PAGE */
+.home-hero {
+  padding: 0 0 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.home-hero h1 {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 14px;
+}
+.hero-grad {
+  background: var(--grad1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.home-hero p { color: var(--text2); font-size: 1rem; max-width: 600px; line-height: 1.7; margin-bottom: 24px; }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: var(--font-body);
+  border: none;
+}
+.btn-primary { background: var(--grad1); color: var(--bg); }
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,212,170,0.3); }
+.btn-ghost { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); }
+.btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+
+.stats-row { display: flex; gap: 20px; margin: 28px 0; flex-wrap: wrap; }
+.stat-card {
+  flex: 1; min-width: 120px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  text-align: center;
+}
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  background: var(--grad1);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.stat-label { font-size: 0.78rem; color: var(--text3); margin-top: 4px; }
+
+.topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin: 20px 0; }
+.topic-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.topic-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad-card, var(--grad1));
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.topic-card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: var(--shadow); }
+.topic-card:hover::before { opacity: 0.04; }
+.tc-icon { font-size: 1.6rem; margin-bottom: 10px; }
+.tc-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
+.tc-desc { font-size: 0.79rem; color: var(--text3); line-height: 1.55; }
+.tc-tag {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* DATA API PAGE */
+.api-controls {
+  display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
+}
+.select-input, .text-input {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color var(--transition);
+}
+.select-input:focus, .text-input:focus { border-color: var(--accent2); }
+.select-input option { background: var(--bg2); }
+
+.loading-state {
+  display: flex; align-items: center; gap: 12px;
+  padding: 32px; justify-content: center;
+  color: var(--text3); font-size: 0.9rem;
+}
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--bg4);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-state {
+  padding: 24px;
+  background: rgba(255,107,107,0.08);
+  border: 1px solid rgba(255,107,107,0.2);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--accent3);
+  font-size: 0.88rem;
+}
+
+/* MINI PROJECT */
+.project-pipeline {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin: 20px 0;
+}
+.pipeline-step {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.pipeline-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 100px;
+}
+.pipeline-arrow {
+  color: var(--accent);
+  font-size: 1.2rem;
+  padding: 0 6px;
+}
+
+.viz-bars { margin: 20px 0; }
+.viz-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 10px; font-size: 0.83rem;
+}
+.viz-label { width: 120px; text-align: right; color: var(--text2); flex-shrink: 0; }
+.viz-bar-wrap { flex: 1; height: 28px; background: var(--bg3); border-radius: 5px; overflow: hidden; position: relative; }
+.viz-bar {
+  height: 100%;
+  border-radius: 5px;
+  display: flex; align-items: center; padding-left: 10px;
+  font-size: 0.75rem; font-weight: 600; color: var(--bg);
+  transition: width 1.2s cubic-bezier(0.2,0,0.2,1);
+}
+.viz-val { width: 50px; color: var(--text3); flex-shrink: 0; font-size: 0.8rem; }
+
+/* TOAST */
+#toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius2);
+  padding: 12px 18px;
+  font-size: 0.85rem;
+  color: var(--text);
+  z-index: 999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  display: flex; align-items: center; gap: 8px;
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: none; }
+  #main { margin-left: 0; }
+  .menu-btn { display: block; }
+  .search-box { display: none; }
+  #content { padding: 20px 16px; }
+  .topic-header h1 { font-size: 1.5rem; }
+  .home-hero h1 { font-size: 1.8rem; }
+}
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 99;
+}
+.overlay.show { display: block; }
+
+/* MARK DONE BTN */
+.mark-done-bar {
+  display: flex; justify-content: flex-end; padding: 0 0 8px;
+}
+.mark-done-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  transition: all var(--transition);
+}
+.mark-done-btn:hover { border-color: var(--accent); color: var(--accent); }
+.mark-done-btn.done { background: rgba(0,212,170,0.1); border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-badge"><span class="logo-icon">🧠</span> ML Study Hub</div>
+    </div>
+    <div class="sidebar-progress">
+      <div class="progress-label">Progress <span id="prog-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-bar" style="width:0%"></div></div>
+    </div>
+    <div id="nav-list"></div>
+  </nav>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- MAIN -->
+  <div id="main">
+    <header id="header">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="header-title">Machine Learning <span>Study Hub</span></div>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search topics..." oninput="handleSearch(this.value)"/>
+      </div>
+      <div class="header-actions">
+        <button class="theme-btn" onclick="alert('Dark mode is default — light mode coming soon!')" title="Toggle theme">☀️</button>
+      </div>
+    </header>
+    <div id="content"></div>
+  </div>
+</div>
+
+<div id="toast">✅ <span id="toast-msg"></span></div>
+
+<script>
+// =============================================
+// DATA: ALL TOPICS
+// =============================================
+const TOPICS = [
+  {
+    id: 'home', label: 'Home', icon: '🏠', section: 'General', tag: null, color: '#00d4aa',
+    tagColor: null, desc: 'Overview of the platform'
+  },
+  {
+    id: 'intro', label: 'Intro to ML', icon: '🤖', section: 'Foundations', tag: 'Foundation',
+    tagColor: '#00d4aa', color: '#00d4aa', desc: 'What is ML and why it matters'
+  },
+  {
+    id: 'types', label: 'Types of ML', icon: '🗂️', section: 'Foundations', tag: 'Foundation',
+    tagColor: '#00d4aa', color: '#00d4aa', desc: 'Supervised, Unsupervised, RL'
+  },
+  {
+    id: 'preprocessing', label: 'Data Preprocessing', icon: '🧹', section: 'Data', tag: 'Data',
+    tagColor: '#06c0ff', color: '#06c0ff', desc: 'Clean and prepare raw data'
+  },
+  {
+    id: 'eda', label: 'Exploratory Data Analysis', icon: '🔍', section: 'Data', tag: 'Data',
+    tagColor: '#06c0ff', color: '#06c0ff', desc: 'Analyze and visualize data'
+  },
+  {
+    id: 'features', label: 'Feature Engineering', icon: '⚙️', section: 'Data', tag: 'Data',
+    tagColor: '#06c0ff', color: '#06c0ff', desc: 'Create powerful features'
+  },
+  {
+    id: 'training', label: 'Model Training & Testing', icon: '🏋️', section: 'Modeling', tag: 'Modeling',
+    tagColor: '#6c63ff', color: '#6c63ff', desc: 'Train, validate, and test models'
+  },
+  {
+    id: 'regression', label: 'Regression Algorithms', icon: '📈', section: 'Modeling', tag: 'Modeling',
+    tagColor: '#6c63ff', color: '#6c63ff', desc: 'Predict continuous values'
+  },
+  {
+    id: 'classification', label: 'Classification Algorithms', icon: '🏷️', section: 'Modeling', tag: 'Modeling',
+    tagColor: '#6c63ff', color: '#6c63ff', desc: 'Predict categories and classes'
+  },
+  {
+    id: 'clustering', label: 'Clustering Algorithms', icon: '🫧', section: 'Modeling', tag: 'Modeling',
+    tagColor: '#6c63ff', color: '#6c63ff', desc: 'Group similar data points'
+  },
+  {
+    id: 'pca', label: 'Dimensionality Reduction', icon: '🎯', section: 'Advanced', tag: 'Advanced',
+    tagColor: '#ffd166', color: '#ffd166', desc: 'PCA and dimensionality reduction'
+  },
+  {
+    id: 'evaluation', label: 'Model Evaluation Metrics', icon: '📊', section: 'Advanced', tag: 'Advanced',
+    tagColor: '#ffd166', color: '#ffd166', desc: 'Measure model performance'
+  },
+  {
+    id: 'overfit', label: 'Overfitting & Underfitting', icon: '⚖️', section: 'Advanced', tag: 'Advanced',
+    tagColor: '#ffd166', color: '#ffd166', desc: 'Bias-variance tradeoff'
+  },
+  {
+    id: 'crossval', label: 'Cross Validation', icon: '🔄', section: 'Advanced', tag: 'Advanced',
+    tagColor: '#ffd166', color: '#ffd166', desc: 'Robust model evaluation'
+  },
+  {
+    id: 'hyperparams', label: 'Hyperparameter Tuning', icon: '🎛️', section: 'Advanced', tag: 'Advanced',
+    tagColor: '#ffd166', color: '#ffd166', desc: 'Optimize model performance'
+  },
+  {
+    id: 'deployment', label: 'Deployment Basics', icon: '🚀', section: 'Production', tag: 'Production',
+    tagColor: '#ff6b6b', color: '#ff6b6b', desc: 'Take models to production'
+  },
+  {
+    id: 'project', label: 'Mini ML Project', icon: '🏠', section: 'Production', tag: 'Project',
+    tagColor: '#ff6b6b', color: '#ff6b6b', desc: 'House Price Prediction end-to-end'
+  },
+  {
+    id: 'dataset', label: 'Live Dataset Explorer', icon: '🌐', section: 'Production', tag: 'Interactive',
+    tagColor: '#ff6b6b', color: '#ff6b6b', desc: 'Fetch and explore real datasets'
+  }
+];
+
+// =============================================
+// TOPIC CONTENT DATABASE
+// =============================================
+const CONTENT = {
+
+intro: {
+  title: 'Introduction to Machine Learning',
+  subtitle: 'Understanding the foundations of intelligent systems that learn from data.',
+  difficulty: 'Beginner', readTime: '12 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>What is Machine Learning?</h2>
+      <p>Machine Learning (ML) is a subset of Artificial Intelligence that enables computers to <strong>learn from experience</strong> without being explicitly programmed. Instead of writing rules manually, we feed data to algorithms that automatically discover patterns and improve over time.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">🧑‍💻</div><h4>Traditional Programming</h4><p>Rules + Data → Output. You write every rule manually.</p></div>
+        <div class="info-card"><div class="info-card-icon">🤖</div><h4>Machine Learning</h4><p>Data + Output → Rules. The algorithm learns the rules.</p></div>
+        <div class="info-card"><div class="info-card-icon">🧠</div><h4>Deep Learning</h4><p>Subset of ML using neural networks with many layers.</p></div>
+      </div>
+      <h2>How Does ML Work?</h2>
+      <p>The ML workflow follows a consistent pattern: collect data → prepare data → choose algorithm → train model → evaluate → deploy. The model improves its predictions by minimizing a <strong>loss function</strong> — a measure of how wrong its predictions are.</p>
+      <h2>Why ML Matters</h2>
+      <p>ML powers <strong>Gmail spam filters</strong>, <strong>Netflix recommendations</strong>, <strong>fraud detection</strong>, <strong>self-driving cars</strong>, and <strong>medical diagnosis tools</strong>. It's the engine behind modern AI applications.</p>
+      <div class="alert alert-tip"><span class="alert-icon">💡</span><span>Think of ML as teaching a child: you show examples (data), the child learns patterns, and eventually makes decisions on new situations.</span></div>
+    </div>`,
+  steps: [
+    { title: 'Define the Problem', body: 'What question are you answering? Classification, regression, clustering? Define success metrics upfront.' },
+    { title: 'Collect & Clean Data', body: 'Gather relevant, high-quality data. Remove duplicates, handle missing values, fix inconsistencies.' },
+    { title: 'Exploratory Data Analysis', body: 'Visualize distributions, check correlations, understand the data landscape before modeling.' },
+    { title: 'Feature Engineering', body: 'Create meaningful features from raw data. Normalize, encode categoricals, handle outliers.' },
+    { title: 'Choose & Train Model', body: 'Select appropriate algorithm. Split data into train/test sets. Fit model on training data.' },
+    { title: 'Evaluate & Iterate', body: 'Use metrics (accuracy, RMSE, F1) to measure performance. Tune hyperparameters, try different algorithms.' },
+    { title: 'Deploy & Monitor', body: 'Serve predictions via API. Monitor for data drift and model degradation over time.' }
+  ],
+  code: `<span class="cm"># File: intro_ml.py — Your First ML Model</span>
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_iris
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> DecisionTreeClassifier
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> accuracy_score
+
+<span class="cm"># 1. Load dataset</span>
+iris = load_iris()
+X, y = iris.data, iris.target
+
+<span class="cm"># 2. Split data (80% train, 20% test)</span>
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>
+)
+
+<span class="cm"># 3. Choose and train a model</span>
+model = DecisionTreeClassifier(max_depth=<span class="nm">3</span>)
+model.fit(X_train, y_train)
+
+<span class="cm"># 4. Make predictions</span>
+y_pred = model.predict(X_test)
+
+<span class="cm"># 5. Evaluate</span>
+accuracy = accuracy_score(y_test, y_pred)
+<span class="fn">print</span>(<span class="st">f"Accuracy: {accuracy:.2%}"</span>)  <span class="cm"># → Accuracy: 96.67%</span>`,
+  useCases: [
+    { icon: '📧', text: 'Email spam detection' },
+    { icon: '🎬', text: 'Movie recommendations' },
+    { icon: '💳', text: 'Credit card fraud detection' },
+    { icon: '🏥', text: 'Medical diagnosis from images' },
+    { icon: '🚗', text: 'Self-driving vehicles' },
+    { icon: '📈', text: 'Stock price prediction' }
+  ],
+  mistakes: [
+    { title: 'Data leakage', body: 'Using test data information during training inflates accuracy. Always split before any preprocessing.' },
+    { title: 'Ignoring class imbalance', body: 'When one class has 99% samples, 99% accuracy means nothing. Use F1, ROC-AUC.' },
+    { title: 'Skipping EDA', body: 'Jumping straight to modeling without understanding the data leads to poor feature selection.' },
+    { title: 'Not setting random_state', body: 'Results become non-reproducible. Always set a seed for consistency.' },
+    { title: 'Treating ML as a black box', body: 'Understanding why a model works helps you debug and improve it effectively.' }
+  ],
+  qa: [
+    { q: 'What is the difference between AI, ML, and Deep Learning?',
+      a: 'AI is the broadest concept — machines simulating human intelligence. ML is a subset where machines learn from data. Deep Learning is a subset of ML using neural networks with multiple layers to learn representations automatically.' },
+    { q: 'What is the bias-variance tradeoff?',
+      a: 'Bias is error from oversimplified assumptions (underfitting). Variance is error from sensitivity to noise (overfitting). The tradeoff is finding the sweet spot — a model complex enough to capture patterns but not so complex it memorizes noise.' },
+    { q: 'What is supervised vs unsupervised learning?',
+      a: 'Supervised learning trains on labeled data (you know the correct answers). Unsupervised learning finds patterns in unlabeled data — no predefined correct answers. Reinforcement learning trains through rewards/penalties from an environment.' },
+    { q: 'What is a loss function?',
+      a: 'A loss function quantifies how wrong your model\'s predictions are. During training, the algorithm adjusts parameters to minimize this loss. Examples: Mean Squared Error for regression, Cross-Entropy Loss for classification.' },
+    { q: 'How do you choose the right ML algorithm?',
+      a: 'Consider: problem type (classification/regression/clustering), dataset size, interpretability needs, training speed, and feature types. Start simple (Logistic Regression, Decision Tree), then try complex models if needed.' }
+  ]
+},
+
+types: {
+  title: 'Types of Machine Learning',
+  subtitle: 'The three fundamental paradigms: Supervised, Unsupervised, and Reinforcement Learning.',
+  difficulty: 'Beginner', readTime: '14 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>The Three Paradigms</h2>
+      <p>ML algorithms are broadly categorized by how they <strong>learn from data</strong>. Each paradigm has different data requirements, goals, and appropriate use cases.</p>
+      <div class="info-grid">
+        <div class="info-card" style="border-color:rgba(0,212,170,0.3)"><div class="info-card-icon">👨‍🏫</div><h4>Supervised Learning</h4><p>Learn from labeled examples. Input → Output mapping. Requires ground truth labels.</p></div>
+        <div class="info-card" style="border-color:rgba(108,99,255,0.3)"><div class="info-card-icon">🔍</div><h4>Unsupervised Learning</h4><p>Find hidden patterns in unlabeled data. No ground truth required. Discover structure.</p></div>
+        <div class="info-card" style="border-color:rgba(255,209,102,0.3)"><div class="info-card-icon">🎮</div><h4>Reinforcement Learning</h4><p>Learn through trial and error. Agent takes actions, receives rewards, maximizes return.</p></div>
+      </div>
+      <h2>Supervised Learning Deep Dive</h2>
+      <p>The algorithm learns a mapping function <strong>f(X) → y</strong> from labeled training pairs. It's the most widely used type in production. Sub-types: <strong>Classification</strong> (discrete output) and <strong>Regression</strong> (continuous output).</p>
+      <h2>Unsupervised Learning Deep Dive</h2>
+      <p>No labels required. The algorithm discovers inherent structure in data. Common tasks: <strong>Clustering</strong> (K-Means, DBSCAN), <strong>Dimensionality Reduction</strong> (PCA, t-SNE), <strong>Anomaly Detection</strong>, and <strong>Generative Models</strong> (GANs).</p>
+      <h2>Reinforcement Learning Deep Dive</h2>
+      <p>An <strong>agent</strong> interacts with an <strong>environment</strong>, takes <strong>actions</strong>, and receives <strong>rewards</strong> or penalties. The goal is to learn a <strong>policy</strong> that maximizes cumulative reward. Powers game-playing AI (AlphaGo, ChatGPT's RLHF fine-tuning).</p>
+    </div>`,
+  steps: [
+    { title: 'Identify Available Data', body: 'Do you have labels? Labeled → Supervised. No labels → Unsupervised. Interactive environment → Reinforcement.' },
+    { title: 'Define the Output Type', body: 'Continuous number → Regression. Category/Class → Classification. Groups → Clustering.' },
+    { title: 'Choose Sub-Algorithm', body: 'Supervised: Linear Regression, SVM, Random Forest. Unsupervised: K-Means, DBSCAN, PCA. RL: Q-Learning, PPO.' },
+    { title: 'Prepare Data Accordingly', body: 'Supervised needs labeled pairs. Unsupervised just needs feature vectors. RL needs an environment simulator.' },
+    { title: 'Evaluate Appropriately', body: 'Supervised: accuracy, RMSE. Unsupervised: silhouette score, inertia. RL: cumulative reward, episode length.' }
+  ],
+  code: `<span class="cm"># File: types_ml.py — All Three Types Demonstrated</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LinearRegression
+<span class="kw">from</span> sklearn.cluster <span class="kw">import</span> KMeans
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification, make_blobs
+
+<span class="cm"># ── SUPERVISED: Regression ──</span>
+X_reg = np.array([[<span class="nm">1</span>],[<span class="nm">2</span>],[<span class="nm">3</span>],[<span class="nm">4</span>],[<span class="nm">5</span>]])
+y_reg = np.array([<span class="nm">2</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">4</span>, <span class="nm">5</span>])
+lr = LinearRegression().fit(X_reg, y_reg)
+<span class="fn">print</span>(<span class="st">f"Predict x=6: {lr.predict([[6]])[0]:.2f}"</span>)
+
+<span class="cm"># ── UNSUPERVISED: Clustering ──</span>
+X_cluster, _ = make_blobs(n_samples=<span class="nm">300</span>, centers=<span class="nm">4</span>, random_state=<span class="nm">42</span>)
+kmeans = KMeans(n_clusters=<span class="nm">4</span>, random_state=<span class="nm">42</span>)
+labels = kmeans.fit_predict(X_cluster)
+<span class="fn">print</span>(<span class="st">f"Cluster centers:\\n{kmeans.cluster_centers_}"</span>)
+
+<span class="cm"># ── REINFORCEMENT: Simple Q-Table concept ──</span>
+<span class="cm"># States: 0=start, 1=mid, 2=goal</span>
+Q = np.zeros((<span class="nm">3</span>, <span class="nm">2</span>))   <span class="cm"># 3 states, 2 actions (left/right)</span>
+reward = [<span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">10</span>]   <span class="cm"># only goal state gives reward</span>
+<span class="fn">print</span>(<span class="st">"Q-table initialized. Agent starts learning..."</span>)`,
+  useCases: [
+    { icon: '🏦', text: 'Supervised: Loan default prediction' },
+    { icon: '🛍️', text: 'Supervised: Product recommendations' },
+    { icon: '👥', text: 'Unsupervised: Customer segmentation' },
+    { icon: '🚨', text: 'Unsupervised: Anomaly detection' },
+    { icon: '🎮', text: 'RL: Game playing (AlphaGo)' },
+    { icon: '🤖', text: 'RL: Robot locomotion' }
+  ],
+  mistakes: [
+    { title: 'Using supervised for unlabeled data', body: 'You cannot use supervised learning without labels. If labeling is expensive, consider semi-supervised or active learning.' },
+    { title: 'Expecting RL to work with small data', body: 'RL requires millions of interactions. Do not use it when you have limited environments or interactions.' },
+    { title: 'Confusing clustering with classification', body: 'Clustering is unsupervised (no labels). Classification is supervised. They solve different problems.' },
+    { title: 'Ignoring semi-supervised learning', body: 'When you have a little labeled + lots of unlabeled data, semi-supervised learning can outperform purely supervised approaches.' }
+  ],
+  qa: [
+    { q: 'Give examples of supervised vs unsupervised problems.', a: 'Supervised: email spam (labeled spam/not-spam), house price prediction (labeled prices). Unsupervised: customer segmentation (no predefined groups), topic modeling in documents.' },
+    { q: 'What is semi-supervised learning?', a: 'Semi-supervised learning uses a small amount of labeled data combined with a large amount of unlabeled data. The model learns from both. Useful when labeling is expensive — e.g., medical image annotation.' },
+    { q: 'What is self-supervised learning?', a: 'Self-supervised learning creates supervised tasks from unlabeled data automatically. For example, predicting the next word in a sentence (GPT), or predicting a masked word (BERT). The labels come from the data itself.' },
+    { q: 'How does reinforcement learning differ from supervised learning?', a: 'Supervised: static dataset with correct labels provided upfront. RL: no dataset — the agent generates its own data by interacting with an environment. Feedback comes as rewards, not direct correct labels. RL handles sequential decision-making.' },
+    { q: 'What is transfer learning?', a: 'Transfer learning reuses a model pretrained on one task for a different but related task. Instead of training from scratch, you fine-tune pretrained weights. Critical in NLP (BERT, GPT) and computer vision (ResNet, VGG).' }
+  ]
+},
+
+preprocessing: {
+  title: 'Data Preprocessing',
+  subtitle: 'Clean, transform, and prepare raw data — garbage in, garbage out.',
+  difficulty: 'Beginner', readTime: '15 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>Why Preprocessing Matters</h2>
+      <p>Real-world data is messy: <strong>missing values</strong>, <strong>outliers</strong>, <strong>wrong data types</strong>, <strong>inconsistent formats</strong>. A model is only as good as the data it trains on — preprocessing is often 70-80% of a data scientist's time.</p>
+      <h2>Key Preprocessing Steps</h2>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">🧹</div><h4>Missing Values</h4><p>Mean/median imputation, or drop rows/columns. Never ignore them.</p></div>
+        <div class="info-card"><div class="info-card-icon">📏</div><h4>Feature Scaling</h4><p>Normalization (0–1) or Standardization (mean=0, std=1). Essential for distance-based algorithms.</p></div>
+        <div class="info-card"><div class="info-card-icon">🔢</div><h4>Encoding</h4><p>Convert categorical to numbers: Label Encoding, One-Hot Encoding, Ordinal Encoding.</p></div>
+        <div class="info-card"><div class="info-card-icon">🎯</div><h4>Outliers</h4><p>IQR method, Z-score, or domain knowledge. Decide: remove, cap, or transform.</p></div>
+      </div>
+      <h2>Scaling Methods Compared</h2>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Method</th><th>Formula</th><th>When to Use</th></tr></thead><tbody>
+        <tr><td>Min-Max Scaling</td><td>(x - min) / (max - min)</td><td>Neural networks, image pixel data</td></tr>
+        <tr><td>Standardization</td><td>(x - μ) / σ</td><td>SVM, KNN, Linear/Logistic Regression</td></tr>
+        <tr><td>Robust Scaling</td><td>(x - median) / IQR</td><td>Data with many outliers</td></tr>
+        <tr><td>Log Transform</td><td>log(x + 1)</td><td>Skewed distributions, income data</td></tr>
+      </tbody></table></div>
+      <div class="alert alert-warn"><span class="alert-icon">⚠️</span><span>Always fit scalers on training data only, then transform both train and test. Fitting on test data causes data leakage!</span></div>
+    </div>`,
+  steps: [
+    { title: 'Inspect Raw Data', body: 'df.info(), df.describe(), df.isnull().sum(). Understand shapes, types, missing counts.' },
+    { title: 'Handle Missing Values', body: 'For numeric: mean/median imputation. For categorical: mode or "Unknown". For high null %: consider dropping.' },
+    { title: 'Remove Duplicates', body: 'df.drop_duplicates(). Duplicates skew models by over-representing certain patterns.' },
+    { title: 'Encode Categoricals', body: 'Binary: Label Encoding. Nominal (no order): One-Hot Encoding. Ordinal (has order): Ordinal Encoding.' },
+    { title: 'Scale Numeric Features', body: 'Use StandardScaler for most algorithms. MinMaxScaler for NNs. Fit ONLY on train set.' },
+    { title: 'Handle Outliers', body: 'Use IQR method or Z-score. Remove, cap (clip), or use robust scaling.' },
+    { title: 'Verify Clean Data', body: 'Re-run df.info() and df.describe(). Ensure no nulls, correct dtypes, reasonable ranges.' }
+  ],
+  code: `<span class="cm"># File: preprocessing.py — Complete Pipeline</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler, LabelEncoder
+<span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer
+
+<span class="cm"># Sample messy dataset</span>
+df = pd.DataFrame({
+    <span class="st">'age'</span>: [<span class="nm">25</span>, <span class="nm">30</span>, np.nan, <span class="nm">45</span>, <span class="nm">200</span>],  <span class="cm"># outlier: 200</span>
+    <span class="st">'income'</span>: [<span class="nm">50000</span>, np.nan, <span class="nm">60000</span>, <span class="nm">80000</span>, <span class="nm">70000</span>],
+    <span class="st">'city'</span>: [<span class="st">'NYC'</span>, <span class="st">'LA'</span>, <span class="st">'NYC'</span>, np.nan, <span class="st">'Chicago'</span>],
+    <span class="st">'churn'</span>: [<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">0</span>]
+})
+
+<span class="cm"># 1. Handle missing values</span>
+num_imputer = SimpleImputer(strategy=<span class="st">'median'</span>)
+cat_imputer = SimpleImputer(strategy=<span class="st">'most_frequent'</span>)
+df[<span class="st">'age'</span>] = num_imputer.fit_transform(df[[<span class="st">'age'</span>]])
+df[<span class="st">'income'</span>] = num_imputer.fit_transform(df[[<span class="st">'income'</span>]])
+df[<span class="st">'city'</span>] = cat_imputer.fit_transform(df[[<span class="st">'city'</span>]]).ravel()
+
+<span class="cm"># 2. Cap outliers using IQR</span>
+Q1, Q3 = df[<span class="st">'age'</span>].quantile(<span class="nm">0.25</span>), df[<span class="st">'age'</span>].quantile(<span class="nm">0.75</span>)
+IQR = Q3 - Q1
+df[<span class="st">'age'</span>] = df[<span class="st">'age'</span>].clip(Q1 - <span class="nm">1.5</span>*IQR, Q3 + <span class="nm">1.5</span>*IQR)
+
+<span class="cm"># 3. Encode categoricals</span>
+df = pd.get_dummies(df, columns=[<span class="st">'city'</span>], drop_first=<span class="kw">True</span>)
+
+<span class="cm"># 4. Scale numeric features</span>
+scaler = StandardScaler()
+df[[<span class="st">'age'</span>, <span class="st">'income'</span>]] = scaler.fit_transform(df[[<span class="st">'age'</span>, <span class="st">'income'</span>]])
+<span class="fn">print</span>(df.head())`,
+  useCases: [
+    { icon: '🏥', text: 'Hospital records with missing patient data' },
+    { icon: '🏡', text: 'Real estate data with mixed types' },
+    { icon: '🛒', text: 'E-commerce transactions with outliers' },
+    { icon: '📊', text: 'Survey data with categorical responses' }
+  ],
+  mistakes: [
+    { title: 'Scaling before train/test split', body: 'If you scale all data before splitting, test data info "leaks" into the scaler — making accuracy look better than it is.' },
+    { title: 'One-hot encoding high-cardinality features', body: 'A "city" column with 500 cities → 500 new columns. Use target encoding or embedding instead.' },
+    { title: 'Dropping all rows with missing values', body: 'If 30% of rows have at least one null, you lose 30% of data. Impute intelligently instead.' },
+    { title: 'Not handling outliers', body: 'Extreme outliers heavily influence mean-based models (Linear Regression). Always investigate before including.' }
+  ],
+  qa: [
+    { q: 'When should you use StandardScaler vs MinMaxScaler?', a: 'StandardScaler (z-score) when data may have outliers and when using algorithms like SVM or Logistic Regression — it centers data around 0. MinMaxScaler when you need values in [0,1], common for neural networks and image processing. Avoid MinMaxScaler with outliers as it compresses the bulk of data into a small range.' },
+    { q: 'How do you handle missing values?', a: 'Options: (1) Drop rows/columns with high null percentage (>40%). (2) Mean/median imputation for numerical. (3) Mode imputation for categorical. (4) Model-based imputation (KNN Imputer, IterativeImputer). (5) Add indicator column flagging "was_missing" before imputing.' },
+    { q: 'What is the difference between normalization and standardization?', a: 'Normalization (Min-Max Scaling) rescales to [0,1]. Standardization (Z-score) transforms to mean=0, std=1. Standardization is less sensitive to outliers. Use normalization for bounded data; standardization for most ML algorithms.' },
+    { q: 'How do you encode high-cardinality categorical features?', a: 'For high cardinality (many unique values): (1) Target Encoding — replace category with mean target value. (2) Frequency Encoding — replace with frequency count. (3) Embeddings (for NNs). Avoid One-Hot for >20 categories as it creates too many sparse columns.' },
+    { q: 'What is data leakage and how do you prevent it?', a: 'Data leakage occurs when information from the future or test set influences training. Common causes: scaling/imputing before split, using features not available at prediction time, including the target in features. Prevent by always splitting FIRST, then applying transformations fitted only on training data.' }
+  ]
+},
+
+eda: {
+  title: 'Exploratory Data Analysis (EDA)',
+  subtitle: 'Understand your data before modeling — every insight here shapes your model.',
+  difficulty: 'Beginner', readTime: '13 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>What is EDA?</h2>
+      <p>EDA is the process of <strong>analyzing datasets to summarize their characteristics</strong>, often using visual methods. It helps you understand distributions, spot anomalies, discover patterns, test hypotheses, and inform feature engineering before modeling.</p>
+      <h2>EDA Toolkit</h2>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">📊</div><h4>Univariate Analysis</h4><p>Analyze one variable at a time. Histograms, box plots, count plots.</p></div>
+        <div class="info-card"><div class="info-card-icon">🔀</div><h4>Bivariate Analysis</h4><p>Relationship between two variables. Scatter plots, correlation heatmaps.</p></div>
+        <div class="info-card"><div class="info-card-icon">🌐</div><h4>Multivariate Analysis</h4><p>Interactions among 3+ variables. Pair plots, 3D plots, parallel coordinates.</p></div>
+      </div>
+      <h2>Key Questions EDA Answers</h2>
+      <ul>
+        <li>Are there missing values or outliers?</li>
+        <li>What is the distribution of each feature?</li>
+        <li>Are features correlated with each other? (multicollinearity)</li>
+        <li>Which features correlate most with the target?</li>
+        <li>Is the target variable imbalanced?</li>
+        <li>Are there obvious patterns or clusters?</li>
+      </ul>
+    </div>`,
+  steps: [
+    { title: 'Load & Inspect', body: 'df.shape, df.dtypes, df.head(), df.describe() — get the big picture.' },
+    { title: 'Check Missing & Duplicates', body: 'df.isnull().sum(), df.duplicated().sum(). Create a missing value heatmap.' },
+    { title: 'Univariate Analysis', body: 'Histogram for numeric, value_counts for categorical. Check for skewness.' },
+    { title: 'Bivariate Analysis', body: 'Scatter plots for numeric pairs. Box plots for numeric vs categorical. Correlation heatmap.' },
+    { title: 'Target Distribution', body: 'Is it balanced (classification)? Is it skewed (regression)? Consider log transform.' },
+    { title: 'Feature-Target Correlation', body: 'Correlation matrix for numeric. ANOVA/chi-squared for categorical vs target.' },
+    { title: 'Document Findings', body: 'Write down insights: "Feature X is highly skewed", "Age and Income are correlated". Use these in preprocessing.' }
+  ],
+  code: `<span class="cm"># File: eda.py — Comprehensive EDA Workflow</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_boston
+
+df = pd.read_csv(<span class="st">'data.csv'</span>)  <span class="cm"># your dataset</span>
+
+<span class="cm"># ── 1. Overview ──</span>
+<span class="fn">print</span>(df.shape)           <span class="cm"># (rows, cols)</span>
+<span class="fn">print</span>(df.dtypes)          <span class="cm"># data types</span>
+<span class="fn">print</span>(df.describe())      <span class="cm"># stats summary</span>
+<span class="fn">print</span>(df.isnull().sum())  <span class="cm"># missing values</span>
+
+<span class="cm"># ── 2. Distribution of target ──</span>
+sns.histplot(df[<span class="st">'target'</span>], kde=<span class="kw">True</span>)
+plt.title(<span class="st">'Target Distribution'</span>)
+
+<span class="cm"># ── 3. Correlation heatmap ──</span>
+plt.figure(figsize=(<span class="nm">10</span>, <span class="nm">8</span>))
+sns.heatmap(df.corr(), annot=<span class="kw">True</span>, fmt=<span class="st">'.2f'</span>, cmap=<span class="st">'coolwarm'</span>)
+
+<span class="cm"># ── 4. Outlier detection ──</span>
+<span class="kw">for</span> col <span class="kw">in</span> df.select_dtypes(include=<span class="st">'number'</span>).columns:
+    Q1, Q3 = df[col].quantile(<span class="nm">0.25</span>), df[col].quantile(<span class="nm">0.75</span>)
+    IQR = Q3 - Q1
+    outliers = df[(df[col] < Q1 - <span class="nm">1.5</span>*IQR) | (df[col] > Q3 + <span class="nm">1.5</span>*IQR)]
+    <span class="fn">print</span>(<span class="st">f"{col}: {len(outliers)} outliers"</span>)
+
+<span class="cm"># ── 5. Top correlated features with target ──</span>
+correlations = df.corr()[<span class="st">'target'</span>].abs().sort_values(ascending=<span class="kw">False</span>)
+<span class="fn">print</span>(correlations.head(<span class="nm">10</span>))`,
+  useCases: [
+    { icon: '🏦', text: 'Understand customer behavior patterns' },
+    { icon: '🏥', text: 'Spot data quality issues in clinical trials' },
+    { icon: '📱', text: 'Analyze user engagement metrics' },
+    { icon: '🌍', text: 'Explore environmental sensor readings' }
+  ],
+  mistakes: [
+    { title: 'Skipping EDA entirely', body: 'Without EDA you miss outliers, wrong data types, skewed distributions — all of which hurt model performance.' },
+    { title: 'Over-relying on correlation', body: "Pearson correlation only captures linear relationships. Use Spearman for monotonic, or scatter plots for nonlinear." },
+    { title: 'Not checking class imbalance', body: 'For classification, always plot target distribution. 95% one class → model needs special handling (oversampling, class weights).' },
+    { title: 'Treating EDA as one-time', body: 'EDA is iterative. After feature engineering, run EDA again on new features.' }
+  ],
+  qa: [
+    { q: 'What is a correlation heatmap and what does it tell you?', a: 'A correlation heatmap shows pairwise Pearson correlation coefficients (-1 to +1) between all numeric features. +1 = perfect positive correlation, -1 = perfect negative, 0 = no linear relationship. Use it to detect multicollinearity (features correlated with each other) and identify features most predictive of the target.' },
+    { q: 'How do you detect outliers?', a: 'Statistical methods: IQR method (flag values below Q1-1.5×IQR or above Q3+1.5×IQR). Z-score method (flag |z|>3). Visual methods: box plots, scatter plots. Domain knowledge is also key — a $0 house price is clearly wrong.' },
+    { q: 'What is skewness and why does it matter?', a: 'Skewness measures asymmetry of a distribution. Right-skewed (long right tail) is common in income, prices. Left-skewed less common. High skewness violates assumptions of linear models. Fix with log transform, square root, or Box-Cox transformation.' },
+    { q: 'What statistical tests do you use in EDA?', a: 'Correlation: Pearson (linear), Spearman (monotonic). Categorical vs Categorical: Chi-squared test. Numeric vs Categorical: ANOVA, Kruskal-Wallis. Normality: Shapiro-Wilk, Q-Q plot. These help determine which relationships are statistically significant.' },
+    { q: 'How do you handle imbalanced datasets?', a: 'Resampling: SMOTE (oversample minority), Random Undersampling (reduce majority). Algorithm-level: class_weight="balanced" parameter in sklearn. Metrics: use F1, ROC-AUC instead of accuracy. Threshold tuning: adjust decision boundary.' }
+  ]
+},
+
+features: {
+  title: 'Feature Engineering',
+  subtitle: 'Transform raw data into powerful signals — features make or break models.',
+  difficulty: 'Intermediate', readTime: '16 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>What is Feature Engineering?</h2>
+      <p>Feature engineering is the process of using domain knowledge to <strong>create, transform, or select features</strong> from raw data to improve model performance. It's the most impactful step in the ML pipeline — better features often beat better algorithms.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">➕</div><h4>Feature Creation</h4><p>Create new features: age from birthdate, BMI from height/weight, ratios, polynomial features.</p></div>
+        <div class="info-card"><div class="info-card-icon">🔄</div><h4>Feature Transformation</h4><p>Log, sqrt, power transforms. Bucketing/binning continuous variables. Cyclic encoding for dates.</p></div>
+        <div class="info-card"><div class="info-card-icon">📌</div><h4>Feature Selection</h4><p>Remove irrelevant features. Filter methods, wrapper methods, embedded methods.</p></div>
+        <div class="info-card"><div class="info-card-icon">🤝</div><h4>Feature Interaction</h4><p>Multiply or combine features: age×income, lat×lon, tf-idf for text.</p></div>
+      </div>
+      <h2>Feature Selection Methods</h2>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Method</th><th>How</th><th>Pros/Cons</th></tr></thead><tbody>
+        <tr><td>Filter (Correlation)</td><td>Remove correlated features</td><td>Fast; ignores model</td></tr>
+        <tr><td>Filter (Chi-Squared)</td><td>Statistical test vs target</td><td>Good for classification</td></tr>
+        <tr><td>Wrapper (RFE)</td><td>Recursive Feature Elimination</td><td>Accurate but slow</td></tr>
+        <tr><td>Embedded (L1 Lasso)</td><td>Regularization zeroes coefficients</td><td>Built into model training</td></tr>
+        <tr><td>Tree Importance</td><td>Feature importance from Random Forest</td><td>Non-linear; popular</td></tr>
+      </tbody></table></div>
+    </div>`,
+  steps: [
+    { title: 'Analyze Existing Features', body: 'Run EDA. Understand what each feature means, its distribution, and relationship to target.' },
+    { title: 'Create Domain Features', body: 'Use business knowledge. Real estate: price_per_sqft. Finance: debt_to_income ratio. HR: tenure.' },
+    { title: 'Transform Distributions', body: 'Log-transform skewed features. Bin ages into groups (0-18, 19-35...). Cyclic encode hour of day.' },
+    { title: 'Encode Categoricals', body: 'Binary: Label Encoding. Nominal: One-Hot. High-cardinality: Target/Frequency Encoding.' },
+    { title: 'Create Interaction Features', body: 'PolynomialFeatures for linear models. Manual: feature_a × feature_b, ratio_a_to_b.' },
+    { title: 'Select Best Features', body: 'Use RFE, Lasso, or Random Forest importance. Remove low-variance and high-correlation features.' },
+    { title: 'Validate Improvements', body: 'Compare CV score before and after each feature engineering step. Track what helped.' }
+  ],
+  code: `<span class="cm"># File: feature_engineering.py</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> PolynomialFeatures
+<span class="kw">from</span> sklearn.feature_selection <span class="kw">import</span> SelectKBest, f_classif, RFE
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+
+df = pd.read_csv(<span class="st">'raw_data.csv'</span>)
+
+<span class="cm"># ── 1. Create new features ──</span>
+df[<span class="st">'age'</span>] = <span class="nm">2024</span> - df[<span class="st">'birth_year'</span>]
+df[<span class="st">'bmi'</span>] = df[<span class="st">'weight_kg'</span>] / (df[<span class="st">'height_m'</span>] ** <span class="nm">2</span>)
+df[<span class="st">'price_per_sqft'</span>] = df[<span class="st">'price'</span>] / df[<span class="st">'area'</span>]
+
+<span class="cm"># ── 2. Cyclic encoding for time features ──</span>
+df[<span class="st">'hour_sin'</span>] = np.sin(<span class="nm">2</span> * np.pi * df[<span class="st">'hour'</span>] / <span class="nm">24</span>)
+df[<span class="st">'hour_cos'</span>] = np.cos(<span class="nm">2</span> * np.pi * df[<span class="st">'hour'</span>] / <span class="nm">24</span>)
+
+<span class="cm"># ── 3. Polynomial features ──</span>
+poly = PolynomialFeatures(degree=<span class="nm">2</span>, include_bias=<span class="kw">False</span>)
+X_poly = poly.fit_transform(df[[<span class="st">'age'</span>, <span class="st">'income'</span>]])
+
+<span class="cm"># ── 4. Feature importance with Random Forest ──</span>
+rf = RandomForestClassifier(n_estimators=<span class="nm">100</span>)
+rf.fit(X, y)
+importances = pd.Series(rf.feature_importances_, index=feature_names)
+<span class="fn">print</span>(importances.sort_values(ascending=<span class="kw">False</span>).head(<span class="nm">10</span>))
+
+<span class="cm"># ── 5. Select top K features ──</span>
+selector = SelectKBest(score_func=f_classif, k=<span class="nm">10</span>)
+X_selected = selector.fit_transform(X, y)`,
+  useCases: [
+    { icon: '🏡', text: 'Price-per-sqft in real estate' },
+    { icon: '💊', text: 'Drug interaction features in healthcare' },
+    { icon: '📈', text: 'Moving averages in stock prediction' },
+    { icon: '🛒', text: 'Purchase frequency per user in e-commerce' }
+  ],
+  mistakes: [
+    { title: 'Feature engineering on the whole dataset', body: 'Compute statistics (mean, target encoding) on training data ONLY. Apply to test. Otherwise you leak.' },
+    { title: 'Including too many features', body: 'More features ≠ better. Irrelevant features add noise. Use selection methods to keep the best.' },
+    { title: 'Ignoring domain knowledge', body: 'The most powerful features come from understanding the problem. Ask domain experts, not just the data.' },
+    { title: 'Forgetting to handle datetime properly', body: 'Datetime has cyclical nature (hour 23 is close to hour 0). Use sin/cos encoding or extract year/month/weekday.' }
+  ],
+  qa: [
+    { q: 'What is target encoding and when is it used?', a: 'Target encoding replaces a categorical value with the mean of the target variable for that category. Used for high-cardinality categoricals. Risk: data leakage if done on the full dataset. Use cross-validated target encoding (CatBoost-style) to avoid this.' },
+    { q: 'What are polynomial features?', a: 'Polynomial features create new features by raising existing features to powers and creating interaction terms. For features [a, b], degree=2 creates [a, b, a², ab, b²]. This allows linear models to learn non-linear relationships at the cost of increased dimensionality.' },
+    { q: 'How do you encode cyclical features like hour of day?', a: 'Hour of day has a cyclical pattern — hour 23 and hour 0 are adjacent, not far apart. Use sin/cos encoding: hour_sin = sin(2π × hour/24), hour_cos = cos(2π × hour/24). This preserves the cyclic nature in a continuous space.' },
+    { q: 'What is the curse of dimensionality?', a: 'As feature count grows, the data becomes sparse in high-dimensional space. Distances become meaningless (everything is equally far), models need exponentially more data, and training time increases. Solutions: dimensionality reduction (PCA), feature selection, regularization.' },
+    { q: 'What is variance inflation factor (VIF)?', a: 'VIF measures multicollinearity between features. VIF=1 means no correlation. VIF>5-10 indicates high multicollinearity, which makes regression coefficients unstable. For each feature, VIF = 1/(1-R²) where R² is the R-squared from regressing that feature on all other features.' }
+  ]
+},
+
+training: {
+  title: 'Model Training & Testing',
+  subtitle: 'The core ML workflow — splitting data, fitting models, and honest evaluation.',
+  difficulty: 'Beginner', readTime: '14 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>The Train-Test Framework</h2>
+      <p>We split data into <strong>training</strong> (model learns) and <strong>test</strong> (honest evaluation) sets. The model never sees test data during training — it simulates performance on new, unseen data.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">📚</div><h4>Training Set (70-80%)</h4><p>Model learns patterns from this. Used for fitting all model parameters.</p></div>
+        <div class="info-card"><div class="info-card-icon">🔧</div><h4>Validation Set (10-15%)</h4><p>Tune hyperparameters without touching test. Often done via cross-validation.</p></div>
+        <div class="info-card"><div class="info-card-icon">🧪</div><h4>Test Set (10-20%)</h4><p>Final, one-time evaluation. Touch it only at the very end. Your honest estimate.</p></div>
+      </div>
+      <h2>The sklearn API Pattern</h2>
+      <p>All sklearn models follow the same 3-method API: <code style="background:var(--bg4);padding:2px 6px;border-radius:4px;font-family:var(--font-code);font-size:0.8em">.fit(X_train, y_train)</code> → <code style="background:var(--bg4);padding:2px 6px;border-radius:4px;font-family:var(--font-code);font-size:0.8em">.predict(X_test)</code> → <code style="background:var(--bg4);padding:2px 6px;border-radius:4px;font-family:var(--font-code);font-size:0.8em">.score(X_test, y_test)</code></p>
+      <div class="alert alert-info"><span class="alert-icon">💡</span><span>Rule: Never use test set for hyperparameter tuning. If you tune on the test set, it becomes part of training and is no longer an honest evaluation.</span></div>
+    </div>`,
+  steps: [
+    { title: 'Prepare Feature Matrix (X) and Target (y)', body: 'X = all features as a 2D array/DataFrame. y = target column as 1D Series/array.' },
+    { title: 'Split Data', body: 'train_test_split(X, y, test_size=0.2, random_state=42, stratify=y for classification).' },
+    { title: 'Preprocess (fit on train, transform both)', body: 'Scaler.fit(X_train), then transform X_train AND X_test using fitted scaler.' },
+    { title: 'Instantiate and Train Model', body: 'model = SomeModel(hyperparams); model.fit(X_train, y_train).' },
+    { title: 'Predict and Evaluate', body: 'y_pred = model.predict(X_test). Compare y_pred vs y_test with metrics.' },
+    { title: 'Cross-Validate', body: 'cross_val_score for more robust estimate. Reports mean and std of metric across K folds.' },
+    { title: 'Tune Hyperparameters', body: 'Use GridSearchCV or RandomizedSearchCV on training data with cross-validation.' }
+  ],
+  code: `<span class="cm"># File: model_training.py — Full Training Pipeline</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split, cross_val_score, GridSearchCV
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> classification_report
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_breast_cancer
+
+<span class="cm"># 1. Load data</span>
+data = load_breast_cancer()
+X, y = data.data, data.target
+
+<span class="cm"># 2. Split (stratify preserves class ratio)</span>
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>, stratify=y
+)
+
+<span class="cm"># 3. Build Pipeline (prevents data leakage!)</span>
+pipeline = Pipeline([
+    (<span class="st">'scaler'</span>, StandardScaler()),
+    (<span class="st">'model'</span>, RandomForestClassifier(random_state=<span class="nm">42</span>))
+])
+
+<span class="cm"># 4. Cross-validation score</span>
+cv_scores = cross_val_score(pipeline, X_train, y_train, cv=<span class="nm">5</span>, scoring=<span class="st">'f1'</span>)
+<span class="fn">print</span>(<span class="st">f"CV F1: {cv_scores.mean():.3f} ± {cv_scores.std():.3f}"</span>)
+
+<span class="cm"># 5. Hyperparameter tuning</span>
+param_grid = {<span class="st">'model__n_estimators'</span>: [<span class="nm">50</span>,<span class="nm">100</span>], <span class="st">'model__max_depth'</span>: [<span class="nm">5</span>,<span class="nm">10</span>,<span class="kw">None</span>]}
+grid = GridSearchCV(pipeline, param_grid, cv=<span class="nm">5</span>, scoring=<span class="st">'f1'</span>)
+grid.fit(X_train, y_train)
+
+<span class="cm"># 6. Final evaluation on TEST SET</span>
+best_model = grid.best_estimator_
+y_pred = best_model.predict(X_test)
+<span class="fn">print</span>(classification_report(y_test, y_pred))`,
+  useCases: [
+    { icon: '🔬', text: 'Disease classification pipelines' },
+    { icon: '📧', text: 'Spam email detection models' },
+    { icon: '💰', text: 'Credit risk assessment' },
+    { icon: '🌡️', text: 'Weather prediction systems' }
+  ],
+  mistakes: [
+    { title: 'Evaluating on training data', body: '"My model has 100% accuracy!" — if you evaluate on training data, you measure memorization, not generalization.' },
+    { title: 'Not using Pipeline', body: 'Applying preprocessing outside a Pipeline leads to data leakage in cross-validation. Always use sklearn Pipeline.' },
+    { title: 'Ignoring stratify in classification', body: 'Without stratify=y, your split may have very different class ratios in train/test, especially with imbalanced data.' },
+    { title: 'Peeking at test set too early', body: "Every time you evaluate on test and make changes, you're overfitting to it. Use a validation set or CV for tuning." }
+  ],
+  qa: [
+    { q: 'What is the purpose of train_test_split?', a: 'train_test_split divides data into a training set (model learns from) and a test set (honest evaluation on unseen data). This simulates real-world deployment where the model encounters data it has never seen. The test set provides an unbiased estimate of generalization performance.' },
+    { q: 'What is a sklearn Pipeline and why use it?', a: 'A Pipeline chains preprocessing steps and a model into a single object. Benefits: (1) Prevents data leakage — fit() on the pipeline only fits transformers on training data. (2) Cleaner code. (3) Works seamlessly with cross_val_score and GridSearchCV. Always use Pipeline when your workflow includes scaling or encoding.' },
+    { q: 'What is the difference between model.fit() and model.predict()?', a: 'fit() trains the model — it adjusts internal parameters (weights, thresholds, rules) to minimize the loss function on training data. predict() uses the already-fitted parameters to generate predictions for new input data. Never call predict() before fit().' },
+    { q: 'What is GridSearchCV and RandomizedSearchCV?', a: 'GridSearchCV exhaustively tries all combinations in a parameter grid using cross-validation. RandomizedSearchCV randomly samples n_iter combinations from parameter distributions — much faster for large grids, often finds equally good solutions. Use Randomized first to narrow down ranges, then Grid for fine-tuning.' },
+    { q: 'Why use cross-validation instead of a simple train/test split?', a: 'A single train/test split has high variance — the result depends heavily on which samples end up in test. Cross-validation averages over K different splits, giving a more stable and reliable performance estimate. The standard deviation of CV scores also tells you how consistent the model is.' }
+  ]
+},
+
+regression: {
+  title: 'Regression Algorithms',
+  subtitle: 'Predict continuous numerical values — from house prices to temperatures.',
+  difficulty: 'Intermediate', readTime: '18 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>Regression Overview</h2>
+      <p>Regression predicts a <strong>continuous numerical output</strong>. The goal is to find a function f(X) that approximates y as closely as possible.</p>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Algorithm</th><th>How It Works</th><th>Best For</th></tr></thead><tbody>
+        <tr><td><span class="badge badge-green">Linear Regression</span></td><td>Fits a hyperplane minimizing sum of squared residuals</td><td>Linear relationships, interpretable</td></tr>
+        <tr><td><span class="badge badge-blue">Ridge / Lasso</span></td><td>Linear regression + L2 / L1 regularization</td><td>Multicollinearity, feature selection</td></tr>
+        <tr><td><span class="badge badge-purple">Decision Tree</span></td><td>Splits data into regions with constant predictions</td><td>Non-linear, easy to interpret</td></tr>
+        <tr><td><span class="badge badge-yellow">Random Forest</span></td><td>Ensemble of trees, averages predictions</td><td>Most tabular data, robust to outliers</td></tr>
+        <tr><td><span class="badge badge-red">Gradient Boosting</span></td><td>Builds trees sequentially, each corrects errors</td><td>Competitions, high accuracy</td></tr>
+        <tr><td><span class="badge badge-green">SVR</span></td><td>SVM adapted for regression with ε-tube</td><td>Small datasets, non-linear kernels</td></tr>
+      </tbody></table></div>
+      <h2>Key Regression Metrics</h2>
+      <ul>
+        <li><strong>MSE</strong> — Mean Squared Error. Penalizes large errors. Lower is better.</li>
+        <li><strong>RMSE</strong> — Root MSE. Same units as target. Interpretable.</li>
+        <li><strong>MAE</strong> — Mean Absolute Error. Less sensitive to outliers than MSE.</li>
+        <li><strong>R² (R-Squared)</strong> — Proportion of variance explained. 1=perfect, 0=baseline, negative=worse than mean.</li>
+      </ul>
+    </div>`,
+  steps: [
+    { title: 'Check Linearity Assumption', body: 'Scatter plot X vs y. If linear → start with Linear Regression. If non-linear → try tree-based models.' },
+    { title: 'Handle Skewed Target', body: 'If target is skewed (house prices), apply log transform: y_log = np.log1p(y). Predict log, then exp back.' },
+    { title: 'Train Baseline (Linear Regression)', body: 'Always establish a baseline. A simple model you can benchmark against.' },
+    { title: 'Add Regularization if Needed', body: 'Many features or multicollinearity? Try Ridge (L2) or Lasso (L1). Lasso also does feature selection.' },
+    { title: 'Try Ensemble Methods', body: 'Random Forest and XGBoost typically outperform linear models on tabular data. No scaling needed.' },
+    { title: 'Evaluate with Multiple Metrics', body: 'Always report RMSE and R². If outliers matter less, also report MAE.' },
+    { title: 'Analyze Residuals', body: 'Plot y_pred vs y_actual and residuals. Look for systematic patterns — they reveal model weaknesses.' }
+  ],
+  code: `<span class="cm"># File: regression.py — Multiple Regression Algorithms</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> fetch_california_housing
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LinearRegression, Ridge, Lasso
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestRegressor, GradientBoostingRegressor
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> mean_squared_error, r2_score
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+
+X, y = fetch_california_housing(return_X_y=<span class="kw">True</span>)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>)
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)
+X_test_s = scaler.transform(X_test)
+
+models = {
+    <span class="st">'LinearRegression'</span>: LinearRegression(),
+    <span class="st">'Ridge(α=1.0)'</span>: Ridge(alpha=<span class="nm">1.0</span>),
+    <span class="st">'Lasso(α=0.1)'</span>: Lasso(alpha=<span class="nm">0.1</span>),
+    <span class="st">'RandomForest'</span>: RandomForestRegressor(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>),
+    <span class="st">'GradientBoosting'</span>: GradientBoostingRegressor(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>)
+}
+
+<span class="kw">for</span> name, model <span class="kw">in</span> models.items():
+    X_tr = X_train_s <span class="kw">if</span> <span class="st">'Forest'</span> <span class="kw">not in</span> name <span class="kw">else</span> X_train
+    X_te = X_test_s  <span class="kw">if</span> <span class="st">'Forest'</span> <span class="kw">not in</span> name <span class="kw">else</span> X_test
+    model.fit(X_tr, y_train)
+    y_pred = model.predict(X_te)
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    r2 = r2_score(y_test, y_pred)
+    <span class="fn">print</span>(<span class="st">f"{name:25} RMSE={rmse:.3f}  R²={r2:.3f}"</span>)`,
+  useCases: [
+    { icon: '🏠', text: 'House price prediction' },
+    { icon: '💊', text: 'Drug dosage recommendation' },
+    { icon: '🌤️', text: 'Weather temperature forecasting' },
+    { icon: '📈', text: 'Stock return prediction' }
+  ],
+  mistakes: [
+    { title: 'Using R² alone', body: 'R²=0.9 can still mean huge errors in absolute terms. Always report RMSE/MAE in the target units.' },
+    { title: 'Not checking residuals', body: 'Residual plots reveal heteroscedasticity, non-linearity, and influential outliers that metrics alone miss.' },
+    { title: 'Assuming linearity always', body: 'Many relationships are non-linear. If scatter plot shows a curve, linear regression will underperform.' },
+    { title: 'Forgetting to inverse transform predictions', body: "If you log-transformed the target, don't forget np.expm1(y_pred) after prediction." }
+  ],
+  qa: [
+    { q: 'What is the difference between Ridge and Lasso regression?', a: 'Both are Linear Regression with regularization. Ridge adds L2 penalty (sum of squared coefficients) — shrinks all coefficients toward zero but never exactly zero. Lasso adds L1 penalty (sum of absolute values) — can shrink coefficients exactly to zero, performing feature selection. Elastic Net combines both.' },
+    { q: 'What assumptions does Linear Regression make?', a: 'Linearity (linear relationship between X and y). Independence (observations are independent). Homoscedasticity (constant variance of residuals). Normality (residuals are normally distributed). No multicollinearity (features not highly correlated with each other).' },
+    { q: 'What is gradient descent and how does it work?', a: 'Gradient descent is an optimization algorithm that minimizes the loss function. Start with random parameters, compute the gradient of the loss with respect to each parameter, update parameters in the opposite direction of the gradient, repeat until convergence. Learning rate controls step size.' },
+    { q: 'When would you choose Random Forest over Linear Regression?', a: 'Random Forest when: (1) relationships are non-linear, (2) features interact in complex ways, (3) you have many irrelevant features, (4) you need automatic feature selection. Linear Regression when: (1) you need interpretability, (2) you have fewer samples, (3) relationship is truly linear, (4) fast inference is needed.' },
+    { q: 'What does a negative R² mean?', a: 'A negative R² means your model performs WORSE than simply predicting the mean of y for every sample. This indicates serious model problems: wrong algorithm, unscaled features, target leakage, or the model fundamentally cannot learn the relationship.' }
+  ]
+},
+
+classification: {
+  title: 'Classification Algorithms',
+  subtitle: 'Predict categories and classes — from spam detection to medical diagnosis.',
+  difficulty: 'Intermediate', readTime: '18 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>Classification Overview</h2>
+      <p>Classification maps input features to <strong>discrete class labels</strong>. Binary (2 classes) or multi-class (3+ classes).</p>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Algorithm</th><th>Pros</th><th>Cons</th></tr></thead><tbody>
+        <tr><td><span class="badge badge-green">Logistic Regression</span></td><td>Fast, interpretable, probabilistic</td><td>Linear boundary only</td></tr>
+        <tr><td><span class="badge badge-blue">K-Nearest Neighbors</span></td><td>No training, intuitive, non-parametric</td><td>Slow at inference, needs scaling</td></tr>
+        <tr><td><span class="badge badge-purple">Decision Tree</span></td><td>Interpretable, handles mixed types</td><td>Overfits without pruning</td></tr>
+        <tr><td><span class="badge badge-yellow">Random Forest</span></td><td>Robust, handles non-linearity, OOB score</td><td>Less interpretable, slow for large datasets</td></tr>
+        <tr><td><span class="badge badge-red">SVM</span></td><td>Excellent for high-dim, margin-based</td><td>Slow training, needs scaling, hard to tune</td></tr>
+        <tr><td><span class="badge badge-green">Naive Bayes</span></td><td>Very fast, great for text, works with little data</td><td>Assumes feature independence</td></tr>
+        <tr><td><span class="badge badge-blue">XGBoost</span></td><td>State-of-art on tabular, fast, regularized</td><td>Many hyperparameters, can overfit</td></tr>
+      </tbody></table></div>
+      <h2>Key Metrics</h2>
+      <ul>
+        <li><strong>Accuracy</strong> — Correct predictions / Total. Misleading with imbalanced data.</li>
+        <li><strong>Precision</strong> — TP / (TP + FP). When false positives are costly (spam filter).</li>
+        <li><strong>Recall</strong> — TP / (TP + FN). When false negatives are costly (cancer diagnosis).</li>
+        <li><strong>F1 Score</strong> — Harmonic mean of Precision and Recall. Balanced measure.</li>
+        <li><strong>ROC-AUC</strong> — Area under the ROC curve. Threshold-independent.</li>
+      </ul>
+    </div>`,
+  steps: [
+    { title: 'Check Class Balance', body: 'y.value_counts(). Imbalanced? Use stratify=y in split, class_weight="balanced", or SMOTE.' },
+    { title: 'Establish Baseline', body: 'DummyClassifier with strategy="most_frequent". Any model must beat this.' },
+    { title: 'Start with Logistic Regression', body: 'Fast, interpretable. Good baseline for linear problems. Use cross-validation for robust estimate.' },
+    { title: 'Try Tree-Based Models', body: 'Random Forest and XGBoost handle non-linearity and interactions automatically.' },
+    { title: 'Evaluate with Appropriate Metrics', body: 'Imbalanced → F1 / ROC-AUC. Balanced → accuracy fine. Medical → prioritize Recall.' },
+    { title: 'Analyze Confusion Matrix', body: 'confusion_matrix() reveals which classes are confused. Are false negatives or false positives the bigger problem?' },
+    { title: 'Tune Decision Threshold', body: 'Default is 0.5. For imbalanced problems, plot precision-recall curve and pick optimal threshold.' }
+  ],
+  code: `<span class="cm"># File: classification.py — Multiple Classifiers Compared</span>
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_breast_cancer
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split, cross_val_score
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+<span class="kw">from</span> sklearn.neighbors <span class="kw">import</span> KNeighborsClassifier
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> DecisionTreeClassifier
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.svm <span class="kw">import</span> SVC
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> classification_report, confusion_matrix
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+
+X, y = load_breast_cancer(return_X_y=<span class="kw">True</span>)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="nm">0.2</span>, stratify=y, random_state=<span class="nm">42</span>)
+sc = StandardScaler()
+X_tr_s, X_te_s = sc.fit_transform(X_train), sc.transform(X_test)
+
+classifiers = {
+    <span class="st">'Logistic Regression'</span>: LogisticRegression(max_iter=<span class="nm">1000</span>),
+    <span class="st">'KNN(k=5)'</span>: KNeighborsClassifier(n_neighbors=<span class="nm">5</span>),
+    <span class="st">'Decision Tree'</span>: DecisionTreeClassifier(max_depth=<span class="nm">5</span>),
+    <span class="st">'Random Forest'</span>: RandomForestClassifier(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>),
+    <span class="st">'SVM(rbf)'</span>: SVC(kernel=<span class="st">'rbf'</span>, probability=<span class="kw">True</span>)
+}
+
+<span class="kw">for</span> name, clf <span class="kw">in</span> classifiers.items():
+    clf.fit(X_tr_s, y_train)
+    score = clf.score(X_te_s, y_test)
+    cv = cross_val_score(clf, X_tr_s, y_train, cv=<span class="nm">5</span>).mean()
+    <span class="fn">print</span>(<span class="st">f"{name:22} Test={score:.3f}  CV={cv:.3f}"</span>)
+
+<span class="cm"># Detailed report for best model</span>
+y_pred = classifiers[<span class="st">'Random Forest'</span>].predict(X_te_s)
+<span class="fn">print</span>(classification_report(y_test, y_pred))`,
+  useCases: [
+    { icon: '📧', text: 'Spam vs ham email detection' },
+    { icon: '🏥', text: 'Tumor malignant/benign classification' },
+    { icon: '💳', text: 'Fraud transaction detection' },
+    { icon: '😊', text: 'Sentiment analysis (positive/negative)' }
+  ],
+  mistakes: [
+    { title: 'Using accuracy for imbalanced data', body: '99% accuracy with 99:1 class ratio — model predicts majority class only. Use F1, ROC-AUC.' },
+    { title: 'Not tuning decision threshold', body: 'Default 0.5 threshold is not always optimal. Medical diagnosis: lower threshold to increase recall.' },
+    { title: 'Ignoring class_weight', body: 'Most classifiers have class_weight="balanced" parameter. This automatically adjusts for imbalance.' },
+    { title: 'Not checking predict_proba', body: 'model.predict() gives hard labels. model.predict_proba() gives probabilities — essential for threshold tuning and calibration.' }
+  ],
+  qa: [
+    { q: 'Explain the confusion matrix.', a: 'A 2×2 matrix for binary classification: True Positive (TP) — correctly predicted positive. True Negative (TN) — correctly predicted negative. False Positive (FP) — predicted positive but actually negative (Type I error). False Negative (FN) — predicted negative but actually positive (Type II error).' },
+    { q: 'What is the ROC-AUC score?', a: 'The ROC (Receiver Operating Characteristic) curve plots TPR (recall) vs FPR at different decision thresholds. AUC (Area Under Curve) summarizes the curve as a single number. AUC=1 → perfect, AUC=0.5 → random, AUC<0.5 → worse than random. It is threshold-independent and works well for imbalanced data.' },
+    { q: 'When would you prefer precision over recall?', a: 'Prefer Precision when false positives are costly: spam filter (marking real emails as spam is bad), recommendation systems (recommending irrelevant items). Prefer Recall when false negatives are costly: cancer detection (missing a cancer case is dangerous), fraud detection (missing fraud is expensive).' },
+    { q: 'How does KNN work?', a: 'KNN stores all training data. For a new point, it finds the K nearest training points (by Euclidean distance), then takes majority vote (classification) or average (regression). Pros: no training time, no assumptions. Cons: slow prediction O(n), sensitive to scale (must standardize), sensitive to K, affected by curse of dimensionality.' },
+    { q: 'What is Logistic Regression and why is it called "regression"?', a: 'Despite the name, Logistic Regression is a classification algorithm. It models the probability of a class using the logistic (sigmoid) function: σ(z) = 1/(1+e^-z), which maps any real value to (0,1). It is called "regression" because it regresses the log-odds of the target. Decision boundary is linear.' }
+  ]
+},
+
+clustering: {
+  title: 'Clustering Algorithms',
+  subtitle: 'Discover natural groups in unlabeled data — unsupervised pattern discovery.',
+  difficulty: 'Intermediate', readTime: '15 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>What is Clustering?</h2>
+      <p>Clustering groups similar data points together without labels. The goal: points in the same cluster should be similar; points in different clusters should be dissimilar.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">🎯</div><h4>K-Means</h4><p>Partitions into K clusters by minimizing within-cluster variance. Sensitive to K choice and outliers.</p></div>
+        <div class="info-card"><div class="info-card-icon">🌊</div><h4>DBSCAN</h4><p>Density-based. Finds arbitrary shapes. Handles noise (outliers → noise points). No K needed.</p></div>
+        <div class="info-card"><div class="info-card-icon">🌳</div><h4>Hierarchical</h4><p>Builds a dendrogram. No K upfront. Agglomerative (bottom-up) or divisive (top-down).</p></div>
+        <div class="info-card"><div class="info-card-icon">📊</div><h4>Gaussian Mixture</h4><p>Probabilistic. Soft cluster assignments. Each cluster is a Gaussian distribution.</p></div>
+      </div>
+      <h2>K-Means Algorithm</h2>
+      <ol style="color:var(--text2);padding-left:20px;font-size:0.92rem;">
+        <li>Initialize K centroids randomly.</li>
+        <li>Assign each point to nearest centroid.</li>
+        <li>Recompute centroids as mean of assigned points.</li>
+        <li>Repeat 2-3 until convergence (centroids stop moving).</li>
+      </ol>
+      <h2>How to Choose K</h2>
+      <p><strong>Elbow Method</strong>: Plot inertia vs K. The "elbow" is where adding more clusters gives diminishing returns. <strong>Silhouette Score</strong>: Measures how similar a point is to its own cluster vs others. Higher is better (range: -1 to +1).</p>
+    </div>`,
+  steps: [
+    { title: 'Scale Features', body: 'K-Means uses Euclidean distance — MUST scale features first. StandardScaler or MinMaxScaler.' },
+    { title: 'Choose K with Elbow Method', body: 'Fit K-Means for K=2 to 12. Plot inertia. Pick K at the "elbow".' },
+    { title: 'Validate with Silhouette Score', body: 'silhouette_score(X, labels). Values >0.5 indicate good clustering.' },
+    { title: 'Try DBSCAN for Arbitrary Shapes', body: 'Set eps (neighborhood radius) and min_samples. Use k-distance graph to pick eps.' },
+    { title: 'Visualize with PCA/t-SNE', body: 'Reduce to 2D with PCA then scatter plot with cluster colors. Essential for understanding results.' },
+    { title: 'Profile Clusters', body: 'For each cluster, compute feature means. What characterizes each group? Name them!' }
+  ],
+  code: `<span class="cm"># File: clustering.py — K-Means + Elbow + Silhouette</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> sklearn.cluster <span class="kw">import</span> KMeans, DBSCAN
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_blobs
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> silhouette_score
+
+<span class="cm"># Generate synthetic data</span>
+X, y_true = make_blobs(n_samples=<span class="nm">300</span>, centers=<span class="nm">4</span>, random_state=<span class="nm">42</span>)
+X = StandardScaler().fit_transform(X)
+
+<span class="cm"># ── Elbow Method ──</span>
+inertias = []
+K_range = range(<span class="nm">2</span>, <span class="nm">11</span>)
+<span class="kw">for</span> k <span class="kw">in</span> K_range:
+    km = KMeans(n_clusters=k, random_state=<span class="nm">42</span>, n_init=<span class="nm">10</span>)
+    km.fit(X)
+    inertias.append(km.inertia_)
+
+<span class="cm"># ── Best K via Silhouette ──</span>
+sil_scores = []
+<span class="kw">for</span> k <span class="kw">in</span> K_range:
+    labels = KMeans(n_clusters=k, random_state=<span class="nm">42</span>, n_init=<span class="nm">10</span>).fit_predict(X)
+    sil_scores.append(silhouette_score(X, labels))
+best_k = K_range[np.argmax(sil_scores)]
+<span class="fn">print</span>(<span class="st">f"Best K: {best_k}, Silhouette: {max(sil_scores):.3f}"</span>)
+
+<span class="cm"># ── Final K-Means ──</span>
+final_km = KMeans(n_clusters=best_k, random_state=<span class="nm">42</span>, n_init=<span class="nm">10</span>)
+labels = final_km.fit_predict(X)
+
+<span class="cm"># ── DBSCAN ──</span>
+db = DBSCAN(eps=<span class="nm">0.5</span>, min_samples=<span class="nm">5</span>)
+db_labels = db.fit_predict(X)
+n_clusters = len(set(db_labels)) - (<span class="nm">1</span> <span class="kw">if</span> -<span class="nm">1</span> <span class="kw">in</span> db_labels <span class="kw">else</span> <span class="nm">0</span>)
+<span class="fn">print</span>(<span class="st">f"DBSCAN found {n_clusters} clusters, {(db_labels==-1).sum()} noise pts"</span>)`,
+  useCases: [
+    { icon: '👥', text: 'Customer segmentation' },
+    { icon: '📰', text: 'Document/topic clustering' },
+    { icon: '🧬', text: 'Gene expression analysis' },
+    { icon: '🗺️', text: 'Geographic hotspot detection' }
+  ],
+  mistakes: [
+    { title: 'Not scaling before K-Means', body: 'Features with larger ranges dominate the distance calculation. Always scale first.' },
+    { title: 'Choosing K by guessing', body: 'Always use the elbow method + silhouette score. Never just guess K=3 without validation.' },
+    { title: 'Expecting K-Means to find non-spherical clusters', body: 'K-Means assumes spherical clusters. For crescent or irregular shapes, use DBSCAN.' },
+    { title: 'Not profiling clusters', body: 'Silhouette score alone is insufficient. Profile each cluster to understand what it represents.' }
+  ],
+  qa: [
+    { q: 'What is the difference between K-Means and DBSCAN?', a: 'K-Means requires specifying K, assumes spherical clusters, assigns every point to a cluster. DBSCAN discovers K automatically, finds arbitrary shapes, and designates outliers as noise (-1 label). K-Means minimizes inertia; DBSCAN uses density (eps radius + min_samples).' },
+    { q: 'How do you evaluate clustering quality without labels?', a: 'Internal metrics: Silhouette Score (similarity within cluster vs between clusters, -1 to 1, higher=better). Inertia (within-cluster SSE, lower=better but decreases with K). Davies-Bouldin Index (lower=better). External metrics (when some labels exist): Adjusted Rand Index, Normalized Mutual Information.' },
+    { q: 'What is the Elbow Method?', a: 'Plot inertia (within-cluster sum of squares) vs K. As K increases, inertia always decreases. The "elbow" is where the rate of decrease slows dramatically — adding more clusters gives diminishing returns. The elbow point is typically the optimal K.' },
+    { q: 'What are the limitations of K-Means?', a: '(1) Must specify K in advance. (2) Sensitive to initialization — use k-means++ or n_init>1. (3) Assumes spherical, equally-sized clusters. (4) Sensitive to outliers — they can skew centroids. (5) Only linear cluster boundaries. Solutions: K-Means++, elbow method, DBSCAN for complex shapes.' },
+    { q: 'What is hierarchical clustering?', a: 'Hierarchical clustering builds a tree of clusters (dendrogram). Agglomerative (bottom-up): starts with each point as a cluster, merges most similar pairs. Divisive (top-down): starts with one cluster, splits. Linkage methods: single (min distance), complete (max distance), average, Ward (min variance). Cut dendrogram at desired level to get K clusters.' }
+  ]
+},
+
+pca: {
+  title: 'Dimensionality Reduction (PCA)',
+  subtitle: 'Compress high-dimensional data while preserving the most important variance.',
+  difficulty: 'Intermediate', readTime: '16 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>Why Reduce Dimensions?</h2>
+      <p>High-dimensional data suffers from the <strong>curse of dimensionality</strong>: data becomes sparse, distances lose meaning, models overfit, and visualization is impossible. Dimensionality reduction creates a compact representation.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">📐</div><h4>PCA</h4><p>Linear. Finds orthogonal axes of maximum variance. Fast, interpretable. Loses non-linear structure.</p></div>
+        <div class="info-card"><div class="info-card-icon">🌀</div><h4>t-SNE</h4><p>Non-linear. Preserves local structure. Excellent for visualization. Slow, stochastic.</p></div>
+        <div class="info-card"><div class="info-card-icon">🗺️</div><h4>UMAP</h4><p>Non-linear. Preserves global + local structure. Faster than t-SNE. Great for viz + features.</p></div>
+        <div class="info-card"><div class="info-card-icon">🔮</div><h4>Autoencoders</h4><p>Neural network-based. Learns compact representation. Handles non-linearity and images.</p></div>
+      </div>
+      <h2>How PCA Works</h2>
+      <ol style="color:var(--text2);padding-left:20px;font-size:0.92rem;line-height:2">
+        <li>Standardize the data (zero mean, unit variance).</li>
+        <li>Compute covariance matrix of features.</li>
+        <li>Compute eigenvectors and eigenvalues of the covariance matrix.</li>
+        <li>Sort eigenvectors by decreasing eigenvalue.</li>
+        <li>Project data onto top K eigenvectors (Principal Components).</li>
+      </ol>
+      <div class="alert alert-tip"><span class="alert-icon">💡</span><span>Rule of thumb: Keep enough components to explain 90-95% of variance. Use explained_variance_ratio_.cumsum() to find this.</span></div>
+    </div>`,
+  steps: [
+    { title: 'Standardize Features', body: 'PCA is variance-sensitive. Large-scale features dominate. Always use StandardScaler first.' },
+    { title: 'Fit PCA with All Components', body: 'pca = PCA(); pca.fit(X). Analyze explained_variance_ratio_ to understand information per component.' },
+    { title: 'Plot Explained Variance', body: 'Plot cumulative explained variance vs n_components. Find elbow or 95% threshold.' },
+    { title: 'Apply PCA with Chosen K', body: 'pca = PCA(n_components=K); X_reduced = pca.fit_transform(X).' },
+    { title: 'Use for Downstream Task', body: 'Train model on X_reduced. Often improves speed and prevents overfitting on noisy features.' },
+    { title: 'Visualize in 2D/3D', body: 'PCA(n_components=2) gives 2D view for scatter plots. Color by labels to see cluster separation.' }
+  ],
+  code: `<span class="cm"># File: pca.py — Dimensionality Reduction</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.decomposition <span class="kw">import</span> PCA
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_digits
+
+<span class="cm"># Load high-dim dataset (64 features → pixels)</span>
+digits = load_digits()
+X, y = digits.data, digits.target
+
+<span class="cm"># 1. Standardize</span>
+X_scaled = StandardScaler().fit_transform(X)
+
+<span class="cm"># 2. Full PCA to analyze variance</span>
+pca_full = PCA()
+pca_full.fit(X_scaled)
+cumvar = np.cumsum(pca_full.explained_variance_ratio_)
+n_95 = np.argmax(cumvar >= <span class="nm">0.95</span>) + <span class="nm">1</span>
+<span class="fn">print</span>(<span class="st">f"Components for 95% variance: {n_95}"</span>)  <span class="cm"># ~41 from 64</span>
+
+<span class="cm"># 3. Reduce to optimal K</span>
+pca = PCA(n_components=n_95)
+X_reduced = pca.fit_transform(X_scaled)
+<span class="fn">print</span>(<span class="st">f"Shape: {X.shape} → {X_reduced.shape}"</span>)
+
+<span class="cm"># 4. 2D Visualization</span>
+pca_2d = PCA(n_components=<span class="nm">2</span>)
+X_2d = pca_2d.fit_transform(X_scaled)
+<span class="fn">print</span>(<span class="st">f"2D explained variance: {pca_2d.explained_variance_ratio_.sum():.1%}"</span>)
+
+<span class="cm"># 5. Use in classification pipeline</span>
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+pipe = Pipeline([(<span class="st">'scale'</span>, StandardScaler()), (<span class="st">'pca'</span>, PCA(<span class="nm">0.95</span>)), (<span class="st">'lr'</span>, LogisticRegression())])`,
+  useCases: [
+    { icon: '🖼️', text: 'Image compression and denoising' },
+    { icon: '🧬', text: 'Gene expression analysis' },
+    { icon: '📊', text: 'Financial portfolio risk factors' },
+    { icon: '🌐', text: 'Word embedding visualization' }
+  ],
+  mistakes: [
+    { title: 'Not standardizing before PCA', body: 'PCA maximizes variance. Features with larger scales will dominate. Always StandardScaler first.' },
+    { title: 'Always using n_components=2 for modeling', body: 'For visualization use 2-3 components. For modeling, keep 95% variance — much more than 2.' },
+    { title: 'Applying PCA on test set separately', body: 'Fit PCA on training data only. Then transform both train and test. Same as scalers.' },
+    { title: 'Using PCA as a feature selection tool', body: 'PCA creates new features (combinations of originals). For feature selection, use RFE, Lasso, or feature importance instead.' }
+  ],
+  qa: [
+    { q: 'What is a Principal Component?', a: 'A principal component is a new feature that is a linear combination of original features. PC1 captures the direction of maximum variance in the data. PC2 captures maximum remaining variance orthogonal to PC1. Each PC is an eigenvector of the covariance matrix, and the eigenvalue represents how much variance it captures.' },
+    { q: 'What is explained variance ratio?', a: 'explained_variance_ratio_[i] tells you what fraction of total variance is captured by the i-th component. cumsum() gives cumulative variance. Plot to find the elbow. Typically choose enough components to explain 90-95% of variance, balancing compression vs information loss.' },
+    { q: 'What is the difference between PCA and t-SNE?', a: 'PCA: linear, fast, deterministic, preserves global structure, interpretable. t-SNE: non-linear, slow, stochastic (different runs give different results), preserves local structure (clusters), only for visualization. Use PCA for feature compression before modeling. Use t-SNE/UMAP for visualizing high-dimensional data.' },
+    { q: 'When should you NOT use PCA?', a: 'When you need interpretability (components are linear combinations, hard to explain). When features are already low-dimensional. When relationships are highly non-linear. When you need feature selection (PCA keeps all original features linearly mixed). For tree-based models (they handle high dimensions natively).' },
+    { q: 'What is Kernel PCA?', a: 'Kernel PCA applies the kernel trick to PCA, allowing it to find non-linear principal components. It maps data to a high-dimensional space using a kernel function (RBF, polynomial), then performs linear PCA in that space. Useful when linear PCA fails to separate classes. Computationally expensive for large datasets.' }
+  ]
+},
+
+evaluation: {
+  title: 'Model Evaluation Metrics',
+  subtitle: 'Measure model performance correctly — the metric you choose shapes your entire model.',
+  difficulty: 'Intermediate', readTime: '15 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>Why Metrics Matter</h2>
+      <p>Choosing the wrong metric can lead you to deploy a terrible model. A cancer screening model with 99% accuracy that misses 40% of cancers is catastrophic — but accuracy alone wouldn't reveal this.</p>
+      <h2>Classification Metrics</h2>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Metric</th><th>Formula</th><th>When to Use</th></tr></thead><tbody>
+        <tr><td>Accuracy</td><td>(TP+TN)/(TP+TN+FP+FN)</td><td>Balanced classes only</td></tr>
+        <tr><td>Precision</td><td>TP/(TP+FP)</td><td>Cost of FP is high (spam filter)</td></tr>
+        <tr><td>Recall / Sensitivity</td><td>TP/(TP+FN)</td><td>Cost of FN is high (cancer test)</td></tr>
+        <tr><td>F1 Score</td><td>2×P×R/(P+R)</td><td>Imbalanced data, need balance</td></tr>
+        <tr><td>ROC-AUC</td><td>Area under ROC curve</td><td>Threshold-independent comparison</td></tr>
+        <tr><td>Log Loss</td><td>-log(p) per sample</td><td>When probabilities matter</td></tr>
+      </tbody></table></div>
+      <h2>Regression Metrics</h2>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Metric</th><th>Description</th><th>Range</th></tr></thead><tbody>
+        <tr><td>MAE</td><td>Mean absolute error</td><td>[0, ∞), lower better</td></tr>
+        <tr><td>MSE</td><td>Mean squared error, penalizes large errors</td><td>[0, ∞), lower better</td></tr>
+        <tr><td>RMSE</td><td>Square root of MSE, same units as y</td><td>[0, ∞), lower better</td></tr>
+        <tr><td>R²</td><td>Variance explained fraction</td><td>(-∞, 1], higher better</td></tr>
+        <tr><td>MAPE</td><td>Mean absolute percentage error</td><td>[0%, ∞), lower better</td></tr>
+      </tbody></table></div>
+    </div>`,
+  steps: [
+    { title: 'Define Business Objective', body: 'What is worse: false positive or false negative? This guides metric choice.' },
+    { title: 'Check Class Balance', body: 'Balanced → accuracy OK. Imbalanced → F1, ROC-AUC, or precision-recall curve.' },
+    { title: 'Generate Confusion Matrix', body: 'confusion_matrix(y_test, y_pred). Visualize with seaborn heatmap.' },
+    { title: 'Compute All Relevant Metrics', body: 'classification_report() gives precision, recall, F1 per class. Never just one metric.' },
+    { title: 'Plot ROC Curve', body: 'roc_curve() and plot for visual comparison of models. AUC in legend.' },
+    { title: 'For Regression: Residual Analysis', body: 'Plot y_pred vs y_actual and residual plot. Pattern in residuals = model bias.' }
+  ],
+  code: `<span class="cm"># File: evaluation.py — Comprehensive Metrics</span>
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (
+    accuracy_score, precision_score, recall_score,
+    f1_score, roc_auc_score, confusion_matrix,
+    classification_report, mean_squared_error,
+    mean_absolute_error, r2_score
+)
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── Classification Metrics ──</span>
+y_true = [<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>]
+y_pred = [<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>]
+y_prob = [<span class="nm">0.9</span>,<span class="nm">0.2</span>,<span class="nm">0.8</span>,<span class="nm">0.4</span>,<span class="nm">0.3</span>,<span class="nm">0.7</span>,<span class="nm">0.6</span>,<span class="nm">0.1</span>]
+
+<span class="fn">print</span>(<span class="st">f"Accuracy:  {accuracy_score(y_true, y_pred):.3f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Precision: {precision_score(y_true, y_pred):.3f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Recall:    {recall_score(y_true, y_pred):.3f}"</span>)
+<span class="fn">print</span>(<span class="st">f"F1 Score:  {f1_score(y_true, y_pred):.3f}"</span>)
+<span class="fn">print</span>(<span class="st">f"ROC-AUC:   {roc_auc_score(y_true, y_prob):.3f}"</span>)
+<span class="fn">print</span>(classification_report(y_true, y_pred))
+
+<span class="cm"># ── Regression Metrics ──</span>
+y_actual = [<span class="nm">100</span>,<span class="nm">200</span>,<span class="nm">300</span>,<span class="nm">400</span>]
+y_hat    = [<span class="nm">110</span>,<span class="nm">195</span>,<span class="nm">290</span>,<span class="nm">420</span>]
+
+mae  = mean_absolute_error(y_actual, y_hat)
+mse  = mean_squared_error(y_actual, y_hat)
+rmse = np.sqrt(mse)
+r2   = r2_score(y_actual, y_hat)
+<span class="fn">print</span>(<span class="st">f"MAE={mae:.1f}  RMSE={rmse:.1f}  R²={r2:.3f}"</span>)`,
+  useCases: [
+    { icon: '🏥', text: 'Medical: maximize recall for disease detection' },
+    { icon: '📧', text: 'Spam: maximize precision (avoid false spam alerts)' },
+    { icon: '💰', text: 'Finance: use R² and RMSE for price predictions' },
+    { icon: '🏪', text: 'Retail: MAPE for demand forecasting' }
+  ],
+  mistakes: [
+    { title: 'Using accuracy for imbalanced data', body: 'The classic mistake. 99% one class → 99% accuracy by always predicting majority. Use F1 or AUC.' },
+    { title: 'Ignoring per-class metrics', body: "Macro-averaged F1 hides that one class performs terribly. Always look at classification_report's per-class breakdown." },
+    { title: 'Not considering business cost', body: 'Metrics must align with business cost. Missing a fraud case (FN) might cost $10,000 while a false alarm (FP) costs $10.' },
+    { title: 'Using MAPE with near-zero targets', body: 'MAPE divides by actual value. If actual is near zero, MAPE becomes undefined or extremely large. Use RMSE instead.' }
+  ],
+  qa: [
+    { q: 'What is the F1 score and when is it preferred?', a: 'F1 = 2 × (Precision × Recall) / (Precision + Recall). It is the harmonic mean of precision and recall. Preferred when: (1) class distribution is imbalanced, (2) both false positives and false negatives are costly, (3) you need a single number balancing both. Harmonic mean penalizes extreme imbalances between precision and recall.' },
+    { q: 'What is the difference between macro and micro F1?', a: 'Micro F1: computes globally by summing TP, FP, FN across all classes. Favors majority class. Macro F1: computes F1 per class, then averages. Treats all classes equally regardless of support. Weighted F1: averages per-class F1, weighted by class support. Use Macro when minority class performance matters equally.' },
+    { q: 'What is the precision-recall curve?', a: 'Similar to ROC curve but plots Precision (y) vs Recall (x) at different thresholds. More informative than ROC when classes are imbalanced. A perfect classifier has AUC-PR=1. The baseline is the prevalence of the positive class. Use when you care more about the positive class.' },
+    { q: 'How do you choose the optimal threshold?', a: 'Default threshold is 0.5. To optimize: plot precision-recall at each threshold and pick where both are acceptable. For equal-weight: maximize F1. For business constraints: if precision must be ≥0.9, find the threshold giving that. For anomaly detection: lower threshold to increase recall.' },
+    { q: 'What does R-squared tell you?', a: 'R² = 1 - (SS_residuals / SS_total). It represents the proportion of variance in y explained by the model. R²=1: perfect. R²=0: model is no better than predicting the mean. R²<0: model is worse than predicting the mean. R² can be artificially inflated by adding more features — use Adjusted R² which penalizes complexity.' }
+  ]
+},
+
+overfit: {
+  title: 'Overfitting & Underfitting',
+  subtitle: 'The fundamental challenge — finding the sweet spot between too simple and too complex.',
+  difficulty: 'Intermediate', readTime: '14 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>The Bias-Variance Tradeoff</h2>
+      <p>Total error = Bias² + Variance + Irreducible Noise. You cannot minimize both simultaneously — this is the fundamental tension in ML.</p>
+      <div class="info-grid">
+        <div class="info-card" style="border-color:rgba(255,107,107,0.3)"><div class="info-card-icon">📉</div><h4>Underfitting (High Bias)</h4><p>Model too simple. Fails to capture patterns. High error on both train AND test.</p></div>
+        <div class="info-card" style="border-color:rgba(108,99,255,0.3)"><div class="info-card-icon">🎯</div><h4>Good Fit</h4><p>Model captures true patterns. Low train error, low test error. Generalizes well.</p></div>
+        <div class="info-card" style="border-color:rgba(255,209,102,0.3)"><div class="info-card-icon">📈</div><h4>Overfitting (High Variance)</h4><p>Model memorizes noise. Very low train error, high test error. Fails on new data.</p></div>
+      </div>
+      <h2>Diagnosing with Learning Curves</h2>
+      <p>Plot training error and validation error vs training set size. <strong>Underfitting</strong>: both curves plateau at high error, close together. <strong>Overfitting</strong>: large gap between low train error and high validation error.</p>
+      <h2>Solutions</h2>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Problem</th><th>Fix</th></tr></thead><tbody>
+        <tr><td>Underfitting</td><td>More complex model, more features, reduce regularization, train longer</td></tr>
+        <tr><td>Overfitting</td><td>More data, regularization (L1/L2), dropout (NNs), pruning (trees), early stopping, cross-validation</td></tr>
+      </tbody></table></div>
+    </div>`,
+  steps: [
+    { title: 'Train and Compare Train vs Val Error', body: 'Large gap (low train, high val) → overfitting. Both high → underfitting.' },
+    { title: 'Plot Learning Curves', body: 'learning_curve() shows performance vs training size. Reveals bias/variance problem clearly.' },
+    { title: 'For Overfitting: Add Regularization', body: 'Ridge/Lasso for linear models. max_depth, min_samples_leaf for trees. Dropout for neural networks.' },
+    { title: 'For Overfitting: Get More Data', body: 'More data reduces variance. Data augmentation for images (rotate, flip, crop).' },
+    { title: 'For Underfitting: Increase Complexity', body: 'More features, polynomial features, deeper trees, more epochs, try non-linear model.' },
+    { title: 'For Underfitting: Reduce Regularization', body: 'If using Ridge/Lasso, reduce α. If using tree max_depth, increase it.' }
+  ],
+  code: `<span class="cm"># File: bias_variance.py — Diagnosing Overfit/Underfit</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> PolynomialFeatures
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> Ridge
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> learning_curve
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="cm"># Generate data</span>
+np.random.seed(<span class="nm">42</span>)
+X = np.sort(np.random.randn(<span class="nm">100</span>, <span class="nm">1</span>), axis=<span class="nm">0</span>)
+y = np.sin(X).ravel() + <span class="nm">0.1</span> * np.random.randn(<span class="nm">100</span>)
+
+<span class="cm"># Compare model complexities</span>
+<span class="kw">for</span> degree, label <span class="kw">in</span> [(<span class="nm">1</span>, <span class="st">'Underfit'</span>), (<span class="nm">4</span>, <span class="st">'Good'</span>), (<span class="nm">15</span>, <span class="st">'Overfit'</span>)]:
+    pipe = Pipeline([
+        (<span class="st">'poly'</span>, PolynomialFeatures(degree=degree)),
+        (<span class="st">'ridge'</span>, Ridge(alpha=<span class="nm">1e-5</span>))
+    ])
+    train_sz, tr_sc, val_sc = learning_curve(
+        pipe, X, y, cv=<span class="nm">5</span>, scoring=<span class="st">'r2'</span>, train_sizes=np.linspace(<span class="nm">0.1</span>,<span class="nm">1</span>,<span class="nm">10</span>))
+    <span class="fn">print</span>(<span class="st">f"{label} (d={degree}): Train={tr_sc[-1].mean():.3f} Val={val_sc[-1].mean():.3f}"</span>)
+
+<span class="cm"># Fix overfitting with Ridge regularization</span>
+pipe_reg = Pipeline([
+    (<span class="st">'poly'</span>, PolynomialFeatures(degree=<span class="nm">15</span>)),
+    (<span class="st">'ridge'</span>, Ridge(alpha=<span class="nm">100</span>))  <span class="cm"># Strong regularization</span>
+])
+<span class="fn">print</span>(<span class="st">"After regularization: much smaller train-val gap"</span>)`,
+  useCases: [
+    { icon: '📊', text: 'Any production ML model' },
+    { icon: '🧬', text: 'Small medical datasets (need regularization)' },
+    { icon: '🖼️', text: 'Image models (dropout prevents overfit)' },
+    { icon: '💰', text: 'Financial models (small data, high noise)' }
+  ],
+  mistakes: [
+    { title: 'Optimizing training accuracy', body: 'Optimizing training error leads to overfitting. Always optimize validation/CV error.' },
+    { title: 'Not using regularization by default', body: 'Always try Ridge before plain Linear Regression. Regularization almost never hurts and often helps.' },
+    { title: 'Assuming more data always helps', body: 'More data helps variance (overfitting) but not bias (underfitting). If model is too simple, more data won\'t fix it.' },
+    { title: 'Not plotting learning curves', body: 'Learning curves visually show exactly whether you have a bias or variance problem, guiding the right fix.' }
+  ],
+  qa: [
+    { q: 'What is bias and variance in machine learning?', a: 'Bias: error from incorrect model assumptions. High bias = model too simple, underfits. Variance: error from sensitivity to fluctuations in training data. High variance = model too complex, overfits. Total error = Bias² + Variance + Irreducible Noise. The tradeoff: decreasing bias usually increases variance and vice versa.' },
+    { q: 'What is regularization?', a: 'Regularization adds a penalty term to the loss function to discourage overly complex models. L2 (Ridge): adds λ×sum(w²), shrinks all weights toward zero. L1 (Lasso): adds λ×sum(|w|), drives some weights exactly to zero (feature selection). Elastic Net combines both. λ controls regularization strength.' },
+    { q: 'What is dropout in neural networks?', a: 'Dropout randomly sets a fraction of neurons to zero during training. Forces the network to learn redundant representations. Acts as training an ensemble of many different architectures. At inference time, all neurons are active but weights are scaled. Typical rates: 0.2-0.5. Prevents co-adaptation of neurons.' },
+    { q: 'How do learning curves help diagnose problems?', a: 'Training with progressively more data and plotting train vs validation score. High bias: both curves plateau at high error (close together, both bad). High variance: large gap between low train error and high validation error — adding more data may help. Good fit: curves converge at low error.' },
+    { q: 'What is early stopping?', a: 'Early stopping monitors validation loss during training and stops when it begins to increase (even if training loss continues decreasing). Prevents overfitting in iterative models (neural networks, gradient boosting). Store the model checkpoint at the best validation performance.' }
+  ]
+},
+
+crossval: {
+  title: 'Cross Validation',
+  subtitle: 'Get reliable performance estimates by testing on multiple data splits.',
+  difficulty: 'Intermediate', readTime: '12 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>Why Cross Validation?</h2>
+      <p>A single train/test split gives a noisy estimate of performance. Cross-validation provides a more reliable, low-variance estimate by testing on <strong>K different subsets</strong> and averaging results.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">🔄</div><h4>K-Fold CV</h4><p>Split into K folds. Train on K-1, test on 1. Repeat K times. Standard choice: K=5 or 10.</p></div>
+        <div class="info-card"><div class="info-card-icon">📊</div><h4>Stratified K-Fold</h4><p>Like K-Fold but preserves class distribution in each fold. Essential for classification.</p></div>
+        <div class="info-card"><div class="info-card-icon">🎲</div><h4>Repeated K-Fold</h4><p>Repeat K-Fold multiple times with different random splits. More stable estimate.</p></div>
+        <div class="info-card"><div class="info-card-icon">⏰</div><h4>Time Series Split</h4><p>For sequential data. Always train on past, test on future. Prevents temporal leakage.</p></div>
+      </div>
+      <div class="alert alert-warn"><span class="alert-icon">⚠️</span><span>Never use standard K-Fold for time series data. Past data predicting future is fine but future data predicting past is leakage. Use TimeSeriesSplit.</span></div>
+    </div>`,
+  steps: [
+    { title: 'Choose CV Strategy', body: 'Classification → StratifiedKFold. Regression → KFold. Time series → TimeSeriesSplit. Small dataset → Leave-One-Out (LOO).' },
+    { title: 'Choose K', body: 'K=5 or K=10 are standard. Larger K = lower bias, higher variance, more computation. K=5 is usually fine.' },
+    { title: 'Use Pipeline to Prevent Leakage', body: 'Wrap preprocessing + model in Pipeline. CV will correctly fit preprocessing on each train fold.' },
+    { title: 'Run cross_val_score', body: 'cross_val_score(pipe, X, y, cv=5, scoring="f1"). Get mean and std.' },
+    { title: 'Interpret Results', body: 'Mean = expected performance. Std = stability. Low std = consistent model. High std = sensitive to data split.' },
+    { title: 'Use for Model Selection', body: 'Compare multiple models via CV. The model with best CV score (not test score!) is your winner.' }
+  ],
+  code: `<span class="cm"># File: cross_validation.py — All CV Strategies</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> (
+    cross_val_score, KFold, StratifiedKFold,
+    TimeSeriesSplit, cross_validate, RepeatedKFold
+)
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_breast_cancer
+
+X, y = load_breast_cancer(return_X_y=<span class="kw">True</span>)
+pipe = Pipeline([(<span class="st">'sc'</span>, StandardScaler()), (<span class="st">'lr'</span>, LogisticRegression())])
+
+<span class="cm"># ── Standard K-Fold ──</span>
+kf_scores = cross_val_score(pipe, X, y, cv=<span class="nm">5</span>, scoring=<span class="st">'f1'</span>)
+<span class="fn">print</span>(<span class="st">f"KFold:     {kf_scores.mean():.3f} ± {kf_scores.std():.3f}"</span>)
+
+<span class="cm"># ── Stratified K-Fold (best for classification) ──</span>
+skf = StratifiedKFold(n_splits=<span class="nm">5</span>, shuffle=<span class="kw">True</span>, random_state=<span class="nm">42</span>)
+skf_scores = cross_val_score(pipe, X, y, cv=skf, scoring=<span class="st">'f1'</span>)
+<span class="fn">print</span>(<span class="st">f"StratifiedKFold: {skf_scores.mean():.3f} ± {skf_scores.std():.3f}"</span>)
+
+<span class="cm"># ── Repeated K-Fold ──</span>
+rkf = RepeatedKFold(n_splits=<span class="nm">5</span>, n_repeats=<span class="nm">10</span>, random_state=<span class="nm">42</span>)
+rkf_scores = cross_val_score(pipe, X, y, cv=rkf, scoring=<span class="st">'f1'</span>)
+<span class="fn">print</span>(<span class="st">f"RepeatedKFold:  {rkf_scores.mean():.3f} ± {rkf_scores.std():.3f}"</span>)
+
+<span class="cm"># ── Multiple metrics at once ──</span>
+results = cross_validate(pipe, X, y, cv=skf,
+    scoring=[<span class="st">'f1'</span>, <span class="st">'roc_auc'</span>, <span class="st">'precision'</span>], return_train_score=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="st">f"AUC: {results['test_roc_auc'].mean():.3f}"</span>)`,
+  useCases: [
+    { icon: '🔬', text: 'Any model selection decision' },
+    { icon: '📊', text: 'Comparing algorithms fairly' },
+    { icon: '⏱️', text: 'Time series model evaluation' },
+    { icon: '🧬', text: 'Small medical datasets' }
+  ],
+  mistakes: [
+    { title: 'Preprocessing outside CV loop', body: 'Fitting a scaler on all data then running CV means test folds "see" training data statistics. Use Pipeline.' },
+    { title: 'Using KFold for classification', body: 'Random splits might create folds with very different class distributions. Use StratifiedKFold.' },
+    { title: 'Using standard KFold for time series', body: 'Time series data has temporal structure. Use TimeSeriesSplit to always train on past, test on future.' },
+    { title: 'Using CV score as final test score', body: 'CV score is for model selection/tuning. Report final performance on a held-out test set.' }
+  ],
+  qa: [
+    { q: 'What is K-Fold cross validation?', a: 'K-Fold splits data into K equal folds. For each fold, train on the other K-1 folds and evaluate on that fold. Repeat K times. Average the K scores. Every sample is in the test set exactly once. K=5 or K=10 are standard. Gives more reliable estimate than a single split with lower variance in the estimate.' },
+    { q: 'What is leave-one-out (LOO) cross validation?', a: 'LOO is K-Fold with K=n (number of samples). Each sample is its own test set. Advantages: uses maximum training data, near-unbiased estimate. Disadvantages: computationally expensive O(n models), high variance in estimate, not practical for large datasets. Use for very small datasets (<50 samples).' },
+    { q: 'Why should preprocessing be inside the CV loop?', a: 'If you fit a StandardScaler on all data before CV, the test fold statistics (mean, std) influence the scaler. This is data leakage — the scaler "knows" about the test set. Wrapping preprocessing in a Pipeline ensures the scaler is fit only on each training fold, giving a truly unbiased estimate.' },
+    { q: 'What is nested cross validation?', a: 'Nested CV has an outer loop for evaluation and inner loop for hyperparameter tuning. Outer K-fold gives unbiased performance estimate. Inner K-fold (GridSearchCV) tunes hyperparameters for each outer fold. Avoids the optimistic bias from tuning on the same data used for evaluation. Computationally expensive but important when both tuning and evaluation are needed.' },
+    { q: 'How many folds should you use?', a: 'K=5 and K=10 are most common. Larger K: lower bias (more training data per fold), higher variance (fewer test samples per fold), more computation. K=10 is often recommended. For small datasets, K=n (LOO). For large datasets, K=3 or K=5 to save compute. The choice matters less than using CV vs single split.' }
+  ]
+},
+
+hyperparams: {
+  title: 'Hyperparameter Tuning',
+  subtitle: 'Optimize model configuration — squeeze every last bit of performance from your model.',
+  difficulty: 'Advanced', readTime: '15 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>Parameters vs Hyperparameters</h2>
+      <p><strong>Parameters</strong> are learned during training (weights, biases, tree split thresholds). <strong>Hyperparameters</strong> are set before training and control the learning process (learning rate, max_depth, n_estimators, C in SVM).</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">🔲</div><h4>Grid Search</h4><p>Exhaustive search over all combinations. Best results. Exponential time complexity.</p></div>
+        <div class="info-card"><div class="info-card-icon">🎲</div><h4>Random Search</h4><p>Random sampling from parameter distributions. Often 90% of GridSearch at 10% of cost.</p></div>
+        <div class="info-card"><div class="info-card-icon">🧠</div><h4>Bayesian Optimization</h4><p>Uses previous results to choose next parameters intelligently. Best for expensive models.</p></div>
+        <div class="info-card"><div class="info-card-icon">🔀</div><h4>Halving Search</h4><p>Start with many configs on small data, eliminate poor performers, scale up data.</p></div>
+      </div>
+      <h2>Common Hyperparameters by Algorithm</h2>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Algorithm</th><th>Key Hyperparameters</th></tr></thead><tbody>
+        <tr><td>Random Forest</td><td>n_estimators, max_depth, min_samples_split, max_features</td></tr>
+        <tr><td>XGBoost</td><td>learning_rate, n_estimators, max_depth, subsample, colsample_bytree</td></tr>
+        <tr><td>SVM</td><td>C (regularization), kernel, gamma (RBF width)</td></tr>
+        <tr><td>Neural Network</td><td>learning_rate, hidden_layers, neurons, dropout, batch_size</td></tr>
+        <tr><td>KNN</td><td>n_neighbors, weights, metric</td></tr>
+      </tbody></table></div>
+    </div>`,
+  steps: [
+    { title: 'Establish Baseline CV Score', body: 'Run default hyperparameters with cross-validation. This is your target to beat.' },
+    { title: 'Identify Important Hyperparameters', body: 'Know your algorithm. For RF: max_depth and n_estimators matter most. For SVM: C and gamma.' },
+    { title: 'Use RandomizedSearchCV First', body: 'Broad search with distributions. 20-50 iterations often finds good region fast.' },
+    { title: 'Narrow Down with GridSearchCV', body: 'Fine-tune around the best region found by random search.' },
+    { title: 'Use Bayesian Optimization for Expensive Models', body: 'optuna or hyperopt for deep learning or models that take minutes to train.' },
+    { title: 'Validate on Held-Out Test Set', body: 'Report final performance on untouched test set, not CV score from tuning.' }
+  ],
+  code: `<span class="cm"># File: hyperparameter_tuning.py</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> RandomizedSearchCV, GridSearchCV
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_breast_cancer
+<span class="kw">from</span> scipy.stats <span class="kw">import</span> randint, uniform
+
+X, y = load_breast_cancer(return_X_y=<span class="kw">True</span>)
+
+<span class="cm"># ── Step 1: Broad Random Search ──</span>
+param_dist = {
+    <span class="st">'n_estimators'</span>: randint(<span class="nm">50</span>, <span class="nm">300</span>),
+    <span class="st">'max_depth'</span>: [<span class="kw">None</span>, <span class="nm">5</span>, <span class="nm">10</span>, <span class="nm">20</span>],
+    <span class="st">'min_samples_split'</span>: randint(<span class="nm">2</span>, <span class="nm">10</span>),
+    <span class="st">'max_features'</span>: [<span class="st">'sqrt'</span>, <span class="st">'log2'</span>, <span class="kw">None</span>],
+    <span class="st">'class_weight'</span>: [<span class="kw">None</span>, <span class="st">'balanced'</span>]
+}
+random_search = RandomizedSearchCV(
+    RandomForestClassifier(random_state=<span class="nm">42</span>),
+    param_distributions=param_dist,
+    n_iter=<span class="nm">30</span>, cv=<span class="nm">5</span>, scoring=<span class="st">'f1'</span>, random_state=<span class="nm">42</span>, n_jobs=-<span class="nm">1</span>
+)
+random_search.fit(X, y)
+<span class="fn">print</span>(<span class="st">f"Best random: {random_search.best_score_:.4f}"</span>)
+<span class="fn">print</span>(<span class="st">f"Best params: {random_search.best_params_}"</span>)
+
+<span class="cm"># ── Step 2: Fine-tune with Grid Search ──</span>
+bp = random_search.best_params_
+grid = {<span class="st">'n_estimators'</span>: [bp[<span class="st">'n_estimators'</span>]-<span class="nm">20</span>, bp[<span class="st">'n_estimators'</span>], bp[<span class="st">'n_estimators'</span>]+<span class="nm">20</span>]}
+gs = GridSearchCV(RandomForestClassifier(random_state=<span class="nm">42</span>), grid, cv=<span class="nm">5</span>, scoring=<span class="st">'f1'</span>)
+gs.fit(X, y)
+<span class="fn">print</span>(<span class="st">f"Best grid: {gs.best_score_:.4f}"</span>)`,
+  useCases: [
+    { icon: '🏆', text: 'Kaggle competition optimization' },
+    { icon: '🏥', text: 'Critical medical prediction models' },
+    { icon: '💹', text: 'High-stakes financial models' },
+    { icon: '🔬', text: 'Scientific ML experiments' }
+  ],
+  mistakes: [
+    { title: 'Grid searching on full dataset without CV', body: 'You must cross-validate during search. GridSearchCV does this automatically — do not use grid search with a single split.' },
+    { title: 'Too fine-grained grid search first', body: 'GridSearch on a large grid is exponentially slow. Always start with RandomizedSearch to find promising regions.' },
+    { title: 'Overfitting to validation set', body: 'If you tune hyperparameters many times on the same data, you overfit to it. Use nested CV for unbiased estimation.' },
+    { title: 'Tuning in the wrong order', body: 'Tune impactful parameters first: learning rate > n_estimators > max_depth > regularization. Minor params last.' }
+  ],
+  qa: [
+    { q: 'What is the difference between GridSearchCV and RandomizedSearchCV?', a: 'GridSearchCV evaluates every possible combination in the grid — O(n^k) evaluations for n values × k parameters. RandomizedSearchCV randomly samples n_iter combinations from parameter distributions, then evaluates each. Randomized is typically 90% as good at 10% of the cost for large grids. Use Randomized first, then Grid to fine-tune the best region.' },
+    { q: 'What is Bayesian hyperparameter optimization?', a: 'Bayesian optimization (via optuna, hyperopt, scikit-optimize) builds a probabilistic model of how hyperparameters affect performance. It uses previous evaluation results to intelligently choose the next set of parameters to evaluate — exploring promising regions while exploiting known good areas. Far more efficient than random/grid search for expensive models.' },
+    { q: 'What is the learning rate and why is it important?', a: 'Learning rate controls how much model parameters are updated per training step. Too high: diverges, loss explodes. Too low: very slow convergence or gets stuck in local minima. Typical starting point: 1e-3. Techniques: learning rate warmup, cosine annealing, ReduceLROnPlateau. Often the most important hyperparameter for neural networks.' },
+    { q: 'What is n_estimators in Random Forest?', a: 'n_estimators is the number of decision trees in the forest. More trees = better, more stable performance but diminishing returns and higher cost. Start with 100-200. After a threshold (typically 300-500), more trees add little value but significant compute. Unlike max_depth, more trees never hurt — they just add cost.' },
+    { q: 'How do you handle a massive hyperparameter space?', a: 'Strategies: (1) Domain knowledge to narrow ranges. (2) Successive Halving (HalvingRandomSearchCV) — test many configs on small data, keep top performers, scale up. (3) Bayesian optimization with optuna — smart exploration. (4) Fix less important params (random_state, n_jobs) and focus on critical ones (learning rate, regularization strength, model depth).' }
+  ]
+},
+
+deployment: {
+  title: 'Deployment Basics',
+  subtitle: 'Take your model from notebook to production — where it actually creates value.',
+  difficulty: 'Advanced', readTime: '16 min', questions: 5,
+  explanation: `
+    <div class="prose">
+      <h2>The Model Deployment Journey</h2>
+      <p>A model that never reaches production is worthless. Deployment wraps your trained model in infrastructure that serves predictions to real users at scale.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">💾</div><h4>Model Serialization</h4><p>Save trained model to disk: pickle, joblib, ONNX, SavedModel (TF), TorchScript.</p></div>
+        <div class="info-card"><div class="info-card-icon">🔌</div><h4>REST API</h4><p>Serve predictions via HTTP. Flask, FastAPI, or cloud endpoints. JSON in → Prediction out.</p></div>
+        <div class="info-card"><div class="info-card-icon">🐳</div><h4>Containerization</h4><p>Docker packages model + dependencies. Same environment everywhere. No "works on my machine".</p></div>
+        <div class="info-card"><div class="info-card-icon">📊</div><h4>Model Monitoring</h4><p>Track prediction drift, data drift, performance decay. Retrain when performance drops.</p></div>
+      </div>
+      <h2>Deployment Patterns</h2>
+      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Pattern</th><th>Latency</th><th>Use Case</th></tr></thead><tbody>
+        <tr><td>REST API (Online)</td><td>Real-time</td><td>Fraud detection, recommendations</td></tr>
+        <tr><td>Batch Prediction</td><td>Hours</td><td>Overnight reports, large datasets</td></tr>
+        <tr><td>Streaming</td><td>Near-real-time</td><td>IoT, log analysis</td></tr>
+        <tr><td>Edge Deployment</td><td>On-device</td><td>Mobile apps, IoT devices</td></tr>
+      </tbody></table></div>
+    </div>`,
+  steps: [
+    { title: 'Save Model with Joblib or Pickle', body: 'joblib.dump(model, "model.pkl"). Save the full pipeline including preprocessors.' },
+    { title: 'Build a FastAPI Service', body: 'Define /predict endpoint. Load model at startup. Accept JSON, return prediction JSON.' },
+    { title: 'Validate Inputs', body: 'Use Pydantic models for input validation. Catch missing features, wrong types, out-of-range values.' },
+    { title: 'Containerize with Docker', body: 'Dockerfile with Python base, requirements.txt, COPY model and app. docker build and run.' },
+    { title: 'Deploy to Cloud', body: 'AWS SageMaker, GCP Vertex AI, Azure ML — managed ML deployment. Or plain EC2/Cloud Run.' },
+    { title: 'Monitor and Alert', body: 'Log predictions. Monitor feature distributions. Alert on data drift or performance degradation.' }
+  ],
+  code: `<span class="cm"># File: deployment/app.py — FastAPI ML Service</span>
+<span class="kw">import</span> joblib
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, HTTPException
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+<span class="kw">from</span> typing <span class="kw">import</span> List
+
+app = FastAPI(title=<span class="st">"ML Model API"</span>, version=<span class="st">"1.0"</span>)
+
+<span class="cm"># Load model at startup</span>
+pipeline = joblib.load(<span class="st">"model_pipeline.pkl"</span>)
+
+<span class="kw">class</span> <span class="fn">PredictionRequest</span>(BaseModel):
+    features: List[float]
+
+<span class="kw">class</span> <span class="fn">PredictionResponse</span>(BaseModel):
+    prediction: float
+    probability: float
+    model_version: str = <span class="st">"v1.0"</span>
+
+<span class="op">@</span>app.post(<span class="st">"/predict"</span>, response_model=PredictionResponse)
+<span class="kw">async def</span> <span class="fn">predict</span>(request: PredictionRequest):
+    <span class="kw">try</span>:
+        X = np.array(request.features).reshape(<span class="nm">1</span>, -<span class="nm">1</span>)
+        pred = pipeline.predict(X)[<span class="nm">0</span>]
+        prob = pipeline.predict_proba(X)[<span class="nm">0</span>].max()
+        <span class="kw">return</span> PredictionResponse(prediction=<span class="fn">float</span>(pred), probability=<span class="fn">float</span>(prob))
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="kw">raise</span> HTTPException(status_code=<span class="nm">422</span>, detail=<span class="fn">str</span>(e))
+
+<span class="op">@</span>app.get(<span class="st">"/health"</span>)
+<span class="kw">async def</span> <span class="fn">health</span>():
+    <span class="kw">return</span> {<span class="st">"status"</span>: <span class="st">"healthy"</span>}
+
+<span class="cm"># ── Dockerfile ──</span>
+<span class="cm"># FROM python:3.10-slim</span>
+<span class="cm"># COPY requirements.txt .</span>
+<span class="cm"># RUN pip install -r requirements.txt</span>
+<span class="cm"># COPY . .</span>
+<span class="cm"># CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]</span>`,
+  useCases: [
+    { icon: '🏦', text: 'Real-time fraud detection API' },
+    { icon: '🛒', text: 'Product recommendation service' },
+    { icon: '📱', text: 'Mobile on-device ML model' },
+    { icon: '🏥', text: 'Clinical decision support system' }
+  ],
+  mistakes: [
+    { title: 'Saving model without pipeline', body: 'If you save just the model (not scaler, encoder), predictions will fail on raw input in production.' },
+    { title: 'No input validation', body: 'Production models receive garbage data. Validate all inputs — types, ranges, missing features.' },
+    { title: 'No monitoring', body: 'Models degrade silently over time as data distribution shifts. Always monitor prediction distributions.' },
+    { title: 'Not versioning models', body: 'Keep model versions in MLflow or similar. If the new model fails in production, you need to roll back.' }
+  ],
+  qa: [
+    { q: 'What is MLOps?', a: 'MLOps (ML + DevOps) applies software engineering practices to ML systems: CI/CD for models, automated testing, versioning, monitoring, and orchestration. Tools: MLflow (experiment tracking), DVC (data versioning), Airflow/Kubeflow (pipelines), Prometheus (monitoring). Goal: reliable, reproducible, automated ML in production.' },
+    { q: 'What is model drift and how do you detect it?', a: 'Data drift: statistical properties of input features change over time (e.g., user behavior shifts). Concept drift: relationship between features and target changes. Detect with: statistical tests (KS test, PSI) on input distributions, monitoring prediction score distributions, periodic retraining and evaluation on fresh labeled data.' },
+    { q: 'How do you version a machine learning model?', a: 'Use MLflow: log parameters, metrics, and artifacts (model files) per experiment run. DVC (Data Version Control) for data + model versioning with git. Store models in artifact registries (MLflow Model Registry, S3). Tag models as Staging/Production. Each production model has a version number and metadata.' },
+    { q: 'What is A/B testing for ML models?', a: 'A/B testing (or shadow testing) serves predictions from two model versions to different user subsets. Compare key business metrics (CTR, conversion, revenue) to determine which model performs better in the real world — not just on offline metrics. Use gradual rollouts: 5% → 20% → 50% → 100%.' },
+    { q: 'What is model serialization and why does it matter?', a: 'Serialization converts a trained model object to a file. Formats: pickle (Python-only, security risks), joblib (efficient for numpy arrays), ONNX (cross-platform, works across frameworks), TensorFlow SavedModel, PyTorch TorchScript. Always save the full preprocessing pipeline with the model. Version-pin your dependencies to avoid deserialization failures.' }
+  ]
+},
+
+project: {
+  title: 'Mini ML Project: House Price Prediction',
+  subtitle: 'End-to-end machine learning pipeline from raw data to deployed model.',
+  difficulty: 'Project', readTime: '25 min', questions: 5,
+  isProject: true
+},
+
+dataset: {
+  title: 'Live Dataset Explorer',
+  subtitle: 'Fetch, inspect, and explore real datasets from a public API.',
+  isDataset: true
+}
+};
+
+// =============================================
+// STATE
+// =============================================
+let currentTopic = 'home';
+let completedTopics = JSON.parse(localStorage.getItem('ml_done') || '[]');
+let searchResults = null;
+
+// =============================================
+// BUILD SIDEBAR
+// =============================================
+function buildSidebar() {
+  const sections = {};
+  TOPICS.forEach(t => {
+    if (!sections[t.section]) sections[t.section] = [];
+    sections[t.section].push(t);
+  });
+  const container = document.getElementById('nav-list');
+  Object.entries(sections).forEach(([sec, items]) => {
+    const div = document.createElement('div');
+    div.className = 'sidebar-section';
+    div.innerHTML = `<div class="sidebar-section-title">${sec}</div>` +
+      items.map(t => `
+        <div class="nav-item${t.id === currentTopic ? ' active' : ''}${completedTopics.includes(t.id) ? ' done' : ''}" 
+             onclick="navigate('${t.id}')" id="nav-${t.id}">
+          <span class="nav-icon">${t.icon}</span>
+          <span>${t.label}</span>
+          <span class="nav-done">${completedTopics.includes(t.id) ? '✓' : ''}</span>
+        </div>`).join('');
+    container.appendChild(div);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = TOPICS.filter(t => t.id !== 'home' && t.id !== 'dataset').length;
+  const done = completedTopics.filter(id => id !== 'home' && id !== 'dataset').length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-bar').style.width = pct + '%';
+}
+
+function markDone(id) {
+  if (!completedTopics.includes(id)) {
+    completedTopics.push(id);
+    localStorage.setItem('ml_done', JSON.stringify(completedTopics));
+    const nav = document.getElementById('nav-' + id);
+    if (nav) { nav.classList.add('done'); nav.querySelector('.nav-done').textContent = '✓'; }
+    updateProgress();
+    showToast('Topic marked as complete! 🎉');
+    const btn = document.getElementById('done-btn-' + id);
+    if (btn) { btn.classList.add('done'); btn.textContent = '✅ Completed'; }
+  }
+}
+
+// =============================================
+// NAVIGATION
+// =============================================
+function navigate(id) {
+  currentTopic = id;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+  renderContent(id);
+  closeSidebar();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =============================================
+// RENDER FUNCTIONS
+// =============================================
+function renderContent(id) {
+  const content = document.getElementById('content');
+  if (id === 'home') { content.innerHTML = renderHome(); return; }
+  if (id === 'dataset') { content.innerHTML = renderDataset(); initDataset(); return; }
+  if (id === 'project') { content.innerHTML = renderProject(); initVizBars(); return; }
+  const data = CONTENT[id];
+  if (!data) { content.innerHTML = '<p>Coming soon...</p>'; return; }
+  const isDone = completedTopics.includes(id);
+  content.innerHTML = `
+    <div class="mark-done-bar">
+      <button class="mark-done-btn${isDone ? ' done' : ''}" id="done-btn-${id}" onclick="markDone('${id}')">
+        ${isDone ? '✅ Completed' : '○ Mark as Done'}
+      </button>
+    </div>
+    <div class="topic-header">
+      ${data.tag ? `<div class="topic-tag" style="background:${hexToRgba(TOPICS.find(t=>t.id===id)?.color||'#00d4aa',0.12)};color:${TOPICS.find(t=>t.id===id)?.color||'#00d4aa'}">${data.tag}</div>` : ''}
+      <h1>${data.title}</h1>
+      <p>${data.subtitle}</p>
+      <div class="topic-meta">
+        <div class="meta-badge"><div class="dot" style="background:${getDiffColor(data.difficulty)}"></div>${data.difficulty || ''}</div>
+        <div class="meta-badge">⏱ ${data.readTime || ''}</div>
+        <div class="meta-badge">❓ ${data.questions || 0} Questions</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this, 'explain-${id}')">📖 Explanation</button>
+      <button class="tab-btn" onclick="switchTab(this, 'steps-${id}')">🪜 Steps</button>
+      <button class="tab-btn" onclick="switchTab(this, 'code-${id}')">💻 Code</button>
+      <button class="tab-btn" onclick="switchTab(this, 'cases-${id}')">🌍 Use Cases</button>
+      <button class="tab-btn" onclick="switchTab(this, 'mistakes-${id}')">⚠️ Mistakes</button>
+      <button class="tab-btn" onclick="switchTab(this, 'qa-${id}')">🎤 Interview Q&A</button>
+    </div>
+    <div id="explain-${id}" class="tab-panel active">${data.explanation || ''}</div>
+    <div id="steps-${id}" class="tab-panel">${renderSteps(data.steps || [])}</div>
+    <div id="code-${id}" class="tab-panel">${renderCode(data.code || '', id)}</div>
+    <div id="cases-${id}" class="tab-panel">${renderUseCases(data.useCases || [])}</div>
+    <div id="mistakes-${id}" class="tab-panel">${renderMistakes(data.mistakes || [])}</div>
+    <div id="qa-${id}" class="tab-panel">${renderQA(data.qa || [], id)}</div>
+  `;
+}
+
+function renderHome() {
+  const topics = TOPICS.filter(t => t.id !== 'home' && t.id !== 'dataset');
+  return `
+    <div class="home-hero">
+      <h1>Master<br><span class="hero-grad">Machine Learning</span><br>Step by Step</h1>
+      <p>A complete learning platform covering all ML concepts from fundamentals to production deployment, with code examples, interview prep, and hands-on projects.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="navigate('intro')">🚀 Start Learning</button>
+        <button class="btn btn-ghost" onclick="navigate('project')">🏠 View Mini Project</button>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">16</div><div class="stat-label">Topics Covered</div></div>
+      <div class="stat-card"><div class="stat-num">80+</div><div class="stat-label">Interview Questions</div></div>
+      <div class="stat-card"><div class="stat-num">16</div><div class="stat-label">Code Examples</div></div>
+      <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">End-to-End Project</div></div>
+    </div>
+    <div class="prose"><h2>All Topics</h2></div>
+    <div class="topic-grid">
+      ${topics.map(t => `
+        <div class="topic-card" onclick="navigate('${t.id}')" style="--grad-card:linear-gradient(135deg,${t.color}22,${t.color}08)">
+          <div class="tc-icon">${t.icon}</div>
+          <div class="tc-title">${t.label}</div>
+          <div class="tc-desc">${t.desc}</div>
+          ${t.tag ? `<div class="tc-tag" style="background:${hexToRgba(t.color,0.12)};color:${t.color}">${t.tag}</div>` : ''}
+          ${completedTopics.includes(t.id) ? '<div class="tc-tag" style="margin-left:6px;background:rgba(0,212,170,0.1);color:#00d4aa">✓ Done</div>' : ''}
+        </div>`).join('')}
+    </div>`;
+}
+
+function renderSteps(steps) {
+  if (!steps.length) return '<p>No steps available.</p>';
+  return `<div class="steps">${steps.map((s, i) => `
+    <div class="step">
+      <div class="step-num">${i + 1}</div>
+      <div class="step-body"><h4>${s.title}</h4><p>${s.body}</p></div>
+    </div>`).join('')}</div>`;
+}
+
+function renderCode(code, id) {
+  if (!code) return '<p>No code example available.</p>';
+  return `<div class="code-block">
+    <div class="code-header">
+      <div class="code-dots">
+        <div class="code-dot" style="background:#ff5f57"></div>
+        <div class="code-dot" style="background:#febc2e"></div>
+        <div class="code-dot" style="background:#28c840"></div>
+      </div>
+      <div class="code-lang">Python</div>
+      <button class="copy-btn" onclick="copyCode(this, '${id}')">Copy</button>
+    </div>
+    <code id="code-${id}">${code}</code>
+  </div>`;
+}
+
+function renderUseCases(cases) {
+  if (!cases.length) return '<p>No use cases.</p>';
+  return `<div class="use-cases">${cases.map(c => `
+    <div class="use-case"><span class="uc-icon">${c.icon}</span><span>${c.text}</span></div>`).join('')}</div>`;
+}
+
+function renderMistakes(mistakes) {
+  if (!mistakes.length) return '<p>No mistakes listed.</p>';
+  return `<div class="mistakes">${mistakes.map(m => `
+    <div class="mistake">
+      <span class="mistake-icon">❌</span>
+      <div class="mistake-text"><strong>${m.title}:</strong> ${m.body}</div>
+    </div>`).join('')}</div>`;
+}
+
+function renderQA(qa, topicId) {
+  if (!qa.length) return '<p>No Q&A available.</p>';
+  return `<div class="qa-list">${qa.map((q, i) => `
+    <div class="qa-item" id="qa-${topicId}-${i}">
+      <div class="qa-q" onclick="toggleQA('qa-${topicId}-${i}')">
+        <div class="qa-num">Q${i+1}</div>
+        <div class="qa-text">${q.q}</div>
+        <div class="qa-arrow">▼</div>
+      </div>
+      <div class="qa-a">${q.a}</div>
+    </div>`).join('')}</div>`;
+}
+
+// =============================================
+// MINI PROJECT PAGE
+// =============================================
+function renderProject() {
+  return `
+    <div class="topic-header">
+      <div class="topic-tag" style="background:rgba(255,107,107,0.12);color:#ff6b6b">End-to-End Project</div>
+      <h1>🏠 House Price Prediction</h1>
+      <p>A complete machine learning pipeline — from raw data to model evaluation and API deployment.</p>
+      <div class="topic-meta">
+        <div class="meta-badge"><div class="dot" style="background:#ff6b6b"></div>Advanced</div>
+        <div class="meta-badge">⏱ 25 min</div>
+        <div class="meta-badge">🧰 Full Pipeline</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'proj-problem')">📋 Problem</button>
+      <button class="tab-btn" onclick="switchTab(this,'proj-pipeline')">🔄 Pipeline</button>
+      <button class="tab-btn" onclick="switchTab(this,'proj-code')">💻 Full Code</button>
+      <button class="tab-btn" onclick="switchTab(this,'proj-results')">📊 Results</button>
+    </div>
+
+    <div id="proj-problem" class="tab-panel active">
+      <div class="prose">
+        <h2>Problem Statement</h2>
+        <p>Predict the <strong>sale price of residential homes</strong> in Ames, Iowa based on 79 explanatory variables describing (almost) every aspect of the property.</p>
+        <h2>Dataset: Ames Housing Dataset</h2>
+        <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody>
+          <tr><td>Rows</td><td>1,460 training samples</td></tr>
+          <tr><td>Features</td><td>79 (mix of numeric + categorical)</td></tr>
+          <tr><td>Target</td><td>SalePrice (continuous, USD)</td></tr>
+          <tr><td>Target Range</td><td>$34,900 – $755,000</td></tr>
+          <tr><td>Source</td><td>Kaggle — "House Prices: Advanced Regression Techniques"</td></tr>
+        </tbody></table></div>
+        <h2>Key Features</h2>
+        <div class="info-grid">
+          <div class="info-card"><div class="info-card-icon">📐</div><h4>GrLivArea</h4><p>Above grade living area (sq ft). Strongest predictor.</p></div>
+          <div class="info-card"><div class="info-card-icon">🛁</div><h4>OverallQual</h4><p>Overall material and finish quality (1-10 scale).</p></div>
+          <div class="info-card"><div class="info-card-icon">📅</div><h4>YearBuilt</h4><p>Original construction year. Age affects price significantly.</p></div>
+          <div class="info-card"><div class="info-card-icon">🏘️</div><h4>Neighborhood</h4><p>Physical location within Ames. High-cardinality categorical.</p></div>
+        </div>
+        <div class="alert alert-info"><span class="alert-icon">💡</span><span>The target (SalePrice) is right-skewed. We log-transform it: y = log1p(SalePrice), predict, then exp back. This is standard practice for price prediction.</span></div>
+      </div>
+    </div>
+
+    <div id="proj-pipeline" class="tab-panel">
+      <div class="prose"><h2>ML Pipeline</h2></div>
+      <div class="project-pipeline">
+        <div class="pipeline-step"><div class="pipeline-box" style="border-color:rgba(0,212,170,0.4)">📥<br>Load Data</div><span class="pipeline-arrow">→</span></div>
+        <div class="pipeline-step"><div class="pipeline-box" style="border-color:rgba(6,192,255,0.4)">🧹<br>EDA</div><span class="pipeline-arrow">→</span></div>
+        <div class="pipeline-step"><div class="pipeline-box" style="border-color:rgba(6,192,255,0.4)">⚙️<br>Feature Eng.</div><span class="pipeline-arrow">→</span></div>
+        <div class="pipeline-step"><div class="pipeline-box" style="border-color:rgba(108,99,255,0.4)">🔀<br>Train/Val Split</div><span class="pipeline-arrow">→</span></div>
+        <div class="pipeline-step"><div class="pipeline-box" style="border-color:rgba(108,99,255,0.4)">🏋️<br>Train Models</div><span class="pipeline-arrow">→</span></div>
+        <div class="pipeline-step"><div class="pipeline-box" style="border-color:rgba(255,209,102,0.4)">📊<br>Evaluate</div><span class="pipeline-arrow">→</span></div>
+        <div class="pipeline-step"><div class="pipeline-box" style="border-color:rgba(255,107,107,0.4)">🚀<br>Deploy API</div></div>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Load & Inspect</h4><p>Load train.csv. Check df.shape, df.isnull().sum(), df['SalePrice'].describe(). Target is right-skewed.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Log-Transform Target</h4><p>y = np.log1p(df['SalePrice']). Makes distribution more normal. Models work better with symmetric targets.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Handle Missing Values</h4><p>Many NA values actually mean "None" (e.g., no basement → BsmtQual is NaN). Fill with "None"/"0". Use median for numeric.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Feature Engineering</h4><p>TotalSF = TotalBsmtSF + 1stFlrSF + 2ndFlrSF. Age = YrSold - YearBuilt. HasPool, HasGarage, HasFireplace binary flags.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Encode Categoricals</h4><p>LabelEncode ordinal features (quality ratings). pd.get_dummies for nominal (Neighborhood). Drop first to avoid multicollinearity.</p></div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Train & Tune Models</h4><p>Start with Ridge. Try XGBoost. Use 5-fold CV with RMSE on log-transformed target. GridSearch key params.</p></div></div>
+        <div class="step"><div class="step-num">7</div><div class="step-body"><h4>Ensemble</h4><p>VotingRegressor or simple average of top 3 models. Usually adds 0.5-1% RMSE improvement.</p></div></div>
+      </div>
+    </div>
+
+    <div id="proj-code" class="tab-panel">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots">
+            <div class="code-dot" style="background:#ff5f57"></div>
+            <div class="code-dot" style="background:#febc2e"></div>
+            <div class="code-dot" style="background:#28c840"></div>
+          </div>
+          <div class="code-lang">Python — Full Pipeline</div>
+          <button class="copy-btn" onclick="copyCode(this,'proj')">Copy</button>
+        </div>
+        <code id="code-proj"><span class="cm"># File: house_price_prediction.py</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score, KFold
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler, LabelEncoder
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> Ridge, Lasso
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestRegressor, GradientBoostingRegressor
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> mean_squared_error
+<span class="kw">import</span> warnings; warnings.filterwarnings(<span class="st">'ignore'</span>)
+
+<span class="cm"># ── LOAD DATA ──</span>
+df = pd.read_csv(<span class="st">'train.csv'</span>)
+<span class="fn">print</span>(<span class="st">f"Shape: {df.shape}"</span>)
+
+<span class="cm"># ── LOG TRANSFORM TARGET ──</span>
+y = np.log1p(df[<span class="st">'SalePrice'</span>])
+df.drop(<span class="st">'SalePrice'</span>, axis=<span class="nm">1</span>, inplace=<span class="kw">True</span>)
+
+<span class="cm"># ── FEATURE ENGINEERING ──</span>
+df[<span class="st">'TotalSF'</span>] = df[<span class="st">'TotalBsmtSF'</span>] + df[<span class="st">'1stFlrSF'</span>] + df[<span class="st">'2ndFlrSF'</span>]
+df[<span class="st">'Age'</span>] = df[<span class="st">'YrSold'</span>] - df[<span class="st">'YearBuilt'</span>]
+df[<span class="st">'HasPool'</span>] = (df[<span class="st">'PoolArea'</span>] > <span class="nm">0</span>).astype(<span class="nm">int</span>)
+df[<span class="st">'HasGarage'</span>] = (df[<span class="st">'GarageArea'</span>] > <span class="nm">0</span>).astype(<span class="nm">int</span>)
+df[<span class="st">'Remodeled'</span>] = (df[<span class="st">'YearRemodAdd'</span>] != df[<span class="st">'YearBuilt'</span>]).astype(<span class="nm">int</span>)
+
+<span class="cm"># ── HANDLE MISSING VALUES ──</span>
+none_cols = [<span class="st">'PoolQC'</span>, <span class="st">'MiscFeature'</span>, <span class="st">'Alley'</span>, <span class="st">'Fence'</span>, <span class="st">'FireplaceQu'</span>,
+             <span class="st">'GarageType'</span>, <span class="st">'GarageFinish'</span>, <span class="st">'BsmtQual'</span>, <span class="st">'BsmtExposure'</span>]
+<span class="kw">for</span> col <span class="kw">in</span> none_cols:
+    df[col].fillna(<span class="st">'None'</span>, inplace=<span class="kw">True</span>)
+df.fillna(df.median(numeric_only=<span class="kw">True</span>), inplace=<span class="kw">True</span>)
+df.fillna(<span class="st">'Unknown'</span>, inplace=<span class="kw">True</span>)
+
+<span class="cm"># ── ENCODE CATEGORICALS ──</span>
+ordinal_map = {<span class="st">'Ex'</span>:<span class="nm">5</span>,<span class="st">'Gd'</span>:<span class="nm">4</span>,<span class="st">'TA'</span>:<span class="nm">3</span>,<span class="st">'Fa'</span>:<span class="nm">2</span>,<span class="st">'Po'</span>:<span class="nm">1</span>,<span class="st">'None'</span>:<span class="nm">0</span>}
+quality_cols = [<span class="st">'ExterQual'</span>,<span class="st">'ExterCond'</span>,<span class="st">'BsmtQual'</span>,<span class="st">'HeatingQC'</span>,<span class="st">'KitchenQual'</span>]
+<span class="kw">for</span> col <span class="kw">in</span> quality_cols:
+    df[col] = df[col].map(ordinal_map).fillna(<span class="nm">0</span>)
+df = pd.get_dummies(df, drop_first=<span class="kw">True</span>)
+X = df.values
+
+<span class="cm"># ── TRAIN MODELS WITH CV ──</span>
+kf = KFold(n_splits=<span class="nm">5</span>, shuffle=<span class="kw">True</span>, random_state=<span class="nm">42</span>)
+models = {
+    <span class="st">'Ridge'</span>: Pipeline([(<span class="st">'sc'</span>, StandardScaler()), (<span class="st">'m'</span>, Ridge(alpha=<span class="nm">10</span>))]),
+    <span class="st">'GradBoost'</span>: GradientBoostingRegressor(n_estimators=<span class="nm">300</span>, max_depth=<span class="nm">4</span>,
+                                             learning_rate=<span class="nm">0.05</span>, random_state=<span class="nm">42</span>),
+    <span class="st">'RandForest'</span>: RandomForestRegressor(n_estimators=<span class="nm">200</span>, max_depth=<span class="nm">15</span>, random_state=<span class="nm">42</span>)
+}
+<span class="kw">for</span> name, model <span class="kw">in</span> models.items():
+    scores = cross_val_score(model, X, y, cv=kf, scoring=<span class="st">'neg_root_mean_squared_error'</span>)
+    <span class="fn">print</span>(<span class="st">f"{name:12} CV RMSE: {-scores.mean():.4f} ± {scores.std():.4f}"</span>)
+
+<span class="cm"># ── ENSEMBLE: AVERAGE TOP MODELS ──</span>
+gb = GradientBoostingRegressor(n_estimators=<span class="nm">300</span>, max_depth=<span class="nm">4</span>, learning_rate=<span class="nm">0.05</span>)
+rf = RandomForestRegressor(n_estimators=<span class="nm">200</span>, random_state=<span class="nm">42</span>)
+gb.fit(X, y); rf.fit(X, y)
+y_pred_log = (<span class="nm">0.6</span> * gb.predict(X) + <span class="nm">0.4</span> * rf.predict(X))
+y_pred = np.expm1(y_pred_log)  <span class="cm"># inverse of log1p</span>
+<span class="fn">print</span>(<span class="st">f"Sample predictions: {y_pred[:3].astype(int)}"</span>)</code>
+      </div>
+    </div>
+
+    <div id="proj-results" class="tab-panel">
+      <div class="prose"><h2>Model Performance Comparison</h2></div>
+      <div class="viz-bars" id="viz-bars"></div>
+      <div class="prose">
+        <h2>Feature Importance (Top 10)</h2>
+        <div class="data-table-wrap"><table class="data-table"><thead><tr><th>#</th><th>Feature</th><th>Importance</th><th>Insight</th></tr></thead><tbody>
+          <tr><td>1</td><td>OverallQual</td><td><span class="badge badge-green">0.118</span></td><td>Quality rating is #1 predictor</td></tr>
+          <tr><td>2</td><td>GrLivArea</td><td><span class="badge badge-green">0.092</span></td><td>Living area strongly predictive</td></tr>
+          <tr><td>3</td><td>TotalSF</td><td><span class="badge badge-blue">0.076</span></td><td>Engineered feature — very useful</td></tr>
+          <tr><td>4</td><td>Age</td><td><span class="badge badge-blue">0.065</span></td><td>Engineered: newer = more expensive</td></tr>
+          <tr><td>5</td><td>GarageCars</td><td><span class="badge badge-purple">0.058</span></td><td>Garage capacity matters</td></tr>
+          <tr><td>6</td><td>TotalBsmtSF</td><td><span class="badge badge-purple">0.051</span></td><td>Basement size important</td></tr>
+          <tr><td>7</td><td>YearBuilt</td><td><span class="badge badge-yellow">0.047</span></td><td>Year built proxy for quality</td></tr>
+          <tr><td>8</td><td>Neighborhood_*</td><td><span class="badge badge-yellow">0.044</span></td><td>Location, location, location!</td></tr>
+          <tr><td>9</td><td>KitchenQual</td><td><span class="badge badge-red">0.038</span></td><td>Kitchen quality influences price</td></tr>
+          <tr><td>10</td><td>ExterQual</td><td><span class="badge badge-red">0.032</span></td><td>Exterior quality visible to buyers</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>`;
+}
+
+function initVizBars() {
+  const data = [
+    { label: 'Ridge Regression', rmse: 0.1312, r2: 91.4, color: 'var(--accent)' },
+    { label: 'Random Forest', rmse: 0.1198, r2: 93.2, color: 'var(--accent5)' },
+    { label: 'Gradient Boosting', rmse: 0.1087, r2: 94.8, color: 'var(--accent2)' },
+    { label: 'Ensemble (GB+RF)', rmse: 0.1024, r2: 95.6, color: 'var(--accent4)' }
+  ];
+  const container = document.getElementById('viz-bars');
+  if (!container) return;
+  const maxR2 = 100;
+  container.innerHTML = data.map(d => `
+    <div class="viz-row">
+      <div class="viz-label">${d.label}</div>
+      <div class="viz-bar-wrap">
+        <div class="viz-bar" style="width:0%;background:${d.color}" data-width="${d.r2}%">
+          R² ${d.r2}%
+        </div>
+      </div>
+      <div class="viz-val">RMSE: ${d.rmse}</div>
+    </div>`).join('');
+  setTimeout(() => {
+    document.querySelectorAll('.viz-bar').forEach(bar => {
+      bar.style.width = bar.dataset.width;
+    });
+  }, 100);
+}
+
+// =============================================
+// DATASET EXPLORER PAGE
+// =============================================
+function renderDataset() {
+  return `
+    <div class="topic-header">
+      <div class="topic-tag" style="background:rgba(255,107,107,0.12);color:#ff6b6b">Interactive</div>
+      <h1>🌐 Live Dataset Explorer</h1>
+      <p>Fetch and explore real-world ML datasets from a public API. Inspect features, types, and sample data.</p>
+    </div>
+    <div class="api-controls">
+      <select class="select-input" id="dataset-select" onchange="fetchDataset()">
+        <option value="iris">🌸 Iris Dataset</option>
+        <option value="wine">🍷 Wine Quality</option>
+        <option value="diabetes">🏥 Diabetes</option>
+        <option value="breast_cancer">🎗️ Breast Cancer</option>
+      </select>
+      <button class="btn btn-primary" onclick="fetchDataset()">🔄 Refresh</button>
+    </div>
+    <div id="dataset-info" style="margin-bottom:16px"></div>
+    <div id="dataset-loading"></div>
+    <div id="dataset-table"></div>
+    <div id="dataset-stats"></div>`;
+}
+
+function initDataset() { setTimeout(fetchDataset, 100); }
+
+function fetchDataset() {
+  const sel = document.getElementById('dataset-select')?.value || 'iris';
+  document.getElementById('dataset-loading').innerHTML = `<div class="loading-state"><div class="spinner"></div>Loading dataset...</div>`;
+  document.getElementById('dataset-table').innerHTML = '';
+  document.getElementById('dataset-stats').innerHTML = '';
+  // Simulate fetch with local data
+  setTimeout(() => {
+    const datasets = {
+      iris: {
+        name: 'Iris Dataset',
+        desc: 'Classic ML benchmark. 150 samples of iris flowers with 4 measurements.',
+        task: 'Multiclass Classification', classes: 3, features: 4, samples: 150,
+        columns: ['sepal_length','sepal_width','petal_length','petal_width','species'],
+        rows: [
+          [5.1,3.5,1.4,0.2,'setosa'],[4.9,3.0,1.4,0.2,'setosa'],[7.0,3.2,4.7,1.4,'versicolor'],
+          [6.4,3.2,4.5,1.5,'versicolor'],[6.3,3.3,6.0,2.5,'virginica'],[5.8,2.7,5.1,1.9,'virginica']
+        ],
+        stats: {sepal_length:{mean:'5.84',std:'0.83',min:'4.3',max:'7.9'}, petal_length:{mean:'3.76',std:'1.77',min:'1.0',max:'6.9'}}
+      },
+      wine: {
+        name: 'Wine Quality',
+        desc: '6497 wine samples with physicochemical properties. Predict quality score.',
+        task: 'Regression / Classification', classes: '3-8', features: 11, samples: 6497,
+        columns: ['fixed_acidity','volatile_acidity','citric_acid','residual_sugar','chlorides','quality'],
+        rows: [
+          [7.4,0.7,0.0,1.9,0.076,5],[7.8,0.88,0.0,2.6,0.098,5],[7.8,0.76,0.04,2.3,0.092,5],
+          [8.1,0.28,0.4,6.9,0.05,6],[7.4,0.66,0.0,1.8,0.075,5],[7.9,0.6,0.06,1.6,0.069,6]
+        ],
+        stats: {fixed_acidity:{mean:'8.32',std:'1.74',min:'4.6',max:'15.9'}, quality:{mean:'5.64',std:'0.81',min:'3',max:'8'}}
+      },
+      diabetes: {
+        name: 'Diabetes Dataset',
+        desc: '442 patients with diabetes disease progression after 1 year.',
+        task: 'Regression', classes: 'N/A', features: 10, samples: 442,
+        columns: ['age','sex','bmi','bp','s1','s2','s3','s4','s5','s6','target'],
+        rows: [
+          [59,2,32.1,101,157,93.2,38,4,4.9,87,151],[48,1,21.6,87,183,103.2,70,3,3.9,69,75],
+          [72,2,30.5,93,156,93.6,41,4,4.7,61,141],[24,1,25.3,84,198,131.4,40,5,4.5,62,206]
+        ],
+        stats: {age:{mean:'48.5',std:'13.1',min:'19',max:'79'}, target:{mean:'152.1',std:'77.1',min:'25',max:'346'}}
+      },
+      breast_cancer: {
+        name: 'Breast Cancer',
+        desc: '569 samples, 30 numeric features from digitized FNA biopsy images.',
+        task: 'Binary Classification', classes: 2, features: 30, samples: 569,
+        columns: ['mean_radius','mean_texture','mean_perimeter','mean_area','mean_smoothness','diagnosis'],
+        rows: [
+          [17.99,10.38,122.8,1001.0,0.1184,'M'],[20.57,17.77,132.9,1326.0,0.0847,'M'],
+          [19.69,21.25,130.0,1203.0,0.1096,'M'],[11.42,20.38,77.58,386.1,0.1425,'B'],
+          [12.45,15.7,82.57,477.1,0.1278,'B'],[18.25,19.98,119.6,1040.0,0.0949,'M']
+        ],
+        stats: {mean_radius:{mean:'14.13',std:'3.52',min:'6.98',max:'28.11'}, mean_area:{mean:'654.9',std:'351.9',min:'143.5',max:'2501'}}
+      }
+    };
+    const d = datasets[sel];
+    document.getElementById('dataset-loading').innerHTML = '';
+    document.getElementById('dataset-info').innerHTML = `
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-icon">📊</div><h4>${d.name}</h4><p>${d.desc}</p></div>
+        <div class="info-card"><div class="info-card-icon">🎯</div><h4>Task</h4><p>${d.task}</p></div>
+        <div class="info-card"><div class="info-card-icon">📏</div><h4>Size</h4><p>${d.samples} samples × ${d.features} features</p></div>
+        <div class="info-card"><div class="info-card-icon">🏷️</div><h4>Classes</h4><p>${d.classes}</p></div>
+      </div>`;
+    document.getElementById('dataset-table').innerHTML = `
+      <div class="prose"><h2>Sample Data (first 6 rows)</h2></div>
+      <div class="data-table-wrap"><table class="data-table">
+        <thead><tr>${d.columns.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+        <tbody>${d.rows.map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table></div>`;
+    const statsHTML = Object.entries(d.stats).map(([col, s]) => `
+      <tr><td><strong>${col}</strong></td><td>${s.mean}</td><td>${s.std}</td><td>${s.min}</td><td>${s.max}</td></tr>`).join('');
+    document.getElementById('dataset-stats').innerHTML = `
+      <div class="prose"><h2>Feature Statistics</h2></div>
+      <div class="data-table-wrap"><table class="data-table">
+        <thead><tr><th>Feature</th><th>Mean</th><th>Std</th><th>Min</th><th>Max</th></tr></thead>
+        <tbody>${statsHTML}</tbody>
+      </table></div>
+      <div class="alert alert-tip" style="margin-top:16px"><span class="alert-icon">💡</span><span>This data is loaded locally for demo purposes. In production, fetch from sklearn's datasets API or public ML repositories like UCI ML Repository or Kaggle.</span></div>`;
+  }, 800);
+}
+
+// =============================================
+// UTILS
+// =============================================
+function switchTab(btn, panelId) {
+  const tabsEl = btn.closest('.tabs');
+  tabsEl.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const panelParent = tabsEl.nextElementSibling?.parentElement || document.getElementById('content');
+  panelParent.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(panelId);
+  if (panel) {
+    panel.classList.add('active');
+    if (panelId === 'proj-results') setTimeout(initVizBars, 50);
+  }
+}
+
+function toggleQA(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function copyCode(btn, id) {
+  const el = document.getElementById('code-' + id);
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function getDiffColor(d) {
+  return { Beginner: '#00d4aa', Intermediate: '#ffd166', Advanced: '#ff6b6b', Project: '#6c63ff' }[d] || '#00d4aa';
+}
+
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function handleSearch(val) {
+  const q = val.toLowerCase().trim();
+  if (!q) { if (searchResults !== null) { navigate(currentTopic); } searchResults = null; return; }
+  const results = TOPICS.filter(t => {
+    const data = CONTENT[t.id];
+    return t.label.toLowerCase().includes(q) ||
+      (data && (data.title?.toLowerCase().includes(q) || data.subtitle?.toLowerCase().includes(q)));
+  });
+  searchResults = results;
+  const content = document.getElementById('content');
+  if (results.length === 0) { content.innerHTML = `<div class="prose"><h2>No results for "${val}"</h2><p>Try different keywords.</p></div>`; return; }
+  content.innerHTML = `<div class="prose"><h2>Search: "${val}"</h2><p>${results.length} topic(s) found</p></div>
+    <div class="topic-grid">${results.map(t => `
+      <div class="topic-card" onclick="navigate('${t.id}');document.getElementById('search-input').value=''">
+        <div class="tc-icon">${t.icon}</div>
+        <div class="tc-title">${t.label}</div>
+        <div class="tc-desc">${t.desc}</div>
+      </div>`).join('')}</div>`;
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// =============================================
+// INIT
+// =============================================
+buildSidebar();
+renderContent('home');
+</script>
+</body>
+</html>

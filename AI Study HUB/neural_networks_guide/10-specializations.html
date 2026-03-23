@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.10 — Specializations | NN Guide</title>
+<link rel="stylesheet" href="shared.css">
+<style>:root{--neon:#ffd60a}</style>
+</head>
+<body>
+<nav class="topnav"><a href="index.html" class="topnav-logo">NN<span>.GUIDE</span></a>
+<div class="topnav-links"><a href="01-math.html">01 Math</a><a href="02-fundamentals.html">02 Fundamentals</a><a href="03-python.html">03 Python</a><a href="04-workflow.html">04 Workflow</a><a href="05-cnn.html">05 CNN</a><a href="06-rnn.html">06 RNN</a><a href="07-nlp.html">07 NLP</a><a href="08-transformers.html">08 Transformers</a><a href="09-advanced.html">09 Advanced</a><a href="10-specializations.html" class="active">10 Specs</a><a href="11-projects.html">11 Projects</a></div></nav>
+<div class="hero"><div class="hero-grid"></div>
+<div class="chapter-num">Chapter 10 — Specializations</div>
+<h1><span style="color:#ffd60a">DEEP LEARNING</span><br>SPECIALIZATIONS</h1>
+<p class="hero-sub">Computer vision, speech recognition, medical AI, autonomous driving, multimodal learning — domain mastery.</p>
+<div class="hero-meta"><div class="hero-stat"><div class="hero-stat-val" style="color:#ffd60a">6</div><div class="hero-stat-label">Domains</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#ffd60a">8</div><div class="hero-stat-label">Code Examples</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#ffd60a">8</div><div class="hero-stat-label">Interview Q&A</div></div></div></div>
+<div class="page-layout">
+<aside class="sidebar"><div class="sidebar-header">Contents</div><a class="sb-link active" onclick="show('cv')"><span class="sb-icon">🖼️</span>Computer Vision</a>
+<a class="sb-link" onclick="show('speech')"><span class="sb-icon">🎙️</span>Speech & Audio</a>
+<a class="sb-link" onclick="show('interview')"><span class="sb-icon">🎯</span>Interview Q&A</a>
+
+<div class="sb-chapters"><div class="sb-ch-label">Navigate</div><a class="sb-ch-link" href="09-advanced.html">← 09 · Advanced</a><a class="sb-ch-link" href="11-projects.html">→ 11 · Projects</a></div></aside>
+<div class="content"><div class="section active" id="s-cv"><div class="sec-head"><span class="sec-tag tag-a">Advanced</span><h2 class="sec-head h2">COMPUTER VISION</h2><div class="sec-meta">Object Detection · Segmentation · Multimodal</div></div><div class="tbl"><table><tr><th>Task</th><th>Architecture</th><th>Dataset</th><th>Metric</th></tr><tr><td>Image Classification</td><td>ResNet/ViT</td><td>ImageNet</td><td>Top-1 Accuracy</td></tr><tr><td>Object Detection</td><td>YOLOv8, DETR</td><td>COCO</td><td>mAP@50</td></tr><tr><td>Semantic Segmentation</td><td>DeepLab, SegFormer</td><td>ADE20K</td><td>mIoU</td></tr><tr><td>Instance Segmentation</td><td>Mask R-CNN</td><td>COCO</td><td>AP_mask</td></tr><tr><td>Image Generation</td><td>DiT, SDXL</td><td>LAION</td><td>FID</td></tr><tr><td>Visual QA</td><td>LLaVA, GPT-4V</td><td>VQAv2</td><td>Accuracy</td></tr></table></div><div class="callout cl-green"><span class="callout-icon">🔍</span><span><strong>Key trend (2024-25):</strong> Vision-Language Models (VLMs) like LLaVA, InternVL, and GPT-4V unify perception and language. CLIP's contrastive training bridges vision and text. SAM 2 enables universal segmentation with prompts.</span></div></div><div class="section" id="s-speech"><div class="sec-head"><span class="sec-tag tag-a">Advanced</span><h2 class="sec-head h2">SPEECH & AUDIO</h2><div class="sec-meta">ASR · TTS · Speaker Recognition</div></div><div class="card"><div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">🔹</span>Automatic Speech Recognition</div><p>End-to-end ASR maps raw audio waveforms to text. Modern systems use transformers pre-trained on 680K hours (Whisper) achieving human-level transcription.</p></div><div class="code-box"><div class="code-top"><span class="code-label">Python · Whisper ASR</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">import</span> whisper
+
+model = whisper.<span class="fn">load_model</span>(<span class="str">'large-v3'</span>)
+result = model.<span class="fn">transcribe</span>(<span class="str">'audio.mp3'</span>)
+<span class="fn">print</span>(result[<span class="str">'text'</span>])
+
+<span class="cm"># HuggingFace pipeline</span>
+<span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+asr = <span class="fn">pipeline</span>(<span class="str">'automatic-speech-recognition'</span>,
+              model=<span class="str">'openai/whisper-large-v3'</span>)
+<span class="fn">print</span>(<span class="fn">asr</span>(<span class="str">'audio.mp3'</span>))</pre></div></div><div class="section" id="s-interview"><div class="sec-head"><span class="sec-tag tag-q">Interview</span><h2 class="sec-head h2">INTERVIEW Q&A</h2><div class="sec-meta">Specializations · 8 Questions</div></div><div class="qa-level">Advanced</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q01</span><span class="qa-text">Explain CLIP and how it enables zero-shot image classification.</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div><div class="qa-a">CLIP (Contrastive Language-Image Pre-training, OpenAI 2021) trains dual encoders — one for images (ViT), one for text (Transformer) — with a contrastive loss: pull matching (image, text) pairs together, push non-matching apart. Trained on 400M internet image-caption pairs. Zero-shot classification: encode all class names as text ("a photo of a cat"), encode the query image, find the most similar text embedding by cosine similarity. Achieves 76% ImageNet top-1 with no ImageNet training. Enables: zero-shot detection (OWL-ViT), image-text retrieval, text-guided generation (Stable Diffusion uses CLIP text encoder).</div></div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q02</span><span class="qa-text">How does object detection differ from image classification?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a"><strong>Classification:</strong> Input image → single class label. No location information. <strong>Detection:</strong> Input image → list of (bounding box, class, confidence) tuples. Two paradigms: <strong>Two-stage (R-CNN family):</strong> Region proposal network generates candidate boxes → RoI pooling → classification. High accuracy, slower. <strong>One-stage (YOLO, SSD):</strong> Directly predict boxes and classes at each grid cell. Faster, slightly lower accuracy. <strong>Transformer-based (DETR):</strong> End-to-end, no anchor boxes. Slow training but elegant. Modern: YOLOv8/YOLOv10 for real-time, DETR variants for accuracy.</div></div></div></div></div>
+<script>
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.sb-link').forEach(s=>s.classList.remove('active'));document.getElementById('s-'+id).classList.add('active');event.currentTarget.classList.add('active');}
+function toggleQA(el){const o=el.classList.contains('open');document.querySelectorAll('.qa-item.open').forEach(e=>e.classList.remove('open'));if(!o)el.classList.add('open');}
+</script></body></html>

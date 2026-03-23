@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NumPy: Complete Mastery Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Fira+Code:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #03060f;
+  --bg2: #060b18;
+  --surface: #0a1020;
+  --surface2: #0f1830;
+  --border: #1a2540;
+  --border2: #243050;
+  --ink: #e8eef8;
+  --ink2: #a0b0cc;
+  --muted: #4a5a7a;
+  --accent: #00d4ff;
+  --accent-dim: rgba(0,212,255,0.15);
+  --accent2: #ff6b35;
+  --accent3: #00ff88;
+  --accent4: #ffd700;
+  --accent5: #c084fc;
+  --code-bg: #020510;
+  --grid-line: rgba(0,212,255,0.04);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Outfit', sans-serif;
+  line-height: 1.75;
+  font-size: 15px;
+  cursor: default;
+}
+
+/* Grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* HEADER */
+header {
+  position: relative;
+  padding: 72px 48px 56px;
+  background: linear-gradient(180deg, #010814 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.header-glow {
+  position: absolute;
+  top: -100px; left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 400px;
+  background: radial-gradient(ellipse, rgba(0,212,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.header-glow2 {
+  position: absolute;
+  top: 0; right: -100px;
+  width: 400px; height: 300px;
+  background: radial-gradient(ellipse, rgba(192,132,252,0.06) 0%, transparent 70%);
+}
+
+.version-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.2);
+  padding: 5px 14px;
+  border-radius: 3px;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px; color: var(--accent);
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.version-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  position: relative;
+}
+.h1-main { color: var(--ink); display: block; }
+.h1-sub {
+  display: block;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent5) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+header p {
+  color: var(--ink2);
+  max-width: 580px;
+  font-size: 16px;
+  margin-bottom: 36px;
+  font-weight: 300;
+}
+
+.header-stats {
+  display: flex; gap: 0; flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  max-width: 600px;
+  background: var(--surface);
+}
+.hstat {
+  flex: 1; min-width: 100px;
+  padding: 16px 20px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.hstat:last-child { border-right: none; }
+.hstat-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 22px; font-weight: 700;
+  color: var(--accent);
+  display: block;
+}
+.hstat-lbl {
+  font-size: 11px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1.5px;
+  display: block; margin-top: 2px;
+}
+
+/* LAYOUT */
+.wrapper { display: flex; position: relative; z-index: 1; }
+
+/* SIDEBAR */
+nav {
+  width: 256px; min-width: 256px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  padding: 20px 0 40px;
+}
+
+.nav-group {
+  padding: 16px 16px 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.nav-group:first-child { margin-top: 0; }
+
+nav a {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 16px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+  font-family: 'Outfit', sans-serif;
+}
+nav a:hover { color: var(--ink); background: var(--surface); }
+nav a.active {
+  color: var(--accent);
+  background: rgba(0,212,255,0.05);
+  border-left-color: var(--accent);
+}
+nav a .ni { font-size: 14px; min-width: 18px; }
+.nb {
+  margin-left: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 9px; padding: 1px 5px;
+  border-radius: 2px; letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.nb-g { background: rgba(0,255,136,0.12); color: var(--accent3); }
+.nb-y { background: rgba(255,215,0,0.12); color: var(--accent4); }
+.nb-r { background: rgba(255,107,53,0.12); color: var(--accent2); }
+
+/* MAIN */
+main {
+  flex: 1;
+  padding: 48px 56px;
+  max-width: 900px;
+  overflow-x: hidden;
+  position: relative; z-index: 1;
+}
+
+/* SECTION */
+.section { margin-bottom: 80px; }
+
+.section-header {
+  display: flex; align-items: flex-start; gap: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0;
+  width: 80px; height: 1px;
+  background: var(--accent);
+}
+
+.s-icon {
+  width: 54px; height: 54px; min-width: 54px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  position: relative;
+}
+.s-icon::before {
+  content: '';
+  position: absolute; inset: -1px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.2), transparent 60%);
+}
+
+.s-meta { flex: 1; }
+.s-level {
+  font-family: 'Fira Code', monospace;
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  display: inline-block; margin-bottom: 8px;
+}
+.lv-b { background: rgba(0,255,136,0.1); color: var(--accent3); border: 1px solid rgba(0,255,136,0.2); }
+.lv-i { background: rgba(255,215,0,0.1); color: var(--accent4); border: 1px solid rgba(255,215,0,0.2); }
+.lv-a { background: rgba(255,107,53,0.1); color: var(--accent2); border: 1px solid rgba(255,107,53,0.2); }
+
+.s-meta h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--ink); margin-bottom: 4px;
+}
+.s-meta p { color: var(--ink2); font-size: 13.5px; font-weight: 300; }
+
+h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px; font-weight: 600;
+  color: var(--accent);
+  margin: 32px 0 12px;
+  display: flex; align-items: center; gap: 8px;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+h3::before {
+  content: '//';
+  color: var(--muted);
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+}
+
+p { margin-bottom: 12px; color: var(--ink2); font-weight: 300; line-height: 1.8; }
+ul, ol { padding-left: 20px; margin-bottom: 14px; }
+li { margin-bottom: 6px; color: var(--ink2); font-size: 14px; font-weight: 300; }
+strong { color: var(--ink); font-weight: 600; }
+code {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--accent);
+}
+
+/* CODE BLOCKS */
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 16px 0;
+  overflow: hidden;
+  position: relative;
+}
+.code-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent 60%);
+}
+.code-top {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border);
+}
+.dots { display: flex; gap: 5px; }
+.dots span { width: 10px; height: 10px; border-radius: 50%; }
+.dots span:nth-child(1){background:#ff5f57}
+.dots span:nth-child(2){background:#febc2e}
+.dots span:nth-child(3){background:#28c840}
+.code-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 10px; color: var(--muted);
+  letter-spacing: 1px; flex: 1;
+  text-transform: uppercase;
+}
+.cp-btn {
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  background: rgba(0,212,255,0.07);
+  border: 1px solid rgba(0,212,255,0.2);
+  color: var(--accent);
+  padding: 3px 10px; border-radius: 3px;
+  cursor: pointer; letter-spacing: 1px;
+  transition: all 0.15s;
+}
+.cp-btn:hover { background: rgba(0,212,255,0.15); }
+
+pre {
+  padding: 22px 24px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 12.5px; line-height: 2.0;
+  color: #c8d8f0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Syntax colors */
+.kw  { color: #c084fc; }
+.fn  { color: #60a5fa; }
+.st  { color: #34d399; }
+.cm  { color: #2a3a5a; font-style: italic; }
+.nm  { color: #fbbf24; }
+.cl  { color: #f87171; }
+.op  { color: #22d3ee; }
+.dc  { color: #a78bfa; }
+.at  { color: #00d4ff; }
+
+/* CALLOUTS */
+.callout {
+  display: flex; gap: 14px;
+  padding: 16px 20px;
+  border-radius: 6px;
+  margin: 16px 0;
+  font-size: 13.5px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+.callout .ci { font-size: 18px; min-width: 22px; padding-top: 1px; }
+.callout.tip {
+  background: rgba(0,255,136,0.05);
+  border: 1px solid rgba(0,255,136,0.15);
+  border-left: 3px solid var(--accent3);
+}
+.callout.warn {
+  background: rgba(255,215,0,0.05);
+  border: 1px solid rgba(255,215,0,0.15);
+  border-left: 3px solid var(--accent4);
+}
+.callout.info {
+  background: rgba(0,212,255,0.05);
+  border: 1px solid rgba(0,212,255,0.15);
+  border-left: 3px solid var(--accent);
+}
+.callout.pro {
+  background: rgba(255,107,53,0.05);
+  border: 1px solid rgba(255,107,53,0.15);
+  border-left: 3px solid var(--accent2);
+}
+
+/* TABLE */
+table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13px; }
+th {
+  background: var(--surface2);
+  padding: 10px 14px; text-align: left;
+  font-family: 'Fira Code', monospace;
+  font-size: 10px; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border2);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink2); font-weight: 300;
+}
+tr:hover td { background: rgba(0,212,255,0.03); }
+td code { font-size: 11px; }
+
+/* GRID */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.card:hover::before { opacity: 1; }
+.card .icon { font-size: 26px; margin-bottom: 10px; }
+.card h4 { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.card p { font-size: 12px; color: var(--muted); margin: 0; font-weight: 300; }
+
+/* FORMULA BOX */
+.formula {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--accent4);
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 12px 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  color: var(--accent4);
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* VISUAL ARRAY */
+.array-visual {
+  display: flex; gap: 4px;
+  align-items: center;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.arr-cell {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.arr-cell:hover { background: rgba(0,212,255,0.1); border-color: var(--accent); }
+.arr-cell.highlight { background: rgba(0,212,255,0.15); border-color: var(--accent); }
+.arr-cell.dim { opacity: 0.3; }
+.arr-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px; color: var(--muted);
+  padding: 0 8px;
+}
+.arr-bracket {
+  font-size: 40px; color: var(--border2);
+  font-weight: 100; line-height: 1;
+}
+
+/* SHAPE TAG */
+.shape-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(192,132,252,0.1);
+  border: 1px solid rgba(192,132,252,0.25);
+  color: var(--accent5);
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  padding: 2px 8px; border-radius: 3px;
+  margin: 2px;
+}
+
+/* DIVIDER */
+hr.div {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 70px 0;
+  position: relative;
+}
+hr.div::before {
+  content: '◆';
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg);
+  padding: 0 12px;
+  color: var(--border2);
+  font-size: 10px;
+}
+
+@media(max-width:900px){
+  nav { display: none; }
+  main { padding: 28px 20px; }
+  .grid2,.grid3,.grid4 { grid-template-columns: 1fr; }
+  header { padding: 48px 24px 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-glow"></div>
+  <div class="header-glow2"></div>
+  <div class="version-badge">NumPy Reference Guide</div>
+  <h1>
+    <span class="h1-main">Numerical Python</span>
+    <span class="h1-sub">Beginner → Advanced</span>
+  </h1>
+  <p>The complete, practical guide to NumPy — arrays, operations, broadcasting, linear algebra, and beyond. Every concept explained with working code.</p>
+  <div class="header-stats">
+    <div class="hstat"><span class="hstat-num">18</span><span class="hstat-lbl">Topics</span></div>
+    <div class="hstat"><span class="hstat-num">3</span><span class="hstat-lbl">Levels</span></div>
+    <div class="hstat"><span class="hstat-num">60+</span><span class="hstat-lbl">Examples</span></div>
+    <div class="hstat"><span class="hstat-num">100%</span><span class="hstat-lbl">Practical</span></div>
+  </div>
+</header>
+
+<div class="wrapper">
+
+<!-- SIDEBAR -->
+<nav>
+  <div class="nav-group">🟢 Beginner</div>
+  <a href="#intro"><span class="ni">🏁</span> What is NumPy? <span class="nb nb-g">start</span></a>
+  <a href="#create"><span class="ni">🔨</span> Creating Arrays</a>
+  <a href="#attributes"><span class="ni">📐</span> Array Attributes</a>
+  <a href="#dtypes"><span class="ni">🏷️</span> Data Types</a>
+  <a href="#indexing"><span class="ni">🎯</span> Indexing & Slicing</a>
+  <a href="#reshape"><span class="ni">🔄</span> Reshaping</a>
+  <a href="#math"><span class="ni">➕</span> Basic Math Ops</a>
+  <a href="#agg"><span class="ni">📊</span> Aggregations</a>
+
+  <div class="nav-group">🟡 Intermediate</div>
+  <a href="#broadcasting"><span class="ni">📡</span> Broadcasting <span class="nb nb-y">key</span></a>
+  <a href="#fancy"><span class="ni">🎰</span> Fancy Indexing</a>
+  <a href="#bool-index"><span class="ni">✅</span> Boolean Indexing</a>
+  <a href="#sorting"><span class="ni">🔢</span> Sorting & Searching</a>
+  <a href="#string-ops"><span class="ni">🔤</span> String Operations</a>
+  <a href="#structured"><span class="ni">🗃️</span> Structured Arrays</a>
+
+  <div class="nav-group">🔴 Advanced</div>
+  <a href="#linalg"><span class="ni">🧮</span> Linear Algebra <span class="nb nb-r">adv</span></a>
+  <a href="#random"><span class="ni">🎲</span> Random Module</a>
+  <a href="#io"><span class="ni">💾</span> File I/O</a>
+  <a href="#performance"><span class="ni">⚡</span> Performance & Memory</a>
+  <a href="#practical"><span class="ni">🚀</span> Practical Patterns</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+
+<!-- ==================== INTRO ==================== -->
+<section class="section" id="intro">
+  <div class="section-header">
+    <div class="s-icon">🏁</div>
+    <div class="s-meta">
+      <span class="s-level lv-b">Beginner</span>
+      <h2>What is NumPy?</h2>
+      <p>The foundation of scientific computing in Python — fast, efficient N-dimensional arrays</p>
+    </div>
+  </div>
+
+  <p>NumPy (Numerical Python) is the core library for numerical computing in Python. It provides a powerful <strong>N-dimensional array object</strong> and fast mathematical operations. Nearly every data science library (Pandas, Scikit-Learn, TensorFlow) is built on top of it.</p>
+
+  <div class="grid3">
+    <div class="card"><div class="icon">⚡</div><h4>50x Faster</h4><p>NumPy arrays are 50-100x faster than Python lists for numerical operations</p></div>
+    <div class="card"><div class="icon">🧮</div><h4>Vectorized Ops</h4><p>Apply operations to entire arrays without slow Python for-loops</p></div>
+    <div class="card"><div class="icon">🔗</div><h4>Foundation</h4><p>Pandas, Matplotlib, Scikit-Learn, TensorFlow all use NumPy under the hood</p></div>
+  </div>
+
+  <h3>Why NumPy over Python Lists?</h3>
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — NumPy vs List speed comparison</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> time
+
+<span class="cm"># Python list approach</span>
+py_list = list(range(<span class="nm">1_000_000</span>))
+start = time.time()
+result = [x * <span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> py_list]
+print(<span class="st">f"List:  {(time.time()-start)*1000:.2f} ms"</span>)
+
+<span class="cm"># NumPy approach</span>
+arr = np.arange(<span class="nm">1_000_000</span>)
+start = time.time()
+result = arr * <span class="nm">2</span>
+print(<span class="st">f"NumPy: {(time.time()-start)*1000:.2f} ms"</span>)
+<span class="cm"># NumPy: ~50x faster!</span>
+
+<span class="cm"># Memory: NumPy uses contiguous typed memory</span>
+<span class="kw">import</span> sys
+py_list = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>]
+np_arr  = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>])
+print(<span class="st">f"List memory:  {sys.getsizeof(py_list)} bytes"</span>)   <span class="cm"># 120 bytes</span>
+print(<span class="st">f"Array memory: {np_arr.nbytes} bytes"</span>)              <span class="cm"># 40 bytes</span>
+
+<span class="cm"># Key differences</span>
+<span class="cm"># Lists: heterogeneous types, slow loops, dynamic</span>
+<span class="cm"># NumPy: homogeneous types, vectorized, fixed-size</span></pre>
+  </div>
+
+  <h3>Installation & Import</h3>
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Terminal & Python</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="cm"># Install</span>
+pip install numpy
+
+<span class="cm"># Standard import convention (always use np alias)</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Check version</span>
+print(np.__version__)   <span class="cm"># e.g. 1.26.0</span>
+print(np.show_config()) <span class="cm"># see BLAS/LAPACK config</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== CREATING ARRAYS ==================== -->
+<section class="section" id="create">
+  <div class="section-header">
+    <div class="s-icon">🔨</div>
+    <div class="s-meta">
+      <span class="s-level lv-b">Beginner</span>
+      <h2>Creating Arrays</h2>
+      <p>Every way to construct a NumPy array — from scratch, sequences, and special values</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Complete array creation reference</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── FROM PYTHON OBJECTS ──────────────────────────────</span>
+a1 = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>])            <span class="cm"># 1D from list</span>
+a2 = np.array([[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>],[<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>]])            <span class="cm"># 2D from nested list</span>
+a3 = np.array([[[<span class="nm">1</span>,<span class="nm">2</span>],[<span class="nm">3</span>,<span class="nm">4</span>]],[[<span class="nm">5</span>,<span class="nm">6</span>],[<span class="nm">7</span>,<span class="nm">8</span>]]]) <span class="cm"># 3D array</span>
+a4 = np.array([<span class="nm">1.5</span>, <span class="nm">2.5</span>, <span class="nm">3.5</span>], dtype=np.float32)
+
+<span class="cm"># ── FILLED ARRAYS ────────────────────────────────────</span>
+np.zeros((<span class="nm">3</span>, <span class="nm">4</span>))         <span class="cm"># 3×4 of 0.0</span>
+np.ones((<span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>))       <span class="cm"># 2×3×4 of 1.0</span>
+np.full((<span class="nm">3</span>, <span class="nm">3</span>), <span class="nm">7</span>)        <span class="cm"># 3×3 filled with 7</span>
+np.empty((<span class="nm">2</span>, <span class="nm">2</span>))          <span class="cm"># uninitialized (fastest) — values are garbage!</span>
+np.eye(<span class="nm">4</span>)                 <span class="cm"># 4×4 identity matrix</span>
+np.identity(<span class="nm">3</span>)            <span class="cm"># same as eye(n)</span>
+
+<span class="cm"># ── LIKE (match shape of existing array) ─────────────</span>
+x = np.array([[<span class="nm">1</span>,<span class="nm">2</span>],[<span class="nm">3</span>,<span class="nm">4</span>]])
+np.zeros_like(x)           <span class="cm"># [[0,0],[0,0]]</span>
+np.ones_like(x)            <span class="cm"># [[1,1],[1,1]]</span>
+np.full_like(x, fill_value=<span class="nm">99</span>)
+
+<span class="cm"># ── SEQUENCES ────────────────────────────────────────</span>
+np.arange(<span class="nm">10</span>)             <span class="cm"># [0,1,2,...,9]  like range()</span>
+np.arange(<span class="nm">1</span>, <span class="nm">10</span>, <span class="nm">2</span>)       <span class="cm"># [1,3,5,7,9]   (start, stop, step)</span>
+np.arange(<span class="nm">0.0</span>, <span class="nm">1.0</span>, <span class="nm">0.1</span>) <span class="cm"># floats: [0.0, 0.1, ..., 0.9]</span>
+
+np.linspace(<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">5</span>)      <span class="cm"># [0, 0.25, 0.5, 0.75, 1.0]  (evenly spaced, inclusive)</span>
+np.linspace(<span class="nm">0</span>, <span class="nm">100</span>, <span class="nm">11</span>)   <span class="cm"># [0, 10, 20, ..., 100]</span>
+np.logspace(<span class="nm">0</span>, <span class="nm">3</span>, <span class="nm">4</span>)      <span class="cm"># [1, 10, 100, 1000]  logarithmically spaced</span>
+np.geomspace(<span class="nm">1</span>, <span class="nm">8</span>, <span class="nm">4</span>)     <span class="cm"># [1, 2, 4, 8]  geometrically spaced</span>
+
+<span class="cm"># ── DIAGONAL / TRIANGULAR ────────────────────────────</span>
+np.diag([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])         <span class="cm"># diagonal matrix from 1D</span>
+np.diag(a2)                <span class="cm"># extract diagonal from 2D</span>
+np.tri(<span class="nm">3</span>)                  <span class="cm"># lower triangular ones</span>
+np.triu(a2)                <span class="cm"># upper triangle of a2</span>
+np.tril(a2)                <span class="cm"># lower triangle of a2</span>
+
+<span class="cm"># ── MESH / COORDINATE GRIDS ──────────────────────────</span>
+x = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+y = np.array([<span class="nm">10</span>, <span class="nm">20</span>])
+X, Y = np.meshgrid(x, y)  <span class="cm"># 2×3 grids for plotting 2D functions</span>
+print(X)  <span class="cm"># [[1,2,3],[1,2,3]]</span>
+print(Y)  <span class="cm"># [[10,10,10],[20,20,20]]</span></pre>
+  </div>
+
+  <div class="callout tip">
+    <span class="ci">💡</span>
+    <div>Use <strong><code>np.linspace</code></strong> when you need a specific number of points. Use <strong><code>np.arange</code></strong> when you need a specific step size. Use <strong><code>np.empty</code></strong> only when you'll immediately overwrite all values — it's the fastest but leaves garbage values.</div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== ATTRIBUTES ==================== -->
+<section class="section" id="attributes">
+  <div class="section-header">
+    <div class="s-icon">📐</div>
+    <div class="s-meta">
+      <span class="s-level lv-b">Beginner</span>
+      <h2>Array Attributes & Inspection</h2>
+      <p>Understand what you have: shape, size, dimensions, memory layout</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — All array attributes</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+arr = np.array([[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>],
+                [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>]])
+
+<span class="cm"># ── SHAPE & SIZE ──────────────────────────────────────</span>
+arr.shape       <span class="cm"># (2, 3)  — (rows, columns)</span>
+arr.ndim        <span class="cm"># 2       — number of dimensions</span>
+arr.size        <span class="cm"># 6       — total elements</span>
+len(arr)        <span class="cm"># 2       — length of FIRST axis only</span>
+
+<span class="cm"># ── MEMORY ───────────────────────────────────────────</span>
+arr.dtype       <span class="cm"># dtype('int64')  — element type</span>
+arr.itemsize    <span class="cm"># 8  — bytes per element (int64 = 8 bytes)</span>
+arr.nbytes      <span class="cm"># 48 — total bytes = size × itemsize</span>
+
+<span class="cm"># ── MEMORY LAYOUT ────────────────────────────────────</span>
+arr.strides     <span class="cm"># (24, 8) — bytes to step in each dimension</span>
+arr.flags       <span class="cm"># C_CONTIGUOUS, F_CONTIGUOUS, WRITEABLE ...</span>
+
+<span class="cm"># ── INSPECT ──────────────────────────────────────────</span>
+arr.T           <span class="cm"># transpose — shape becomes (3, 2)</span>
+arr.flat        <span class="cm"># iterator over all elements</span>
+list(arr.flat)  <span class="cm"># [1, 2, 3, 4, 5, 6]</span>
+
+<span class="cm"># Real-world example</span>
+image = np.zeros((<span class="nm">1920</span>, <span class="nm">1080</span>, <span class="nm">3</span>), dtype=np.uint8)  <span class="cm"># RGB image</span>
+print(<span class="st">f"Shape:  {image.shape}"</span>)    <span class="cm"># (1920, 1080, 3)</span>
+print(<span class="st">f"Dims:   {image.ndim}"</span>)     <span class="cm"># 3</span>
+print(<span class="st">f"Pixels: {image.size:,}"</span>)   <span class="cm"># 6,220,800</span>
+print(<span class="st">f"Memory: {image.nbytes/1e6:.1f} MB"</span>)  <span class="cm"># 18.7 MB</span>
+
+<span class="cm"># Useful inspection functions</span>
+np.info(arr)            <span class="cm"># detailed info</span>
+arr.real; arr.imag      <span class="cm"># real/imaginary parts (complex arrays)</span></pre>
+  </div>
+
+  <table>
+    <tr><th>Attribute</th><th>Returns</th><th>Example (shape 2×3)</th></tr>
+    <tr><td><code>arr.shape</code></td><td>Tuple of ints</td><td><code>(2, 3)</code></td></tr>
+    <tr><td><code>arr.ndim</code></td><td>Int</td><td><code>2</code></td></tr>
+    <tr><td><code>arr.size</code></td><td>Int (total elements)</td><td><code>6</code></td></tr>
+    <tr><td><code>arr.dtype</code></td><td>Data type object</td><td><code>float64</code></td></tr>
+    <tr><td><code>arr.itemsize</code></td><td>Bytes per element</td><td><code>8</code></td></tr>
+    <tr><td><code>arr.nbytes</code></td><td>Total bytes</td><td><code>48</code></td></tr>
+    <tr><td><code>arr.T</code></td><td>Transposed view</td><td>shape <code>(3, 2)</code></td></tr>
+  </table>
+</section>
+
+<hr class="div">
+
+<!-- ==================== DTYPES ==================== -->
+<section class="section" id="dtypes">
+  <div class="section-header">
+    <div class="s-icon">🏷️</div>
+    <div class="s-meta">
+      <span class="s-level lv-b">Beginner</span>
+      <h2>Data Types (dtypes)</h2>
+      <p>Choose the right type for precision, memory, and performance</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — dtypes in practice</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── SPECIFYING DTYPE ──────────────────────────────────</span>
+a_int   = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], dtype=np.int32)
+a_float = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], dtype=np.float64)
+a_bool  = np.array([<span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">1</span>], dtype=bool)
+a_str   = np.array([<span class="st">'a'</span>, <span class="st">'bb'</span>, <span class="st">'ccc'</span>], dtype=str)
+a_cmplx = np.array([<span class="nm">1</span>+<span class="nm">2j</span>, <span class="nm">3</span>+<span class="nm">4j</span>], dtype=complex)
+
+<span class="cm"># ── TYPE CONVERSION ───────────────────────────────────</span>
+a = np.array([<span class="nm">1.7</span>, <span class="nm">2.9</span>, <span class="nm">3.1</span>])
+a.astype(int)          <span class="cm"># [1, 2, 3]  — truncates, no rounding!</span>
+a.astype(np.float32)   <span class="cm"># reduce precision to save memory</span>
+a.astype(str)          <span class="cm"># ['1.7', '2.9', '3.1']</span>
+
+<span class="cm"># ── DTYPE DETECTION ──────────────────────────────────</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+np.issubdtype(a.dtype, np.integer)    <span class="cm"># True</span>
+np.issubdtype(a.dtype, np.floating)   <span class="cm"># False</span>
+
+<span class="cm"># ── MEMORY IMPACT ────────────────────────────────────</span>
+n = <span class="nm">1_000_000</span>
+<span class="kw">for</span> dt <span class="kw">in</span> [np.int8, np.int16, np.int32, np.int64,
+           np.float16, np.float32, np.float64]:
+    arr = np.zeros(n, dtype=dt)
+    print(<span class="st">f"{str(dt):20}: {arr.nbytes/1024:.1f} KB"</span>)
+<span class="cm"># int8:   976.6 KB  (tiny — good for 0-255 pixel values)</span>
+<span class="cm"># float32: 3906.2 KB  (good balance for ML weights)</span>
+<span class="cm"># float64: 7812.5 KB  (default — high precision)</span>
+
+<span class="cm"># ── TYPE RANGES ──────────────────────────────────────</span>
+np.iinfo(np.int8)    <span class="cm"># min=-128, max=127</span>
+np.iinfo(np.int32)   <span class="cm"># min=-2147483648, max=2147483647</span>
+np.finfo(np.float32) <span class="cm"># eps=1.19e-07, max=3.40e+38</span>
+np.finfo(np.float64) <span class="cm"># eps=2.22e-16, max=1.80e+308</span></pre>
+  </div>
+
+  <table>
+    <tr><th>dtype</th><th>Bits</th><th>Range / Precision</th><th>Use Case</th></tr>
+    <tr><td><code>np.bool_</code></td><td>8</td><td>True/False</td><td>Masks, filters</td></tr>
+    <tr><td><code>np.int8</code></td><td>8</td><td>-128 to 127</td><td>Small integers, image channels</td></tr>
+    <tr><td><code>np.int32</code></td><td>32</td><td>±2.1 billion</td><td>General integer use</td></tr>
+    <tr><td><code>np.int64</code></td><td>64</td><td>±9.2 × 10¹⁸</td><td>Default integer (64-bit Python)</td></tr>
+    <tr><td><code>np.float32</code></td><td>32</td><td>~7 decimal digits</td><td>ML models, GPU computing</td></tr>
+    <tr><td><code>np.float64</code></td><td>64</td><td>~15 decimal digits</td><td>Default float, scientific computing</td></tr>
+    <tr><td><code>np.complex128</code></td><td>128</td><td>Two float64s</td><td>Signal processing, FFT</td></tr>
+  </table>
+</section>
+
+<hr class="div">
+
+<!-- ==================== INDEXING ==================== -->
+<section class="section" id="indexing">
+  <div class="section-header">
+    <div class="s-icon">🎯</div>
+    <div class="s-meta">
+      <span class="s-level lv-b">Beginner</span>
+      <h2>Indexing & Slicing</h2>
+      <p>Access any element, row, column, or sub-array with precision</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — 1D, 2D, and nD indexing</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── 1D INDEXING ───────────────────────────────────────</span>
+a = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>])
+<span class="cm">#              0    1    2    3    4   (positive index)</span>
+<span class="cm">#             -5   -4   -3   -2   -1   (negative index)</span>
+
+a[<span class="nm">0</span>]           <span class="cm"># 10   first element</span>
+a[-<span class="nm">1</span>]          <span class="cm"># 50   last element</span>
+a[<span class="nm">1</span>:<span class="nm">4</span>]         <span class="cm"># [20, 30, 40]  slice [start:stop] (stop excluded)</span>
+a[:<span class="nm">3</span>]          <span class="cm"># [10, 20, 30]  from start to index 3</span>
+a[<span class="nm">2</span>:]          <span class="cm"># [30, 40, 50]  from index 2 to end</span>
+a[::<span class="nm">2</span>]         <span class="cm"># [10, 30, 50]  every 2nd element</span>
+a[::-<span class="nm">1</span>]        <span class="cm"># [50, 40, 30, 20, 10]  reversed!</span>
+a[<span class="nm">1</span>:<span class="nm">4</span>:<span class="nm">2</span>]       <span class="cm"># [20, 40]  start:stop:step</span>
+
+<span class="cm"># ── 2D INDEXING ───────────────────────────────────────</span>
+A = np.array([[<span class="nm">1</span>,  <span class="nm">2</span>,  <span class="nm">3</span>,  <span class="nm">4</span>],
+              [<span class="nm">5</span>,  <span class="nm">6</span>,  <span class="nm">7</span>,  <span class="nm">8</span>],
+              [<span class="nm">9</span>,  <span class="nm">10</span>, <span class="nm">11</span>, <span class="nm">12</span>]])
+
+A[<span class="nm">0</span>, <span class="nm">0</span>]         <span class="cm"># 1      — top-left element</span>
+A[<span class="nm">2</span>, -<span class="nm">1</span>]        <span class="cm"># 12     — bottom-right</span>
+A[<span class="nm">1</span>, :]          <span class="cm"># [5,6,7,8]  — entire row 1</span>
+A[:, <span class="nm">2</span>]          <span class="cm"># [3,7,11]   — entire column 2</span>
+A[<span class="nm">0</span>:<span class="nm">2</span>, <span class="nm">1</span>:<span class="nm">3</span>]     <span class="cm"># [[2,3],[6,7]]  — sub-matrix</span>
+A[::<span class="nm">2</span>, ::<span class="nm">2</span>]     <span class="cm"># [[1,3],[9,11]] — every other row and col</span>
+
+<span class="cm"># ── 3D INDEXING ───────────────────────────────────────</span>
+B = np.zeros((<span class="nm">4</span>, <span class="nm">3</span>, <span class="nm">2</span>))  <span class="cm"># 4 matrices of 3×2</span>
+B[<span class="nm">0</span>]             <span class="cm"># first 3×2 matrix</span>
+B[<span class="nm">0</span>, <span class="nm">1</span>]          <span class="cm"># row 1 of first matrix</span>
+B[<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">0</span>]       <span class="cm"># single element</span>
+B[:, <span class="nm">0</span>, :]       <span class="cm"># first row from all matrices → shape (4,2)</span>
+
+<span class="cm"># ── SLICES ARE VIEWS (not copies!) ────────────────────</span>
+a = np.arange(<span class="nm">10</span>)
+view = a[<span class="nm">2</span>:<span class="nm">5</span>]        <span class="cm"># this is a VIEW — shares memory!</span>
+view[<span class="nm">0</span>] = <span class="nm">999</span>
+print(a)               <span class="cm"># [0,1,999,3,4,5,6,7,8,9] — original modified!</span>
+
+copy = a[<span class="nm">2</span>:<span class="nm">5</span>].copy()  <span class="cm"># explicit copy — independent</span>
+copy[<span class="nm">0</span>] = <span class="nm">0</span>
+print(a)               <span class="cm"># unchanged</span>
+
+<span class="cm"># Check if view or copy</span>
+print(view.base is a)  <span class="cm"># True  — it's a view</span>
+print(copy.base)       <span class="cm"># None  — it's a copy</span></pre>
+  </div>
+
+  <div class="callout warn">
+    <span class="ci">⚠️</span>
+    <div><strong>Slices are views, not copies!</strong> Modifying a slice modifies the original array. Use <code>.copy()</code> when you need an independent array. This is intentional — views save memory and are much faster.</div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== RESHAPING ==================== -->
+<section class="section" id="reshape">
+  <div class="section-header">
+    <div class="s-icon">🔄</div>
+    <div class="s-meta">
+      <span class="s-level lv-b">Beginner</span>
+      <h2>Reshaping & Manipulating Arrays</h2>
+      <p>Change dimensions, combine, split, and flip arrays</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — reshape, stack, split, flatten</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.arange(<span class="nm">12</span>)   <span class="cm"># [0,1,2,...,11]</span>
+
+<span class="cm"># ── RESHAPE ───────────────────────────────────────────</span>
+a.reshape(<span class="nm">3</span>, <span class="nm">4</span>)     <span class="cm"># 3×4 matrix (total must match: 12)</span>
+a.reshape(<span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">2</span>) <span class="cm"># 2×3×2 tensor</span>
+a.reshape(<span class="nm">3</span>, -<span class="nm">1</span>)   <span class="cm"># -1 means "infer this dimension" → (3,4)</span>
+a.reshape(-<span class="nm">1</span>, <span class="nm">4</span>)   <span class="cm"># (3,4)</span>
+a.reshape(-<span class="nm">1</span>)      <span class="cm"># always flatten to 1D</span>
+
+<span class="cm"># ── FLATTEN vs RAVEL ──────────────────────────────────</span>
+A = np.array([[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>],[<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>]])
+A.flatten()          <span class="cm"># [1,2,3,4,5,6] — always returns COPY</span>
+A.ravel()            <span class="cm"># [1,2,3,4,5,6] — returns VIEW when possible</span>
+A.flatten(order=<span class="st">'F'</span>) <span class="cm"># [1,4,2,5,3,6] — column-major (Fortran) order</span>
+
+<span class="cm"># ── ADD / REMOVE DIMENSIONS ──────────────────────────</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])               <span class="cm"># shape: (3,)</span>
+a[np.newaxis, :]                       <span class="cm"># shape: (1,3) — row vector</span>
+a[:, np.newaxis]                       <span class="cm"># shape: (3,1) — column vector</span>
+np.expand_dims(a, axis=<span class="nm">0</span>)             <span class="cm"># same as [np.newaxis, :]</span>
+np.expand_dims(a, axis=<span class="nm">1</span>)             <span class="cm"># same as [:, np.newaxis]</span>
+np.squeeze(a[np.newaxis, :])           <span class="cm"># remove size-1 dimensions</span>
+
+<span class="cm"># ── TRANSPOSE ────────────────────────────────────────</span>
+A = np.arange(<span class="nm">24</span>).reshape(<span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>)
+A.T              <span class="cm"># reverses all axes: (2,3,4) → (4,3,2)</span>
+A.transpose(<span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">2</span>)  <span class="cm"># custom axis order: (2,3,4) → (3,2,4)</span>
+np.swapaxes(A, <span class="nm">0</span>, <span class="nm">2</span>)  <span class="cm"># swap two axes: (2,3,4) → (4,3,2)</span>
+
+<span class="cm"># ── CONCATENATE & STACK ──────────────────────────────</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+b = np.array([<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>])
+np.concatenate([a, b])        <span class="cm"># [1,2,3,4,5,6] — join along existing axis</span>
+np.stack([a, b])              <span class="cm"># [[1,2,3],[4,5,6]] — NEW axis created</span>
+np.stack([a, b], axis=<span class="nm">1</span>)     <span class="cm"># [[1,4],[2,5],[3,6]]</span>
+np.hstack([a, b])             <span class="cm"># [1,2,3,4,5,6] — horizontal stack</span>
+np.vstack([a, b])             <span class="cm"># [[1,2,3],[4,5,6]] — vertical stack</span>
+np.dstack([a, b])             <span class="cm"># depth stack (3rd axis)</span>
+
+A = np.ones((<span class="nm">3</span>,<span class="nm">4</span>)); B = np.ones((<span class="nm">3</span>,<span class="nm">4</span>))
+np.concatenate([A, B], axis=<span class="nm">0</span>)  <span class="cm"># (6,4) — stack vertically</span>
+np.concatenate([A, B], axis=<span class="nm">1</span>)  <span class="cm"># (3,8) — stack horizontally</span>
+
+<span class="cm"># ── SPLIT ────────────────────────────────────────────</span>
+a = np.arange(<span class="nm">12</span>)
+np.split(a, <span class="nm">3</span>)          <span class="cm"># 3 equal pieces: [0-3], [4-7], [8-11]</span>
+np.split(a, [<span class="nm">3</span>, <span class="nm">7</span>])     <span class="cm"># split at indices 3 and 7</span>
+np.array_split(a, <span class="nm">5</span>)    <span class="cm"># allow unequal splits</span>
+
+A = np.arange(<span class="nm">16</span>).reshape(<span class="nm">4</span>,<span class="nm">4</span>)
+np.hsplit(A, <span class="nm">2</span>)  <span class="cm"># split into 2 arrays along columns</span>
+np.vsplit(A, <span class="nm">2</span>)  <span class="cm"># split into 2 arrays along rows</span>
+
+<span class="cm"># ── FLIP / ROLL ──────────────────────────────────────</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>])
+np.flip(a)                <span class="cm"># [5,4,3,2,1] — reverse</span>
+np.roll(a, <span class="nm">2</span>)             <span class="cm"># [4,5,1,2,3] — shift right by 2 (circular)</span>
+np.roll(a, -<span class="nm">2</span>)            <span class="cm"># [3,4,5,1,2] — shift left by 2</span>
+np.rot90(A)               <span class="cm"># rotate 2D array 90°</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== MATH OPS ==================== -->
+<section class="section" id="math">
+  <div class="section-header">
+    <div class="s-icon">➕</div>
+    <div class="s-meta">
+      <span class="s-level lv-b">Beginner</span>
+      <h2>Mathematical Operations</h2>
+      <p>Element-wise arithmetic, universal functions (ufuncs), and comparisons</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Arithmetic, ufuncs, and comparisons</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>])
+b = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>])
+
+<span class="cm"># ── ARITHMETIC — element-wise ─────────────────────────</span>
+a + b         <span class="cm"># [11, 22, 33, 44]   addition</span>
+a - b         <span class="cm"># [-9,-18,-27,-36]   subtraction</span>
+a * b         <span class="cm"># [10, 40, 90, 160]  multiplication</span>
+b / a         <span class="cm"># [10., 10., 10., 10.]  true division (returns float)</span>
+b // a        <span class="cm"># [10, 10, 10, 10]   floor division</span>
+b % a         <span class="cm"># [0, 0, 0, 0]       modulo</span>
+a ** <span class="nm">2</span>        <span class="cm"># [1, 4, 9, 16]      element-wise power</span>
+
+<span class="cm"># Scalar operations (broadcasting with scalar)</span>
+a + <span class="nm">100</span>       <span class="cm"># [101, 102, 103, 104]</span>
+a * <span class="nm">3</span>         <span class="cm"># [3, 6, 9, 12]</span>
+a ** <span class="nm">0.5</span>      <span class="cm"># [1.0, 1.41, 1.73, 2.0]  square root via power</span>
+
+<span class="cm"># ── UNIVERSAL FUNCTIONS (ufuncs) ──────────────────────</span>
+<span class="cm"># Trigonometric</span>
+np.sin(a);  np.cos(a);  np.tan(a)
+np.arcsin(a/a.max());   np.arccos(a/a.max())
+np.degrees(np.pi/4)     <span class="cm"># 45.0 — radians to degrees</span>
+np.radians(<span class="nm">180</span>)         <span class="cm"># π   — degrees to radians</span>
+
+<span class="cm"># Exponential & Logarithmic</span>
+np.exp(a)        <span class="cm"># e^a  = [2.71, 7.38, 20.08, 54.59]</span>
+np.exp2(a)       <span class="cm"># 2^a  = [2, 4, 8, 16]</span>
+np.log(a)        <span class="cm"># natural log (base e)</span>
+np.log2(a)       <span class="cm"># log base 2</span>
+np.log10(a)      <span class="cm"># log base 10</span>
+np.log1p(a)      <span class="cm"># log(1+a) — numerically stable for small values</span>
+
+<span class="cm"># Rounding</span>
+x = np.array([<span class="nm">1.4</span>, <span class="nm">1.5</span>, <span class="nm">2.7</span>, <span class="nm">-1.3</span>])
+np.floor(x)      <span class="cm"># [1., 1., 2., -2.]  — round down</span>
+np.ceil(x)       <span class="cm"># [2., 2., 3., -1.]  — round up</span>
+np.round(x)      <span class="cm"># [1., 2., 3., -1.]  — round to nearest</span>
+np.round(x, <span class="nm">1</span>)  <span class="cm"># 1 decimal place</span>
+np.trunc(x)      <span class="cm"># [1., 1., 2., -1.]  — truncate (toward zero)</span>
+
+<span class="cm"># Absolute & Sign</span>
+np.abs(x)        <span class="cm"># [1.4, 1.5, 2.7, 1.3]</span>
+np.sign(x)       <span class="cm"># [1., 1., 1., -1.]</span>
+np.clip(x, -<span class="nm">1</span>, <span class="nm">2</span>)  <span class="cm"># limit values to [-1, 2]</span>
+
+<span class="cm"># ── COMPARISONS ───────────────────────────────────────</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">3</span>, <span class="nm">7</span>, <span class="nm">2</span>])
+a > <span class="nm">3</span>            <span class="cm"># [F, T, F, T, F] — boolean array</span>
+a == <span class="nm">5</span>           <span class="cm"># [F, T, F, F, F]</span>
+a != <span class="nm">1</span>           <span class="cm"># [F, T, T, T, T]</span>
+
+np.equal(a, b)       <span class="cm"># equivalent to a == b</span>
+np.greater(a, b)     <span class="cm"># equivalent to a > b</span>
+np.maximum(a, b)     <span class="cm"># element-wise max</span>
+np.minimum(a, b)     <span class="cm"># element-wise min</span>
+
+<span class="cm"># Logical operations</span>
+mask1 = a > <span class="nm">2</span>
+mask2 = a < <span class="nm">6</span>
+np.logical_and(mask1, mask2)   <span class="cm"># (a>2) AND (a<6)</span>
+np.logical_or(mask1, mask2)    <span class="cm"># (a>2) OR  (a<6)</span>
+np.logical_not(mask1)          <span class="cm"># NOT (a>2)</span>
+np.all(a > <span class="nm">0</span>)      <span class="cm"># True if ALL elements > 0</span>
+np.any(a > <span class="nm">5</span>)      <span class="cm"># True if ANY element > 5</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== AGGREGATIONS ==================== -->
+<section class="section" id="agg">
+  <div class="section-header">
+    <div class="s-icon">📊</div>
+    <div class="s-meta">
+      <span class="s-level lv-b">Beginner</span>
+      <h2>Aggregations & Statistics</h2>
+      <p>Reduce arrays to summary statistics along any axis</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Complete statistics reference</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+A = np.array([[<span class="nm">1</span>,  <span class="nm">2</span>,  <span class="nm">3</span>],
+              [<span class="nm">4</span>,  <span class="nm">5</span>,  <span class="nm">6</span>],
+              [<span class="nm">7</span>,  <span class="nm">8</span>,  <span class="nm">9</span>]])
+
+<span class="cm"># ── SUM ───────────────────────────────────────────────</span>
+np.sum(A)             <span class="cm"># 45         — sum of ALL elements</span>
+np.sum(A, axis=<span class="nm">0</span>)    <span class="cm"># [12,15,18] — column-wise sums (down rows)</span>
+np.sum(A, axis=<span class="nm">1</span>)    <span class="cm"># [6, 15, 24] — row-wise sums (across cols)</span>
+A.sum()               <span class="cm"># equivalent to np.sum(A)</span>
+
+<span class="cm"># ── MEAN & VARIANCE ───────────────────────────────────</span>
+np.mean(A)            <span class="cm"># 5.0</span>
+np.mean(A, axis=<span class="nm">0</span>)   <span class="cm"># [4., 5., 6.] — column means</span>
+np.mean(A, axis=<span class="nm">1</span>)   <span class="cm"># [2., 5., 8.] — row means</span>
+
+np.median(A)          <span class="cm"># 5.0  — middle value</span>
+np.var(A)             <span class="cm"># population variance</span>
+np.var(A, ddof=<span class="nm">1</span>)    <span class="cm"># sample variance (Bessel's correction)</span>
+np.std(A)             <span class="cm"># standard deviation</span>
+np.std(A, axis=<span class="nm">0</span>)    <span class="cm"># column-wise std</span>
+
+<span class="cm"># ── MIN / MAX ─────────────────────────────────────────</span>
+np.min(A)             <span class="cm"># 1</span>
+np.max(A)             <span class="cm"># 9</span>
+np.min(A, axis=<span class="nm">0</span>)    <span class="cm"># [1,2,3]  — min of each column</span>
+np.max(A, axis=<span class="nm">1</span>)    <span class="cm"># [3,6,9]  — max of each row</span>
+np.ptp(A)             <span class="cm"># 8  — peak-to-peak: max - min</span>
+
+<span class="cm"># ── LOCATION FUNCTIONS ───────────────────────────────</span>
+np.argmin(A)          <span class="cm"># 0  — flat index of minimum</span>
+np.argmax(A)          <span class="cm"># 8  — flat index of maximum</span>
+np.argmin(A, axis=<span class="nm">0</span>) <span class="cm"># [0,0,0] — row index of min per column</span>
+np.argmax(A, axis=<span class="nm">1</span>) <span class="cm"># [2,2,2] — col index of max per row</span>
+
+<span class="cm"># ── CUMULATIVE ───────────────────────────────────────</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>])
+np.cumsum(a)          <span class="cm"># [1, 3, 6, 10]  — running total</span>
+np.cumprod(a)         <span class="cm"># [1, 2, 6, 24]  — running product</span>
+np.cumsum(A, axis=<span class="nm">0</span>) <span class="cm"># cumulative sum down columns</span>
+
+<span class="cm"># ── PERCENTILES ──────────────────────────────────────</span>
+data = np.random.normal(<span class="nm">50</span>, <span class="nm">10</span>, <span class="nm">1000</span>)
+np.percentile(data, <span class="nm">50</span>)      <span class="cm"># median (50th percentile)</span>
+np.percentile(data, [<span class="nm">25</span>, <span class="nm">75</span>]) <span class="cm"># Q1, Q3</span>
+np.quantile(data, <span class="nm">0.9</span>)       <span class="cm"># 90th percentile</span>
+iqr = np.percentile(data, <span class="nm">75</span>) - np.percentile(data, <span class="nm">25</span>)
+
+<span class="cm"># ── WEIGHTED MEAN ────────────────────────────────────</span>
+scores = np.array([<span class="nm">90</span>, <span class="nm">85</span>, <span class="nm">70</span>])
+weights = np.array([<span class="nm">0.5</span>, <span class="nm">0.3</span>, <span class="nm">0.2</span>])
+np.average(scores, weights=weights)  <span class="cm"># 85.0</span>
+
+<span class="cm"># ── HISTOGRAM ────────────────────────────────────────</span>
+counts, bin_edges = np.histogram(data, bins=<span class="nm">20</span>)
+counts, bin_edges = np.histogram(data, bins=np.linspace(<span class="nm">0</span>, <span class="nm">100</span>, <span class="nm">21</span>))
+
+<span class="cm"># ── NaN-SAFE FUNCTIONS ───────────────────────────────</span>
+data_with_nan = np.array([<span class="nm">1.0</span>, np.nan, <span class="nm">3.0</span>, np.nan, <span class="nm">5.0</span>])
+np.nansum(data_with_nan)   <span class="cm"># 9.0  — ignores NaN</span>
+np.nanmean(data_with_nan)  <span class="cm"># 3.0</span>
+np.nanmax(data_with_nan)   <span class="cm"># 5.0</span>
+np.nanstd(data_with_nan)   <span class="cm"># ignores NaN in std calculation</span></pre>
+  </div>
+
+  <div class="callout info">
+    <span class="ci">📌</span>
+    <div><strong>axis parameter:</strong> <code>axis=0</code> means "collapse rows" (operate down columns). <code>axis=1</code> means "collapse columns" (operate across rows). Use <code>keepdims=True</code> to preserve dimensions for broadcasting.</div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== BROADCASTING ==================== -->
+<section class="section" id="broadcasting">
+  <div class="section-header">
+    <div class="s-icon">📡</div>
+    <div class="s-meta">
+      <span class="s-level lv-i">Intermediate · Key Concept</span>
+      <h2>Broadcasting</h2>
+      <p>NumPy's most powerful feature — apply operations on arrays of different shapes</p>
+    </div>
+  </div>
+
+  <p>Broadcasting lets NumPy perform operations on arrays with <strong>different shapes</strong> by automatically expanding the smaller array to match. This eliminates the need for explicit loops and temporary copies.</p>
+
+  <div class="formula">Rule: Dimensions are compared right-to-left. They must be equal, or one of them must be 1.</div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Broadcasting rules with examples</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── SCALAR BROADCASTING ──────────────────────────────</span>
+A = np.ones((<span class="nm">3</span>, <span class="nm">4</span>))
+A + <span class="nm">5</span>          <span class="cm"># scalar 5 broadcast to entire (3,4) array</span>
+
+<span class="cm"># ── 1D to 2D ─────────────────────────────────────────</span>
+A = np.array([[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>],   <span class="cm"># shape: (3,3)</span>
+              [<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>],
+              [<span class="nm">7</span>,<span class="nm">8</span>,<span class="nm">9</span>]])
+v = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>])  <span class="cm"># shape: (3,)</span>
+A + v
+<span class="cm"># v is broadcast as: [[10,20,30],</span>
+<span class="cm">#                      [10,20,30],  ← repeated for each row</span>
+<span class="cm">#                      [10,20,30]]</span>
+<span class="cm"># result: [[11,22,33],[14,25,36],[17,28,39]]</span>
+
+<span class="cm"># Add to columns instead — must make v a column vector</span>
+c = np.array([[<span class="nm">10</span>], [<span class="nm">20</span>], [<span class="nm">30</span>]])  <span class="cm"># shape: (3,1)</span>
+A + c
+<span class="cm"># c is broadcast as: [[10,10,10],</span>
+<span class="cm">#                      [20,20,20],  ← repeated for each column</span>
+<span class="cm">#                      [30,30,30]]</span>
+
+<span class="cm"># Equivalent: reshape or newaxis</span>
+v_col = v.reshape(-<span class="nm">1</span>, <span class="nm">1</span>)         <span class="cm"># (3,1)</span>
+v_col = v[:, np.newaxis]          <span class="cm"># (3,1) — same thing</span>
+
+<span class="cm"># ── SHAPE COMPATIBILITY CHECK ─────────────────────────</span>
+<span class="cm"># (4,3) + (3,)  → OK: (3,) treated as (1,3) → broadcast to (4,3)</span>
+<span class="cm"># (4,3) + (4,1) → OK: (4,1) broadcast to (4,3)</span>
+<span class="cm"># (4,3) + (4,)  → ERROR! Can't broadcast (4,) with (4,3)</span>
+<span class="cm"># (5,4,3) + (4,3) → OK: (4,3) padded to (1,4,3) → (5,4,3)</span>
+
+<span class="cm"># ── REAL-WORLD EXAMPLES ──────────────────────────────</span>
+<span class="cm"># Normalize each row (subtract row mean)</span>
+data = np.random.rand(<span class="nm">100</span>, <span class="nm">5</span>)              <span class="cm"># 100 samples, 5 features</span>
+row_means = data.mean(axis=<span class="nm">1</span>, keepdims=<span class="kw">True</span>) <span class="cm"># shape (100,1)</span>
+normalized = data - row_means               <span class="cm"># (100,5) - (100,1) → (100,5)</span>
+
+<span class="cm"># Standardize each column (z-score)</span>
+col_mean = data.mean(axis=<span class="nm">0</span>)               <span class="cm"># shape (5,)</span>
+col_std  = data.std(axis=<span class="nm">0</span>)                <span class="cm"># shape (5,)</span>
+z_scored = (data - col_mean) / col_std     <span class="cm"># all broadcast against (100,5)</span>
+
+<span class="cm"># Pairwise Euclidean distances (100 points, 3D)</span>
+pts = np.random.rand(<span class="nm">100</span>, <span class="nm">3</span>)
+diff = pts[:, np.newaxis, :] - pts[np.newaxis, :, :]  <span class="cm"># (100,100,3)</span>
+dists = np.sqrt((diff**<span class="nm">2</span>).sum(axis=<span class="nm">2</span>))              <span class="cm"># (100,100)</span>
+
+<span class="cm"># Temperature conversion for multiple cities over days</span>
+celsius = np.random.uniform(-<span class="nm">10</span>, <span class="nm">40</span>, (<span class="nm">365</span>, <span class="nm">10</span>))   <span class="cm"># (days, cities)</span>
+fahrenheit = celsius * <span class="nm">9</span>/<span class="nm">5</span> + <span class="nm">32</span>                   <span class="cm"># broadcasts scalar ops</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== FANCY INDEXING ==================== -->
+<section class="section" id="fancy">
+  <div class="section-header">
+    <div class="s-icon">🎰</div>
+    <div class="s-meta">
+      <span class="s-level lv-i">Intermediate</span>
+      <h2>Fancy Indexing</h2>
+      <p>Index with arrays of indices — select any elements in any order</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Index arrays and advanced selection</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>, <span class="nm">60</span>])
+
+<span class="cm"># ── 1D FANCY INDEXING ────────────────────────────────</span>
+idx = np.array([<span class="nm">0</span>, <span class="nm">3</span>, <span class="nm">5</span>])
+a[idx]                <span class="cm"># [10, 40, 60] — select elements at indices 0,3,5</span>
+a[[<span class="nm">2</span>, <span class="nm">2</span>, <span class="nm">0</span>]]          <span class="cm"># [30, 30, 10] — can repeat indices!</span>
+a[[-<span class="nm">1</span>, -<span class="nm">2</span>]]           <span class="cm"># [60, 50]     — negative indices work</span>
+
+<span class="cm"># Unlike slices, fancy indexing returns a COPY</span>
+copy = a[[<span class="nm">0</span>, <span class="nm">1</span>]]
+copy[<span class="nm">0</span>] = <span class="nm">999</span>
+print(a[<span class="nm">0</span>])  <span class="cm"># 10 — original unchanged</span>
+
+<span class="cm"># ── 2D FANCY INDEXING ────────────────────────────────</span>
+A = np.array([[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>],
+              [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>],
+              [<span class="nm">7</span>, <span class="nm">8</span>, <span class="nm">9</span>]])
+
+A[[<span class="nm">0</span>, <span class="nm">2</span>]]             <span class="cm"># rows 0 and 2: [[1,2,3],[7,8,9]]</span>
+A[:, [<span class="nm">0</span>, <span class="nm">2</span>]]          <span class="cm"># cols 0 and 2: [[1,3],[4,6],[7,9]]</span>
+A[[<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">2</span>], [<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">2</span>]] <span class="cm"># diagonal: [1, 5, 9]  (pairs of row,col)</span>
+A[[<span class="nm">0</span>, <span class="nm">2</span>], :][:, [<span class="nm">0</span>, <span class="nm">2</span>]]  <span class="cm"># corner elements: [[1,3],[7,9]]</span>
+
+<span class="cm"># ── ASSIGNMENT VIA FANCY INDEXING ────────────────────</span>
+a = np.zeros(<span class="nm">10</span>)
+a[[<span class="nm">1</span>, <span class="nm">3</span>, <span class="nm">5</span>]] = <span class="nm">1</span>         <span class="cm"># set specific elements</span>
+a[[<span class="nm">0</span>, <span class="nm">2</span>]] = [<span class="nm">10</span>, <span class="nm">20</span>]     <span class="cm"># set from array</span>
+a[np.array([<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>])] += <span class="nm">1</span>  <span class="cm"># Warning: only increments ONCE, not 3x!</span>
+
+<span class="cm"># Use np.add.at for repeated index operations</span>
+a = np.zeros(<span class="nm">5</span>)
+np.add.at(a, [<span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">0</span>], <span class="nm">1</span>)  <span class="cm"># a[0] incremented 3 times → 3.0</span>
+
+<span class="cm"># ── np.take / np.put ─────────────────────────────────</span>
+a = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>])
+np.take(a, [<span class="nm">0</span>, <span class="nm">3</span>, <span class="nm">1</span>])       <span class="cm"># [10, 40, 20] — like a[[0,3,1]]</span>
+np.put(a, [<span class="nm">0</span>, <span class="nm">2</span>], [<span class="nm">99</span>, <span class="nm">88</span>]) <span class="cm"># a[0]=99, a[2]=88 (in-place)</span>
+
+<span class="cm"># ── np.choose ────────────────────────────────────────</span>
+choices = [np.array([<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">2</span>]),    <span class="cm"># choice 0</span>
+           np.array([<span class="nm">10</span>, <span class="nm">11</span>, <span class="nm">12</span>]),  <span class="cm"># choice 1</span>
+           np.array([<span class="nm">20</span>, <span class="nm">21</span>, <span class="nm">22</span>])]  <span class="cm"># choice 2</span>
+selector = np.array([<span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">2</span>])
+np.choose(selector, choices)   <span class="cm"># [10, 1, 22]</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== BOOLEAN INDEXING ==================== -->
+<section class="section" id="bool-index">
+  <div class="section-header">
+    <div class="s-icon">✅</div>
+    <div class="s-meta">
+      <span class="s-level lv-i">Intermediate</span>
+      <h2>Boolean Indexing & Masking</h2>
+      <p>Filter arrays with conditions — the NumPy equivalent of SQL WHERE</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Masks, filtering, and where()</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.array([<span class="nm">3</span>, -<span class="nm">1</span>, <span class="nm">4</span>, -<span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">9</span>, -<span class="nm">2</span>, <span class="nm">6</span>])
+
+<span class="cm"># ── CREATE MASK ───────────────────────────────────────</span>
+mask = a > <span class="nm">0</span>            <span class="cm"># [T, F, T, F, T, T, F, T]</span>
+a[mask]                 <span class="cm"># [3, 4, 5, 9, 6] — select positive values</span>
+a[a > <span class="nm">0</span>]               <span class="cm"># same thing, inline</span>
+
+<span class="cm"># ── COMPOUND CONDITIONS ───────────────────────────────</span>
+a[(a > <span class="nm">0</span>) &amp; (a < <span class="nm">6</span>)]   <span class="cm"># AND: [3, 4, 5]</span>
+a[(a < <span class="nm">0</span>) | (a > <span class="nm">8</span>)]   <span class="cm"># OR:  [-1,-1,-2, 9]</span>
+a[~(a > <span class="nm">0</span>)]            <span class="cm"># NOT: [-1,-1,-2]</span>
+<span class="cm"># IMPORTANT: use &amp; | ~ not 'and' 'or' 'not'!</span>
+
+<span class="cm"># ── ASSIGNMENT THROUGH MASK ──────────────────────────</span>
+a[a < <span class="nm">0</span>] = <span class="nm">0</span>           <span class="cm"># replace negatives with 0 (in-place!)</span>
+print(a)               <span class="cm"># [3, 0, 4, 0, 5, 9, 0, 6]</span>
+
+a = np.array([<span class="nm">3</span>, -<span class="nm">1</span>, <span class="nm">4</span>, -<span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">9</span>])
+a[a > <span class="nm">5</span>] *= <span class="nm">10</span>          <span class="cm"># multiply values > 5 by 10</span>
+
+<span class="cm"># ── np.where — conditional element selection ──────────</span>
+a = np.array([<span class="nm">3</span>, -<span class="nm">1</span>, <span class="nm">4</span>, -<span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">9</span>])
+np.where(a > <span class="nm">0</span>, a, <span class="nm">0</span>)    <span class="cm"># [3,0,4,0,5,9] — keep positive, zero out negative</span>
+np.where(a > <span class="nm">0</span>, a, -a)   <span class="cm"># [3,1,4,1,5,9] — absolute value!</span>
+np.where(a > <span class="nm">0</span>, <span class="st">'pos'</span>, <span class="st">'neg'</span>)  <span class="cm"># string labels</span>
+np.where(a > <span class="nm">0</span>)          <span class="cm"># indices where True: (array([0,2,4,5]),)</span>
+
+<span class="cm"># ── np.nonzero / np.argwhere ─────────────────────────</span>
+np.nonzero(a > <span class="nm">0</span>)         <span class="cm"># (array([0,2,4,5]),) — tuple of index arrays</span>
+np.argwhere(a > <span class="nm">0</span>)        <span class="cm"># [[0],[2],[4],[5]] — 2D array of indices</span>
+np.count_nonzero(a > <span class="nm">0</span>)   <span class="cm"># 4 — count True values</span>
+
+<span class="cm"># ── REAL-WORLD: Data Cleaning ────────────────────────</span>
+data = np.array([<span class="nm">22.5</span>, np.nan, <span class="nm">18.0</span>, <span class="nm">99.9</span>, np.nan, <span class="nm">21.0</span>])
+
+<span class="cm"># Find and remove NaN</span>
+valid = data[~np.isnan(data)]     <span class="cm"># [22.5, 18.0, 99.9, 21.0]</span>
+nan_mask = np.isnan(data)
+
+<span class="cm"># Remove outliers (z-score method)</span>
+mean, std = np.nanmean(data), np.nanstd(data)
+z_scores = np.abs((data - mean) / std)
+clean = data[(z_scores < <span class="nm">2</span>) &amp; ~np.isnan(data)]
+
+<span class="cm"># np.select — multiple conditions → multiple choices</span>
+scores = np.array([<span class="nm">45</span>, <span class="nm">62</span>, <span class="nm">78</span>, <span class="nm">91</span>, <span class="nm">33</span>])
+conditions = [scores >= <span class="nm">90</span>, scores >= <span class="nm">70</span>, scores >= <span class="nm">50</span>]
+choices     = [<span class="st">'A'</span>,         <span class="st">'B'</span>,         <span class="st">'C'</span>]
+np.select(conditions, choices, default=<span class="st">'F'</span>)  <span class="cm"># ['C','C','B','A','F']</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== SORTING ==================== -->
+<section class="section" id="sorting">
+  <div class="section-header">
+    <div class="s-icon">🔢</div>
+    <div class="s-meta">
+      <span class="s-level lv-i">Intermediate</span>
+      <h2>Sorting & Searching</h2>
+      <p>Sort arrays, find values, and search efficiently</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — sort, argsort, searchsorted, unique</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.array([<span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">4</span>, <span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">9</span>, <span class="nm">2</span>, <span class="nm">6</span>])
+
+<span class="cm"># ── SORT ─────────────────────────────────────────────</span>
+np.sort(a)              <span class="cm"># [1,1,2,3,4,5,6,9] — returns COPY</span>
+a.sort()                <span class="cm"># sorts IN-PLACE (returns None)</span>
+np.sort(a)[::-<span class="nm">1</span>]       <span class="cm"># descending order</span>
+
+<span class="cm"># Sort 2D along axis</span>
+A = np.array([[<span class="nm">3</span>,<span class="nm">1</span>,<span class="nm">4</span>],
+              [<span class="nm">9</span>,<span class="nm">2</span>,<span class="nm">6</span>],
+              [<span class="nm">5</span>,<span class="nm">7</span>,<span class="nm">0</span>]])
+np.sort(A, axis=<span class="nm">0</span>)    <span class="cm"># sort each column vertically</span>
+np.sort(A, axis=<span class="nm">1</span>)    <span class="cm"># sort each row horizontally</span>
+
+<span class="cm"># ── ARGSORT — indices that would sort the array ──────</span>
+a = np.array([<span class="nm">30</span>, <span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">50</span>, <span class="nm">40</span>])
+idx = np.argsort(a)     <span class="cm"># [1, 2, 0, 4, 3] — indices for sorted order</span>
+a[idx]                  <span class="cm"># [10, 20, 30, 40, 50] — sorted values</span>
+
+<span class="cm"># Sort array B by values in array A</span>
+names  = np.array([<span class="st">'Bob'</span>, <span class="st">'Alice'</span>, <span class="st">'Charlie'</span>])
+scores = np.array([<span class="nm">85</span>, <span class="nm">92</span>, <span class="nm">78</span>])
+rank_idx = np.argsort(scores)[::-<span class="nm">1</span>]    <span class="cm"># descending</span>
+print(names[rank_idx])   <span class="cm"># ['Alice', 'Bob', 'Charlie']</span>
+print(scores[rank_idx])  <span class="cm"># [92, 85, 78]</span>
+
+<span class="cm"># ── PARTIAL SORT: Top K ──────────────────────────────</span>
+a = np.array([<span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">4</span>, <span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">9</span>, <span class="nm">2</span>, <span class="nm">6</span>])
+k = <span class="nm">3</span>
+np.partition(a, -k)[-k:]          <span class="cm"># top 3 values (NOT sorted)</span>
+np.sort(np.partition(a, -k)[-k:]) <span class="cm"># top 3, sorted</span>
+np.argsort(a)[-k:]                <span class="cm"># indices of top 3</span>
+
+<span class="cm"># ── UNIQUE ───────────────────────────────────────────</span>
+a = np.array([<span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">4</span>, <span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">9</span>, <span class="nm">2</span>, <span class="nm">6</span>, <span class="nm">5</span>])
+np.unique(a)                          <span class="cm"># [1,2,3,4,5,6,9]</span>
+vals, counts = np.unique(a, return_counts=<span class="kw">True</span>)   <span class="cm"># with frequencies</span>
+vals, idx_first = np.unique(a, return_index=<span class="kw">True</span>)  <span class="cm"># first occurrence index</span>
+vals, inv_idx   = np.unique(a, return_inverse=<span class="kw">True</span>) <span class="cm"># inverse index (reconstruct)</span>
+
+print(vals)    <span class="cm"># [1 2 3 4 5 6 9]</span>
+print(counts)  <span class="cm"># [2 1 1 1 2 1 1] — 1 appears twice, 5 appears twice</span>
+
+<span class="cm"># ── SEARCHSORTED — binary search ─────────────────────</span>
+sorted_arr = np.array([<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>, <span class="nm">50</span>])
+np.searchsorted(sorted_arr, <span class="nm">25</span>)       <span class="cm"># 2 — insert 25 at index 2</span>
+np.searchsorted(sorted_arr, <span class="nm">30</span>)       <span class="cm"># 2 — 'left': before existing equal</span>
+np.searchsorted(sorted_arr, <span class="nm">30</span>, side=<span class="st">'right'</span>)  <span class="cm"># 3 — after existing equal</span>
+np.searchsorted(sorted_arr, [<span class="nm">15</span>, <span class="nm">35</span>, <span class="nm">55</span>])      <span class="cm"># [1, 3, 5]</span>
+
+<span class="cm"># ── SET OPERATIONS ───────────────────────────────────</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>])
+b = np.array([<span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>])
+np.intersect1d(a, b)   <span class="cm"># [3, 4]</span>
+np.union1d(a, b)       <span class="cm"># [1, 2, 3, 4, 5, 6]</span>
+np.setdiff1d(a, b)     <span class="cm"># [1, 2]   — in a but not b</span>
+np.setxor1d(a, b)      <span class="cm"># [1, 2, 5, 6]  — in one but not both</span>
+np.in1d(a, b)          <span class="cm"># [F, F, T, T]  — element-wise membership test</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== STRING OPS ==================== -->
+<section class="section" id="string-ops">
+  <div class="section-header">
+    <div class="s-icon">🔤</div>
+    <div class="s-meta">
+      <span class="s-level lv-i">Intermediate</span>
+      <h2>String Operations</h2>
+      <p>Vectorized string functions via np.char — no loops needed</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — np.char string operations</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+names = np.array([<span class="st">'alice'</span>, <span class="st">'bob'</span>, <span class="st">'CHARLIE'</span>, <span class="st">'dave'</span>])
+
+<span class="cm"># ── CASE OPERATIONS ──────────────────────────────────</span>
+np.char.upper(names)       <span class="cm"># ['ALICE', 'BOB', 'CHARLIE', 'DAVE']</span>
+np.char.lower(names)       <span class="cm"># ['alice', 'bob', 'charlie', 'dave']</span>
+np.char.title(names)       <span class="cm"># ['Alice', 'Bob', 'Charlie', 'Dave']</span>
+np.char.capitalize(names)  <span class="cm"># ['Alice', 'Bob', 'Charlie', 'Dave']</span>
+np.char.swapcase(names)    <span class="cm"># ['ALICE', 'BOB', 'charlie', 'DAVE']</span>
+
+<span class="cm"># ── SEARCH & TEST ────────────────────────────────────</span>
+np.char.startswith(names, <span class="st">'a'</span>)     <span class="cm"># [T, F, F, F]</span>
+np.char.endswith(names, <span class="st">'e'</span>)       <span class="cm"># [T, F, F, T]</span>
+np.char.find(names, <span class="st">'l'</span>)           <span class="cm"># [2, -1, 2, -1]  — index of first 'l'</span>
+np.char.count(names, <span class="st">'a'</span>)          <span class="cm"># count occurrences of 'a'</span>
+np.char.isalpha(names)              <span class="cm"># [T, T, T, T]</span>
+np.char.isnumeric(np.array([<span class="st">'123'</span>, <span class="st">'ab'</span>]))  <span class="cm"># [T, F]</span>
+
+<span class="cm"># ── MODIFY ───────────────────────────────────────────</span>
+np.char.strip(np.array([<span class="st">'  hi  '</span>, <span class="st">' world '</span>]))    <span class="cm"># remove whitespace</span>
+np.char.replace(names, <span class="st">'a'</span>, <span class="st">'@'</span>)                  <span class="cm"># replace char</span>
+np.char.ljust(names, <span class="nm">10</span>)                            <span class="cm"># left-justify in width 10</span>
+np.char.rjust(names, <span class="nm">10</span>)                            <span class="cm"># right-justify</span>
+np.char.center(names, <span class="nm">10</span>, fillchar=<span class="st">'-'</span>)            <span class="cm"># center</span>
+np.char.zfill(np.array([<span class="st">'1'</span>, <span class="st">'42'</span>]), <span class="nm">5</span>)            <span class="cm"># ['00001', '00042']</span>
+
+<span class="cm"># ── JOIN & SPLIT ─────────────────────────────────────</span>
+np.char.join(<span class="st">'-'</span>, names)       <span class="cm"># ['a-l-i-c-e', 'b-o-b', ...]</span>
+np.char.split(np.array([<span class="st">'a b c'</span>, <span class="st">'x y'</span>]))  <span class="cm"># split on whitespace</span>
+np.char.add(names, <span class="st">'!'</span>)        <span class="cm"># ['alice!', 'bob!', ...]  — concatenate</span>
+np.char.multiply(names, <span class="nm">2</span>)     <span class="cm"># ['alicealice', 'bobbob', ...]</span>
+
+<span class="cm"># ── ENCODE / DECODE ──────────────────────────────────</span>
+np.char.encode(names, encoding=<span class="st">'utf-8'</span>)  <span class="cm"># to bytes</span>
+np.char.decode(np.char.encode(names, <span class="st">'utf-8'</span>), <span class="st">'utf-8'</span>)  <span class="cm"># back to str</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== STRUCTURED ARRAYS ==================== -->
+<section class="section" id="structured">
+  <div class="section-header">
+    <div class="s-icon">🗃️</div>
+    <div class="s-meta">
+      <span class="s-level lv-i">Intermediate</span>
+      <h2>Structured Arrays</h2>
+      <p>Arrays with named fields of mixed types — like a fast, in-memory database table</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Structured and record arrays</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── DEFINE DTYPE ─────────────────────────────────────</span>
+dtype = np.dtype([
+    (<span class="st">'name'</span>,   <span class="st">'U20'</span>),     <span class="cm"># Unicode string, max 20 chars</span>
+    (<span class="st">'age'</span>,    np.int32),
+    (<span class="st">'salary'</span>, np.float64),
+    (<span class="st">'active'</span>, np.bool_)
+])
+
+<span class="cm"># ── CREATE STRUCTURED ARRAY ──────────────────────────</span>
+employees = np.array([
+    (<span class="st">'Alice'</span>,   <span class="nm">30</span>, <span class="nm">75000.0</span>, <span class="kw">True</span>),
+    (<span class="st">'Bob'</span>,     <span class="nm">25</span>, <span class="nm">62000.0</span>, <span class="kw">True</span>),
+    (<span class="st">'Charlie'</span>, <span class="nm">35</span>, <span class="nm">90000.0</span>, <span class="kw">False</span>),
+    (<span class="st">'Diana'</span>,   <span class="nm">28</span>, <span class="nm">80000.0</span>, <span class="kw">True</span>),
+], dtype=dtype)
+
+<span class="cm"># ── ACCESS BY FIELD NAME ─────────────────────────────</span>
+employees[<span class="st">'name'</span>]          <span class="cm"># ['Alice', 'Bob', 'Charlie', 'Diana']</span>
+employees[<span class="st">'salary'</span>]        <span class="cm"># [75000., 62000., 90000., 80000.]</span>
+employees[<span class="nm">0</span>]              <span class="cm"># ('Alice', 30, 75000.0, True)</span>
+employees[<span class="nm">0</span>][<span class="st">'salary'</span>]    <span class="cm"># 75000.0</span>
+
+<span class="cm"># ── FILTER & SORT ────────────────────────────────────</span>
+active = employees[employees[<span class="st">'active'</span>] == <span class="kw">True</span>]
+high_earn = employees[employees[<span class="st">'salary'</span>] > <span class="nm">70000</span>]
+young_active = employees[(employees[<span class="st">'age'</span>] < <span class="nm">30</span>) &amp; employees[<span class="st">'active'</span>]]
+
+<span class="cm"># Sort by salary descending</span>
+sorted_emp = employees[np.argsort(employees[<span class="st">'salary'</span>])[::-<span class="nm">1</span>]]
+
+<span class="cm"># ── STATISTICS PER FIELD ─────────────────────────────</span>
+print(<span class="st">f"Avg salary: ${employees['salary'].mean():,.0f}"</span>)
+print(<span class="st">f"Avg age:    {employees['age'].mean():.1f}"</span>)
+
+<span class="cm"># ── RECORD ARRAY — access fields as attributes ────────</span>
+rec = np.rec.array(employees)
+rec.name     <span class="cm"># same as employees['name']</span>
+rec.salary   <span class="cm"># same as employees['salary']</span>
+
+<span class="cm"># ── FROM DICT ────────────────────────────────────────</span>
+data = {<span class="st">'x'</span>: np.array([<span class="nm">1.0</span>, <span class="nm">2.0</span>, <span class="nm">3.0</span>]),
+        <span class="st">'y'</span>: np.array([<span class="nm">4.0</span>, <span class="nm">5.0</span>, <span class="nm">6.0</span>])}
+sa = np.array(list(zip(data[<span class="st">'x'</span>], data[<span class="st">'y'</span>])),
+              dtype=[(<span class="st">'x'</span>, <span class="st">'f8'</span>), (<span class="st">'y'</span>, <span class="st">'f8'</span>)])</pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== LINEAR ALGEBRA ==================== -->
+<section class="section" id="linalg">
+  <div class="section-header">
+    <div class="s-icon">🧮</div>
+    <div class="s-meta">
+      <span class="s-level lv-a">Advanced</span>
+      <h2>Linear Algebra (np.linalg)</h2>
+      <p>Matrix operations, decompositions, eigenvalues — the math behind ML</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Complete linear algebra reference</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> numpy.linalg <span class="kw">as</span> la
+
+A = np.array([[<span class="nm">2</span>, <span class="nm">1</span>],
+              [<span class="nm">1</span>, <span class="nm">3</span>]], dtype=float)
+B = np.array([[<span class="nm">1</span>, <span class="nm">2</span>],
+              [<span class="nm">3</span>, <span class="nm">4</span>]], dtype=float)
+
+<span class="cm"># ── MATRIX MULTIPLICATION ─────────────────────────────</span>
+A @ B           <span class="cm"># matrix multiply (Python 3.5+) — preferred</span>
+np.dot(A, B)    <span class="cm"># same as A @ B for 2D</span>
+np.matmul(A, B) <span class="cm"># same, but stricter (no scalar input)</span>
+A * B           <span class="cm"># element-wise! NOT matrix multiply</span>
+
+<span class="cm"># Batch matrix multiply</span>
+batch = np.random.rand(<span class="nm">10</span>, <span class="nm">3</span>, <span class="nm">3</span>)  <span class="cm"># 10 matrices of 3×3</span>
+result = batch @ batch              <span class="cm"># (10,3,3) — 10 matrix multiplications</span>
+
+<span class="cm"># ── BASIC OPERATIONS ─────────────────────────────────</span>
+la.det(A)               <span class="cm"># determinant = 5.0</span>
+la.inv(A)               <span class="cm"># inverse matrix: A @ inv(A) = I</span>
+la.matrix_rank(A)       <span class="cm"># 2 — full rank</span>
+np.trace(A)             <span class="cm"># 5 — sum of diagonal</span>
+
+<span class="cm"># ── NORMS ────────────────────────────────────────────</span>
+v = np.array([<span class="nm">3</span>, <span class="nm">4</span>])
+la.norm(v)              <span class="cm"># 5.0  — L2 norm (Euclidean)</span>
+la.norm(v, ord=<span class="nm">1</span>)       <span class="cm"># 7.0  — L1 norm (Manhattan)</span>
+la.norm(v, ord=np.inf)   <span class="cm"># 4.0  — L∞ norm (max element)</span>
+la.norm(A)              <span class="cm"># Frobenius norm of matrix</span>
+la.norm(A, ord=<span class="nm">2</span>)       <span class="cm"># spectral norm (largest singular value)</span>
+
+<span class="cm"># ── SOLVE LINEAR SYSTEMS: Ax = b ─────────────────────</span>
+b = np.array([<span class="nm">5</span>, <span class="nm">10</span>])
+x = la.solve(A, b)      <span class="cm"># solve Ax = b (faster than inv(A)@b)</span>
+print(x)                <span class="cm"># solution vector</span>
+print(A @ x)            <span class="cm"># verify: should equal b</span>
+
+<span class="cm"># Least squares (overdetermined system)</span>
+X = np.random.rand(<span class="nm">100</span>, <span class="nm">3</span>)
+y = np.random.rand(<span class="nm">100</span>)
+coeffs, residuals, rank, sv = la.lstsq(X, y, rcond=<span class="kw">None</span>)
+<span class="cm"># This is exactly what LinearRegression does internally!</span>
+
+<span class="cm"># ── EIGENVALUES & EIGENVECTORS ───────────────────────</span>
+eigenvalues, eigenvectors = la.eig(A)
+print(<span class="st">"Eigenvalues: "</span>, eigenvalues)   <span class="cm"># [2.38, 2.62] approx</span>
+print(<span class="st">"Eigenvectors:\n"</span>, eigenvectors)  <span class="cm"># columns are eigenvectors</span>
+
+<span class="cm"># Verify: A @ v = λ * v</span>
+<span class="kw">for</span> i <span class="kw">in</span> range(len(eigenvalues)):
+    lhs = A @ eigenvectors[:, i]
+    rhs = eigenvalues[i] * eigenvectors[:, i]
+    print(np.allclose(lhs, rhs))  <span class="cm"># True</span>
+
+<span class="cm"># Symmetric matrix → real eigenvalues (use eigh for speed)</span>
+eigenvalues, eigenvectors = la.eigh(A)  <span class="cm"># optimized for symmetric</span>
+
+<span class="cm"># ── DECOMPOSITIONS ───────────────────────────────────</span>
+<span class="cm"># SVD — Singular Value Decomposition (used in PCA!)</span>
+U, S, Vt = la.svd(A)
+<span class="cm"># A = U @ np.diag(S) @ Vt</span>
+print(<span class="st">f"U: {U.shape}, S: {S.shape}, Vt: {Vt.shape}"</span>)
+
+<span class="cm"># Reconstruct from SVD</span>
+A_reconstructed = U @ np.diag(S) @ Vt
+print(np.allclose(A, A_reconstructed))  <span class="cm"># True</span>
+
+<span class="cm"># Low-rank approximation (image compression!)</span>
+k = <span class="nm">1</span>  <span class="cm"># keep only top k singular values</span>
+A_approx = U[:, :k] @ np.diag(S[:k]) @ Vt[:k, :]
+
+<span class="cm"># QR Decomposition</span>
+Q, R = la.qr(A)
+print(np.allclose(A, Q @ R))    <span class="cm"># True</span>
+print(np.allclose(Q.T @ Q, np.eye(<span class="nm">2</span>)))  <span class="cm"># True — Q is orthogonal</span>
+
+<span class="cm"># Cholesky Decomposition (for positive definite matrices)</span>
+PD = A.T @ A   <span class="cm"># make positive definite</span>
+L = la.cholesky(PD)
+print(np.allclose(L @ L.T, PD))  <span class="cm"># True</span>
+
+<span class="cm"># ── PCA FROM SCRATCH using SVD ────────────────────────</span>
+<span class="cm"># data: (n_samples, n_features)</span>
+data = np.random.randn(<span class="nm">100</span>, <span class="nm">5</span>)
+data_centered = data - data.mean(axis=<span class="nm">0</span>)  <span class="cm"># center</span>
+U, S, Vt = la.svd(data_centered, full_matrices=<span class="kw">False</span>)
+components = Vt[:, :<span class="nm">2</span>]  <span class="cm"># top 2 principal components</span>
+projected = data_centered @ components  <span class="cm"># (100, 2)</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== RANDOM ==================== -->
+<section class="section" id="random">
+  <div class="section-header">
+    <div class="s-icon">🎲</div>
+    <div class="s-meta">
+      <span class="s-level lv-a">Advanced</span>
+      <h2>Random Number Generation</h2>
+      <p>Reproducible randomness — the new Generator API and all distributions</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Modern RNG and probability distributions</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── MODERN API (recommended: numpy ≥ 1.17) ───────────</span>
+rng = np.random.default_rng(seed=<span class="nm">42</span>)  <span class="cm"># create Generator object</span>
+
+<span class="cm"># ── UNIFORM DISTRIBUTIONS ─────────────────────────────</span>
+rng.random()               <span class="cm"># single float in [0, 1)</span>
+rng.random((<span class="nm">3</span>, <span class="nm">4</span>))         <span class="cm"># 3×4 array of floats in [0,1)</span>
+rng.uniform(<span class="nm">5</span>, <span class="nm">10</span>, <span class="nm">1000</span>)  <span class="cm"># uniform in [5, 10)</span>
+rng.integers(<span class="nm">0</span>, <span class="nm">100</span>)       <span class="cm"># random integer in [0, 100)</span>
+rng.integers(<span class="nm">0</span>, <span class="nm">10</span>, (<span class="nm">3</span>, <span class="nm">3</span>)) <span class="cm"># 3×3 integer matrix</span>
+
+<span class="cm"># ── NORMAL / GAUSSIAN ─────────────────────────────────</span>
+rng.normal(loc=<span class="nm">0</span>, scale=<span class="nm">1</span>, size=<span class="nm">1000</span>)   <span class="cm"># standard normal</span>
+rng.normal(<span class="nm">50</span>, <span class="nm">10</span>, (<span class="nm">100</span>, <span class="nm">5</span>))            <span class="cm"># mean=50, std=10, (100,5) shape</span>
+rng.standard_normal((<span class="nm">3</span>, <span class="nm">3</span>))             <span class="cm"># mean=0, std=1</span>
+
+<span class="cm"># ── OTHER DISTRIBUTIONS ──────────────────────────────</span>
+rng.binomial(n=<span class="nm">10</span>, p=<span class="nm">0.5</span>, size=<span class="nm">1000</span>)   <span class="cm"># coin flips</span>
+rng.poisson(lam=<span class="nm">5</span>, size=<span class="nm">1000</span>)          <span class="cm"># rare events per interval</span>
+rng.exponential(scale=<span class="nm">1.0</span>, size=<span class="nm">1000</span>) <span class="cm"># time between events</span>
+rng.beta(a=<span class="nm">2</span>, b=<span class="nm">5</span>, size=<span class="nm">1000</span>)          <span class="cm"># values in [0,1]</span>
+rng.gamma(shape=<span class="nm">2</span>, scale=<span class="nm">1</span>, size=<span class="nm">1000</span>) <span class="cm"># positive skewed values</span>
+rng.chisquare(df=<span class="nm">5</span>, size=<span class="nm">1000</span>)          <span class="cm"># chi-squared</span>
+rng.multivariate_normal(
+    mean=[<span class="nm">0</span>, <span class="nm">0</span>],
+    cov=[[<span class="nm">1</span>, <span class="nm">0.5</span>],[<span class="nm">0.5</span>, <span class="nm">1</span>]],
+    size=<span class="nm">500</span>
+)  <span class="cm"># correlated 2D normal (500, 2)</span>
+
+<span class="cm"># ── CHOICE & PERMUTATION ─────────────────────────────</span>
+arr = np.array([<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>, <span class="st">'d'</span>, <span class="st">'e'</span>])
+rng.choice(arr)                   <span class="cm"># single random element</span>
+rng.choice(arr, size=<span class="nm">3</span>)          <span class="cm"># 3 with replacement</span>
+rng.choice(arr, size=<span class="nm">3</span>, replace=<span class="kw">False</span>)  <span class="cm"># 3 without replacement</span>
+rng.choice(arr, size=<span class="nm">3</span>, p=[<span class="nm">0.5</span>,<span class="nm">0.1</span>,<span class="nm">0.1</span>,<span class="nm">0.2</span>,<span class="nm">0.1</span>]) <span class="cm"># weighted sampling</span>
+
+rng.shuffle(arr)              <span class="cm"># shuffle in-place</span>
+rng.permutation(arr)          <span class="cm"># shuffled COPY (original unchanged)</span>
+rng.permutation(<span class="nm">10</span>)           <span class="cm"># random permutation of 0-9</span>
+
+<span class="cm"># ── REPRODUCIBILITY ──────────────────────────────────</span>
+<span class="cm"># Always set seed before stochastic operations</span>
+rng1 = np.random.default_rng(<span class="nm">42</span>)
+rng2 = np.random.default_rng(<span class="nm">42</span>)
+print(np.all(rng1.random(<span class="nm">5</span>) == rng2.random(<span class="nm">5</span>)))  <span class="cm"># True!</span>
+
+<span class="cm"># Old API (still works, less recommended)</span>
+np.random.seed(<span class="nm">42</span>)
+np.random.randn(<span class="nm">3</span>, <span class="nm">3</span>)        <span class="cm"># normal</span>
+np.random.rand(<span class="nm">3</span>, <span class="nm">3</span>)         <span class="cm"># uniform [0,1)</span>
+np.random.randint(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">5</span>) <span class="cm"># random ints</span></pre>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== FILE I/O ==================== -->
+<section class="section" id="io">
+  <div class="section-header">
+    <div class="s-icon">💾</div>
+    <div class="s-meta">
+      <span class="s-level lv-a">Advanced</span>
+      <h2>File I/O — Save & Load Arrays</h2>
+      <p>Persist NumPy arrays to disk efficiently</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — npy, npz, txt, csv formats</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+arr = np.array([[<span class="nm">1.5</span>, <span class="nm">2.5</span>, <span class="nm">3.5</span>],
+                [<span class="nm">4.5</span>, <span class="nm">5.5</span>, <span class="nm">6.5</span>]])
+
+<span class="cm"># ── BINARY (.npy) — single array ─────────────────────</span>
+np.save(<span class="st">'array.npy'</span>, arr)        <span class="cm"># save</span>
+loaded = np.load(<span class="st">'array.npy'</span>)   <span class="cm"># load</span>
+print(np.allclose(arr, loaded))   <span class="cm"># True — exact same values</span>
+
+<span class="cm"># .npy preserves dtype, shape, and values perfectly</span>
+<span class="cm"># Much faster than text formats. Use for production.</span>
+
+<span class="cm"># ── BINARY (.npz) — multiple arrays ──────────────────</span>
+a = np.arange(<span class="nm">10</span>)
+b = np.ones((<span class="nm">3</span>, <span class="nm">3</span>))
+c = np.random.rand(<span class="nm">5</span>)
+
+<span class="cm"># Save multiple arrays in one file (uncompressed)</span>
+np.savez(<span class="st">'arrays.npz'</span>, arr_a=a, arr_b=b, arr_c=c)
+data = np.load(<span class="st">'arrays.npz'</span>)
+print(data.files)          <span class="cm"># ['arr_a', 'arr_b', 'arr_c']</span>
+print(data[<span class="st">'arr_a'</span>])      <span class="cm"># access by name</span>
+
+<span class="cm"># Compressed (smaller file, slightly slower)</span>
+np.savez_compressed(<span class="st">'arrays_compressed.npz'</span>, a=a, b=b)
+
+<span class="cm"># ── TEXT FILES ───────────────────────────────────────</span>
+<span class="cm"># Save as text</span>
+np.savetxt(<span class="st">'data.csv'</span>, arr,
+           delimiter=<span class="st">','</span>,
+           header=<span class="st">'col1,col2,col3'</span>,
+           comments=<span class="st">''</span>,        <span class="cm"># no '#' prefix on header</span>
+           fmt=<span class="st">'%.4f'</span>)         <span class="cm"># 4 decimal places</span>
+
+<span class="cm"># Load from text</span>
+loaded = np.loadtxt(<span class="st">'data.csv'</span>, delimiter=<span class="st">','</span>, skiprows=<span class="nm">1</span>)
+
+<span class="cm"># genfromtxt — handles missing values</span>
+data = np.genfromtxt(<span class="st">'data.csv'</span>,
+                     delimiter=<span class="st">','</span>,
+                     names=<span class="kw">True</span>,     <span class="cm"># use header as field names</span>
+                     filling_values=<span class="nm">0</span>)  <span class="cm"># replace NaN with 0</span>
+
+<span class="cm"># ── MEMORY-MAPPED FILES — for huge arrays ─────────────</span>
+<span class="cm"># Read/write a huge array from disk without loading it all into RAM</span>
+mmap = np.memmap(<span class="st">'huge_array.dat'</span>,
+                 dtype=np.float32,
+                 mode=<span class="st">'w+'</span>,         <span class="cm"># 'r'=readonly, 'r+'=read/write, 'w+'=create</span>
+                 shape=(<span class="nm">100000</span>, <span class="nm">100</span>))  <span class="cm"># 10 million floats = 40 MB</span>
+
+mmap[<span class="nm">0</span>, :] = np.arange(<span class="nm">100</span>)  <span class="cm"># writes directly to disk</span>
+del mmap                       <span class="cm"># flush changes</span>
+
+mmap_r = np.memmap(<span class="st">'huge_array.dat'</span>, dtype=np.float32,
+                   mode=<span class="st">'r'</span>, shape=(<span class="nm">100000</span>, <span class="nm">100</span>))
+print(mmap_r[<span class="nm">0</span>, :<span class="nm">5</span>])  <span class="cm"># reads only the requested slice from disk</span></pre>
+  </div>
+
+  <table>
+    <tr><th>Format</th><th>Extension</th><th>Speed</th><th>Size</th><th>Best For</th></tr>
+    <tr><td><code>np.save</code></td><td>.npy</td><td>⚡ Fast</td><td>Small</td><td>Single arrays, production</td></tr>
+    <tr><td><code>np.savez</code></td><td>.npz</td><td>⚡ Fast</td><td>Small</td><td>Multiple arrays</td></tr>
+    <tr><td><code>np.savez_compressed</code></td><td>.npz</td><td>Medium</td><td>Tiny</td><td>Storage-constrained</td></tr>
+    <tr><td><code>np.savetxt</code></td><td>.csv / .txt</td><td>Slow</td><td>Large</td><td>Sharing with non-Python tools</td></tr>
+    <tr><td><code>np.memmap</code></td><td>.dat / .bin</td><td>⚡ Fast</td><td>Exact</td><td>Arrays too large for RAM</td></tr>
+  </table>
+</section>
+
+<hr class="div">
+
+<!-- ==================== PERFORMANCE ==================== -->
+<section class="section" id="performance">
+  <div class="section-header">
+    <div class="s-icon">⚡</div>
+    <div class="s-meta">
+      <span class="s-level lv-a">Advanced</span>
+      <h2>Performance & Memory Optimization</h2>
+      <p>Write NumPy code that's orders of magnitude faster</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Vectorization, views, and memory tricks</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> time
+
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+<span class="cm"># RULE 1: NEVER loop over array elements — vectorize!</span>
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+n = <span class="nm">1_000_000</span>
+a = np.random.rand(n)
+b = np.random.rand(n)
+
+<span class="cm"># ❌ SLOW: Python loop</span>
+t = time.perf_counter()
+result = np.empty(n)
+<span class="kw">for</span> i <span class="kw">in</span> range(n):
+    result[i] = a[i] * b[i] + <span class="nm">2</span> * a[i]
+print(<span class="st">f"Loop:   {time.perf_counter()-t:.3f}s"</span>)   <span class="cm"># ~1.0s</span>
+
+<span class="cm"># ✅ FAST: Vectorized</span>
+t = time.perf_counter()
+result = a * b + <span class="nm">2</span> * a
+print(<span class="st">f"Vector: {time.perf_counter()-t:.4f}s"</span>)  <span class="cm"># ~0.003s — 300x faster!</span>
+
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+<span class="cm"># RULE 2: Use out= parameter to avoid temporary arrays</span>
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+a = np.ones(<span class="nm">1_000_000</span>)
+out = np.empty_like(a)
+
+<span class="cm"># ❌ Creates temporary array: a * 2 then adds 1</span>
+result = a * <span class="nm">2</span> + <span class="nm">1</span>
+
+<span class="cm"># ✅ No temporaries</span>
+np.multiply(a, <span class="nm">2</span>, out=out)  <span class="cm"># multiply into out</span>
+np.add(out, <span class="nm">1</span>, out=out)     <span class="cm"># add into out</span>
+
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+<span class="cm"># RULE 3: Views are free — copies cost memory + time</span>
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+big = np.random.rand(<span class="nm">1000</span>, <span class="nm">1000</span>)
+
+view = big[:<span class="nm">500</span>, :<span class="nm">500</span>]    <span class="cm"># FREE — same memory</span>
+copy = big[:<span class="nm">500</span>, :<span class="nm">500</span>].copy()  <span class="cm"># allocates new 500×500 array</span>
+
+np.may_share_memory(big, view)   <span class="cm"># True  — check if sharing</span>
+np.may_share_memory(big, copy)   <span class="cm"># False</span>
+
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+<span class="cm"># RULE 4: Choose right dtype (smaller = faster cache)</span>
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+<span class="cm"># float32 vs float64 for ML</span>
+x64 = np.random.rand(<span class="nm">1000</span>, <span class="nm">1000</span>)               <span class="cm"># float64: 8MB</span>
+x32 = x64.astype(np.float32)                     <span class="cm"># float32: 4MB — fits better in cache</span>
+t = time.perf_counter(); x64 @ x64; t64 = time.perf_counter()-t
+t = time.perf_counter(); x32 @ x32; t32 = time.perf_counter()-t
+print(<span class="st">f"float64: {t64:.3f}s, float32: {t32:.3f}s"</span>)
+
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+<span class="cm"># RULE 5: Memory layout matters for access patterns</span>
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+A = np.random.rand(<span class="nm">5000</span>, <span class="nm">5000</span>)  <span class="cm"># C-order (row-major) by default</span>
+A_F = np.asfortranarray(A)        <span class="cm"># F-order (column-major)</span>
+
+<span class="cm"># Row iteration is faster on C-order array</span>
+t = time.perf_counter(); [A[i].sum() <span class="kw">for</span> i <span class="kw">in</span> range(A.shape[<span class="nm">0</span>])]; print(<span class="st">f"C row: {time.perf_counter()-t:.3f}s"</span>)
+<span class="cm"># Col iteration is faster on F-order array</span>
+t = time.perf_counter(); [A_F[:, j].sum() <span class="kw">for</span> j <span class="kw">in</span> range(A_F.shape[<span class="nm">1</span>])]; print(<span class="st">f"F col: {time.perf_counter()-t:.3f}s"</span>)
+
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+<span class="cm"># RULE 6: np.einsum — flexible, often fastest notation</span>
+<span class="cm"># ═══════════════════════════════════════════════════</span>
+A = np.random.rand(<span class="nm">100</span>, <span class="nm">200</span>)
+B = np.random.rand(<span class="nm">200</span>, <span class="nm">300</span>)
+
+np.einsum(<span class="st">'ij,jk->ik'</span>, A, B)   <span class="cm"># matrix multiply: A @ B</span>
+np.einsum(<span class="st">'ij->i'</span>, A)          <span class="cm"># row sums: A.sum(axis=1)</span>
+np.einsum(<span class="st">'ij->j'</span>, A)          <span class="cm"># col sums: A.sum(axis=0)</span>
+np.einsum(<span class="st">'ij,ij->'</span>, A[:,:200], B[:200,:200])  <span class="cm"># element-wise product sum</span>
+np.einsum(<span class="st">'ii->'</span>, A[:100,:100]) <span class="cm"># trace (sum of diagonal)</span>
+np.einsum(<span class="st">'ij,ik->jk'</span>, A, A)   <span class="cm"># A.T @ A  (covariance-like)</span>
+
+<span class="cm"># With optimize=True — finds optimal contraction order</span>
+np.einsum(<span class="st">'ij,jk->ik'</span>, A, B, optimize=<span class="kw">True</span>)</pre>
+  </div>
+
+  <div class="callout pro">
+    <span class="ci">🔥</span>
+    <div><strong>Pro Tips:</strong> For extreme speed, combine NumPy with <strong>Numba</strong> (<code>@numba.jit</code>) for compiled code, <strong>CuPy</strong> for GPU acceleration (drop-in NumPy replacement), or <strong>Cython</strong> for C-speed loops with Python syntax.</div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ==================== PRACTICAL PATTERNS ==================== -->
+<section class="section" id="practical">
+  <div class="section-header">
+    <div class="s-icon">🚀</div>
+    <div class="s-meta">
+      <span class="s-level lv-a">Advanced · Real-World</span>
+      <h2>Practical Patterns & Real-World Recipes</h2>
+      <p>Production-ready patterns for data science and ML</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — 10 essential NumPy patterns</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── 1. ONE-HOT ENCODING ──────────────────────────────</span>
+labels = np.array([<span class="nm">0</span>, <span class="nm">2</span>, <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">0</span>])
+n_classes = <span class="nm">3</span>
+one_hot = np.eye(n_classes)[labels]
+print(one_hot)
+<span class="cm"># [[1,0,0], [0,0,1], [0,1,0], [0,0,1], [1,0,0]]</span>
+
+<span class="cm"># ── 2. SOFTMAX ───────────────────────────────────────</span>
+<span class="kw">def</span> <span class="fn">softmax</span>(x):
+    e_x = np.exp(x - x.max(axis=-<span class="nm">1</span>, keepdims=<span class="kw">True</span>))  <span class="cm"># subtract max for stability</span>
+    <span class="kw">return</span> e_x / e_x.sum(axis=-<span class="nm">1</span>, keepdims=<span class="kw">True</span>)
+
+logits = np.array([[<span class="nm">2.0</span>, <span class="nm">1.0</span>, <span class="nm">0.1</span>]])
+probs = softmax(logits)
+print(probs)         <span class="cm"># probabilities that sum to 1</span>
+print(probs.sum())   <span class="cm"># 1.0</span>
+
+<span class="cm"># ── 3. RUNNING MOVING AVERAGE ────────────────────────</span>
+<span class="kw">def</span> <span class="fn">moving_average</span>(a, n=<span class="nm">3</span>):
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    <span class="kw">return</span> ret[n - <span class="nm">1</span>:] / n
+
+prices = np.array([<span class="nm">100</span>, <span class="nm">102</span>, <span class="nm">104</span>, <span class="nm">103</span>, <span class="nm">105</span>, <span class="nm">107</span>, <span class="nm">106</span>])
+ma3 = moving_average(prices, n=<span class="nm">3</span>)  <span class="cm"># 3-day moving average</span>
+print(ma3)  <span class="cm"># [102.0, 103.0, 104.0, 105.0, 106.0]</span>
+
+<span class="cm"># ── 4. SLIDING WINDOW (stride tricks) ────────────────</span>
+<span class="kw">from</span> numpy.lib.stride_tricks <span class="kw">import</span> sliding_window_view
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>, <span class="nm">7</span>])
+windows = sliding_window_view(a, window_shape=<span class="nm">3</span>)
+print(windows)
+<span class="cm"># [[1,2,3], [2,3,4], [3,4,5], [4,5,6], [5,6,7]]</span>
+window_means = windows.mean(axis=<span class="nm">1</span>)  <span class="cm"># efficient moving average</span>
+
+<span class="cm"># ── 5. PAIRWISE DISTANCES ────────────────────────────</span>
+<span class="kw">def</span> <span class="fn">pairwise_euclidean</span>(A, B=<span class="kw">None</span>):
+    <span class="kw">if</span> B <span class="kw">is</span> <span class="kw">None</span>: B = A
+    diff = A[:, np.newaxis, :] - B[np.newaxis, :, :]  <span class="cm"># (n,m,d)</span>
+    <span class="kw">return</span> np.sqrt((diff**<span class="nm">2</span>).sum(axis=<span class="nm">2</span>))             <span class="cm"># (n,m)</span>
+
+pts = np.random.rand(<span class="nm">50</span>, <span class="nm">3</span>)
+D = pairwise_euclidean(pts)  <span class="cm"># 50×50 distance matrix</span>
+
+<span class="cm"># ── 6. NORMALIZE / STANDARDIZE ───────────────────────</span>
+data = np.random.rand(<span class="nm">100</span>, <span class="nm">5</span>)
+
+<span class="cm"># Min-Max normalize per column (to [0,1])</span>
+mn, mx = data.min(axis=<span class="nm">0</span>), data.max(axis=<span class="nm">0</span>)
+normalized = (data - mn) / (mx - mn)
+
+<span class="cm"># Z-score standardize per column (mean=0, std=1)</span>
+mu, sigma = data.mean(axis=<span class="nm">0</span>), data.std(axis=<span class="nm">0</span>)
+standardized = (data - mu) / sigma
+print(standardized.mean(axis=<span class="nm">0</span>))  <span class="cm"># ≈ [0, 0, 0, 0, 0]</span>
+print(standardized.std(axis=<span class="nm">0</span>))   <span class="cm"># ≈ [1, 1, 1, 1, 1]</span>
+
+<span class="cm"># ── 7. CORRELATION MATRIX ────────────────────────────</span>
+np.corrcoef(data.T)     <span class="cm"># 5×5 correlation matrix</span>
+np.cov(data.T)          <span class="cm"># 5×5 covariance matrix</span>
+
+<span class="cm"># ── 8. OUTER PRODUCT / GRAM MATRIX ───────────────────</span>
+a = np.array([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+b = np.array([<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>])
+np.outer(a, b)          <span class="cm"># [[4,5,6],[8,10,12],[12,15,18]]</span>
+data @ data.T           <span class="cm"># Gram matrix (n×n kernel matrix)</span>
+data.T @ data           <span class="cm"># covariance-like (d×d)</span>
+
+<span class="cm"># ── 9. BINNING / DIGITIZE ────────────────────────────</span>
+ages = np.array([<span class="nm">5</span>, <span class="nm">15</span>, <span class="nm">25</span>, <span class="nm">35</span>, <span class="nm">55</span>, <span class="nm">70</span>])
+bins = [<span class="nm">0</span>, <span class="nm">18</span>, <span class="nm">35</span>, <span class="nm">60</span>, <span class="nm">100</span>]
+bin_idx = np.digitize(ages, bins)   <span class="cm"># [1, 1, 2, 2, 3, 4]</span>
+labels = np.array([<span class="st">'child'</span>, <span class="st">'young'</span>, <span class="st">'adult'</span>, <span class="st">'senior'</span>])
+age_groups = labels[bin_idx - <span class="nm">1</span>]
+
+counts, _ = np.histogram(ages, bins=bins)  <span class="cm"># count per bin</span>
+
+<span class="cm"># ── 10. BATCH MATRIX OPERATIONS ──────────────────────</span>
+<span class="cm"># Apply same operation to multiple matrices at once</span>
+batch_size = <span class="nm">32</span>
+matrices = np.random.rand(batch_size, <span class="nm">4</span>, <span class="nm">4</span>)
+
+<span class="cm"># All 32 determinants at once</span>
+dets = np.linalg.det(matrices)          <span class="cm"># shape: (32,)</span>
+
+<span class="cm"># All 32 matrix multiplications at once</span>
+result = matrices @ matrices            <span class="cm"># shape: (32, 4, 4)</span>
+
+<span class="cm"># Batch dot product of 3D tensors</span>
+A = np.random.rand(<span class="nm">100</span>, <span class="nm">3</span>, <span class="nm">4</span>)
+B = np.random.rand(<span class="nm">100</span>, <span class="nm">4</span>, <span class="nm">5</span>)
+C = np.einsum(<span class="st">'bij,bjk->bik'</span>, A, B)   <span class="cm"># (100, 3, 5) — batch matmul</span></pre>
+  </div>
+
+  <h3>Quick Reference Cheatsheet</h3>
+  <div class="code-block">
+    <div class="code-top"><div class="dots"><span></span><span></span><span></span></div><div class="code-label">Python — Most used NumPy operations at a glance</div><button class="cp-btn" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># CREATE</span>
+np.array([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>])          np.zeros((<span class="nm">3</span>,<span class="nm">4</span>))        np.ones((<span class="nm">3</span>,<span class="nm">4</span>))
+np.arange(<span class="nm">10</span>)             np.linspace(<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">11</span>)   np.eye(<span class="nm">3</span>)
+np.random.rand(<span class="nm">3</span>,<span class="nm">3</span>)       np.random.randn(<span class="nm">100</span>)
+
+<span class="cm"># SHAPE</span>
+a.shape    a.ndim    a.size    a.dtype    a.nbytes
+a.reshape(<span class="nm">3</span>,<span class="nm">4</span>)    a.flatten()    a.T    np.squeeze(a)
+np.concatenate([a,b], axis=<span class="nm">0</span>)    np.vstack    np.hstack
+
+<span class="cm"># INDEX</span>
+a[<span class="nm">0</span>]    a[-<span class="nm">1</span>]    a[<span class="nm">1</span>:<span class="nm">4</span>]    a[::<span class="nm">2</span>]    a[::-<span class="nm">1</span>]
+A[<span class="nm">0</span>,<span class="nm">1</span>]  A[:,<span class="nm">0</span>]   A[<span class="nm">0</span>:<span class="nm">2</span>,<span class="nm">1</span>:<span class="nm">3</span>]
+a[a><span class="nm">0</span>]    a[[<span class="nm">0</span>,<span class="nm">3</span>,<span class="nm">5</span>]]    np.where(a><span class="nm">0</span>, a, <span class="nm">0</span>)
+
+<span class="cm"># MATH</span>
+a+b  a-b  a*b  a/b  a**<span class="nm">2</span>    np.sqrt(a)  np.abs(a)
+np.exp(a)  np.log(a)  np.sin(a)  np.round(a,<span class="nm">2</span>)
+np.clip(a, <span class="nm">0</span>, <span class="nm">1</span>)    np.maximum(a,b)    a @ b
+
+<span class="cm"># AGGREGATE</span>
+a.sum()  a.mean()  a.std()  a.min()  a.max()
+a.sum(axis=<span class="nm">0</span>)  np.cumsum(a)  np.argmax(a)
+np.nanmean(a)  np.percentile(a, <span class="nm">95</span>)
+
+<span class="cm"># SORT / SEARCH</span>
+np.sort(a)    np.argsort(a)    np.unique(a)
+np.searchsorted(sorted_a, <span class="nm">5</span>)    np.where(a><span class="nm">0</span>)
+np.intersect1d(a,b)    np.in1d(a,b)
+
+<span class="cm"># LINEAR ALGEBRA</span>
+np.dot(A,B)  A@B   A.T   np.linalg.inv(A)
+np.linalg.det(A)   np.linalg.eig(A)
+np.linalg.svd(A)   np.linalg.solve(A,b)
+np.linalg.norm(a)  np.linalg.lstsq(A,b,rcond=<span class="kw">None</span>)
+
+<span class="cm"># I/O</span>
+np.save(<span class="st">'f.npy'</span>, a)    np.load(<span class="st">'f.npy'</span>)
+np.savez(<span class="st">'f.npz'</span>, a=a, b=b)    np.savetxt(<span class="st">'f.csv'</span>, a)</pre>
+  </div>
+
+  <h3>What to Learn Next</h3>
+  <div class="grid3">
+    <div class="card"><div class="icon">🐼</div><h4>Pandas</h4><p>DataFrames built on NumPy — for tabular data with labels</p></div>
+    <div class="card"><div class="icon">📊</div><h4>Matplotlib / Seaborn</h4><p>Visualize NumPy arrays as charts, heatmaps, 3D plots</p></div>
+    <div class="card"><div class="icon">🧮</div><h4>SciPy</h4><p>Advanced stats, signal processing, optimization on top of NumPy</p></div>
+    <div class="card"><div class="icon">🤖</div><h4>Scikit-Learn</h4><p>ML algorithms — all accept and return NumPy arrays</p></div>
+    <div class="card"><div class="icon">🔥</div><h4>Numba / CuPy</h4><p>JIT-compile NumPy code or run it on GPU for massive speedups</p></div>
+    <div class="card"><div class="icon">🧠</div><h4>PyTorch / TensorFlow</h4><p>Deep learning — tensors are NumPy with GPU support + autodiff</p></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function cp(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'copied!';
+    btn.style.color = '#00ff88';
+    setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 2000);
+  });
+}
+
+const sections = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('nav a');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => obs.observe(s));
+
+links.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(link.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

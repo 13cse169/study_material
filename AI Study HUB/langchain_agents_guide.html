@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LangChain Agents — Complete Field Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1208;
+  --paper: #faf6ee;
+  --paper2: #f3edd8;
+  --paper3: #ede3c4;
+  --amber: #c87533;
+  --amber-light: #e8a055;
+  --forest: #2d5a27;
+  --rust: #b84a2e;
+  --slate: #3a4a5c;
+  --muted: #7a6a50;
+  --border: #d4c4a0;
+  --code-bg: #1e1a12;
+  --code-text: #e8d5a0;
+  --shadow: rgba(26,18,8,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* PAPER TEXTURE */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(180,160,100,0.04) 27px, rgba(180,160,100,0.04) 28px);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 270px;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  z-index: 100; overflow-y: auto;
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--amber); border-radius: 2px; }
+
+.sidebar-brand {
+  padding: 32px 24px 24px;
+  border-bottom: 1px solid rgba(200,117,51,.2);
+}
+.brand-chain {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+}
+.chain-link {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid var(--amber); display: inline-block;
+}
+.chain-line { width: 16px; height: 2px; background: var(--amber); opacity: .5; }
+.brand-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--amber-light);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; display: block;
+}
+.brand-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; color: var(--paper);
+  line-height: 1.2;
+}
+.brand-title em { color: var(--amber); font-style: italic; }
+
+.sidebar nav { padding: 20px 0; flex: 1; }
+.nav-cat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: rgba(200,117,51,.6);
+  letter-spacing: 3px; text-transform: uppercase;
+  padding: 14px 24px 6px; display: block;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 24px; cursor: pointer;
+  color: rgba(250,246,238,.5);
+  font-size: 13px; font-weight: 400;
+  border-left: 2px solid transparent;
+  transition: all .2s; text-decoration: none;
+}
+.nav-item:hover, .nav-item.active {
+  color: var(--paper);
+  border-left-color: var(--amber);
+  background: rgba(200,117,51,.08);
+}
+.nav-item .n {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--amber); opacity: .6;
+  width: 20px; flex-shrink: 0;
+}
+.nav-item:hover .n, .nav-item.active .n { opacity: 1; }
+
+/* ── MAIN ── */
+.main { margin-left: 270px; position: relative; z-index: 1; }
+
+/* ── HERO ── */
+.hero {
+  background: var(--ink);
+  padding: 70px 64px 60px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0; left: 40%;
+  background: linear-gradient(135deg, transparent 0%, rgba(200,117,51,.06) 50%, rgba(200,117,51,.12) 100%);
+}
+.hero-grid {
+  position: absolute; inset: 0; opacity: .04;
+  background-image: linear-gradient(rgba(200,117,51,1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,117,51,1) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.hero-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--amber);
+  letter-spacing: 4px; text-transform: uppercase;
+  border: 1px solid rgba(200,117,51,.3); border-radius: 2px;
+  padding: 4px 10px; display: inline-block; margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(40px, 5.5vw, 72px); font-weight: 900;
+  color: var(--paper); line-height: 1.0; margin-bottom: 20px;
+}
+.hero h1 .hl { color: var(--amber); font-style: italic; }
+.hero p {
+  font-size: 17px; color: rgba(250,246,238,.6);
+  max-width: 560px; font-weight: 300; margin-bottom: 36px;
+}
+.hero-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  background: rgba(200,117,51,.12); color: var(--amber-light);
+  border: 1px solid rgba(200,117,51,.25); border-radius: 3px;
+  padding: 4px 10px;
+}
+
+/* ── CONTENT ── */
+.content { padding: 0 64px 80px; }
+
+/* ── SECTION ── */
+.section {
+  padding: 56px 0; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.section.visible { opacity: 1; transform: translateY(0); }
+
+.sec-header { margin-bottom: 36px; }
+.sec-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--amber);
+  letter-spacing: 2px; margin-bottom: 8px; display: block;
+}
+.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px; font-weight: 700; line-height: 1.15; color: var(--ink);
+}
+.sec-sub { color: var(--muted); font-size: 15px; margin-top: 6px; font-weight: 300; }
+
+/* ── CALLOUT / DEFINITION ── */
+.def-box {
+  background: var(--ink); color: var(--paper);
+  border-radius: 6px; padding: 24px 28px; margin: 20px 0;
+  position: relative; overflow: hidden;
+}
+.def-box::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(to bottom, var(--amber), var(--amber-light));
+}
+.def-box .def-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--amber);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px;
+}
+.def-box p { font-size: 14px; line-height: 1.7; color: rgba(250,246,238,.85); }
+
+/* ── EXAMPLE BOX ── */
+.eg-box {
+  background: var(--paper2); border: 1px solid var(--border);
+  border-left: 4px solid var(--forest);
+  border-radius: 0 6px 6px 0; padding: 18px 22px; margin: 18px 0;
+}
+.eg-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--forest);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px;
+}
+.eg-box p { font-size: 14px; color: var(--ink); }
+.eg-box strong { color: var(--forest); }
+
+/* ── CARDS ── */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin: 24px 0; }
+.card {
+  background: var(--paper2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 22px;
+  transition: box-shadow .2s, transform .2s, border-color .2s;
+  position: relative;
+}
+.card:hover {
+  box-shadow: 0 8px 32px var(--shadow);
+  transform: translateY(-2px); border-color: var(--amber);
+}
+.card-icon { font-size: 26px; margin-bottom: 12px; display: block; }
+.card h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px; font-weight: 700; margin-bottom: 8px;
+}
+.card p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.card .badge {
+  margin-top: 12px; display: inline-block;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  background: rgba(200,117,51,.12); color: var(--amber);
+  border-radius: 3px; padding: 2px 8px;
+}
+
+/* ── CODE ── */
+pre {
+  background: var(--code-bg); color: var(--code-text);
+  border-radius: 8px; padding: 22px; margin: 16px 0;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12.5px;
+  line-height: 1.65; overflow-x: auto;
+  border: 1px solid rgba(200,117,51,.15);
+}
+.kw { color: #e8a055; } .fn { color: #88d4a8; }
+.str { color: #d4a855; } .cm { color: #5a5040; }
+.cls { color: #a8c8e8; } .num { color: #e87755; }
+code {
+  font-family: 'IBM Plex Mono', monospace;
+  background: rgba(200,117,51,.1); color: var(--amber);
+  padding: 1px 5px; border-radius: 3px; font-size: 13px;
+}
+
+/* ── STEPS ── */
+.steps { margin: 24px 0; }
+.step {
+  display: flex; gap: 18px;
+  padding: 16px 0; border-bottom: 1px dashed var(--border);
+}
+.step:last-child { border-bottom: none; }
+.step-n {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 900; color: var(--border);
+  flex-shrink: 0; width: 36px; line-height: 1; margin-top: 2px;
+}
+.step-body h5 {
+  font-family: 'Outfit', sans-serif; font-weight: 600;
+  font-size: 14px; margin-bottom: 4px; color: var(--ink);
+}
+.step-body p { font-size: 13px; color: var(--muted); }
+
+/* ── TABLE ── */
+.tbl { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px; }
+.tbl th {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 1px;
+  background: var(--ink); color: var(--amber);
+  padding: 12px 16px; text-align: left;
+}
+.tbl td {
+  padding: 11px 16px; border-bottom: 1px solid var(--border);
+  vertical-align: top; color: var(--muted);
+}
+.tbl tr:hover td { background: var(--paper2); color: var(--ink); }
+.tbl td:first-child { font-weight: 600; color: var(--ink); }
+
+/* ── FLOW DIAGRAM ── */
+.flow {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 0; margin: 24px 0; padding: 20px;
+  background: var(--paper2); border-radius: 8px; border: 1px solid var(--border);
+}
+.flow-node {
+  background: var(--ink); color: var(--paper);
+  border-radius: 6px; padding: 10px 16px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  text-align: center; min-width: 110px;
+  border-bottom: 3px solid var(--amber);
+}
+.flow-arrow {
+  color: var(--amber); font-size: 20px; padding: 0 8px; flex-shrink: 0;
+}
+.flow-loop {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: var(--rust); padding: 4px 10px;
+  border: 1px dashed var(--rust); border-radius: 3px; margin: 0 6px;
+}
+
+/* ── PILL ROW ── */
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.pill {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  padding: 4px 12px; border-radius: 2px;
+  border: 1px solid var(--border); color: var(--muted);
+  transition: all .2s; cursor: default;
+}
+.pill:hover { border-color: var(--amber); color: var(--amber); background: rgba(200,117,51,.06); }
+.pill.on { background: rgba(200,117,51,.1); border-color: var(--amber); color: var(--amber); }
+
+/* ── ARCHITECTURE VISUAL ── */
+.arch {
+  background: var(--ink); border-radius: 10px; padding: 28px;
+  margin: 20px 0; font-family: 'IBM Plex Mono', monospace;
+}
+.arch-row {
+  display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;
+}
+.arch-box {
+  border: 1px solid; border-radius: 4px; padding: 8px 14px;
+  font-size: 11px; text-align: center;
+}
+.arch-box.amber { border-color: var(--amber); color: var(--amber); background: rgba(200,117,51,.1); }
+.arch-box.green { border-color: #88d4a8; color: #88d4a8; background: rgba(136,212,168,.08); }
+.arch-box.blue { border-color: #88bbe8; color: #88bbe8; background: rgba(136,187,232,.08); }
+.arch-box.rust { border-color: #e87755; color: #e87755; background: rgba(232,119,85,.08); }
+.arch-label { font-size: 10px; color: rgba(250,246,238,.3); letter-spacing: 2px; text-transform: uppercase; margin-right: 8px; }
+.arch-arrow { color: rgba(200,117,51,.5); font-size: 14px; }
+
+/* ── QA ACCORDION ── */
+.qa-section { margin-top: 24px; }
+.qa-group-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--ink); margin: 32px 0 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.qa-group-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.qa {
+  border: 1px solid var(--border); border-radius: 6px;
+  margin-bottom: 10px; overflow: hidden; background: var(--paper);
+  transition: border-color .2s;
+}
+.qa:hover { border-color: var(--amber); }
+.qa-q {
+  padding: 15px 20px; cursor: pointer;
+  display: flex; align-items: flex-start; gap: 14px;
+  font-weight: 500; font-size: 14px; color: var(--ink);
+  user-select: none; background: var(--paper2);
+  transition: background .2s;
+}
+.qa:hover .qa-q { background: var(--paper3); }
+.qa-q .qbadge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  background: var(--amber); color: white;
+  border-radius: 3px; padding: 2px 6px; flex-shrink: 0; margin-top: 1px;
+}
+.qa-q .chevron { margin-left: auto; color: var(--amber); transition: transform .25s; flex-shrink: 0; }
+.qa.open .qa-q .chevron { transform: rotate(180deg); }
+.qa-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height .35s ease, padding .3s ease;
+  font-size: 14px; color: var(--muted); line-height: 1.75;
+  padding: 0 20px 0 50px;
+}
+.qa.open .qa-a { max-height: 800px; padding: 16px 20px 18px 50px; }
+.qa-a strong { color: var(--ink); }
+.qa-a code { font-size: 12px; }
+
+/* ── CALLOUT BOX ── */
+.callout {
+  display: flex; gap: 14px;
+  background: rgba(45,90,39,.06); border: 1px solid rgba(45,90,39,.2);
+  border-radius: 6px; padding: 16px 18px; margin: 16px 0;
+}
+.callout-ico { font-size: 18px; flex-shrink: 0; }
+.callout p { font-size: 13px; color: var(--ink); }
+
+/* ── TIMELINE ── */
+.timeline { padding-left: 28px; margin: 24px 0; position: relative; }
+.timeline::before {
+  content: ''; position: absolute; left: 8px; top: 6px; bottom: 6px;
+  width: 2px; background: linear-gradient(to bottom, var(--amber), transparent);
+}
+.tl { position: relative; padding: 0 0 26px 24px; }
+.tl::before {
+  content: ''; position: absolute; left: -8px; top: 5px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--amber); border: 2px solid var(--paper);
+  box-shadow: 0 0 0 2px var(--amber);
+}
+.tl-ver {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--amber); margin-bottom: 3px;
+}
+.tl-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+.tl-desc { font-size: 13px; color: var(--muted); }
+
+/* ── MOBILE ── */
+.menu-btn {
+  display: none; position: fixed; top: 14px; left: 14px;
+  z-index: 200; background: var(--ink); border: 1px solid rgba(200,117,51,.3);
+  border-radius: 5px; width: 38px; height: 38px; cursor: pointer;
+  align-items: center; justify-content: center; font-size: 16px; color: var(--amber);
+}
+.overlay { display: none; position: fixed; inset: 0; background: rgba(26,18,8,.7); z-index: 99; }
+@media (max-width: 920px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .hero, .content { padding-left: 24px; padding-right: 24px; }
+  .menu-btn { display: flex; }
+  .overlay.show { display: block; }
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--paper2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 21px; font-weight: 700; margin: 28px 0 12px; color: var(--ink);
+}
+p { margin-bottom: 10px; }
+ul, ol { padding-left: 20px; color: var(--muted); font-size: 14px; }
+li { margin-bottom: 5px; }
+strong { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-chain">
+      <span class="chain-link"></span><span class="chain-line"></span>
+      <span class="chain-link"></span><span class="chain-line"></span>
+      <span class="chain-link"></span>
+    </div>
+    <span class="brand-eyebrow">Field Guide</span>
+    <div class="brand-title">LangChain<br><em>Agents</em></div>
+  </div>
+  <nav>
+    <span class="nav-cat">Foundations</span>
+    <a class="nav-item active" onclick="go('intro')"><span class="n">01</span>What are Agents?</a>
+    <a class="nav-item" onclick="go('langchain')"><span class="n">02</span>LangChain Overview</a>
+    <a class="nav-item" onclick="go('history')"><span class="n">03</span>History & Versions</a>
+
+    <span class="nav-cat">Core Components</span>
+    <a class="nav-item" onclick="go('components')"><span class="n">04</span>Agent Components</a>
+    <a class="nav-item" onclick="go('tools')"><span class="n">05</span>Tools & Toolkits</a>
+    <a class="nav-item" onclick="go('memory')"><span class="n">06</span>Memory Systems</a>
+    <a class="nav-item" onclick="go('chains')"><span class="n">07</span>Chains vs Agents</a>
+
+    <span class="nav-cat">Agent Types</span>
+    <a class="nav-item" onclick="go('types')"><span class="n">08</span>Agent Architectures</a>
+    <a class="nav-item" onclick="go('react')"><span class="n">09</span>ReAct Pattern</a>
+    <a class="nav-item" onclick="go('langgraph')"><span class="n">10</span>LangGraph</a>
+
+    <span class="nav-cat">Advanced</span>
+    <a class="nav-item" onclick="go('rag')"><span class="n">11</span>Agents + RAG</a>
+    <a class="nav-item" onclick="go('multiagent')"><span class="n">12</span>Multi-Agent Systems</a>
+    <a class="nav-item" onclick="go('observability')"><span class="n">13</span>Observability</a>
+    <a class="nav-item" onclick="go('production')"><span class="n">14</span>Production Patterns</a>
+
+    <span class="nav-cat">Interview Prep</span>
+    <a class="nav-item" onclick="go('interview')"><span class="n">★</span>Interview Q&A (50+)</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-tag">⬡ The Complete Field Guide</div>
+  <h1>LangChain<br><span class="hl">Agents</span><br>Mastery</h1>
+  <p>From ReAct loops to multi-agent orchestration — every concept, pattern, and interview answer you need to build production AI agent systems.</p>
+  <div class="hero-chips">
+    <span class="chip">LangChain 0.3</span>
+    <span class="chip">LangGraph</span>
+    <span class="chip">ReAct</span>
+    <span class="chip">Tool Calling</span>
+    <span class="chip">Memory</span>
+    <span class="chip">RAG Agents</span>
+    <span class="chip">Multi-Agent</span>
+    <span class="chip">50+ Interview Q&A</span>
+  </div>
+</header>
+
+<div class="content">
+
+<!-- ══════════════ 01 INTRO ══════════════ -->
+<section class="section" id="intro">
+  <div class="sec-header">
+    <span class="sec-num">// 01 — FOUNDATIONS</span>
+    <div class="sec-title">What are AI Agents?</div>
+    <div class="sec-sub">Systems that perceive, reason, act, and observe — in a loop</div>
+  </div>
+
+  <div class="def-box">
+    <div class="def-label">Definition</div>
+    <p>An <strong style="color:var(--amber)">AI Agent</strong> is a system where an LLM acts as a reasoning engine that dynamically decides <em>which actions to take</em>, <em>in what order</em>, and <em>whether to continue or stop</em> — based on the goal and what it observes. Unlike a fixed pipeline, agents adapt their execution path at runtime.</p>
+  </div>
+
+  <p>The key shift from traditional software: instead of <em>you</em> programming every step, the LLM decides the steps. You give it a goal and tools — it figures out how to use them.</p>
+
+  <div class="eg-box">
+    <div class="eg-label">🌍 Real-World Example</div>
+    <p><strong>Task:</strong> "Research the top 3 EV manufacturers by market cap, get their latest quarterly revenue, and write a comparison report."<br><br>
+    <strong>Traditional code</strong>: You'd write scraping → parsing → formatting logic explicitly.<br>
+    <strong>Agent</strong>: It decides to → search for EV companies → use a finance API tool → summarize results → write a report. It may retry, handle errors, and adjust — all without you specifying each step.</p>
+  </div>
+
+  <h3>The Agent Loop (OODA)</h3>
+  <div class="flow">
+    <div class="flow-node">Observe<br><span style="font-size:10px;opacity:.6">Input / Tool result</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Orient<br><span style="font-size:10px;opacity:.6">LLM reasoning</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Decide<br><span style="font-size:10px;opacity:.6">Next action</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Act<br><span style="font-size:10px;opacity:.6">Call tool / stop</span></div>
+    <div class="flow-arrow" style="color:var(--rust)">↺</div>
+    <div class="flow-loop">Loop until done</div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-icon">🔧</span><h4>Tools</h4><p>Functions the agent can call: web search, code execution, database queries, APIs. The agent's "hands."</p><span class="badge">Actions</span></div>
+    <div class="card"><span class="card-icon">🧠</span><h4>LLM Backbone</h4><p>The reasoning engine. Reads current state + history, decides what to do next, or whether to stop and return an answer.</p><span class="badge">Brain</span></div>
+    <div class="card"><span class="card-icon">💾</span><h4>Memory</h4><p>Short-term (conversation), long-term (vector store), episodic (past runs). The agent's ability to remember and learn.</p><span class="badge">State</span></div>
+    <div class="card"><span class="card-icon">🎯</span><h4>Goal / Objective</h4><p>The user's instruction. The agent uses this as the north star for all its decisions and knows when it's achieved it.</p><span class="badge">Intent</span></div>
+  </div>
+</section>
+
+<!-- ══════════════ 02 LANGCHAIN ══════════════ -->
+<section class="section" id="langchain">
+  <div class="sec-header">
+    <span class="sec-num">// 02 — FRAMEWORK</span>
+    <div class="sec-title">LangChain Overview</div>
+    <div class="sec-sub">The composable framework for LLM-powered applications</div>
+  </div>
+
+  <p><strong>LangChain</strong> is an open-source Python (and JS/TS) framework that provides abstractions for building applications powered by language models. It standardizes how you connect LLMs to data, tools, memory, and other LLMs.</p>
+
+  <div class="arch">
+    <div class="arch-row">
+      <span class="arch-label">Apps</span>
+      <div class="arch-box amber">Chatbots</div>
+      <div class="arch-box amber">Agents</div>
+      <div class="arch-box amber">RAG Apps</div>
+      <div class="arch-box amber">Pipelines</div>
+    </div>
+    <div class="arch-row"><span class="arch-label">     </span><span class="arch-arrow">↑ &nbsp; LangChain Abstractions &nbsp; ↑</span></div>
+    <div class="arch-row">
+      <span class="arch-label">Core</span>
+      <div class="arch-box green">Chains</div>
+      <div class="arch-box green">Agents</div>
+      <div class="arch-box green">Memory</div>
+      <div class="arch-box green">Retrievers</div>
+    </div>
+    <div class="arch-row">
+      <span class="arch-label">Integ</span>
+      <div class="arch-box blue">OpenAI</div>
+      <div class="arch-box blue">Anthropic</div>
+      <div class="arch-box blue">Pinecone</div>
+      <div class="arch-box blue">100+ LLMs</div>
+    </div>
+    <div class="arch-row">
+      <span class="arch-label">Infra</span>
+      <div class="arch-box rust">LangSmith</div>
+      <div class="arch-box rust">LangGraph</div>
+      <div class="arch-box rust">LangServe</div>
+    </div>
+  </div>
+
+  <h3>Key Package Structure (v0.3)</h3>
+  <div class="cards">
+    <div class="card"><span class="card-icon">📦</span><h4>langchain-core</h4><p>Base abstractions: Runnable, BaseMessage, BaseTool, BaseRetriever. Zero external dependencies. The foundation everything else builds on.</p><span class="badge">pip install langchain-core</span></div>
+    <div class="card"><span class="card-icon">🔗</span><h4>langchain</h4><p>Chains, agents, and high-level constructs. Orchestration logic that coordinates core components. The main user-facing package.</p><span class="badge">pip install langchain</span></div>
+    <div class="card"><span class="card-icon">🌐</span><h4>langchain-community</h4><p>300+ integrations — vector stores, LLMs, tools, document loaders. Community-maintained third-party connectors.</p><span class="badge">pip install langchain-community</span></div>
+    <div class="card"><span class="card-icon">🕸️</span><h4>langgraph</h4><p>Stateful, cyclical agent graphs. Build complex multi-agent workflows with explicit state management and conditional routing.</p><span class="badge">pip install langgraph</span></div>
+  </div>
+
+  <h3>The LCEL (LangChain Expression Language)</h3>
+  <p>LCEL is the pipe-based composition syntax that chains components together declaratively. Every component is a <code>Runnable</code> with a standard interface.</p>
+  <pre><span class="kw">from</span> langchain_openai <span class="kw">import</span> ChatOpenAI
+<span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> ChatPromptTemplate
+<span class="kw">from</span> langchain_core.output_parsers <span class="kw">import</span> StrOutputParser
+
+<span class="cm"># LCEL: pipe operator chains Runnables</span>
+prompt = <span class="cls">ChatPromptTemplate</span>.from_template(<span class="str">"Explain {topic} in one sentence."</span>)
+llm = <span class="cls">ChatOpenAI</span>(model=<span class="str">"gpt-4o"</span>)
+parser = <span class="cls">StrOutputParser</span>()
+
+chain = prompt | llm | parser   <span class="cm"># left-to-right composition</span>
+result = chain.invoke({<span class="str">"topic"</span>: <span class="str">"LangChain agents"</span>})
+<span class="cm"># Supports .stream(), .batch(), .ainvoke() out of the box</span></pre>
+</section>
+
+<!-- ══════════════ 03 HISTORY ══════════════ -->
+<section class="section" id="history">
+  <div class="sec-header">
+    <span class="sec-num">// 03 — TIMELINE</span>
+    <div class="sec-title">LangChain History & Versions</div>
+    <div class="sec-sub">From weekend project to industry standard</div>
+  </div>
+  <div class="timeline">
+    <div class="tl"><div class="tl-ver">Oct 2022</div><div class="tl-name">Harrison Chase launches LangChain</div><div class="tl-desc">Weekend project. Simple chain abstraction for connecting GPT-3 to tools. Goes viral on GitHub within weeks.</div></div>
+    <div class="tl"><div class="tl-ver">Jan 2023</div><div class="tl-name">v0.0.x — Agents & Tools</div><div class="tl-desc">First agent implementations (ZeroShotReactAgent). Python package hits 10K stars. JS version released.</div></div>
+    <div class="tl"><div class="tl-ver">Apr 2023</div><div class="tl-name">$10M seed, Series A</div><div class="tl-desc">LangChain raises funding. Rapid community growth. First enterprise users. LangSmith tracing announced.</div></div>
+    <div class="tl"><div class="tl-ver">Sep 2023</div><div class="tl-name">v0.0.300 — Maturity Push</div><div class="tl-desc">LangSmith goes public beta. LCEL (LangChain Expression Language) introduced. First-party LangGraph preview.</div></div>
+    <div class="tl"><div class="tl-ver">Jan 2024</div><div class="tl-name">v0.1 — Stable API</div><div class="tl-desc">Package splitting begins (langchain-core, langchain-community). API stability commitments. LangGraph v0.1 stable.</div></div>
+    <div class="tl"><div class="tl-ver">Sep 2024</div><div class="tl-name">v0.3 — Current</div><div class="tl-desc">Full Pydantic v2 support, new tool-calling APIs, improved streaming. LangGraph 0.2 with persistent checkpointing. Python 3.9+ required.</div></div>
+  </div>
+</section>
+
+<!-- ══════════════ 04 COMPONENTS ══════════════ -->
+<section class="section" id="components">
+  <div class="sec-header">
+    <span class="sec-num">// 04 — ARCHITECTURE</span>
+    <div class="sec-title">Agent Core Components</div>
+    <div class="sec-sub">The building blocks of every LangChain agent</div>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-body"><h5>Agent (LLM + Prompt)</h5><p>The reasoning unit. Takes inputs (user message + tool results) and outputs either a tool call or a final answer. Uses the LLM's function-calling capability or structured output.</p></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-body"><h5>AgentExecutor</h5><p>The runtime loop. Manages the observe-think-act cycle. Handles tool invocation, error recovery, max_iterations, and when to stop. Think of it as the "process manager" for the agent.</p></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-body"><h5>Tools</h5><p>Functions the agent can call. Defined with name, description, and input schema. The description is critical — the LLM reads it to decide when to use the tool.</p></div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-body"><h5>Memory / State</h5><p>Stores conversation history and intermediate results. Injected into the prompt on each agent step so the LLM has full context of what's happened.</p></div></div>
+    <div class="step"><div class="step-n">5</div><div class="step-body"><h5>Prompt Template</h5><p>Structures the agent's instructions. Includes system prompt, conversation history, available tools, and scratchpad (chain of thought). Format is critical for agent reliability.</p></div></div>
+    <div class="step"><div class="step-n">6</div><div class="step-body"><h5>Output Parser</h5><p>Parses the LLM's output into structured action objects (tool name + input) or final answer. With modern tool-calling LLMs, this is handled natively by the model.</p></div></div>
+  </div>
+
+  <pre><span class="kw">from</span> langchain.agents <span class="kw">import</span> create_tool_calling_agent, AgentExecutor
+<span class="kw">from</span> langchain_openai <span class="kw">import</span> ChatOpenAI
+<span class="kw">from</span> langchain_core.tools <span class="kw">import</span> tool
+<span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> ChatPromptTemplate, MessagesPlaceholder
+
+<span class="cm"># 1. Define tools</span>
+<span class="kw">@tool</span>
+<span class="kw">def</span> <span class="fn">get_weather</span>(city: str) -> str:
+    <span class="str">"""Get current weather for a city."""</span>
+    <span class="kw">return</span> <span class="fn">call_weather_api</span>(city)
+
+<span class="cm"># 2. Create prompt</span>
+prompt = <span class="cls">ChatPromptTemplate</span>.from_messages([
+    (<span class="str">"system"</span>, <span class="str">"You are a helpful assistant."</span>),
+    <span class="cls">MessagesPlaceholder</span>(<span class="str">"chat_history"</span>, optional=<span class="kw">True</span>),
+    (<span class="str">"human"</span>, <span class="str">"{input}"</span>),
+    <span class="cls">MessagesPlaceholder</span>(<span class="str">"agent_scratchpad"</span>),
+])
+
+<span class="cm"># 3. Create agent + executor</span>
+llm = <span class="cls">ChatOpenAI</span>(model=<span class="str">"gpt-4o"</span>, temperature=<span class="num">0</span>)
+agent = <span class="fn">create_tool_calling_agent</span>(llm, [get_weather], prompt)
+executor = <span class="cls">AgentExecutor</span>(agent=agent, tools=[get_weather], verbose=<span class="kw">True</span>)
+
+result = executor.invoke({<span class="str">"input"</span>: <span class="str">"What's the weather in Tokyo?"</span>})</pre>
+</section>
+
+<!-- ══════════════ 05 TOOLS ══════════════ -->
+<section class="section" id="tools">
+  <div class="sec-header">
+    <span class="sec-num">// 05 — TOOLS</span>
+    <div class="sec-title">Tools & Toolkits</div>
+    <div class="sec-sub">The agent's interface to the world</div>
+  </div>
+
+  <p>Tools are <strong>the most important design decision</strong> in building agents. A well-described, reliable tool makes agents dramatically more capable. A poorly designed tool breaks the whole system.</p>
+
+  <h3>Built-in LangChain Tools</h3>
+  <div class="cards">
+    <div class="card"><span class="card-icon">🔍</span><h4>Search Tools</h4><p>TavilySearchResults, DuckDuckGoSearchRun, GoogleSerperAPIWrapper, BraveSearch. Real-time web search for current information.</p><span class="badge">langchain-community</span></div>
+    <div class="card"><span class="card-icon">🐍</span><h4>Code Execution</h4><p>PythonREPLTool, E2BSandbox. Agent writes and runs Python code to compute, transform data, create charts.</p><span class="badge">langchain-experimental</span></div>
+    <div class="card"><span class="card-icon">📂</span><h4>File System</h4><p>ReadFileTool, WriteFileTool, ListDirectoryTool. Agents that read/write files, navigate directories.</p><span class="badge">core</span></div>
+    <div class="card"><span class="card-icon">🗄️</span><h4>Database Tools</h4><p>SQLDatabaseToolkit (query, describe, list tables). Agents that reason over SQL databases in natural language.</p><span class="badge">SQL agent</span></div>
+    <div class="card"><span class="card-icon">📊</span><h4>Pandas / CSV</h4><p>PandasDataFrameAgentToolkit. Load a CSV, ask questions in English, agent writes pandas code to answer.</p><span class="badge">data agent</span></div>
+    <div class="card"><span class="card-icon">🌐</span><h4>Web Browser</h4><p>PlaywrightBrowserToolkit, SeleniumURLLoader. Agent controls a real browser — fills forms, clicks, scrapes.</p><span class="badge">browser agent</span></div>
+  </div>
+
+  <h3>Creating Custom Tools — 3 Ways</h3>
+  <pre><span class="kw">from</span> langchain_core.tools <span class="kw">import</span> tool, BaseTool
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+
+<span class="cm"># Method 1: @tool decorator (simplest)</span>
+<span class="kw">@tool</span>
+<span class="kw">def</span> <span class="fn">search_products</span>(query: str, max_price: float = <span class="num">100.0</span>) -> str:
+    <span class="str">"""Search product catalog. Use when user asks about products or prices."""</span>
+    <span class="kw">return</span> db.search(query, max_price)
+
+<span class="cm"># Method 2: StructuredTool with Pydantic schema</span>
+<span class="kw">class</span> <span class="cls">OrderInput</span>(BaseModel):
+    order_id: str = <span class="cls">Field</span>(description=<span class="str">"The order ID to look up"</span>)
+    include_tracking: bool = <span class="cls">Field</span>(default=<span class="kw">False</span>)
+
+<span class="kw">@tool</span>(<span class="str">"get_order_status"</span>, args_schema=<span class="cls">OrderInput</span>)
+<span class="kw">def</span> <span class="fn">get_order</span>(order_id: str, include_tracking: bool) -> str:
+    <span class="str">"""Retrieve status and details for a customer order."""</span>
+    <span class="kw">return</span> orders_api.get(order_id, tracking=include_tracking)
+
+<span class="cm"># Method 3: BaseTool subclass (full control)</span>
+<span class="kw">class</span> <span class="cls">SentimentTool</span>(BaseTool):
+    name: str = <span class="str">"analyze_sentiment"</span>
+    description: str = <span class="str">"Analyzes sentiment of customer reviews. Returns: positive/negative/neutral + score."</span>
+
+    <span class="kw">def</span> <span class="fn">_run</span>(self, text: str) -> str:
+        score = sentiment_model.predict(text)
+        <span class="kw">return</span> <span class="fn">f</span><span class="str">"Sentiment: {score.label}, confidence: {score.score:.2f}"</span>
+
+    <span class="kw">async def</span> <span class="fn">_arun</span>(self, text: str) -> str:  <span class="cm"># async version</span>
+        <span class="kw">return await</span> async_sentiment.predict(text)</pre>
+
+  <div class="callout">
+    <span class="callout-ico">💡</span>
+    <p><strong>Tool Description is Everything:</strong> The LLM decides which tool to call solely based on the description. "Search the web" is bad. "Use when you need current information, news, or facts from after your training cutoff. Input should be a specific search query." is good. Treat descriptions like API documentation.</p>
+  </div>
+</section>
+
+<!-- ══════════════ 06 MEMORY ══════════════ -->
+<section class="section" id="memory">
+  <div class="sec-header">
+    <span class="sec-num">// 06 — MEMORY</span>
+    <div class="sec-title">Memory Systems</div>
+    <div class="sec-sub">How agents remember — short-term, long-term, episodic</div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-icon">⚡</span><h4>Buffer Memory</h4><p>Store the full conversation history in the prompt. Simplest, most reliable. Limited by context window — eventually truncates older messages.</p><span class="badge">ConversationBufferMemory</span></div>
+    <div class="card"><span class="card-icon">🪟</span><h4>Window Memory</h4><p>Keep only the last K exchanges. Prevents context overflow. Loses older context but keeps recent dialogue coherent.</p><span class="badge">ConversationBufferWindowMemory</span></div>
+    <div class="card"><span class="card-icon">📝</span><h4>Summary Memory</h4><p>LLM periodically summarizes older conversation and stores the summary instead of raw messages. Compresses history while preserving key facts.</p><span class="badge">ConversationSummaryMemory</span></div>
+    <div class="card"><span class="card-icon">🔮</span><h4>Vector Store Memory</h4><p>Embed conversation turns and store in vector DB. Retrieve semantically relevant past exchanges, not just the most recent ones. True long-term memory.</p><span class="badge">VectorStoreRetrieverMemory</span></div>
+    <div class="card"><span class="card-icon">🕸️</span><h4>LangGraph State</h4><p>In LangGraph, memory is explicit graph state — persisted between runs via checkpointers (SQLite, Redis). The modern recommended approach.</p><span class="badge">StateGraph + Checkpointer</span></div>
+    <div class="card"><span class="card-icon">🏷️</span><h4>Entity Memory</h4><p>Track specific entities (people, places, things) mentioned in conversation. Maintains an entity-fact store that updates as the conversation progresses.</p><span class="badge">ConversationEntityMemory</span></div>
+  </div>
+
+  <div class="eg-box">
+    <div class="eg-label">🌍 Real-World Example</div>
+    <p><strong>Customer Service Agent</strong>: A user calls back 3 days later. Without memory, the agent asks for their account details again. With <strong>Vector Store Memory</strong>, it retrieves the semantic memory "customer had a billing dispute about charge X on date Y" and picks up the conversation intelligently — just like a human agent with a CRM.</p>
+  </div>
+
+  <pre><span class="cm"># LangGraph persistent memory (modern approach)</span>
+<span class="kw">from</span> langgraph.checkpoint.sqlite <span class="kw">import</span> SqliteSaver
+<span class="kw">from</span> langgraph.prebuilt <span class="kw">import</span> create_react_agent
+
+<span class="cm"># Checkpointer persists state to SQLite between runs</span>
+checkpointer = <span class="cls">SqliteSaver</span>.from_conn_string(<span class="str">":memory:"</span>)
+agent = <span class="fn">create_react_agent</span>(llm, tools, checkpointer=checkpointer)
+
+<span class="cm"># thread_id is the "session ID" — same thread = same memory</span>
+config = {<span class="str">"configurable"</span>: {<span class="str">"thread_id"</span>: <span class="str">"user_123_session_1"</span>}}
+result1 = agent.invoke({<span class="str">"messages"</span>: [(<span class="str">"user"</span>, <span class="str">"My name is Alice"</span>)]}, config)
+result2 = agent.invoke({<span class="str">"messages"</span>: [(<span class="str">"user"</span>, <span class="str">"What is my name?"</span>)]}, config)
+<span class="cm"># → Agent correctly responds "Your name is Alice"</span></pre>
+</section>
+
+<!-- ══════════════ 07 CHAINS vs AGENTS ══════════════ -->
+<section class="section" id="chains">
+  <div class="sec-header">
+    <span class="sec-num">// 07 — COMPARISON</span>
+    <div class="sec-title">Chains vs Agents</div>
+    <div class="sec-sub">When to use deterministic pipelines vs dynamic agents</div>
+  </div>
+
+  <table class="tbl">
+    <thead><tr><th>Aspect</th><th>Chains</th><th>Agents</th></tr></thead>
+    <tbody>
+      <tr><td>Execution flow</td><td>Fixed, predetermined steps</td><td>Dynamic, LLM decides each step</td></tr>
+      <tr><td>Predictability</td><td>✅ Highly deterministic</td><td>❌ Non-deterministic by design</td></tr>
+      <tr><td>Flexibility</td><td>❌ Can't adapt to unexpected inputs</td><td>✅ Handles novel situations</td></tr>
+      <tr><td>Debugging</td><td>✅ Easy to trace and test</td><td>❌ Harder to reason about failures</td></tr>
+      <tr><td>Latency</td><td>✅ Predictable, usually faster</td><td>❌ Variable, can take many steps</td></tr>
+      <tr><td>Cost</td><td>✅ Known number of LLM calls</td><td>❌ Can make many LLM calls</td></tr>
+      <tr><td>Best for</td><td>ETL pipelines, RAG, document processing</td><td>Research tasks, coding assistants, autonomous workflows</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="callout-ico">🎯</span>
+    <p><strong>Rule of Thumb:</strong> Start with a chain. Switch to an agent when you find yourself writing complex conditional logic to handle different inputs, or when the task genuinely requires dynamic tool selection. Over-engineering with agents for simple tasks adds cost, latency, and failure modes with no benefit.</p>
+  </div>
+</section>
+
+<!-- ══════════════ 08 AGENT TYPES ══════════════ -->
+<section class="section" id="types">
+  <div class="sec-header">
+    <span class="sec-num">// 08 — AGENT TYPES</span>
+    <div class="sec-title">Agent Architectures</div>
+    <div class="sec-sub">The taxonomy of LangChain agents</div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-icon">⚛️</span><h4>Tool Calling Agent</h4><p>Uses the LLM's native tool/function calling API. The model directly outputs structured JSON for tool calls. Most reliable, recommended for all modern LLMs.</p><span class="badge">create_tool_calling_agent</span></div>
+    <div class="card"><span class="card-icon">🔄</span><h4>ReAct Agent</h4><p>Reason → Act → Observe loop via text parsing. Works with models that don't support native tool calling. Uses structured scratchpad format.</p><span class="badge">create_react_agent</span></div>
+    <div class="card"><span class="card-icon">🎯</span><h4>OpenAI Functions Agent</h4><p>Specifically uses OpenAI's function calling API. Predecessor to tool calling agent. Still widely used in production code.</p><span class="badge">Deprecated → Tool Calling</span></div>
+    <div class="card"><span class="card-icon">🗃️</span><h4>Structured Chat Agent</h4><p>For models that need explicit output format instructions. Uses format instructions in the prompt to get structured responses.</p><span class="badge">Multi-input tools</span></div>
+    <div class="card"><span class="card-icon">📊</span><h4>Conversational Agent</h4><p>Optimized for dialogue — maintains chat history as first-class input. Used when the agent needs strong conversation context.</p><span class="badge">Chat + Tools</span></div>
+    <div class="card"><span class="card-icon">🛠️</span><h4>Self-Ask with Search</h4><p>Follows a specific reasoning pattern: break complex questions into sub-questions, answer each via search, combine. Inspired by the "Self-Ask" paper.</p><span class="badge">Compositional QA</span></div>
+  </div>
+
+  <table class="tbl">
+    <thead><tr><th>Agent Type</th><th>LLM Requirement</th><th>Reliability</th><th>Use When</th></tr></thead>
+    <tbody>
+      <tr><td>Tool Calling</td><td>Tool calling support</td><td>⭐⭐⭐⭐⭐</td><td>Default choice, all production systems</td></tr>
+      <tr><td>ReAct</td><td>Any capable LLM</td><td>⭐⭐⭐</td><td>Open-source models, custom LLMs</td></tr>
+      <tr><td>OpenAI Functions</td><td>OpenAI only</td><td>⭐⭐⭐⭐</td><td>Legacy code, OpenAI-specific deployments</td></tr>
+      <tr><td>Structured Chat</td><td>Any LLM</td><td>⭐⭐⭐</td><td>Models without native tool calling</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════ 09 REACT ══════════════ -->
+<section class="section" id="react">
+  <div class="sec-header">
+    <span class="sec-num">// 09 — PATTERN</span>
+    <div class="sec-title">The ReAct Pattern</div>
+    <div class="sec-sub">Reason + Act — the reasoning framework powering most agents</div>
+  </div>
+
+  <p><strong>ReAct</strong> (Reason + Act) is the prompting framework where the model interleaves <em>thoughts</em> (reasoning steps) and <em>actions</em> (tool calls) in a structured scratchpad. Published by Google/Princeton in 2022, it dramatically improves agent reliability by forcing explicit reasoning before every action.</p>
+
+  <pre><span class="cm"># ReAct Scratchpad Format</span>
+<span class="str">"""
+Question: What is the population of the capital of France?
+
+Thought: I need to find the capital of France, then get its population.
+Action: search
+Action Input: "capital of France"
+Observation: Paris is the capital of France.
+
+Thought: Now I need the population of Paris.
+Action: search
+Action Input: "population of Paris 2024"
+Observation: Paris has a population of approximately 2.1 million (city proper) or 12 million (metro area).
+
+Thought: I have the answer.
+Final Answer: The population of Paris (capital of France) is about 2.1 million in the city, or 12 million in the greater metropolitan area.
+"""</span></pre>
+
+  <h3>Why ReAct Works</h3>
+  <div class="cards">
+    <div class="card"><span class="card-icon">🧠</span><h4>Explicit Reasoning</h4><p>The "Thought" step forces the model to plan before acting — reducing impulsive, incorrect tool calls. It's chain-of-thought applied to agentic settings.</p></div>
+    <div class="card"><span class="card-icon">🔍</span><h4>Observable Intermediate Steps</h4><p>Every thought and observation is logged. When things go wrong, you can see exactly where the reasoning broke down — invaluable for debugging.</p></div>
+    <div class="card"><span class="card-icon">🔄</span><h4>Adaptive Replanning</h4><p>Each observation can update the agent's plan. If search returns unexpected results, the "Thought" step allows the agent to adjust its approach dynamically.</p></div>
+  </div>
+
+  <div class="eg-box">
+    <div class="eg-label">🌍 Real-World Example — Research Agent</div>
+    <p><strong>Task:</strong> "Compare the GitHub star growth of LangChain vs LlamaIndex in 2024."<br><br>
+    Without ReAct: Model might hallucinate numbers or call the wrong tool.<br>
+    With ReAct: <em>Thought: "I need to get GitHub star counts at Jan 2024 and Dec 2024 for both repos. Let me search each."</em> → calls search × 4 → <em>Thought: "Now I'll calculate the growth rate."</em> → Final answer with real data and math shown.</p>
+  </div>
+</section>
+
+<!-- ══════════════ 10 LANGGRAPH ══════════════ -->
+<section class="section" id="langgraph">
+  <div class="sec-header">
+    <span class="sec-num">// 10 — LANGGRAPH</span>
+    <div class="sec-title">LangGraph Deep Dive</div>
+    <div class="sec-sub">Stateful, controllable agent graphs — the future of LangChain agents</div>
+  </div>
+
+  <div class="def-box">
+    <div class="def-label">What is LangGraph?</div>
+    <p><strong style="color:var(--amber)">LangGraph</strong> is a library for building stateful, multi-actor applications with LLMs using <strong style="color:var(--amber)">graph-based workflows</strong>. Each node in the graph is a function or agent. Edges define routing (conditional or fixed). State is explicitly typed and persisted between steps — making complex agent behavior controllable and debuggable.</p>
+  </div>
+
+  <h3>Core Concepts</h3>
+  <div class="cards">
+    <div class="card"><span class="card-icon">📊</span><h4>State</h4><p>A typed dictionary (TypedDict) shared across all nodes. Every node reads and writes to this state. Makes data flow explicit and inspectable.</p><span class="badge">TypedDict</span></div>
+    <div class="card"><span class="card-icon">⬡</span><h4>Nodes</h4><p>Functions that take state as input and return state updates. Can be LLM calls, tool executions, human checkpoints, or any Python function.</p><span class="badge">Callable</span></div>
+    <div class="card"><span class="card-icon">↗️</span><h4>Edges</h4><p>Connections between nodes. Can be fixed (always go to X after Y) or conditional (go to X or Y based on a function that reads state).</p><span class="badge">Router Logic</span></div>
+    <div class="card"><span class="card-icon">💾</span><h4>Checkpointers</h4><p>Persist graph state between steps and runs. Enable pause/resume, human-in-the-loop, and durable long-running agents.</p><span class="badge">SQLite / Redis / Postgres</span></div>
+  </div>
+
+  <pre><span class="kw">from</span> langgraph.graph <span class="kw">import</span> StateGraph, END
+<span class="kw">from</span> typing <span class="kw">import</span> TypedDict, Annotated
+<span class="kw">import</span> operator
+
+<span class="cm"># 1. Define state schema</span>
+<span class="kw">class</span> <span class="cls">AgentState</span>(TypedDict):
+    messages: <span class="cls">Annotated</span>[list, operator.add]  <span class="cm"># reducer: append new messages</span>
+    next_step: str
+
+<span class="cm"># 2. Define node functions</span>
+<span class="kw">def</span> <span class="fn">call_llm</span>(state: <span class="cls">AgentState</span>):
+    response = llm_with_tools.invoke(state[<span class="str">"messages"</span>])
+    <span class="kw">return</span> {<span class="str">"messages"</span>: [response]}
+
+<span class="kw">def</span> <span class="fn">run_tools</span>(state: <span class="cls">AgentState</span>):
+    tool_calls = state[<span class="str">"messages"</span>][-<span class="num">1</span>].tool_calls
+    results = [tools[tc[<span class="str">"name"</span>]].invoke(tc[<span class="str">"args"</span>]) <span class="kw">for</span> tc <span class="kw">in</span> tool_calls]
+    <span class="kw">return</span> {<span class="str">"messages"</span>: results}
+
+<span class="cm"># 3. Router: decide what happens after LLM responds</span>
+<span class="kw">def</span> <span class="fn">should_continue</span>(state: <span class="cls">AgentState</span>):
+    last_msg = state[<span class="str">"messages"</span>][-<span class="num">1</span>]
+    <span class="kw">return</span> <span class="str">"tools"</span> <span class="kw">if</span> last_msg.tool_calls <span class="kw">else</span> <span class="str">"end"</span>
+
+<span class="cm"># 4. Build graph</span>
+graph = <span class="cls">StateGraph</span>(<span class="cls">AgentState</span>)
+graph.add_node(<span class="str">"agent"</span>, call_llm)
+graph.add_node(<span class="str">"tools"</span>, run_tools)
+graph.set_entry_point(<span class="str">"agent"</span>)
+graph.add_conditional_edges(<span class="str">"agent"</span>, should_continue, {<span class="str">"tools"</span>: <span class="str">"tools"</span>, <span class="str">"end"</span>: END})
+graph.add_edge(<span class="str">"tools"</span>, <span class="str">"agent"</span>)  <span class="cm"># always go back to agent after tools</span>
+app = graph.<span class="fn">compile</span>(checkpointer=checkpointer)</pre>
+
+  <h3>LangGraph vs AgentExecutor</h3>
+  <table class="tbl">
+    <thead><tr><th>Feature</th><th>AgentExecutor</th><th>LangGraph</th></tr></thead>
+    <tbody>
+      <tr><td>State management</td><td>Implicit, hidden in executor</td><td>Explicit, typed, inspectable</td></tr>
+      <tr><td>Cycles</td><td>Simple agent loop only</td><td>Arbitrary graph cycles</td></tr>
+      <tr><td>Human-in-the-loop</td><td>Very difficult</td><td>First-class via interrupt_before</td></tr>
+      <tr><td>Parallelism</td><td>❌ Sequential only</td><td>✅ Parallel node execution</td></tr>
+      <tr><td>Persistence</td><td>❌ In-memory only</td><td>✅ Built-in checkpointing</td></tr>
+      <tr><td>Multi-agent</td><td>❌ Single agent</td><td>✅ Native multi-agent subgraphs</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════ 11 RAG ══════════════ -->
+<section class="section" id="rag">
+  <div class="sec-header">
+    <span class="sec-num">// 11 — RAG AGENTS</span>
+    <div class="sec-title">Agents + RAG</div>
+    <div class="sec-sub">Combining retrieval with dynamic reasoning</div>
+  </div>
+
+  <p>Plain RAG is a fixed pipeline: retrieve → generate. An <strong>agentic RAG</strong> system lets the LLM decide <em>whether</em> to retrieve, <em>what</em> to retrieve, and <em>how many times</em> — enabling more intelligent information gathering.</p>
+
+  <div class="cards">
+    <div class="card"><span class="card-icon">📚</span><h4>Basic RAG Tool</h4><p>Wrap your retriever as a tool. The agent can call it when it needs information from your knowledge base. Agent decides when to retrieve based on the question.</p></div>
+    <div class="card"><span class="card-icon">🔁</span><h4>Iterative Retrieval</h4><p>Agent retrieves, analyzes gaps in the retrieved context, then retrieves again with refined queries. Handles multi-hop questions that simple RAG can't.</p></div>
+    <div class="card"><span class="card-icon">🗂️</span><h4>Multi-Source Routing</h4><p>Agent decides which of multiple knowledge bases or APIs to query based on the question type. HR questions → HR DB, technical questions → tech docs.</p></div>
+    <div class="card"><span class="card-icon">✅</span><h4>Self-Correcting RAG</h4><p>Agent evaluates retrieved documents for relevance, falls back to web search if retrieval is poor, and verifies its answer against the sources.</p></div>
+  </div>
+
+  <pre><span class="kw">from</span> langchain.tools.retriever <span class="kw">import</span> create_retriever_tool
+<span class="kw">from</span> langchain_community.vectorstores <span class="kw">import</span> FAISS
+<span class="kw">from</span> langchain_openai <span class="kw">import</span> OpenAIEmbeddings
+
+<span class="cm"># Create vector store retriever</span>
+vectorstore = FAISS.from_documents(docs, <span class="cls">OpenAIEmbeddings</span>())
+retriever = vectorstore.as_retriever(search_kwargs={<span class="str">"k"</span>: <span class="num">4</span>})
+
+<span class="cm"># Wrap retriever as a tool the agent can call</span>
+retriever_tool = <span class="fn">create_retriever_tool</span>(
+    retriever,
+    name=<span class="str">"search_company_docs"</span>,
+    description=<span class="str">"Search internal company documentation and policies. "</span>
+                <span class="str">"Use for questions about company procedures, HR policies, or product specs."</span>
+)
+
+<span class="cm"># Agent has both retrieval and web search</span>
+tools = [retriever_tool, tavily_search, python_repl]
+agent = <span class="fn">create_tool_calling_agent</span>(llm, tools, prompt)
+<span class="cm"># Agent now decides: use internal docs, web, or code based on the question</span></pre>
+
+  <div class="eg-box">
+    <div class="eg-label">🌍 Real-World Example</div>
+    <p><strong>Enterprise Knowledge Agent:</strong> Employee asks "What's our parental leave policy, and how does it compare to the industry average?"<br><br>
+    → Agent <em>thinks</em>: "First question needs internal docs, second needs web."<br>
+    → Calls <code>search_company_docs</code> for policy → reads 16 weeks paid.<br>
+    → Calls <code>web_search</code> for "average parental leave tech companies 2024" → 12 weeks.<br>
+    → Synthesizes: "Your policy (16 weeks) exceeds the industry average (12 weeks)."</p>
+  </div>
+</section>
+
+<!-- ══════════════ 12 MULTI-AGENT ══════════════ -->
+<section class="section" id="multiagent">
+  <div class="sec-header">
+    <span class="sec-num">// 12 — MULTI-AGENT</span>
+    <div class="sec-title">Multi-Agent Systems</div>
+    <div class="sec-sub">Orchestrating teams of specialized agents</div>
+  </div>
+
+  <p>Complex tasks often benefit from <strong>multiple specialized agents</strong> working together — just like a team of specialists outperforms a single generalist on hard problems. LangGraph enables rich multi-agent architectures.</p>
+
+  <div class="cards">
+    <div class="card"><span class="card-icon">👑</span><h4>Supervisor Pattern</h4><p>One supervisor agent orchestrates multiple specialized sub-agents. Supervisor decides which agent to call, routes results, and synthesizes the final answer.</p><span class="badge">Most Common</span></div>
+    <div class="card"><span class="card-icon">🔀</span><h4>Hierarchical</h4><p>Supervisor → sub-supervisors → worker agents. For very complex tasks. Each tier handles routing at its level of abstraction.</p><span class="badge">Enterprise Scale</span></div>
+    <div class="card"><span class="card-icon">🤝</span><h4>Collaborative / Debate</h4><p>Multiple agents reason independently, share findings, and critique each other. Improves accuracy on complex reasoning via ensemble effect.</p><span class="badge">High Accuracy</span></div>
+    <div class="card"><span class="card-icon">⚡</span><h4>Parallel Execution</h4><p>Send subtasks to multiple agents simultaneously (via LangGraph fan-out). Dramatically reduces latency for tasks with independent sub-components.</p><span class="badge">Performance</span></div>
+  </div>
+
+  <div class="eg-box">
+    <div class="eg-label">🌍 Real-World Example — Investment Research Team</div>
+    <p><strong>Task:</strong> "Research Tesla as an investment opportunity."<br><br>
+    <strong>Supervisor</strong> routes to 4 parallel agents:<br>
+    • <strong>Financials Agent</strong>: Pulls and analyzes SEC filings, revenue, margins<br>
+    • <strong>News Agent</strong>: Searches recent Tesla news, sentiment analysis<br>
+    • <strong>Competitor Agent</strong>: Compares BYD, Rivian, legacy OEMs<br>
+    • <strong>Technical Agent</strong>: Reads price charts, key levels<br><br>
+    Supervisor synthesizes all 4 reports → comprehensive investment memo in 45 seconds vs. 4 hours manually.</p>
+  </div>
+
+  <pre><span class="kw">from</span> langgraph.graph <span class="kw">import</span> StateGraph
+<span class="kw">from</span> langchain_core.messages <span class="kw">import</span> HumanMessage
+
+<span class="cm"># Supervisor decides which specialist to call</span>
+members = [<span class="str">"researcher"</span>, <span class="str">"coder"</span>, <span class="str">"writer"</span>]
+supervisor_prompt = <span class="fn">f</span><span class="str">"""You are a supervisor managing: {members}.
+Given the conversation, decide who should act next, or FINISH if done.
+Respond with: {{"next": "researcher" | "coder" | "writer" | "FINISH"}}"""</span>
+
+<span class="kw">def</span> <span class="fn">supervisor_node</span>(state):
+    response = supervisor_llm.invoke(state[<span class="str">"messages"</span>])
+    <span class="kw">return</span> {<span class="str">"next"</span>: response[<span class="str">"next"</span>]}
+
+<span class="cm"># Route based on supervisor's decision</span>
+workflow.add_conditional_edges(
+    <span class="str">"supervisor"</span>,
+    <span class="kw">lambda</span> x: x[<span class="str">"next"</span>],
+    {m: m <span class="kw">for</span> m <span class="kw">in</span> members} | {<span class="str">"FINISH"</span>: END}
+)</pre>
+</section>
+
+<!-- ══════════════ 13 OBSERVABILITY ══════════════ -->
+<section class="section" id="observability">
+  <div class="sec-header">
+    <span class="sec-num">// 13 — OBSERVABILITY</span>
+    <div class="sec-title">Observability & LangSmith</div>
+    <div class="sec-sub">Seeing inside the agent's mind</div>
+  </div>
+
+  <p>Agents are opaque by default. Without observability, debugging a production agent failure is nearly impossible. <strong>LangSmith</strong> is Anthropic's (LangChain's) tracing platform — every LLM call, tool invocation, and token usage is captured.</p>
+
+  <div class="cards">
+    <div class="card"><span class="card-icon">🔭</span><h4>Tracing</h4><p>Full trace of every agent step — input, output, tokens used, latency, cost. Nested view shows how sub-calls relate to the top-level request.</p><span class="badge">LangSmith</span></div>
+    <div class="card"><span class="card-icon">📊</span><h4>Evaluation</h4><p>Run test datasets against your agent, score outputs with LLM-as-judge or custom evaluators. A/B test prompt changes before deploying.</p><span class="badge">Evals</span></div>
+    <div class="card"><span class="card-icon">🔍</span><h4>Debugging</h4><p>Replay any failed trace, inspect the exact prompt sent to the LLM, see what the model "saw" at each step. Critical for fixing hallucinations and wrong tool calls.</p><span class="badge">Root Cause</span></div>
+    <div class="card"><span class="card-icon">💰</span><h4>Cost Monitoring</h4><p>Track token usage and cost per run, per user, per endpoint. Set alerts when cost/latency exceeds thresholds.</p><span class="badge">LLMOps</span></div>
+  </div>
+
+  <pre><span class="kw">import</span> os
+os.environ[<span class="str">"LANGCHAIN_TRACING_V2"</span>] = <span class="str">"true"</span>
+os.environ[<span class="str">"LANGCHAIN_API_KEY"</span>] = <span class="str">"your_key_here"</span>
+os.environ[<span class="str">"LANGCHAIN_PROJECT"</span>] = <span class="str">"my-agent-prod"</span>
+<span class="cm"># That's it! All LangChain calls now trace to LangSmith automatically</span>
+
+<span class="cm"># Tag runs for filtering in the UI</span>
+<span class="kw">from</span> langchain_core.tracers.context <span class="kw">import</span> collect_runs
+<span class="kw">with</span> collect_runs() <span class="kw">as</span> cb:
+    result = agent.invoke({<span class="str">"input"</span>: <span class="str">"research topic"</span>},
+                          config={<span class="str">"tags"</span>: [<span class="str">"user:alice"</span>, <span class="str">"prod"</span>],
+                                  <span class="str">"metadata"</span>: {<span class="str">"user_id"</span>: <span class="str">"u_123"</span>}})
+    run_id = cb.traced_runs[<span class="num">0</span>].id  <span class="cm"># link to LangSmith trace</span></pre>
+</section>
+
+<!-- ══════════════ 14 PRODUCTION ══════════════ -->
+<section class="section" id="production">
+  <div class="sec-header">
+    <span class="sec-num">// 14 — PRODUCTION</span>
+    <div class="sec-title">Production Patterns & Best Practices</div>
+    <div class="sec-sub">What separates toy agents from production systems</div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-icon">🛡️</span><h4>Input/Output Guardrails</h4><p>Validate user inputs, detect prompt injection. Run output through moderation API before returning. Use Guardrails AI or Nemo Guardrails for enterprise.</p></div>
+    <div class="card"><span class="card-icon">⏱️</span><h4>Timeouts & Retries</h4><p>Always set max_iterations (default 15). Wrap tool calls in try/except. Implement exponential backoff for API calls. Never let an agent run forever.</p></div>
+    <div class="card"><span class="card-icon">🔐</span><h4>Minimal Permission Principle</h4><p>Give agents only the tools they need for their task. A customer service agent shouldn't have database write access. Reduce blast radius of failures.</p></div>
+    <div class="card"><span class="card-icon">👤</span><h4>Human-in-the-Loop</h4><p>For high-stakes actions (send email, make payment, delete data), require human approval via LangGraph interrupt_before. Don't let agents take irreversible actions autonomously.</p></div>
+    <div class="card"><span class="card-icon">📦</span><h4>Structured Outputs</h4><p>Use Pydantic models for agent outputs. Validate with .with_structured_output(). Prevents downstream parsing failures from malformed LLM responses.</p></div>
+    <div class="card"><span class="card-icon">🔄</span><h4>Fallback Strategies</h4><p>Define what happens when the agent gets stuck or exceeds iterations. Graceful degradation: escalate to human, use simpler chain, or return a meaningful error.</p></div>
+  </div>
+
+  <div class="callout">
+    <span class="callout-ico">⚠️</span>
+    <p><strong>The Reliability Stack:</strong> Production agents need: (1) reliable tools with error handling, (2) LangSmith tracing for debugging, (3) max_iterations cap, (4) structured output validation, (5) human-in-the-loop for irreversible actions, and (6) comprehensive evals on a golden test set run before every deployment.</p>
+  </div>
+</section>
+
+<!-- ══════════════ INTERVIEW ══════════════ -->
+<section class="section" id="interview">
+  <div class="sec-header">
+    <span class="sec-num">// ★ — INTERVIEW PREP</span>
+    <div class="sec-title">Interview Questions & Answers</div>
+    <div class="sec-sub">50+ questions from fundamentals to system design</div>
+  </div>
+
+  <div class="qa-section">
+
+    <div class="qa-group-title">🟢 Fundamentals</div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is LangChain and why was it created?<span class="chevron">▾</span></div>
+      <div class="qa-a">LangChain is an open-source framework for building LLM-powered applications. It was created by Harrison Chase in Oct 2022 to solve the problem of <strong>composability</strong> — connecting LLMs to external tools, data sources, and each other was tedious and inconsistent. LangChain provides standard abstractions (Chains, Agents, Memory, Retrievers) so developers don't re-implement the same plumbing repeatedly. It's become the most popular LLM framework because it dramatically reduces boilerplate for common patterns like RAG, chatbots, and autonomous agents.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is the difference between a Chain and an Agent in LangChain?<span class="chevron">▾</span></div>
+      <div class="qa-a">A <strong>Chain</strong> has a fixed, predetermined sequence of steps. You define the order, and it always runs the same way regardless of input. A <strong>Chain</strong> is deterministic and predictable. An <strong>Agent</strong> uses an LLM to dynamically decide what steps to take — which tools to call, in what order, and when to stop. The LLM is the "controller" of the execution flow. Chains are better when you know exactly what needs to happen (e.g., RAG pipeline). Agents are better when the task requires flexible reasoning and tool use (e.g., research assistant). In practice: use chains by default, reach for agents when you need dynamic tool selection.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is LCEL (LangChain Expression Language)? Why is it useful?<span class="chevron">▾</span></div>
+      <div class="qa-a">LCEL is a declarative way to compose LangChain components using the pipe operator (<code>|</code>). Every component is a <code>Runnable</code> with a standard interface (<code>.invoke()</code>, <code>.stream()</code>, <code>.batch()</code>, <code>.ainvoke()</code>). Benefits: (1) <strong>Automatic streaming</strong> — the full chain streams without extra code, (2) <strong>Async support</strong> — all runnables support async out of the box, (3) <strong>Parallel execution</strong> — use <code>RunnableParallel</code> to run steps in parallel, (4) <strong>Tracing</strong> — all LCEL chains are automatically traced by LangSmith, (5) <strong>Type safety</strong> — input/output types are enforced at each step. Example: <code>chain = prompt | llm | parser</code> is more readable than manually calling each step.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is the ReAct pattern? Why does it improve agent reliability?<span class="chevron">▾</span></div>
+      <div class="qa-a">ReAct (Reason + Act) is a prompting framework where the agent alternates between <strong>Thought</strong> (explicit reasoning about what to do next) and <strong>Action</strong> (calling a tool), followed by an <strong>Observation</strong> (tool result). This loop continues until a final answer is reached. It improves reliability because: (1) The explicit "Thought" step forces the model to plan before acting — reduces impulsive wrong tool calls, (2) Multi-step tasks are broken into traceable sub-steps — easier to debug, (3) Each observation can trigger replanning — the agent adapts to unexpected results, (4) The scratchpad creates a "working memory" for complex reasoning. It was shown to significantly outperform pure reasoning (CoT) or pure acting approaches on complex multi-step tasks.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>How do you define a tool in LangChain?<span class="chevron">▾</span></div>
+      <div class="qa-a">Three main ways: (1) <strong>@tool decorator</strong> — simplest, puts the function docstring as description, infers input schema from type hints. (2) <strong>@tool with args_schema</strong> — attach a Pydantic model for complex, multi-field inputs with descriptions per field. (3) <strong>BaseTool subclass</strong> — full control over name, description, sync and async <code>_run</code> methods, and custom error handling. The most critical design decision is the <code>description</code> — the LLM decides when to call a tool <em>solely</em> based on its description. A well-crafted description that specifies "when to use" and "what to input" is more important than the implementation.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What memory options does LangChain provide? When would you use each?<span class="chevron">▾</span></div>
+      <div class="qa-a"><strong>ConversationBufferMemory</strong>: stores all messages — use for short conversations where you need full history. <strong>ConversationBufferWindowMemory</strong>: keeps last K turns — use when you need to prevent context overflow but older history isn't needed. <strong>ConversationSummaryMemory</strong>: LLM summarizes older turns — use for long conversations where you need compressed but complete history. <strong>VectorStoreRetrieverMemory</strong>: semantic retrieval of past turns — use for long-term user memory across sessions. <strong>LangGraph Checkpointer</strong>: explicit state persistence — the modern recommended approach for production agents needing durable memory across sessions, restarts, and failures.</div>
+    </div>
+
+    <div class="qa-group-title">🟡 Architecture & Internals</div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>Explain AgentExecutor. What does it do internally?<span class="chevron">▾</span></div>
+      <div class="qa-a">AgentExecutor is the runtime that manages the agent loop. Internally: (1) It calls the agent (LLM) with the current input + scratchpad, (2) Parses the LLM output to extract tool name and input, (3) Executes the tool, (4) Appends the tool result to the scratchpad as an "Observation", (5) Loops back to step 1 — until the LLM produces a "Final Answer" or <code>max_iterations</code> is reached. It also handles: error recovery (if tool throws, feed error back to LLM), <code>handle_parsing_errors</code> (if output parsing fails), <code>early_stopping_method</code> (generate final answer or force stop). Key parameters: <code>max_iterations</code> (default 15), <code>max_execution_time</code> (wall clock timeout), <code>return_intermediate_steps</code> (expose scratchpad to caller).</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is LangGraph and how does it differ from AgentExecutor?<span class="chevron">▾</span></div>
+      <div class="qa-a">LangGraph is a graph-based framework for stateful agent workflows. Key differences: <strong>State</strong> is explicit (TypedDict) and inspectable vs. hidden inside AgentExecutor. <strong>Cycles</strong> are arbitrary graph cycles vs. a simple agent loop. <strong>Persistence</strong> is built-in via checkpointers (SQLite, Redis, Postgres) vs. in-memory only. <strong>Human-in-the-loop</strong> is first-class via <code>interrupt_before</code> nodes vs. very difficult to implement. <strong>Parallelism</strong> — LangGraph supports fan-out (parallel node execution) for speed. <strong>Multi-agent</strong> — subgraphs can act as agents in a larger graph. LangGraph is the recommended approach for new production agents. AgentExecutor is simpler for basic single-agent use cases but hitting a ceiling for complex requirements.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is a Runnable in LangChain? Why is it central to the framework?<span class="chevron">▾</span></div>
+      <div class="qa-a">A <strong>Runnable</strong> is the core interface in langchain-core that every component implements. It provides a standard set of methods: <code>invoke(input)</code>, <code>stream(input)</code>, <code>batch(inputs)</code>, <code>ainvoke(input)</code>, <code>astream(input)</code>, <code>abatch(inputs)</code>. This uniformity means: (1) Any component can be composed with any other via the pipe <code>|</code> operator, (2) Streaming propagates automatically through the entire chain, (3) Async versions are available for every chain without extra code, (4) All components are automatically traced by LangSmith. Standard implementations include <code>RunnableLambda</code> (wrap any function), <code>RunnableParallel</code> (run multiple in parallel), <code>RunnablePassthrough</code> (pass input unchanged), and <code>RunnableBranch</code> (conditional routing).</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>How does tool calling differ from the original ReAct text-parsing approach?<span class="chevron">▾</span></div>
+      <div class="qa-a">Original ReAct relied on <strong>text parsing</strong>: the LLM was prompted to output a specific text format ("Action: tool_name\nAction Input: ...") which was then parsed with regex/string matching. This was fragile — any formatting variation would break parsing. <strong>Tool calling</strong> (function calling) uses the model's native structured output capability: tools are defined as JSON schemas sent to the model alongside the conversation. The model outputs a structured JSON object ({name: "tool_name", arguments: {...}}) as part of its response, not as plain text. Tool calling is: more reliable (no parsing failures), supports complex multi-field inputs, allows parallel tool calls (model can call multiple tools simultaneously in one step), and is type-safe. All modern LLMs (GPT-4, Claude, Gemini) support tool calling natively. ReAct text parsing is now primarily used for open-source models that don't yet support tool calling APIs.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is the agent_scratchpad and why is it needed in the prompt?<span class="chevron">▾</span></div>
+      <div class="qa-a">The <code>agent_scratchpad</code> is the placeholder in the prompt template where all intermediate steps (tool calls + their results) are injected. It serves as the agent's <strong>working memory</strong> for the current task. Without it, the LLM has no context of what tools it already called or what results it received — it would repeat the same actions forever. For tool-calling agents, the scratchpad contains the assistant's tool_call messages and the ToolMessage results. For ReAct agents, it contains the formatted "Action/Observation" text. It's populated by <code>MessagesPlaceholder("agent_scratchpad")</code> in the prompt template and filled by the AgentExecutor as it runs the loop. The scratchpad grows with each step and is included in full in every subsequent LLM call, which is why agent runs can consume many tokens.</div>
+    </div>
+
+    <div class="qa-group-title">🟠 Advanced Topics</div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>How do you implement human-in-the-loop with LangGraph?<span class="chevron">▾</span></div>
+      <div class="qa-a">LangGraph supports human-in-the-loop via <strong>interrupt_before</strong> and <strong>interrupt_after</strong> node flags. When a graph is compiled with <code>interrupt_before=["sensitive_action_node"]</code>, execution pauses before that node. The state is saved to the checkpointer. A human reviews the pending action and either approves (resumes the graph with <code>None</code> input) or rejects (updates state with a rejection message). Implementation: <code>app = graph.compile(checkpointer=checkpointer, interrupt_before=["send_email"])</code>. Then call <code>app.invoke(input, config)</code> — it pauses, returns the current state. Human inspects and calls <code>app.invoke(None, config)</code> to resume. This is essential for agents that take irreversible actions like sending emails, making payments, or deleting data.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is a Supervisor pattern in multi-agent systems? How would you implement it?<span class="chevron">▾</span></div>
+      <div class="qa-a">The <strong>Supervisor pattern</strong> has one controller agent that routes tasks to specialized sub-agents. The supervisor reads the current state and conversation, then decides which agent should act next (or if the task is complete). Implementation in LangGraph: (1) Create specialized sub-graphs or node functions for each agent (researcher, coder, writer etc.), (2) Create a supervisor node that calls an LLM with a structured output prompt asking "who should act next: {list_of_agents} | FINISH", (3) Add conditional edges from the supervisor to each agent and to END, (4) Each agent node does its work and routes back to the supervisor. Key design decision: the supervisor's prompt must clearly describe each agent's specialty so it routes correctly. For parallel tasks, use a fan-out pattern: supervisor creates subtasks, multiple agents execute in parallel, a merge node combines results.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>How do you handle agent failures and errors in production?<span class="chevron">▾</span></div>
+      <div class="qa-a">Multi-layer strategy: (1) <strong>Tool-level</strong>: wrap tool implementations in try/except, return error messages (not exceptions) — let the agent adapt. Use <code>handle_tool_error=True</code> in AgentExecutor. (2) <strong>Agent-level</strong>: set <code>max_iterations</code> and <code>max_execution_time</code> to prevent infinite loops. Implement <code>handle_parsing_errors</code> to recover from malformed LLM outputs. (3) <strong>System-level</strong>: implement fallback chains that trigger when the agent fails — degrade to a simpler RAG chain or return a canned "I need help from a human" response. (4) <strong>LLM-level</strong>: use <code>RunnableWithFallbacks</code> to try GPT-4, then Claude if OpenAI is down. (5) <strong>Monitoring</strong>: LangSmith alerts on error rate or latency spikes. (6) <strong>Retries</strong>: use tenacity library for exponential backoff on transient API errors.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>Explain how streaming works in LangChain agents.<span class="chevron">▾</span></div>
+      <div class="qa-a">Streaming in LangChain happens at multiple levels. (1) <strong>Token streaming</strong>: the LLM streams individual tokens as they're generated. Access via <code>chain.stream(input)</code> — you get tokens as they arrive. (2) <strong>Intermediate step streaming</strong>: for agents, you often want to stream tool call events and observations before the final answer. Use <code>astream_events()</code> which emits structured events: <code>on_llm_start</code>, <code>on_tool_start</code>, <code>on_tool_end</code>, <code>on_llm_stream</code>. (3) <strong>LangGraph streaming</strong>: <code>app.stream(input)</code> yields the full state after each node completes — you can stream intermediate states to the UI. For chatbots, use <code>astream_events</code> to show tool calls happening in real-time (e.g., "🔍 Searching the web...") and stream tokens as they arrive for the final answer. This dramatically improves perceived latency in user-facing applications.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is the difference between vectorstore retrieval and semantic caching in LangChain?<span class="chevron">▾</span></div>
+      <div class="qa-a"><strong>Vectorstore retrieval</strong>: embedding your user's query → finding semantically similar documents → returning those documents as context for the LLM to answer from. The LLM still generates a new answer each time. Used in RAG pipelines. <strong>Semantic caching</strong> (<code>RedisSemanticCache</code>, <code>GPTCache</code>): cache LLM responses by semantic similarity of the input. If a new query is semantically similar to a cached query (cosine similarity > threshold), return the cached response without calling the LLM at all. Used for cost/latency reduction. Example: "What's the weather in NYC?" and "What is New York City's current weather?" would hit the same cache entry. Key tradeoff: freshness vs. cost. Semantic caches need TTLs for time-sensitive information. Combine both: use semantic cache as a fast-path, fall back to RAG + LLM for cache misses.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>How would you evaluate a LangChain agent in production?<span class="chevron">▾</span></div>
+      <div class="qa-a">Three-tier evaluation: (1) <strong>Unit tests on tools</strong>: test each tool independently with mocked inputs — validate input/output schemas, error handling. (2) <strong>Agent trace evaluation</strong>: use LangSmith to run a golden test set of (input, expected_output) pairs. Score with: LLM-as-judge (GPT-4 rates helpfulness/accuracy), exact match (for factual tasks), trajectory evaluation (did agent take efficient steps, avoid unnecessary tool calls?). Key metrics: task success rate, average steps per task, average tokens/cost per task, tool call accuracy. (3) <strong>Regression testing</strong>: run the full eval suite before every deployment. Track scores over time in LangSmith's dataset view. Alert if task success rate drops by >5%. Also: shadow mode testing — run new agent version in parallel with production, log results without exposing to users, compare before switching.</div>
+    </div>
+
+    <div class="qa-group-title">🔴 System Design</div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>Design a customer support agent for an e-commerce platform using LangChain.<span class="chevron">▾</span></div>
+      <div class="qa-a"><strong>Architecture:</strong><br><br>
+      <strong>Tools:</strong> <code>get_order_status(order_id)</code>, <code>get_product_info(sku)</code>, <code>search_knowledge_base(query)</code> [RAG over FAQ/policy docs], <code>initiate_return(order_id, reason)</code>, <code>escalate_to_human(issue_summary)</code>.<br><br>
+      <strong>Agent:</strong> Tool-calling agent with GPT-4o. System prompt includes: company persona, policies (return window, etc.), escalation rules (always escalate billing disputes over $100).<br><br>
+      <strong>Memory:</strong> LangGraph checkpointer with Redis. Thread ID = session ID. Retrieves past issues for returning customers.<br><br>
+      <strong>Guardrails:</strong> Input moderation, <code>interrupt_before=["initiate_return"]</code> for orders >$500 (require human approval). Rate limit per user.<br><br>
+      <strong>Observability:</strong> LangSmith tracing with user_id metadata. Alert on: high step count (agent getting stuck), tool error rate, escalation rate.<br><br>
+      <strong>Evaluation:</strong> Weekly golden test set run (200 scenarios). Success metric: resolved without escalation + customer satisfaction score.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>How would you build a code review agent using LangGraph?<span class="chevron">▾</span></div>
+      <div class="qa-a"><strong>Graph design:</strong><br><br>
+      <strong>State:</strong> <code>{pr_diff, review_comments, security_issues, test_coverage, final_review}</code><br><br>
+      <strong>Nodes:</strong> (1) <code>fetch_pr</code> — GitHub tool fetches diff, (2) <code>security_scan</code> — specialized agent checks for SQL injection, hardcoded secrets, XSS. (3) <code>style_check</code> — linting agent checks naming, complexity, (4) <code>test_coverage_check</code> — checks if new code has tests, (5) <code>synthesize_review</code> — final agent combines all findings into a structured PR review.<br><br>
+      <strong>Edges:</strong> fetch_pr → [security_scan, style_check, test_coverage_check] (parallel) → synthesize_review → END.<br><br>
+      <strong>Parallel execution</strong>: use <code>RunnableParallel</code> or LangGraph fan-out for steps 2-4 — runs in parallel, reducing total latency from ~45s to ~15s.<br><br>
+      <strong>Output:</strong> Structured Pydantic model with severity-tagged issues, posted back to GitHub via tool. interrupt_before posting to GitHub for human preview.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What are the main security risks of agentic systems and how do you mitigate them?<span class="chevron">▾</span></div>
+      <div class="qa-a"><strong>Key risks:</strong><br><br>
+      (1) <strong>Prompt injection</strong>: malicious content in tool outputs tries to hijack the agent. Mitigation: treat tool outputs as untrusted, use separate system prompt that explicitly instructs the model to be skeptical of tool output instructions. (2) <strong>Over-privileged tools</strong>: agent has database write access but only needs read. Mitigation: principle of least privilege — scope each agent's tools to what it strictly needs. (3) <strong>Unintended irreversible actions</strong>: agent deletes production data. Mitigation: human-in-the-loop interrupts before all write/delete operations. (4) <strong>Data exfiltration</strong>: prompt injection tricks agent into sending data to attacker's URL. Mitigation: allowlist domains for any web request tool. (5) <strong>Runaway agents</strong>: agent loops indefinitely, burning API budget. Mitigation: max_iterations, max_execution_time, spending limits in LLM API settings. (6) <strong>Sensitive data in traces</strong>: LangSmith traces contain user data. Mitigation: PII stripping before logging, or self-host LangSmith.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>How do you optimize LangChain agent latency and cost in production?<span class="chevron">▾</span></div>
+      <div class="qa-a"><strong>Latency optimizations:</strong> (1) <strong>Model selection</strong>: use GPT-4o-mini or Claude Haiku for simple reasoning steps, reserve GPT-4o for complex decisions. (2) <strong>Parallel tool calls</strong>: configure LLMs to call multiple tools simultaneously when steps are independent. (3) <strong>Streaming</strong>: stream tokens to reduce perceived latency even if total latency is the same. (4) <strong>Semantic caching</strong>: cache frequent identical queries. (5) <strong>Reduce tool call chains</strong>: design tools that return richer data so fewer calls are needed.<br><br>
+      <strong>Cost optimizations:</strong> (1) <strong>Prompt compression</strong>: trim verbose system prompts, use LLMLingua to compress context. (2) <strong>Selective tracing</strong>: only trace 10% of production traffic (sample), 100% of errors. (3) <strong>Context window management</strong>: don't send the entire conversation history — use summary memory for old turns. (4) <strong>Tool result truncation</strong>: don't return 10KB tool results if 500 bytes would answer the question. (5) <strong>Batch processing</strong>: for non-real-time workflows, batch requests instead of streaming. Track cost per task in LangSmith to identify the most expensive operations.</div>
+    </div>
+
+    <div class="qa-group-title">💼 Conceptual & Behavioral</div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>When would you NOT use an agent? What are the pitfalls of over-agentification?<span class="chevron">▾</span></div>
+      <div class="qa-a">Don't use an agent when: (1) The task is a fixed, well-understood pipeline — a chain is cheaper, faster, and more predictable. (2) Reliability is paramount — agents introduce non-determinism that's unacceptable in some domains. (3) Latency is critical — each agent step is at minimum one LLM call; a 5-step agent takes 5× longer than a direct call. (4) You need an audit trail of exact steps — agents can take unexpected paths. <strong>Pitfalls of over-agentification:</strong> Runaway costs from unnecessary tool calls, debugging nightmares when the agent takes unexpected paths, false sense of capability (the agent "works" in dev but fails on edge cases in prod), security attack surface grows with every tool added. Rule: start with the simplest thing that could work. Usually that's a direct LLM call, then a chain, then a RAG chain, and only then an agent if truly needed.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>Explain LangSmith and why it's essential for production agents.<span class="chevron">▾</span></div>
+      <div class="qa-a">LangSmith is Anthropic's (LangChain's) LLMOps platform for tracing, evaluation, and monitoring. It's essential because agents are <strong>black boxes by default</strong> — without tracing, when an agent gives a wrong answer you have no idea which step failed. LangSmith captures: every LLM call's exact input prompt and output, every tool call's input and result, token usage and cost per step, end-to-end latency per step. This enables: debugging (replay any trace, find the exact moment reasoning broke), evaluation (run test suites, score outputs automatically), monitoring (alert on quality degradation), optimization (find which steps are slowest/most expensive). Enabling it is two env vars: <code>LANGCHAIN_TRACING_V2=true</code> and <code>LANGCHAIN_API_KEY</code>. Without LangSmith (or a similar tool), operating a production agent is essentially flying blind. It's the first thing to set up before deploying any agent.</div>
+    </div>
+
+    <div class="qa">
+      <div class="qa-q" onclick="toggle(this)"><span class="qbadge">Q</span>What is the difference between zero-shot, few-shot, and fine-tuned tool use?<span class="chevron">▾</span></div>
+      <div class="qa-a"><strong>Zero-shot tool use</strong>: give the model tools and a task, it figures out which to call based solely on descriptions and its pre-training. Works well with capable models (GPT-4, Claude) for common tool types. <strong>Few-shot tool use</strong>: include example tool call sequences in the system prompt — (user request → thought → tool call → observation → answer). Dramatically improves reliability for complex tool schemas or unusual tool interaction patterns the model hasn't seen before. <strong>Fine-tuned tool use</strong>: fine-tune the model on examples of correct tool call sequences for your specific domain. Use when: few-shot isn't reliable enough, you have proprietary tools with unusual schemas, or you need very consistent formatting. The tradeoff: fine-tuning is expensive and requires maintenance when tools change. In practice: start zero-shot → add few-shot examples for problem cases → consider fine-tuning only if you have >1000 high-quality examples and consistency is still insufficient.</div>
+    </div>
+
+  </div><!-- /qa-section -->
+</section>
+
+</div><!-- /content -->
+</main>
+
+<script>
+// Scroll animation
+const io = new IntersectionObserver((es) => {
+  es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.05 });
+document.querySelectorAll('.section').forEach(s => io.observe(s));
+
+// Active nav
+const navItems = document.querySelectorAll('.nav-item');
+const sections = document.querySelectorAll('.section');
+const sio = new IntersectionObserver((es) => {
+  es.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const a = document.querySelector(`.nav-item[onclick*="${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { threshold: 0.25 });
+sections.forEach(s => sio.observe(s));
+
+function go(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (window.innerWidth <= 920) toggleMenu();
+}
+
+function toggle(el) {
+  const item = el.closest('.qa');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.qa.open').forEach(q => q.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+
+function toggleMenu() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+</script>
+</body>
+</html>

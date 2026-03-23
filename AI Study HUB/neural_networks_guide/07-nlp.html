@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.07 — NLP | NN Guide</title>
+<link rel="stylesheet" href="shared.css">
+<style>:root{--neon:#b24bff}</style>
+</head>
+<body>
+<nav class="topnav"><a href="index.html" class="topnav-logo">NN<span>.GUIDE</span></a>
+<div class="topnav-links"><a href="01-math.html">01 Math</a><a href="02-fundamentals.html">02 Fundamentals</a><a href="03-python.html">03 Python</a><a href="04-workflow.html">04 Workflow</a><a href="05-cnn.html">05 CNN</a><a href="06-rnn.html">06 RNN</a><a href="07-nlp.html" class="active">07 NLP</a><a href="08-transformers.html">08 Transformers</a><a href="09-advanced.html">09 Advanced</a><a href="10-specializations.html">10 Specs</a><a href="11-projects.html">11 Projects</a></div></nav>
+<div class="hero"><div class="hero-grid"></div>
+<div class="chapter-num">Chapter 07 — NLP</div>
+<h1><span style="color:#b24bff">NLP WITH</span><br>DEEP LEARNING</h1>
+<p class="hero-sub">Word embeddings, seq2seq, attention, text classification, NER, and language modelling with neural networks.</p>
+<div class="hero-meta"><div class="hero-stat"><div class="hero-stat-val" style="color:#b24bff">5</div><div class="hero-stat-label">NLP Tasks</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#b24bff">10</div><div class="hero-stat-label">Code Examples</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#b24bff">8</div><div class="hero-stat-label">Interview Q&A</div></div></div></div>
+<div class="page-layout">
+<aside class="sidebar"><div class="sidebar-header">Contents</div><a class="sb-link active" onclick="show('embeddings')"><span class="sb-icon">📐</span>Word Embeddings</a>
+<a class="sb-link" onclick="show('textclass')"><span class="sb-icon">📂</span>Text Classification</a>
+<a class="sb-link" onclick="show('interview')"><span class="sb-icon">🎯</span>Interview Q&A</a>
+
+<div class="sb-chapters"><div class="sb-ch-label">Navigate</div><a class="sb-ch-link" href="06-rnn.html">← 06 · RNN</a><a class="sb-ch-link" href="08-transformers.html">→ 08 · Transformers</a></div></aside>
+<div class="content"><div class="section active" id="s-embeddings"><div class="sec-head"><span class="sec-tag tag-i">Intermediate</span><h2 class="sec-head h2">WORD EMBEDDINGS</h2><div class="sec-meta">Word2Vec · GloVe · FastText · Contextual</div></div><div class="card"><div class="card-title"><span class="icon" style="background:rgba(0,255,157,.1)">🔹</span>From Tokens to Vectors</div><p>Neural NLP needs numerical representations. Word embeddings map tokens to dense vectors where semantic similarity = geometric proximity.</p><div class="formula">king - man + woman ≈ queen  (Word2Vec arithmetic)
+cos_similarity(embed('cat'), embed('dog')) ≈ 0.92</div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · Word2Vec + HuggingFace Embeddings</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">from</span> gensim.models <span class="kw">import</span> Word2Vec
+<span class="kw">from</span> sentence_transformers <span class="kw">import</span> SentenceTransformer
+
+<span class="cm"># Classic Word2Vec</span>
+w2v = <span class="cls">Word2Vec</span>(sentences, vector_size=<span class="num">100</span>, window=<span class="num">5</span>, sg=<span class="num">1</span>)
+
+<span class="cm"># Modern contextual sentence embeddings</span>
+model = <span class="cls">SentenceTransformer</span>(<span class="str">'all-MiniLM-L6-v2'</span>)
+embs = model.<span class="fn">encode</span>([<span class="str">"Hello world"</span>, <span class="str">"Deep learning rocks"</span>])
+<span class="fn">print</span>(embs.shape)  <span class="cm"># (2, 384)</span></pre></div></div><div class="section" id="s-textclass"><div class="sec-head"><span class="sec-tag tag-i">Intermediate</span><h2 class="sec-head h2">TEXT CLASSIFICATION</h2><div class="sec-meta">Sentiment · Topic · Intent with Deep Learning</div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · BERT Fine-tune for Classification</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">from</span> transformers <span class="kw">import</span> AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments
+<span class="kw">from</span> datasets <span class="kw">import</span> load_dataset
+
+ds = <span class="fn">load_dataset</span>(<span class="str">'imdb'</span>)
+tok = AutoTokenizer.<span class="fn">from_pretrained</span>(<span class="str">'distilbert-base-uncased'</span>)
+
+<span class="kw">def</span> <span class="fn">tokenize</span>(b): <span class="kw">return</span> <span class="fn">tok</span>(b[<span class="str">'text'</span>], truncation=<span class="kw">True</span>, padding=<span class="kw">True</span>)
+ds = ds.<span class="fn">map</span>(tokenize, batched=<span class="kw">True</span>)
+
+model = AutoModelForSequenceClassification.<span class="fn">from_pretrained</span>(
+    <span class="str">'distilbert-base-uncased'</span>, num_labels=<span class="num">2</span>)
+
+args = <span class="cls">TrainingArguments</span>(output_dir=<span class="str">'./out'</span>, num_train_epochs=<span class="num">3</span>,
+    per_device_train_batch_size=<span class="num">32</span>, learning_rate=<span class="num">2e-5</span>, fp16=<span class="kw">True</span>)
+<span class="cls">Trainer</span>(model=model, args=args,
+    train_dataset=ds[<span class="str">'train'</span>], eval_dataset=ds[<span class="str">'test'</span>]).<span class="fn">train</span>()</pre></div></div><div class="section" id="s-interview"><div class="sec-head"><span class="sec-tag tag-q">Interview</span><h2 class="sec-head h2">INTERVIEW Q&A</h2><div class="sec-meta">NLP with Deep Learning · 8 Questions</div></div><div class="qa-level">Intermediate</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q01</span><span class="qa-text">How does Word2Vec's skip-gram work?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Skip-gram trains a shallow neural network to predict surrounding context words given a centre word. For pair (centre, context): maximise P(context|centre) = softmax(Wout · embed_centre). Negative sampling approximates this: for each positive pair, sample k negatives and push them apart. The word vectors are the input embedding matrix Win. Trained on massive corpora, these vectors encode syntactic and semantic relationships. Skip-gram works better for rare words; CBOW is faster for frequent words.</div></div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q02</span><span class="qa-text">What is the difference between extractive and abstractive summarisation?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a"><strong>Extractive:</strong> Select and concatenate sentences from source. Approaches: TF-IDF ranking, TextRank (graph-based), BERT-based sentence scoring. Always grammatical, can't rephrase. <strong>Abstractive:</strong> Generate new text — may compress, rephrase, merge sentences. Requires seq2seq models (T5, BART, PEGASUS). Better conciseness and coherence but can hallucinate. PEGASUS (pre-trained with gap-sentence generation) achieves SOTA on CNN/DailyMail. In production: extractive for factual domains (legal, medical); abstractive for user-facing summaries.</div></div><div class="qa-level">Advanced</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q03</span><span class="qa-text">Explain attention mechanism in seq2seq models.</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Bahdanau attention (2015) solved the encoder bottleneck. Instead of compressing source into one vector, the decoder at each step attends to all encoder states: score(sₜ,hᵢ) = vᵀ·tanh(Ws·sₜ+Wh·hᵢ), α = softmax(scores), context cₜ = Σ αᵢhᵢ. This lets the decoder focus on relevant source positions. Extended in Transformers to self-attention (each position attends to all others in same sequence) and multi-head attention (parallel attention patterns). The attention weights also provide interpretability — you can visualise which source words the decoder attends to.</div></div></div></div></div>
+<script>
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.sb-link').forEach(s=>s.classList.remove('active'));document.getElementById('s-'+id).classList.add('active');event.currentTarget.classList.add('active');}
+function toggleQA(el){const o=el.classList.contains('open');document.querySelectorAll('.qa-item.open').forEach(e=>e.classList.remove('open'));if(!o)el.classList.add('open');}
+</script></body></html>

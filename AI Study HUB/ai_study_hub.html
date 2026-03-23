@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Study Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07080f;
+    --surface: #0e1020;
+    --surface2: #141628;
+    --border: #1e2240;
+    --accent: #5b8aff;
+    --accent2: #a78bfa;
+    --accent3: #34d399;
+    --accent4: #fb923c;
+    --accent5: #f472b6;
+    --text: #e8eaf6;
+    --text-muted: #6b7280;
+    --text-dim: #9ca3af;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(91,138,255,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(167,139,250,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(52,211,153,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(91,138,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(91,138,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(7,8,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .nav-logo .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 7rem 2rem 5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(91,138,255,0.1);
+    border: 1px solid rgba(91,138,255,0.25);
+    border-radius: 100px;
+    padding: 0.35rem 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+  .hero h1 .italic {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .hero-sub {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    max-width: 560px;
+    margin: 0 auto 3rem;
+    line-height: 1.8;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .section-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(91,138,255,0.1);
+    border: 1px solid rgba(91,138,255,0.2);
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  .topics-intro {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .topic-intro-card {
+    background: var(--surface);
+    padding: 1.8rem;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-intro-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-accent, var(--accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .topic-intro-card:hover::before { transform: scaleX(1); }
+  .topic-intro-card:hover { background: var(--surface2); }
+  .topic-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+  .topic-intro-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .topic-intro-card p { font-size: 0.75rem; color: var(--text-dim); line-height: 1.7; }
+  .guides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1rem;
+  }
+  .guide-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease both;
+  }
+  .guide-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(91,138,255,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .guide-card:hover::after { opacity: 1; }
+  .guide-card:hover {
+    border-color: rgba(91,138,255,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(91,138,255,0.1);
+  }
+  .guide-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+  .guide-category {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .cat-foundations { background: rgba(52,211,153,0.12); color: #34d399; }
+  .cat-ml { background: rgba(91,138,255,0.12); color: #5b8aff; }
+  .cat-dl { background: rgba(167,139,250,0.12); color: #a78bfa; }
+  .cat-nlp { background: rgba(251,146,60,0.12); color: #fb923c; }
+  .cat-advanced { background: rgba(244,114,182,0.12); color: #f472b6; }
+  .cat-ops { background: rgba(251,191,36,0.12); color: #fbbf24; }
+  .guide-num { font-size: 0.65rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+  .guide-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .guide-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .guide-desc { font-size: 0.75rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 1rem; }
+  .guide-topics { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.2rem; }
+  .guide-topic-tag {
+    font-size: 0.6rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+  }
+  .guide-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    background: rgba(91,138,255,0.08);
+    border: 1px solid rgba(91,138,255,0.15);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    color: var(--accent);
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    transition: all 0.2s;
+  }
+  .guide-link:hover { background: rgba(91,138,255,0.15); border-color: rgba(91,138,255,0.35); }
+  .guide-link .arrow { transition: transform 0.2s; }
+  .guide-link:hover .arrow { transform: translateX(4px); }
+  .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.4rem 1rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: rgba(91,138,255,0.1);
+    border-color: rgba(91,138,255,0.3);
+    color: var(--accent);
+  }
+  .roadmap-phases {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    position: relative;
+  }
+  .roadmap-phases::before {
+    content: '';
+    position: absolute;
+    top: 2.2rem;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    z-index: 0;
+  }
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .phase-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
+  .phase-num {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .phase-1 .phase-num { background: rgba(91,138,255,0.2); color: var(--accent); border: 2px solid var(--accent); }
+  .phase-2 .phase-num { background: rgba(167,139,250,0.2); color: var(--accent2); border: 2px solid var(--accent2); }
+  .phase-3 .phase-num { background: rgba(52,211,153,0.2); color: var(--accent3); border: 2px solid var(--accent3); }
+  .phase-4 .phase-num { background: rgba(251,146,60,0.2); color: var(--accent4); border: 2px solid var(--accent4); }
+  .phase-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.3rem; }
+  .phase-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; }
+  .phase-items { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  .phase-items li { font-size: 0.72rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem; }
+  .phase-items li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
+  .phase-duration { margin-top: 1rem; font-size: 0.65rem; color: var(--text-muted); background: rgba(255,255,255,0.04); border-radius: 4px; padding: 0.3rem 0.6rem; display: inline-block; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0 2rem; position: relative; z-index: 1; }
+  footer { position: relative; z-index: 1; text-align: center; padding: 3rem 2rem; color: var(--text-muted); font-size: 0.72rem; border-top: 1px solid var(--border); }
+  footer span { color: var(--accent); }
+  .level-bar { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+  .level-label { font-size: 0.6rem; color: var(--text-muted); min-width: 60px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .level-track { flex: 1; height: 3px; background: rgba(255,255,255,0.06); border-radius: 10px; overflow: hidden; }
+  .level-fill { height: 100%; border-radius: 10px; background: var(--fill, var(--accent)); transition: width 1s ease; }
+  @media (max-width: 900px) {
+    .topics-intro { grid-template-columns: repeat(2, 1fr); }
+    .roadmap-phases { grid-template-columns: repeat(2, 1fr); }
+    .roadmap-phases::before { display: none; }
+  }
+  @media (max-width: 600px) {
+    .topics-intro { grid-template-columns: 1fr; }
+    .roadmap-phases { grid-template-columns: 1fr; }
+    .guides-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2.5rem; }
+    .hero-stats { gap: 1.5rem; }
+    nav .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="dot"></div>
+    AI Study Hub
+  </div>
+  <ul class="nav-links">
+    <li><a href="#topics">Topics</a></li>
+    <li><a href="#guides">Guides</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">⚡ Complete AI & ML Learning Path</div>
+  <h1>Master <span class="italic">Artificial Intelligence</span><br>from Zero to Hero</h1>
+  <p class="hero-sub">A structured collection of in-depth guides covering every essential topic in AI, Machine Learning, Deep Learning, NLP, and MLOps.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">16</div><div class="stat-label">Guides</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Phases</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Potential</div></div>
+  </div>
+</div>
+
+<div class="section" id="topics">
+  <div class="section-header">
+    <span class="section-tag">Overview</span>
+    <h2 class="section-title">AI & ML Topic Areas</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="topics-intro">
+    <div class="topic-intro-card" style="--card-accent:#5b8aff">
+      <div class="topic-icon">🧮</div>
+      <h3>Foundations</h3>
+      <p>Mathematics, statistics, and programming fundamentals that underpin all of AI/ML — linear algebra, probability, Python data tools.</p>
+      <div class="level-bar" style="margin-top:1rem"><span class="level-label">Priority</span><div class="level-track"><div class="level-fill" style="width:100%;--fill:#5b8aff"></div></div></div>
+    </div>
+    <div class="topic-intro-card" style="--card-accent:#34d399">
+      <div class="topic-icon">🤖</div>
+      <h3>Machine Learning</h3>
+      <p>Supervised & unsupervised learning, model evaluation, feature engineering, and classical algorithms using scikit-learn.</p>
+      <div class="level-bar" style="margin-top:1rem"><span class="level-label">Priority</span><div class="level-track"><div class="level-fill" style="width:90%;--fill:#34d399"></div></div></div>
+    </div>
+    <div class="topic-intro-card" style="--card-accent:#a78bfa">
+      <div class="topic-icon">🧠</div>
+      <h3>Deep Learning</h3>
+      <p>Neural networks, CNNs, RNNs, and modern architectures. Learn how models learn representations from raw data.</p>
+      <div class="level-bar" style="margin-top:1rem"><span class="level-label">Priority</span><div class="level-track"><div class="level-fill" style="width:85%;--fill:#a78bfa"></div></div></div>
+    </div>
+    <div class="topic-intro-card" style="--card-accent:#fb923c">
+      <div class="topic-icon">💬</div>
+      <h3>NLP & Transformers</h3>
+      <p>Natural Language Processing, text processing, embeddings, attention mechanisms, and modern Transformer-based models.</p>
+      <div class="level-bar" style="margin-top:1rem"><span class="level-label">Priority</span><div class="level-track"><div class="level-fill" style="width:80%;--fill:#fb923c"></div></div></div>
+    </div>
+    <div class="topic-intro-card" style="--card-accent:#f472b6">
+      <div class="topic-icon">✨</div>
+      <h3>Generative AI & LLMs</h3>
+      <p>Large Language Models, prompt engineering, RAG, fine-tuning, and building LLM-powered applications with LangChain.</p>
+      <div class="level-bar" style="margin-top:1rem"><span class="level-label">Priority</span><div class="level-track"><div class="level-fill" style="width:75%;--fill:#f472b6"></div></div></div>
+    </div>
+    <div class="topic-intro-card" style="--card-accent:#fbbf24">
+      <div class="topic-icon">🚀</div>
+      <h3>MLOps & Ethics</h3>
+      <p>Model deployment, monitoring, CI/CD for ML pipelines, responsible AI development, bias detection, and AI governance.</p>
+      <div class="level-bar" style="margin-top:1rem"><span class="level-label">Priority</span><div class="level-track"><div class="level-fill" style="width:70%;--fill:#fbbf24"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="guides">
+  <div class="section-header">
+    <span class="section-tag">Guides</span>
+    <h2 class="section-title">All Study Guides</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterGuides('all',this)">All</button>
+    <button class="filter-btn" onclick="filterGuides('foundations',this)">Foundations</button>
+    <button class="filter-btn" onclick="filterGuides('ml',this)">Machine Learning</button>
+    <button class="filter-btn" onclick="filterGuides('dl',this)">Deep Learning</button>
+    <button class="filter-btn" onclick="filterGuides('nlp',this)">NLP</button>
+    <button class="filter-btn" onclick="filterGuides('advanced',this)">GenAI</button>
+    <button class="filter-btn" onclick="filterGuides('ops',this)">MLOps</button>
+  </div>
+  <div class="guides-grid" id="guidesGrid">
+
+    <div class="guide-card" data-cat="dl" style="animation-delay:0.05s">
+      <div class="guide-card-top"><span class="guide-category cat-dl">Deep Learning</span><span class="guide-num">01</span></div>
+      <div class="guide-icon">🧠</div>
+      <div class="guide-title">Deep Learning Guide</div>
+      <div class="guide-desc">Master neural networks from perceptrons to modern architectures. Covers backpropagation, CNNs, RNNs, LSTMs, and training best practices.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Neural Networks</span><span class="guide-topic-tag">Backpropagation</span><span class="guide-topic-tag">CNNs</span><span class="guide-topic-tag">RNNs</span><span class="guide-topic-tag">Optimization</span></div>
+      <a href="deep_learning_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="foundations" style="animation-delay:0.1s">
+      <div class="guide-card-top"><span class="guide-category cat-foundations">Foundations</span><span class="guide-num">02</span></div>
+      <div class="guide-icon">📊</div>
+      <div class="guide-title">Matplotlib Complete Guide</div>
+      <div class="guide-desc">Complete data visualization with Python's most powerful plotting library. From basic plots to publication-quality figures and interactive charts.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Line & Bar Charts</span><span class="guide-topic-tag">Subplots</span><span class="guide-topic-tag">Heatmaps</span><span class="guide-topic-tag">3D Plots</span><span class="guide-topic-tag">Styling</span></div>
+      <a href="matplotlib_complete_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="ml" style="animation-delay:0.15s">
+      <div class="guide-card-top"><span class="guide-category cat-ml">Machine Learning</span><span class="guide-num">03</span></div>
+      <div class="guide-icon">🤖</div>
+      <div class="guide-title">ML Complete Guide</div>
+      <div class="guide-desc">Comprehensive guide to machine learning algorithms, model selection, evaluation metrics, and end-to-end project workflows.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Supervised Learning</span><span class="guide-topic-tag">Clustering</span><span class="guide-topic-tag">Model Evaluation</span><span class="guide-topic-tag">Cross-Validation</span></div>
+      <a href="ml_complete_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="foundations" style="animation-delay:0.2s">
+      <div class="guide-card-top"><span class="guide-category cat-foundations">Foundations</span><span class="guide-num">04</span></div>
+      <div class="guide-icon">🔢</div>
+      <div class="guide-title">NumPy Complete Guide</div>
+      <div class="guide-desc">The essential numerical computing library for Python. Master arrays, broadcasting, linear algebra operations, and vectorized computation.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Arrays & Indexing</span><span class="guide-topic-tag">Broadcasting</span><span class="guide-topic-tag">Linear Algebra</span><span class="guide-topic-tag">Vectorization</span></div>
+      <a href="numpy_complete_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="foundations" style="animation-delay:0.25s">
+      <div class="guide-card-top"><span class="guide-category cat-foundations">Foundations</span><span class="guide-num">05</span></div>
+      <div class="guide-icon">🐼</div>
+      <div class="guide-title">Pandas Complete Guide</div>
+      <div class="guide-desc">Data manipulation and analysis powerhouse. Learn DataFrames, data cleaning, merging, groupby operations, and time series analysis.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">DataFrames</span><span class="guide-topic-tag">Data Cleaning</span><span class="guide-topic-tag">GroupBy</span><span class="guide-topic-tag">Merging</span><span class="guide-topic-tag">Time Series</span></div>
+      <a href="pandas_complete_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="ml" style="animation-delay:0.3s">
+      <div class="guide-card-top"><span class="guide-category cat-ml">Machine Learning</span><span class="guide-num">06</span></div>
+      <div class="guide-icon">⚙️</div>
+      <div class="guide-title">Scikit-Learn Guide</div>
+      <div class="guide-desc">Python's most popular ML framework. Covers pipelines, preprocessing, all major algorithms, hyperparameter tuning, and model persistence.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Pipelines</span><span class="guide-topic-tag">Preprocessing</span><span class="guide-topic-tag">GridSearchCV</span><span class="guide-topic-tag">Ensemble Methods</span></div>
+      <a href="sklearn_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="foundations" style="animation-delay:0.35s">
+      <div class="guide-card-top"><span class="guide-category cat-foundations">Foundations</span><span class="guide-num">07</span></div>
+      <div class="guide-icon">🗄️</div>
+      <div class="guide-title">SQL Complete Guide</div>
+      <div class="guide-desc">Database querying skills every data scientist needs. From basic SELECT statements to complex joins, window functions, and query optimization.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">SELECT & JOIN</span><span class="guide-topic-tag">Aggregations</span><span class="guide-topic-tag">Window Functions</span><span class="guide-topic-tag">Subqueries</span></div>
+      <a href="sql_complete_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="foundations" style="animation-delay:0.4s">
+      <div class="guide-card-top"><span class="guide-category cat-foundations">Foundations</span><span class="guide-num">08</span></div>
+      <div class="guide-icon">📐</div>
+      <div class="guide-title">Statistics Complete Guide</div>
+      <div class="guide-desc">Statistical thinking for ML practitioners. Probability distributions, hypothesis testing, Bayesian inference, and A/B testing methodologies.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Probability</span><span class="guide-topic-tag">Distributions</span><span class="guide-topic-tag">Hypothesis Testing</span><span class="guide-topic-tag">Bayesian Stats</span></div>
+      <a href="statistics_complete_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="ml" style="animation-delay:0.45s">
+      <div class="guide-card-top"><span class="guide-category cat-ml">Machine Learning</span><span class="guide-num">09</span></div>
+      <div class="guide-icon">🔧</div>
+      <div class="guide-title">Feature Engineering Guide</div>
+      <div class="guide-desc">The art and science of transforming raw data into powerful features. Encoding, scaling, interaction terms, dimensionality reduction, and selection strategies.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Encoding</span><span class="guide-topic-tag">Scaling</span><span class="guide-topic-tag">PCA</span><span class="guide-topic-tag">Feature Selection</span></div>
+      <a href="feature_engineering_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="dl" style="animation-delay:0.5s">
+      <div class="guide-card-top"><span class="guide-category cat-dl">Deep Learning</span><span class="guide-num">10</span></div>
+      <div class="guide-icon">👁️</div>
+      <div class="guide-title">Computer Vision Guide</div>
+      <div class="guide-desc">Teaching machines to see. Image classification, object detection, segmentation, OpenCV, and modern vision models from ResNet to YOLO.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Image Classification</span><span class="guide-topic-tag">Object Detection</span><span class="guide-topic-tag">Segmentation</span><span class="guide-topic-tag">OpenCV</span><span class="guide-topic-tag">Transfer Learning</span></div>
+      <a href="computer_vision_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="nlp" style="animation-delay:0.55s">
+      <div class="guide-card-top"><span class="guide-category cat-nlp">NLP</span><span class="guide-num">11</span></div>
+      <div class="guide-icon">💬</div>
+      <div class="guide-title">NLP Guide</div>
+      <div class="guide-desc">Processing and understanding human language. Text preprocessing, tokenization, embeddings (Word2Vec, GloVe), sentiment analysis, and named entity recognition.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Tokenization</span><span class="guide-topic-tag">Embeddings</span><span class="guide-topic-tag">Sentiment Analysis</span><span class="guide-topic-tag">NER</span><span class="guide-topic-tag">Text Classification</span></div>
+      <a href="nlp_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="nlp" style="animation-delay:0.6s">
+      <div class="guide-card-top"><span class="guide-category cat-nlp">NLP</span><span class="guide-num">12</span></div>
+      <div class="guide-icon">⚡</div>
+      <div class="guide-title">Transformers Guide</div>
+      <div class="guide-desc">The architecture that changed AI. Attention mechanisms, BERT, GPT, T5, fine-tuning with Hugging Face, and building transformer-based applications.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Attention Mechanism</span><span class="guide-topic-tag">BERT & GPT</span><span class="guide-topic-tag">Fine-tuning</span><span class="guide-topic-tag">Hugging Face</span></div>
+      <a href="transformers_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="advanced" style="animation-delay:0.65s">
+      <div class="guide-card-top"><span class="guide-category cat-advanced">Generative AI</span><span class="guide-num">13</span></div>
+      <div class="guide-icon">✨</div>
+      <div class="guide-title">GenAI & LLM Guide</div>
+      <div class="guide-desc">Generative AI landscape — LLMs, GPT-4, Claude, Gemini, prompt engineering, RAG pipelines, fine-tuning strategies, and production deployment patterns.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">LLMs</span><span class="guide-topic-tag">Prompt Engineering</span><span class="guide-topic-tag">RAG</span><span class="guide-topic-tag">Fine-tuning</span><span class="guide-topic-tag">RLHF</span></div>
+      <a href="genai_llm_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="advanced" style="animation-delay:0.7s">
+      <div class="guide-card-top"><span class="guide-category cat-advanced">Generative AI</span><span class="guide-num">14</span></div>
+      <div class="guide-icon">🔗</div>
+      <div class="guide-title">LangChain & Agents Guide</div>
+      <div class="guide-desc">Build intelligent LLM-powered applications and autonomous agents. Chains, memory, tools, retrieval, and multi-agent orchestration with LangChain.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Chains</span><span class="guide-topic-tag">Memory</span><span class="guide-topic-tag">Agents & Tools</span><span class="guide-topic-tag">Vector Stores</span></div>
+      <a href="langchain_agents_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="ops" style="animation-delay:0.75s">
+      <div class="guide-card-top"><span class="guide-category cat-ops">MLOps</span><span class="guide-num">15</span></div>
+      <div class="guide-icon">🚀</div>
+      <div class="guide-title">MLOps Guide</div>
+      <div class="guide-desc">Operationalizing ML models at scale. CI/CD pipelines, experiment tracking (MLflow), model serving, monitoring, and orchestration with Airflow/Kubeflow.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">MLflow</span><span class="guide-topic-tag">Model Serving</span><span class="guide-topic-tag">Monitoring</span><span class="guide-topic-tag">Docker & K8s</span><span class="guide-topic-tag">CI/CD</span></div>
+      <a href="mlops_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+    <div class="guide-card" data-cat="ops" style="animation-delay:0.8s">
+      <div class="guide-card-top"><span class="guide-category cat-ops">MLOps</span><span class="guide-num">16</span></div>
+      <div class="guide-icon">⚖️</div>
+      <div class="guide-title">AI Ethics Guide</div>
+      <div class="guide-desc">Responsible AI development — bias detection and mitigation, fairness metrics, explainability (SHAP, LIME), privacy-preserving ML, and governance frameworks.</div>
+      <div class="guide-topics"><span class="guide-topic-tag">Bias & Fairness</span><span class="guide-topic-tag">Explainability</span><span class="guide-topic-tag">SHAP / LIME</span><span class="guide-topic-tag">Privacy</span><span class="guide-topic-tag">Governance</span></div>
+      <a href="ai_ethics_guide.html" class="guide-link">Open Guide <span class="arrow">→</span></a>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="roadmap">
+  <div class="section-header">
+    <span class="section-tag">Roadmap</span>
+    <h2 class="section-title">Learning Path</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="roadmap-phases">
+    <div class="phase-card phase-1">
+      <div class="phase-num">1</div>
+      <div class="phase-label">Phase One</div>
+      <div class="phase-title">Foundations</div>
+      <ul class="phase-items">
+        <li>Python Programming Basics</li>
+        <li>NumPy for Numerical Computing</li>
+        <li>Pandas for Data Manipulation</li>
+        <li>Matplotlib for Visualization</li>
+        <li>Statistics & Probability</li>
+        <li>SQL & Databases</li>
+      </ul>
+      <div class="phase-duration">⏱ 6–8 weeks</div>
+    </div>
+    <div class="phase-card phase-2">
+      <div class="phase-num">2</div>
+      <div class="phase-label">Phase Two</div>
+      <div class="phase-title">Core ML</div>
+      <ul class="phase-items">
+        <li>ML Algorithms & Theory</li>
+        <li>Scikit-Learn Framework</li>
+        <li>Feature Engineering</li>
+        <li>Model Evaluation & Metrics</li>
+        <li>Ensemble Methods</li>
+        <li>Hyperparameter Tuning</li>
+      </ul>
+      <div class="phase-duration">⏱ 8–10 weeks</div>
+    </div>
+    <div class="phase-card phase-3">
+      <div class="phase-num">3</div>
+      <div class="phase-label">Phase Three</div>
+      <div class="phase-title">Deep Learning & NLP</div>
+      <ul class="phase-items">
+        <li>Neural Network Fundamentals</li>
+        <li>Computer Vision (CNNs)</li>
+        <li>Natural Language Processing</li>
+        <li>Transformer Architecture</li>
+        <li>Hugging Face Ecosystem</li>
+        <li>Transfer Learning</li>
+      </ul>
+      <div class="phase-duration">⏱ 10–12 weeks</div>
+    </div>
+    <div class="phase-card phase-4">
+      <div class="phase-num">4</div>
+      <div class="phase-label">Phase Four</div>
+      <div class="phase-title">GenAI & Production</div>
+      <ul class="phase-items">
+        <li>LLMs & Prompt Engineering</li>
+        <li>RAG & Vector Databases</li>
+        <li>LangChain & Agents</li>
+        <li>MLOps & Deployment</li>
+        <li>Model Monitoring</li>
+        <li>AI Ethics & Governance</li>
+      </ul>
+      <div class="phase-duration">⏱ 8–10 weeks</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Built for learners. <span>AI Study Hub</span> — Your complete roadmap to mastering Artificial Intelligence.
+</footer>
+
+<script>
+  function filterGuides(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.guide-card').forEach(card => {
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+    });
+  }
+
+  document.querySelectorAll('.guide-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100).toFixed(1) + '%');
+      card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100).toFixed(1) + '%');
+    });
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.level-fill').forEach(bar => {
+          const w = bar.style.width;
+          bar.style.width = '0';
+          setTimeout(() => { bar.style.width = w; }, 100);
+        });
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.topic-intro-card').forEach(c => observer.observe(c));
+</script>
+</body>
+</html>

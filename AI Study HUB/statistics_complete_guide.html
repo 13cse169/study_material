@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Statistics: Beginner to Advanced</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f2d55;
+    --blue: #1a5fa8;
+    --sky: #3b8fe8;
+    --teal: #0e9fa3;
+    --green: #2d8a4e;
+    --amber: #c47a0c;
+    --red: #c0392b;
+    --bg: #f7f9fc;
+    --surface: #ffffff;
+    --border: #dce5f0;
+    --text: #1a2535;
+    --muted: #64748b;
+    --beginner: #e8f5ee;
+    --beginner-accent: #2d8a4e;
+    --intermediate: #fff8e6;
+    --intermediate-accent: #c47a0c;
+    --advanced: #fdf0f0;
+    --advanced-accent: #c0392b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ─── SIDEBAR NAV ─── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--navy);
+    overflow-y: auto;
+    padding: 28px 0;
+    z-index: 100;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.2) transparent;
+  }
+  .sidebar-logo {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    margin-bottom: 16px;
+  }
+  .sidebar-logo .logo-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: #fff;
+    letter-spacing: .5px;
+  }
+  .sidebar-logo .logo-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,.45);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .nav-section {
+    padding: 0 12px;
+    margin-bottom: 8px;
+  }
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,.35);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 12px 4px;
+  }
+  .nav-link {
+    display: block;
+    padding: 7px 12px;
+    color: rgba(255,255,255,.65);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 400;
+    border-radius: 6px;
+    transition: all .2s;
+  }
+  .nav-link:hover, .nav-link.active {
+    background: rgba(255,255,255,.1);
+    color: #fff;
+  }
+  .nav-link .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    background: currentColor;
+    opacity: .5;
+  }
+  .nav-link.beginner { color: #6ee7a8; }
+  .nav-link.intermediate { color: #fcd369; }
+  .nav-link.advanced { color: #f68b8b; }
+  .nav-link.reference { color: #93c5fd; }
+
+  /* ─── MAIN CONTENT ─── */
+  .main {
+    margin-left: 260px;
+    min-height: 100vh;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #1a4a82 50%, #0e3a6e 100%);
+    padding: 80px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(58,143,232,.25) 0%, transparent 70%);
+  }
+  .hero::after {
+    content: 'Σ';
+    position: absolute;
+    bottom: -40px; right: 60px;
+    font-size: 300px;
+    font-family: 'DM Serif Display', serif;
+    color: rgba(255,255,255,.04);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 58px;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero-sub {
+    font-size: 18px;
+    color: rgba(255,255,255,.65);
+    max-width: 520px;
+    margin-bottom: 40px;
+  }
+  .hero-badges {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .badge-green { background: rgba(46,138,78,.25); color: #6ee7a8; border: 1px solid rgba(110,231,168,.3); }
+  .badge-amber { background: rgba(196,122,12,.25); color: #fcd369; border: 1px solid rgba(252,211,105,.3); }
+  .badge-red   { background: rgba(192,57,43,.25);  color: #f68b8b; border: 1px solid rgba(246,139,139,.3); }
+
+  /* ─── CONTENT AREA ─── */
+  .content {
+    padding: 48px 60px;
+    max-width: 900px;
+  }
+
+  /* ─── PART BANNERS ─── */
+  .part-banner {
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin: 48px 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .part-banner.beginner  { background: linear-gradient(135deg, #1a5f38, #2d8a4e); }
+  .part-banner.intermediate { background: linear-gradient(135deg, #7a4d0c, #c47a0c); }
+  .part-banner.advanced  { background: linear-gradient(135deg, #8b1a1a, #c0392b); }
+  .part-banner-icon {
+    font-size: 36px;
+    opacity: .9;
+  }
+  .part-banner-text .part-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.6);
+    margin-bottom: 4px;
+  }
+  .part-banner-text h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #fff;
+    font-weight: 400;
+  }
+
+  /* ─── SECTION HEADINGS ─── */
+  h2.section-h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--navy);
+    margin: 40px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+  }
+  h3.section-h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--blue);
+    margin: 28px 0 8px;
+  }
+  h4.section-h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--teal);
+    margin: 20px 0 6px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+
+  p { margin-bottom: 12px; color: var(--text); }
+
+  /* ─── FORMULA BOX ─── */
+  .formula {
+    background: #eef5ff;
+    border-left: 4px solid var(--sky);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 20px;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--navy);
+    line-height: 1.9;
+  }
+  .formula-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  /* ─── BULLET LISTS ─── */
+  ul.content-list {
+    list-style: none;
+    margin: 10px 0 16px 0;
+    padding: 0;
+  }
+  ul.content-list li {
+    padding: 5px 0 5px 22px;
+    position: relative;
+    font-size: 15px;
+  }
+  ul.content-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--sky);
+    font-size: 12px;
+    top: 7px;
+  }
+
+  /* ─── INFO CARD ─── */
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+
+  /* ─── IMPORTANT NOTICE ─── */
+  .important {
+    background: #fff8e6;
+    border: 1px solid #f0c040;
+    border-left: 4px solid #c47a0c;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 18px;
+    margin: 14px 0;
+    font-size: 14.5px;
+  }
+  .important strong { color: var(--amber); }
+
+  /* ─── INTERVIEW QUESTIONS ─── */
+  .interview-section {
+    background: #f8fbff;
+    border: 1px solid #d0e4f7;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 32px 0;
+  }
+  .interview-section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--navy);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .interview-section-title::before {
+    content: '?';
+    background: var(--navy);
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .qa-item {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .qa-question {
+    background: #fff3cd;
+    border-left: 4px solid var(--amber);
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 14.5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    user-select: none;
+    transition: background .2s;
+  }
+  .qa-question:hover { background: #ffe9a0; }
+  .qa-question .q-label {
+    background: var(--amber);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .qa-question .toggle { font-size: 18px; flex-shrink: 0; color: var(--amber); }
+  .qa-answer {
+    background: #f0faf5;
+    border-left: 4px solid var(--green);
+    padding: 14px 16px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    display: none;
+  }
+  .qa-answer .a-label {
+    display: inline-block;
+    background: var(--green);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .qa-item.open .qa-answer { display: block; }
+  .qa-item.open .toggle { transform: rotate(45deg); }
+  .toggle { transition: transform .25s; display: inline-block; }
+
+  /* ─── ERROR TABLE ─── */
+  .error-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  }
+  .error-table th {
+    background: var(--navy);
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .error-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); }
+  .error-table tr:last-child td { border-bottom: none; }
+  .cell-correct { background: #e8f5ee; }
+  .cell-error   { background: #fdf0f0; }
+
+  /* ─── FORMULA REFERENCE TABLE ─── */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  }
+  .ref-table th {
+    background: var(--navy);
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .ref-table tr:nth-child(even) td { background: #f5f8fc; }
+  .ref-table tr:nth-child(odd) td  { background: white; }
+  .ref-table td { padding: 10px 16px; border-bottom: 1px solid #e8eef6; }
+  .ref-table td:nth-child(2) { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--navy); }
+  .level-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .level-b { background: var(--beginner); color: var(--beginner-accent); }
+  .level-i { background: var(--intermediate); color: var(--intermediate-accent); }
+  .level-a { background: var(--advanced); color: var(--advanced-accent); }
+
+  /* ─── QUICK REFERENCE ─── */
+  .quick-ref-banner {
+    background: linear-gradient(135deg, #0f2d55, #1a4a82);
+    border-radius: 12px;
+    padding: 28px 36px;
+    margin: 48px 0 28px;
+  }
+  .quick-ref-banner h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: white;
+    margin-bottom: 6px;
+  }
+  .quick-ref-banner p { color: rgba(255,255,255,.6); font-size: 14px; margin: 0; }
+
+  /* ─── QUOTE ─── */
+  .quote-block {
+    text-align: center;
+    padding: 48px 40px;
+    margin-top: 40px;
+  }
+  .quote-block blockquote {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--muted);
+  }
+  .quote-block cite {
+    display: block;
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--sky);
+    font-style: normal;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero { padding: 48px 28px; }
+    .hero h1 { font-size: 38px; }
+    .content { padding: 28px 24px; }
+    .formula-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-title">Statistics</div>
+    <div class="logo-sub">Beginner → Advanced</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Beginner</div>
+    <a href="#intro" class="nav-link beginner"><span class="dot"></span>Introduction</a>
+    <a href="#central-tendency" class="nav-link beginner"><span class="dot"></span>Central Tendency</a>
+    <a href="#spread" class="nav-link beginner"><span class="dot"></span>Spread & Variability</a>
+    <a href="#beginner-iq" class="nav-link beginner"><span class="dot"></span>Interview Q&amp;A</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Intermediate</div>
+    <a href="#probability" class="nav-link intermediate"><span class="dot"></span>Probability</a>
+    <a href="#bayes" class="nav-link intermediate"><span class="dot"></span>Bayes' Theorem</a>
+    <a href="#distributions" class="nav-link intermediate"><span class="dot"></span>Distributions</a>
+    <a href="#clt" class="nav-link intermediate"><span class="dot"></span>CLT & Z-Score</a>
+    <a href="#intermediate-iq" class="nav-link intermediate"><span class="dot"></span>Interview Q&amp;A</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Advanced</div>
+    <a href="#hypothesis" class="nav-link advanced"><span class="dot"></span>Hypothesis Testing</a>
+    <a href="#regression" class="nav-link advanced"><span class="dot"></span>Regression</a>
+    <a href="#advanced-topics" class="nav-link advanced"><span class="dot"></span>Advanced Topics</a>
+    <a href="#advanced-iq" class="nav-link advanced"><span class="dot"></span>Interview Q&amp;A</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Reference</div>
+    <a href="#formulas" class="nav-link reference"><span class="dot"></span>Key Formulas</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Complete Reference Guide</div>
+    <h1>Statistics</h1>
+    <p class="hero-sub">From foundational concepts to advanced techniques — with interview questions and answers at every level.</p>
+    <div class="hero-badges">
+      <span class="badge badge-green">🟢 Beginner</span>
+      <span class="badge badge-amber">🟡 Intermediate</span>
+      <span class="badge badge-red">🔴 Advanced</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════════════════════════════════ PART 1 ════════════════════════════════ -->
+    <div class="part-banner beginner">
+      <div class="part-banner-icon">📐</div>
+      <div class="part-banner-text">
+        <div class="part-label">Part 1</div>
+        <h2>Beginner Statistics</h2>
+      </div>
+    </div>
+
+    <!-- Intro -->
+    <section id="intro">
+      <h2 class="section-h2">1. Introduction to Statistics</h2>
+      <p>Statistics is the science of <strong>collecting, organizing, analyzing, interpreting, and presenting data</strong>. It helps us make sense of numerical information and draw conclusions from data.</p>
+
+      <h3 class="section-h3">1.1 Types of Statistics</h3>
+
+      <h4 class="section-h4">Descriptive Statistics</h4>
+      <p>Describes and summarizes data using measures like mean, median, mode, and standard deviation. It does <strong>NOT</strong> draw conclusions beyond the data.</p>
+      <ul class="content-list">
+        <li>Example: Average score of students in a class</li>
+        <li>Example: Most common shoe size sold in a store</li>
+      </ul>
+
+      <h4 class="section-h4">Inferential Statistics</h4>
+      <p>Uses sample data to make inferences or predictions about a larger population. It involves probability and hypothesis testing.</p>
+      <ul class="content-list">
+        <li>Example: Predicting election results from a poll</li>
+        <li>Example: Testing if a new drug works better than existing ones</li>
+      </ul>
+
+      <h3 class="section-h3">1.2 Types of Data</h3>
+
+      <h4 class="section-h4">Qualitative (Categorical) Data</h4>
+      <ul class="content-list">
+        <li><strong>Nominal:</strong> No order — colors, gender, country</li>
+        <li><strong>Ordinal:</strong> Has order but no fixed interval — ratings: good, better, best</li>
+      </ul>
+
+      <h4 class="section-h4">Quantitative (Numerical) Data</h4>
+      <ul class="content-list">
+        <li><strong>Discrete:</strong> Countable values — number of children, number of cars</li>
+        <li><strong>Continuous:</strong> Measurable values — height, weight, temperature</li>
+      </ul>
+    </section>
+
+    <!-- Central Tendency -->
+    <section id="central-tendency">
+      <h2 class="section-h2">1.3 Measures of Central Tendency</h2>
+      <p>These measures describe the center or typical value of a dataset.</p>
+
+      <h4 class="section-h4">Mean (Average)</h4>
+      <div class="formula">Mean (x̅) = Σx / n &nbsp;&nbsp; where n = number of values<br><br>Example: {4, 7, 13, 16} → Mean = (4+7+13+16)/4 = <strong>10</strong></div>
+
+      <h4 class="section-h4">Median</h4>
+      <p>The middle value when data is sorted. If two middle values exist, take their average.</p>
+      <div class="formula-grid">
+        <div class="formula">{3, 5, <strong>7</strong>, 9, 11} → Median = 7</div>
+        <div class="formula">{3, 5, 7, 9} → Median = (5+7)/2 = <strong>6</strong></div>
+      </div>
+
+      <h4 class="section-h4">Mode</h4>
+      <p>The value that appears most frequently. Can be unimodal, multimodal, or have no mode.</p>
+      <div class="formula">{2, 3, 3, 5, 7, 7, <strong>7</strong>} → Mode = 7</div>
+    </section>
+
+    <!-- Spread -->
+    <section id="spread">
+      <h2 class="section-h2">1.4 Measures of Spread (Variability)</h2>
+
+      <h4 class="section-h4">Range</h4>
+      <div class="formula">Range = Maximum value − Minimum value</div>
+
+      <h4 class="section-h4">Variance</h4>
+      <div class="formula-grid">
+        <div class="formula">Population Variance (σ²) = Σ(x − μ)² / N</div>
+        <div class="formula">Sample Variance (s²) = Σ(x − x̅)² / (n − 1)</div>
+      </div>
+
+      <h4 class="section-h4">Standard Deviation</h4>
+      <p>The square root of variance — measures how spread out values are from the mean.</p>
+      <div class="formula-grid">
+        <div class="formula">Population SD (σ) = √[Σ(x − μ)² / N]</div>
+        <div class="formula">Sample SD (s) = √[Σ(x − x̅)² / (n−1)]</div>
+      </div>
+
+      <h4 class="section-h4">Interquartile Range (IQR)</h4>
+      <div class="formula">IQR = Q3 − Q1 &nbsp;&nbsp; (Q1 = 25th percentile, Q3 = 75th percentile)</div>
+    </section>
+
+    <!-- Beginner Interview -->
+    <section id="beginner-iq">
+      <div class="interview-section">
+        <div class="interview-section-title">Beginner Interview Questions</div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is the difference between mean, median, and mode?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Mean is the arithmetic average (sum divided by count). Median is the middle value when data is sorted. Mode is the most frequently occurring value. Mean is sensitive to outliers; median is more robust. Example: {1, 2, 3, 100} — Mean=26.5, Median=2.5, Mode=none.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is the difference between descriptive and inferential statistics?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Descriptive statistics summarizes and describes the features of a dataset (e.g., mean, standard deviation of a class's test scores). Inferential statistics uses sample data to make predictions or draw conclusions about a larger population (e.g., using poll data to predict election outcomes).</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is variance and why do we use n−1 in sample variance?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Variance measures how spread out data points are from the mean. We use n−1 (Bessel's correction) to correct for bias — dividing by n underestimates the population variance because a sample tends to cluster closer to its own mean than to the true population mean.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What are outliers and how do they affect statistics?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Outliers are data points that differ significantly from other observations. They heavily influence the mean but have less effect on the median and mode. In {2, 3, 4, 5, 100}, the mean is 22.8 (unrepresentative), while the median (4) is more representative.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════ PART 2 ════════════════════════════════ -->
+    <div class="part-banner intermediate">
+      <div class="part-banner-icon">📊</div>
+      <div class="part-banner-text">
+        <div class="part-label">Part 2</div>
+        <h2>Intermediate Statistics</h2>
+      </div>
+    </div>
+
+    <section id="probability">
+      <h2 class="section-h2">2. Probability</h2>
+      <p>Probability measures the likelihood of an event occurring, expressed as a value between 0 (impossible) and 1 (certain).</p>
+      <div class="formula">P(A) = Number of favorable outcomes / Total number of outcomes</div>
+
+      <h3 class="section-h3">2.1 Rules of Probability</h3>
+
+      <h4 class="section-h4">Addition Rule</h4>
+      <div class="formula">P(A ∪ B) = P(A) + P(B) − P(A ∩ B)<br>For mutually exclusive events: P(A or B) = P(A) + P(B)</div>
+
+      <h4 class="section-h4">Multiplication Rule</h4>
+      <div class="formula-grid">
+        <div class="formula">P(A ∩ B) = P(A) × P(B|A) &nbsp; [Dependent]</div>
+        <div class="formula">P(A ∩ B) = P(A) × P(B) &nbsp;&nbsp;&nbsp; [Independent]</div>
+      </div>
+
+      <h4 class="section-h4">Conditional Probability</h4>
+      <div class="formula">P(A|B) = P(A ∩ B) / P(B)<br><small>Probability of A given that B has already occurred.</small></div>
+    </section>
+
+    <section id="bayes">
+      <h2 class="section-h2">2.2 Bayes' Theorem</h2>
+      <p>Allows us to update the probability of an event based on new evidence.</p>
+      <div class="formula">P(A|B) = [P(B|A) × P(A)] / P(B)</div>
+      <div class="info-card">
+        <strong>Classic Example:</strong> A medical test is 99% accurate. If only 1% of people have a disease, what is the true probability a positive test result means you have the disease? Bayes' theorem reveals it may still be quite low — this is the "base rate fallacy."
+      </div>
+    </section>
+
+    <section id="distributions">
+      <h2 class="section-h2">2.3 Probability Distributions</h2>
+
+      <h4 class="section-h4">Binomial Distribution</h4>
+      <p>Models the number of successes in n independent trials, each with probability p.</p>
+      <div class="formula">P(X=k) = C(n,k) × p^k × (1−p)^(n−k)<br><br>Mean = np &nbsp;&nbsp; | &nbsp;&nbsp; Variance = np(1−p)</div>
+      <ul class="content-list">
+        <li>Example: Probability of getting exactly 3 heads in 10 coin flips</li>
+      </ul>
+
+      <h4 class="section-h4">Poisson Distribution</h4>
+      <p>Models events occurring in a fixed interval when events happen at a known average rate λ.</p>
+      <div class="formula">P(X=k) = (e^(−λ) × λ^k) / k! &nbsp;&nbsp; where λ = average rate<br><br>Mean = Variance = λ</div>
+      <ul class="content-list">
+        <li>Example: Number of emails received per hour</li>
+      </ul>
+
+      <h4 class="section-h4">Normal Distribution</h4>
+      <p>A symmetric, bell-shaped distribution described by mean (μ) and standard deviation (σ).</p>
+      <div class="formula">f(x) = (1/σ√2π) × e^[−(x−μ)²/(2σ²)]<br><br>68% within 1σ &nbsp;|&nbsp; 95% within 2σ &nbsp;|&nbsp; 99.7% within 3σ &nbsp; (Empirical Rule)</div>
+    </section>
+
+    <section id="clt">
+      <h2 class="section-h2">2.4 Z-Score & Central Limit Theorem</h2>
+
+      <h4 class="section-h4">Z-Score</h4>
+      <div class="formula">Z = (X − μ) / σ<br><small>How many standard deviations a value is from the mean.</small></div>
+
+      <h4 class="section-h4">Central Limit Theorem (CLT)</h4>
+      <p>The sampling distribution of the sample mean approaches normality as n increases (n ≥ 30), <em>regardless</em> of the population's distribution.</p>
+      <div class="formula">Standard Error (SE) = σ / √n</div>
+      <div class="important"><strong>⭐ Why it matters:</strong> CLT is the foundation of confidence intervals, hypothesis testing, and most inferential statistics.</div>
+    </section>
+
+    <section id="intermediate-iq">
+      <div class="interview-section">
+        <div class="interview-section-title">Intermediate Interview Questions</div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> Explain Bayes' Theorem with a real-world example.</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Bayes' theorem: P(A|B) = P(B|A)×P(A)/P(B). Example — Spam filters: If P(spam)=0.3, P('buy' in spam)=0.8, P('buy' in email)=0.35, then P(spam|'buy') = (0.8×0.3)/0.35 = 0.686. So 68.6% chance the email is spam. This is exactly how Naive Bayes classifiers work.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is the Central Limit Theorem and why is it important?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> CLT states that sample means approach a normal distribution as sample size increases (n≥30), regardless of the population distribution. It's important because: (1) enables normal-distribution-based tests even for non-normal populations, (2) foundation for confidence intervals and hypothesis testing, (3) explains why real-world measurements often follow a normal distribution.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is the difference between a Z-test and a T-test?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Z-test: used when population SD is known and/or n&gt;30. T-test: used when population SD is unknown and n&lt;30. The t-distribution has heavier tails to account for extra uncertainty from estimating σ from data. As n increases, the t-distribution converges to the normal distribution.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is the difference between Normal, Binomial, and Poisson distributions?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Normal: continuous, symmetric bell curve (height, weight). Binomial: discrete, counts successes in n independent yes/no trials with probability p (coin flips). Poisson: discrete, counts events in fixed time/space with known average rate λ (calls per hour). Poisson is a limit of Binomial as n→∞ and p→0 with np=λ constant.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════ PART 3 ════════════════════════════════ -->
+    <div class="part-banner advanced">
+      <div class="part-banner-icon">🔬</div>
+      <div class="part-banner-text">
+        <div class="part-label">Part 3</div>
+        <h2>Advanced Statistics</h2>
+      </div>
+    </div>
+
+    <section id="hypothesis">
+      <h2 class="section-h2">3. Hypothesis Testing</h2>
+      <p>A formal procedure for using data to make decisions about population parameters.</p>
+
+      <h3 class="section-h3">3.1 Key Concepts</h3>
+
+      <h4 class="section-h4">Null and Alternative Hypotheses</h4>
+      <ul class="content-list">
+        <li><strong>H₀ (Null):</strong> Assumes no effect, no difference, or status quo</li>
+        <li><strong>H₁ or Hₐ (Alternative):</strong> What we want to prove</li>
+      </ul>
+
+      <h4 class="section-h4">Type I and Type II Errors</h4>
+      <table class="error-table">
+        <thead>
+          <tr><th>Decision</th><th>H₀ True</th><th>H₀ False</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Reject H₀</strong></td>
+            <td class="cell-error">⚠️ Type I Error (α) — False Positive</td>
+            <td class="cell-correct">✅ Correct (Power = 1−β)</td>
+          </tr>
+          <tr>
+            <td><strong>Fail to Reject H₀</strong></td>
+            <td class="cell-correct">✅ Correct Decision</td>
+            <td class="cell-error">⚠️ Type II Error (β) — False Negative</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 class="section-h4">P-Value</h4>
+      <p>Probability of observing results as extreme as the actual results, assuming H₀ is true.</p>
+      <ul class="content-list">
+        <li>p &lt; α (usually 0.05): <strong>Reject H₀</strong></li>
+        <li>p ≥ α: <strong>Fail to reject H₀</strong></li>
+      </ul>
+
+      <h3 class="section-h3">3.2 Common Statistical Tests</h3>
+
+      <h4 class="section-h4">T-Tests</h4>
+      <div class="formula-grid">
+        <div class="formula"><strong>One-Sample:</strong><br>t = (x̅ − μ₀) / (s / √n)<br>df = n − 1</div>
+        <div class="formula"><strong>Two-Sample:</strong><br>t = (x̅₁ − x̅₂) / √(s²₁/n₁ + s²₂/n₂)</div>
+      </div>
+
+      <h4 class="section-h4">Chi-Square Test (χ²)</h4>
+      <div class="formula">χ² = Σ[(O − E)² / E] &nbsp;&nbsp; where O=Observed, E=Expected<br><small>Tests association between categorical variables or goodness of fit.</small></div>
+
+      <h4 class="section-h4">ANOVA (Analysis of Variance)</h4>
+      <div class="formula">F = (Between-group variance) / (Within-group variance) = MSB / MSW</div>
+      <ul class="content-list">
+        <li>One-way ANOVA: One independent variable</li>
+        <li>Two-way ANOVA: Two independent variables (with interaction effects)</li>
+        <li>Assumptions: Normality, Homogeneity of variance, Independence</li>
+      </ul>
+
+      <h3 class="section-h3">3.3 Confidence Intervals</h3>
+      <div class="formula">CI = x̅ ± (Z* or t*) × (s / √n)</div>
+      <p>A 95% CI means: if we repeated the sampling process many times, 95% of constructed intervals would contain the true population parameter.</p>
+    </section>
+
+    <section id="regression">
+      <h2 class="section-h2">4. Regression Analysis</h2>
+
+      <h3 class="section-h3">4.1 Simple Linear Regression</h3>
+      <div class="formula">Y = β₀ + β₁X + ε<br><br>β₀ = intercept (Y when X=0) &nbsp;|&nbsp; β₁ = slope &nbsp;|&nbsp; ε = error term</div>
+
+      <h4 class="section-h4">Least Squares Estimation</h4>
+      <div class="formula-grid">
+        <div class="formula">β₁ = Σ[(xᵢ−x̅)(yᵢ−ȳ)] / Σ(xᵢ−x̅)²</div>
+        <div class="formula">β₀ = ȳ − β₁ × x̅</div>
+      </div>
+
+      <h4 class="section-h4">R² (Coefficient of Determination)</h4>
+      <div class="formula">R² = 1 − (SSR / SST) = Explained Variance / Total Variance<br><small>R²=0.85 means the model explains 85% of variance in Y.</small></div>
+
+      <h3 class="section-h3">4.2 Multiple Linear Regression</h3>
+      <div class="formula">Y = β₀ + β₁X₁ + β₂X₂ + … + βₖXₖ + ε</div>
+      <ul class="content-list">
+        <li>Adjusted R² penalizes for unnecessary predictors</li>
+        <li>Multicollinearity: check with VIF (Variance Inflation Factor)</li>
+        <li>Assumptions: Linearity, Normality of residuals, Homoscedasticity, No multicollinearity</li>
+      </ul>
+
+      <h3 class="section-h3">4.3 Logistic Regression</h3>
+      <p>Used when the dependent variable is binary (0 or 1). Models the probability of an outcome.</p>
+      <div class="formula">log(p/(1−p)) = β₀ + β₁X₁ + … + βₖXₖ<br><br>P(Y=1) = 1 / (1 + e^(−(β₀ + β₁X)))</div>
+      <ul class="content-list">
+        <li>Output is probability (0 to 1), not a continuous value</li>
+        <li>Uses Maximum Likelihood Estimation (MLE), not least squares</li>
+        <li>Evaluate with: AUC-ROC, Confusion Matrix, Log Loss</li>
+      </ul>
+    </section>
+
+    <section id="advanced-topics">
+      <h2 class="section-h2">5. Advanced Topics</h2>
+
+      <h3 class="section-h3">5.1 Correlation vs Causation</h3>
+      <div class="formula">Pearson r = Σ[(xᵢ−x̅)(yᵢ−ȳ)] / √[Σ(xᵢ−x̅)² × Σ(yᵢ−ȳ)²]<br><br>r=+1: Perfect positive &nbsp;|&nbsp; r=−1: Perfect negative &nbsp;|&nbsp; r=0: No linear correlation</div>
+      <div class="important"><strong>⚠️ Important:</strong> Correlation does NOT imply causation. Ice cream sales correlate with drowning rates — both are caused by hot weather.</div>
+
+      <h3 class="section-h3">5.2 Bootstrap &amp; Resampling</h3>
+      <p>A non-parametric technique that estimates the sampling distribution by resampling <em>with replacement</em> from the original data.</p>
+      <ul class="content-list">
+        <li>Useful when theoretical distributions are unknown</li>
+        <li>Can estimate standard errors and confidence intervals</li>
+        <li>Used in ML ensemble methods: Bagging, Random Forest</li>
+      </ul>
+
+      <h3 class="section-h3">5.3 A/B Testing</h3>
+      <p>A controlled experiment comparing two versions (A and B) to determine which performs better.</p>
+      <ul class="content-list">
+        <li>Define hypothesis: H₀: No difference between A and B</li>
+        <li>Randomly assign users to groups A and B</li>
+        <li>Collect data and run a statistical test (Z-test, T-test)</li>
+        <li>Calculate p-value and decide based on α = 0.05</li>
+        <li>⚠️ Avoid peeking at results before reaching required sample size</li>
+      </ul>
+
+      <h3 class="section-h3">5.4 Time Series Analysis</h3>
+      <ul class="content-list">
+        <li><strong>Trend:</strong> Long-term direction of the data</li>
+        <li><strong>Seasonality:</strong> Periodic patterns repeating at fixed intervals</li>
+        <li><strong>Cyclical:</strong> Patterns over irregular intervals (economic cycles)</li>
+        <li><strong>Stationarity:</strong> Mean and variance are constant over time (required for many models)</li>
+        <li><strong>Models:</strong> AR, MA, ARMA, ARIMA, SARIMA, Prophet</li>
+      </ul>
+
+      <h3 class="section-h3">5.5 PCA — Dimensionality Reduction</h3>
+      <p>Transforms correlated variables into uncorrelated principal components, maximizing explained variance.</p>
+      <ul class="content-list">
+        <li>PC1 explains the most variance, PC2 the next most, etc.</li>
+        <li>Used for visualization (2D/3D), noise reduction, feature engineering</li>
+      </ul>
+
+      <h3 class="section-h3">5.6 Bayesian Statistics</h3>
+      <div class="formula">Posterior ∝ Likelihood × Prior</div>
+      <ul class="content-list">
+        <li><strong>Prior:</strong> Belief about parameter before seeing data</li>
+        <li><strong>Likelihood:</strong> How likely the data is given the parameter</li>
+        <li><strong>Posterior:</strong> Updated belief after seeing data</li>
+        <li><strong>Credible Interval:</strong> Bayesian equivalent of confidence interval</li>
+      </ul>
+    </section>
+
+    <section id="advanced-iq">
+      <div class="interview-section">
+        <div class="interview-section-title">Advanced Interview Questions</div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is p-hacking and how can it be avoided?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> P-hacking (data dredging) is running multiple tests and only reporting those with p&lt;0.05, inflating false discovery rates. Avoidance: pre-register hypotheses, use Bonferroni correction (α/n), use FDR control (Benjamini-Hochberg), report effect sizes alongside p-values, use train/test splits in ML contexts.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> Explain multicollinearity: how to detect and fix it?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Multicollinearity occurs when predictor variables are highly correlated, making it hard to isolate individual effects. Detection: VIF (>5 concerning, >10 severe), correlation matrix. Fixes: remove correlated predictors, use PCA for orthogonal components, apply Ridge Regression (L2), or combine correlated variables.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is the difference between L1 and L2 regularization?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> L1 (Lasso): adds λΣ|βᵢ| to loss; drives some coefficients to exactly 0 — performs feature selection. L2 (Ridge): adds λΣβᵢ² to loss; shrinks all coefficients toward zero but rarely to 0; handles multicollinearity well. ElasticNet combines both. Key difference: L1 does feature selection; L2 does not.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is the bias-variance tradeoff?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Bias: error from wrong assumptions → underfitting. Variance: error from sensitivity to training data fluctuations → overfitting. Total Error = Bias² + Variance + Irreducible Noise. As model complexity increases, bias decreases but variance increases. Cross-validation helps find the optimal balance.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> Explain AUC-ROC and when to use it.</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> AUC-ROC measures a classifier's ability to discriminate between classes across all thresholds. ROC plots TPR vs FPR. AUC=0.5 is random; AUC=1.0 is perfect. Use when: classes are imbalanced, decision threshold isn't fixed, or you need a threshold-independent metric. Prefer Precision-Recall curves when the positive class is very rare.</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is heteroscedasticity and why does it matter?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Heteroscedasticity means variance of residuals is not constant across levels of independent variables (violates OLS assumption), leading to inefficient estimates and unreliable tests. Detection: Breusch-Pagan test, residual plots. Fixes: log-transform the dependent variable, use Weighted Least Squares (WLS), or robust standard errors (Huber-White).</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> What is the difference between Frequentist and Bayesian statistics?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Frequentist: probability = long-run frequency; parameters are fixed; uses p-values and CIs; cannot incorporate prior beliefs. Bayesian: probability = degree of belief; parameters are random variables; uses Bayes' theorem to update priors with data into posteriors; naturally incorporates prior knowledge. Bayesian is more flexible but computationally intensive (MCMC).</div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-question" onclick="toggleQA(this)">
+            <span><span class="q-label">Q</span> How do you handle imbalanced datasets in classification?</span>
+            <span class="toggle">+</span>
+          </div>
+          <div class="qa-answer"><span class="a-label">A</span> Strategies: Resampling — oversample the minority class (SMOTE) or undersample the majority. Algorithm-level — use class_weight='balanced', adjust decision threshold. Evaluation — use Precision, Recall, F1, AUC-ROC instead of accuracy. Ensemble methods — BalancedRandomForest, EasyEnsemble. Always use stratified cross-validation.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════ QUICK REFERENCE ════════════════════════════════ -->
+    <div id="formulas" class="quick-ref-banner">
+      <h2>⚡ Quick Reference: Key Formulas</h2>
+      <p>All essential formulas organized by difficulty level</p>
+    </div>
+
+    <table class="ref-table">
+      <thead>
+        <tr><th>Concept</th><th>Formula</th><th>Level</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Mean</strong></td><td>x̅ = Σx / n</td><td><span class="level-pill level-b">Beginner</span></td></tr>
+        <tr><td><strong>Standard Deviation</strong></td><td>s = √[Σ(x−x̅)²/(n−1)]</td><td><span class="level-pill level-b">Beginner</span></td></tr>
+        <tr><td><strong>Z-Score</strong></td><td>Z = (X − μ) / σ</td><td><span class="level-pill level-b">Beginner</span></td></tr>
+        <tr><td><strong>IQR</strong></td><td>IQR = Q3 − Q1</td><td><span class="level-pill level-b">Beginner</span></td></tr>
+        <tr><td><strong>Conditional P(A|B)</strong></td><td>P(A∩B) / P(B)</td><td><span class="level-pill level-i">Intermediate</span></td></tr>
+        <tr><td><strong>Bayes' Theorem</strong></td><td>P(A|B) = P(B|A)×P(A) / P(B)</td><td><span class="level-pill level-i">Intermediate</span></td></tr>
+        <tr><td><strong>Normal PDF</strong></td><td>f(x) = (1/σ√2π) e^[−(x−μ)²/2σ²]</td><td><span class="level-pill level-i">Intermediate</span></td></tr>
+        <tr><td><strong>Standard Error</strong></td><td>SE = σ / √n</td><td><span class="level-pill level-i">Intermediate</span></td></tr>
+        <tr><td><strong>Confidence Interval</strong></td><td>x̅ ± t* × s/√n</td><td><span class="level-pill level-a">Advanced</span></td></tr>
+        <tr><td><strong>T-Test Statistic</strong></td><td>t = (x̅ − μ₀) / (s/√n)</td><td><span class="level-pill level-a">Advanced</span></td></tr>
+        <tr><td><strong>Chi-Square</strong></td><td>χ² = Σ(O−E)²/E</td><td><span class="level-pill level-a">Advanced</span></td></tr>
+        <tr><td><strong>Linear Regression</strong></td><td>Y = β₀ + β₁X + ε</td><td><span class="level-pill level-a">Advanced</span></td></tr>
+        <tr><td><strong>Pearson Correlation</strong></td><td>r = Cov(X,Y) / (σ_X × σ_Y)</td><td><span class="level-pill level-a">Advanced</span></td></tr>
+        <tr><td><strong>Logistic Sigmoid</strong></td><td>P = 1/(1 + e^(−z))</td><td><span class="level-pill level-a">Advanced</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="quote-block">
+      <blockquote>"Statistics is the grammar of science."</blockquote>
+      <cite>— Karl Pearson</cite>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function toggleQA(el) {
+    const item = el.closest('.qa-item');
+    item.classList.toggle('open');
+  }
+
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

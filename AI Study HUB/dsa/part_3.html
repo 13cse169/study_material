@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Mastery — Part 3: Advanced Topics</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;1,400&family=Bebas+Neue&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05070f;
+    --surface: #0c0e1a;
+    --card: #0f1120;
+    --border: #1e2240;
+    --accent1: #00d4ff;
+    --accent2: #ff4d6d;
+    --accent3: #7bed9f;
+    --accent4: #ffa502;
+    --accent5: #a855f7;
+    --text: #e2e8f0;
+    --muted: #4a5568;
+    --code-bg: #080a14;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* STARFIELD BG */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(1px 1px at 20% 30%, rgba(0,212,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 10%, rgba(255,77,109,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 80%, rgba(123,237,159,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 70%, rgba(168,85,247,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 60%, rgba(255,165,2,0.3) 0%, transparent 100%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative; z-index: 1;
+    padding: 80px 48px 70px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 100% 100% at 0% 0%, rgba(0,212,255,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 80% 80% at 100% 100%, rgba(168,85,247,0.06) 0%, transparent 60%);
+  }
+  .header-inner { max-width: 1200px; margin: 0 auto; position: relative; }
+  .series-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 5px;
+    color: var(--accent1); margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .series-tag::before { content: ''; display: block; width: 40px; height: 1px; background: var(--accent1); }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 12vw, 10rem);
+    line-height: 0.85; letter-spacing: 2px; color: #fff;
+  }
+  h1 .hl1 { color: var(--accent1); }
+  h1 .hl2 { color: var(--accent5); }
+  .header-topics {
+    display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px;
+  }
+  .htopic {
+    border: 1px solid var(--border); padding: 8px 20px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    color: var(--muted); border-radius: 2px;
+    text-decoration: none; transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .htopic .num { color: var(--accent1); }
+  .htopic:hover { border-color: var(--accent1); color: #fff; background: rgba(0,212,255,0.05); }
+
+  /* MAIN */
+  main { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 60px 24px 80px; }
+
+  /* TOPIC SECTION */
+  .topic-section { margin-bottom: 100px; }
+
+  .topic-label {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
+  }
+  .topic-label .num-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    color: var(--muted); border: 1px solid var(--border);
+    padding: 4px 12px; border-radius: 2px;
+  }
+  .topic-label .accent-line { flex: 1; height: 1px; background: var(--border); }
+  .topic-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    letter-spacing: 3px; line-height: 1;
+    margin-bottom: 6px;
+  }
+  .topic-desc {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    color: var(--muted); letter-spacing: 1px; margin-bottom: 32px;
+  }
+
+  /* CARDS */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin: 24px 0; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 24px; position: relative;
+    overflow: hidden; transition: all 0.3s;
+  }
+  .card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-3px); }
+  .card-glow { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px; }
+  .card p { color: var(--muted); font-size: 13px; line-height: 1.75; font-family: 'IBM Plex Mono', monospace; }
+  .wide { grid-column: 1 / -1; }
+
+  /* CODE */
+  .code-block {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin: 24px 0;
+  }
+  .code-header {
+    background: var(--surface); padding: 11px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .code-header span { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots i { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+  pre {
+    padding: 24px; overflow-x: auto;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12.5px;
+    line-height: 1.9; color: #b0c4de;
+  }
+  .kw { color: #c792ea; } .fn { color: #82aaff; } .str { color: #c3e88d; }
+  .str2 { color: #ffcb6b; } .cm { color: #546e7a; font-style: italic; }
+  .num { color: #f78c6c; } .op { color: var(--accent1); } .var { color: #eeffff; }
+  .cls { color: var(--accent2); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 8px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  th { background: var(--surface); padding: 12px 18px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); text-align: left; }
+  td { padding: 12px 18px; border-top: 1px solid var(--border); font-size: 13px; font-family: 'IBM Plex Mono', monospace; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .good { color: var(--accent3); } .ok { color: var(--accent4); } .bad { color: var(--accent2); }
+
+  /* CALLOUT */
+  .callout {
+    border-radius: 8px; padding: 18px 22px; margin: 20px 0;
+    display: flex; gap: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; line-height: 1.75;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .callout.blue { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.2); }
+  .callout.red { background: rgba(255,77,109,0.06); border: 1px solid rgba(255,77,109,0.2); }
+  .callout.green { background: rgba(123,237,159,0.06); border: 1px solid rgba(123,237,159,0.2); }
+  .callout.purple { background: rgba(168,85,247,0.06); border: 1px solid rgba(168,85,247,0.2); }
+
+  /* LIST */
+  .dsa-list { list-style: none; margin: 12px 0; }
+  .dsa-list li {
+    padding: 9px 0 9px 22px; position: relative;
+    border-bottom: 1px solid var(--border); font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace; line-height: 1.7;
+  }
+  .dsa-list li:last-child { border-bottom: none; }
+  .dsa-list li::before { content: '❯'; position: absolute; left: 0; color: var(--accent1); font-size: 9px; top: 12px; }
+
+  /* DP TABLE */
+  .dp-pattern {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px 24px; margin: 12px 0;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .dp-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem;
+    color: var(--border); line-height: 1; flex-shrink: 0; width: 50px;
+  }
+  .dp-content h4 { font-size: 14px; margin-bottom: 6px; }
+  .dp-content p { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  /* GRAPH ALGO */
+  .algo-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px;
+  }
+  .algo-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .algo-card p { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .algo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin: 20px 0; }
+
+  /* BADGE */
+  .badge {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 1px; padding: 2px 8px;
+    border-radius: 3px; margin-right: 4px;
+  }
+  .badge-b { background: rgba(0,212,255,0.15); color: var(--accent1); }
+  .badge-r { background: rgba(255,77,109,0.15); color: var(--accent2); }
+  .badge-g { background: rgba(123,237,159,0.15); color: var(--accent3); }
+  .badge-p { background: rgba(168,85,247,0.15); color: var(--accent5); }
+  .badge-y { background: rgba(255,165,2,0.15); color: var(--accent4); }
+
+  @media(max-width: 600px) {
+    header { padding: 50px 20px 50px; }
+    h1 { font-size: 4.5rem; }
+    .topic-title { font-size: 2.8rem; }
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="series-tag">DSA MASTERY SERIES — PART 3 OF 3</div>
+    <h1><span class="hl1">ADV</span><br><span class="hl2">ANCED</span><br>DSA</h1>
+    <div class="header-topics">
+      <a href="#t13" class="htopic"><span class="num">13</span> Heap</a>
+      <a href="#t14" class="htopic"><span class="num">14</span> Graphs</a>
+      <a href="#t15" class="htopic"><span class="num">15</span> Dynamic Programming</a>
+      <a href="#t16" class="htopic"><span class="num">16</span> Greedy</a>
+      <a href="#t17" class="htopic"><span class="num">17</span> Backtracking</a>
+      <a href="#t18" class="htopic"><span class="num">18</span> Advanced DSA</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ TOPIC 13: Heap ============ -->
+<section class="topic-section" id="t13">
+  <div class="topic-label">
+    <span class="num-tag">TOPIC 13</span>
+    <div class="accent-line"></div>
+  </div>
+  <h2 class="topic-title" style="color:var(--accent1);">Heap</h2>
+  <p class="topic-desc">// BINARY HEAP · MIN-HEAP · MAX-HEAP · PRIORITY QUEUE · HEAP SORT</p>
+
+  <div class="callout blue">
+    <div class="callout-icon">📐</div>
+    <div>A heap is a complete binary tree stored as an array where parent[i] = arr[(i-1)//2], left_child = arr[2i+1], right_child = arr[2i+2]. <strong>Min-heap:</strong> parent ≤ children. <strong>Max-heap:</strong> parent ≥ children. Python's heapq is a min-heap only.</div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent1);"></div>
+      <h3>Operations & Complexity</h3>
+      <ul class="dsa-list">
+        <li>insert / heappush → O(log n)</li>
+        <li>extract-min/max / heappop → O(log n)</li>
+        <li>peek min/max → O(1)</li>
+        <li>build heap from array → O(n)</li>
+        <li>heapify (sift down) → O(log n)</li>
+        <li>delete arbitrary element → O(log n)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent4);"></div>
+      <h3>Key Applications</h3>
+      <ul class="dsa-list">
+        <li>Dijkstra's shortest path</li>
+        <li>Prim's MST algorithm</li>
+        <li>Kth largest / smallest element</li>
+        <li>Merge K sorted lists</li>
+        <li>Median of data stream</li>
+        <li>Task / job scheduling</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent3);"></div>
+      <h3>Python heapq Tips</h3>
+      <ul class="dsa-list">
+        <li>Default: min-heap only</li>
+        <li>Max-heap: negate values (-x)</li>
+        <li>Tuples: heap by first element</li>
+        <li>heapq.nlargest(k, arr) → O(n log k)</li>
+        <li>heapq.nsmallest(k, arr) → O(n log k)</li>
+        <li>heapq.heapify(arr) → O(n) in-place</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>heap_patterns.py</span>
+    </div>
+    <pre><span class="kw">import</span> heapq
+
+<span class="cm"># === MEDIAN OF DATA STREAM ===</span>
+<span class="cm"># Two heaps: max-heap (left half) + min-heap (right half)</span>
+<span class="kw">class</span> <span class="cls">MedianFinder</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="var">self</span>):
+        <span class="var">self</span>.lo = []   <span class="cm"># max-heap (negate values)</span>
+        <span class="var">self</span>.hi = []   <span class="cm"># min-heap</span>
+
+    <span class="kw">def</span> <span class="fn">add_num</span>(<span class="var">self</span>, <span class="var">num</span>):
+        heapq.heappush(<span class="var">self</span>.lo, -<span class="var">num</span>)
+        <span class="cm"># balance: max of lo must be ≤ min of hi</span>
+        heapq.heappush(<span class="var">self</span>.hi, -heapq.heappop(<span class="var">self</span>.lo))
+        <span class="kw">if</span> <span class="fn">len</span>(<span class="var">self</span>.lo) < <span class="fn">len</span>(<span class="var">self</span>.hi):
+            heapq.heappush(<span class="var">self</span>.lo, -heapq.heappop(<span class="var">self</span>.hi))
+
+    <span class="kw">def</span> <span class="fn">find_median</span>(<span class="var">self</span>):
+        <span class="kw">if</span> <span class="fn">len</span>(<span class="var">self</span>.lo) > <span class="fn">len</span>(<span class="var">self</span>.hi): <span class="kw">return</span> -<span class="var">self</span>.lo[<span class="num">0</span>]
+        <span class="kw">return</span> (-<span class="var">self</span>.lo[<span class="num">0</span>] + <span class="var">self</span>.hi[<span class="num">0</span>]) / <span class="num">2</span>
+
+<span class="cm"># === MERGE K SORTED LISTS ===</span>
+<span class="kw">def</span> <span class="fn">merge_k_lists</span>(<span class="var">lists</span>):
+    <span class="var">heap</span> = []
+    <span class="kw">for</span> <span class="var">i</span>, <span class="var">node</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">lists</span>):
+        <span class="kw">if</span> <span class="var">node</span>: heapq.heappush(<span class="var">heap</span>, (<span class="var">node</span>.val, <span class="var">i</span>, <span class="var">node</span>))
+    <span class="var">dummy</span> = <span class="var">cur</span> = ListNode()
+    <span class="kw">while</span> <span class="var">heap</span>:
+        <span class="var">val</span>, <span class="var">i</span>, <span class="var">node</span> = heapq.heappop(<span class="var">heap</span>)
+        <span class="var">cur</span>.next = <span class="var">node</span>; <span class="var">cur</span> = <span class="var">cur</span>.next
+        <span class="kw">if</span> <span class="var">node</span>.next: heapq.heappush(<span class="var">heap</span>, (<span class="var">node</span>.next.val, <span class="var">i</span>, <span class="var">node</span>.next))
+    <span class="kw">return</span> <span class="var">dummy</span>.next
+
+<span class="cm"># === TOP K FREQUENT ELEMENTS ===</span>
+<span class="kw">def</span> <span class="fn">top_k_frequent</span>(<span class="var">nums</span>, <span class="var">k</span>):
+    <span class="kw">from</span> collections <span class="kw">import</span> Counter
+    <span class="kw">return</span> [<span class="var">x</span> <span class="kw">for</span> <span class="var">x</span>, _ <span class="kw">in</span> Counter(<span class="var">nums</span>).most_common(<span class="var">k</span>)]
+
+<span class="cm"># === HEAP SORT ===</span>
+<span class="kw">def</span> <span class="fn">heap_sort</span>(<span class="var">arr</span>):
+    heapq.heapify(<span class="var">arr</span>)          <span class="cm"># O(n)</span>
+    <span class="kw">return</span> [heapq.heappop(<span class="var">arr</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(<span class="var">arr</span>))]  <span class="cm"># O(n log n)</span></pre>
+  </div>
+</section>
+
+<!-- ============ TOPIC 14: Graphs ============ -->
+<section class="topic-section" id="t14">
+  <div class="topic-label">
+    <span class="num-tag">TOPIC 14</span>
+    <div class="accent-line"></div>
+  </div>
+  <h2 class="topic-title" style="color:var(--accent2);">Graphs</h2>
+  <p class="topic-desc">// BFS · DFS · DIJKSTRA · BELLMAN-FORD · TOPOLOGICAL SORT · MST · SCC</p>
+
+  <div class="algo-grid">
+    <div class="algo-card">
+      <h4>🔵 BFS — Breadth-First Search</h4>
+      <p>Queue-based. Explores level by level. Finds shortest path in unweighted graphs. O(V+E). Used for: shortest path, connected components, bipartite check.</p>
+    </div>
+    <div class="algo-card">
+      <h4>🔴 DFS — Depth-First Search</h4>
+      <p>Stack/recursion-based. Explores as deep as possible. O(V+E). Used for: cycle detection, topological sort, SCCs, path finding, flood fill.</p>
+    </div>
+    <div class="algo-card">
+      <h4>🟡 Dijkstra's Algorithm</h4>
+      <p>Single-source shortest path for non-negative weights. Min-heap + greedy. O((V+E) log V). Does NOT work with negative edges.</p>
+    </div>
+    <div class="algo-card">
+      <h4>🟠 Bellman-Ford</h4>
+      <p>Single-source shortest path with negative weights. Relax all edges V-1 times. O(VE). Detects negative cycles. Slower but more general than Dijkstra.</p>
+    </div>
+    <div class="algo-card">
+      <h4>🟢 Floyd-Warshall</h4>
+      <p>All-pairs shortest path. O(V³). Simple DP: dp[i][j] = min path from i to j. Works with negative edges (not cycles). Best for dense graphs.</p>
+    </div>
+    <div class="algo-card">
+      <h4>🟣 Topological Sort</h4>
+      <p>Linear ordering of DAG nodes. Kahn's (BFS + in-degree) or DFS post-order. O(V+E). Used for: build systems, dependency resolution, course scheduling.</p>
+    </div>
+    <div class="algo-card">
+      <h4>🔵 Kruskal's MST</h4>
+      <p>Sort edges by weight, add if no cycle (Union-Find). O(E log E). Greedy. Works well for sparse graphs. Minimum Spanning Tree.</p>
+    </div>
+    <div class="algo-card">
+      <h4>🔴 Prim's MST</h4>
+      <p>Grow MST from a starting node. Use min-heap to pick cheapest edge. O((V+E) log V). Better for dense graphs than Kruskal's.</p>
+    </div>
+    <div class="algo-card">
+      <h4>🟡 Union-Find (DSU)</h4>
+      <p>Disjoint Set Union. Tracks connected components. find() with path compression: ~O(1). Used with Kruskal's, detecting cycles, dynamic connectivity.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>graph_algorithms.py</span>
+    </div>
+    <pre><span class="kw">from</span> collections <span class="kw">import</span> deque, defaultdict
+<span class="kw">import</span> heapq
+
+<span class="cm"># === DIJKSTRA'S ALGORITHM ===</span>
+<span class="kw">def</span> <span class="fn">dijkstra</span>(<span class="var">graph</span>, <span class="var">src</span>, <span class="var">n</span>):
+    <span class="cm"># graph[u] = [(dist, v), ...]</span>
+    <span class="var">dist</span> = [<span class="fn">float</span>(<span class="str">'inf'</span>)] * <span class="var">n</span>; <span class="var">dist</span>[<span class="var">src</span>] = <span class="num">0</span>
+    <span class="var">heap</span> = [(<span class="num">0</span>, <span class="var">src</span>)]
+    <span class="kw">while</span> <span class="var">heap</span>:
+        <span class="var">d</span>, <span class="var">u</span> = heapq.heappop(<span class="var">heap</span>)
+        <span class="kw">if</span> <span class="var">d</span> > <span class="var">dist</span>[<span class="var">u</span>]: <span class="kw">continue</span>   <span class="cm"># stale entry</span>
+        <span class="kw">for</span> <span class="var">w</span>, <span class="var">v</span> <span class="kw">in</span> <span class="var">graph</span>[<span class="var">u</span>]:
+            <span class="kw">if</span> <span class="var">dist</span>[<span class="var">u</span>] + <span class="var">w</span> < <span class="var">dist</span>[<span class="var">v</span>]:
+                <span class="var">dist</span>[<span class="var">v</span>] = <span class="var">dist</span>[<span class="var">u</span>] + <span class="var">w</span>
+                heapq.heappush(<span class="var">heap</span>, (<span class="var">dist</span>[<span class="var">v</span>], <span class="var">v</span>))
+    <span class="kw">return</span> <span class="var">dist</span>
+
+<span class="cm"># === UNION-FIND with path compression + union by rank ===</span>
+<span class="kw">class</span> <span class="cls">UnionFind</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="var">self</span>, <span class="var">n</span>):
+        <span class="var">self</span>.parent = <span class="fn">list</span>(<span class="fn">range</span>(<span class="var">n</span>))
+        <span class="var">self</span>.rank = [<span class="num">0</span>] * <span class="var">n</span>
+
+    <span class="kw">def</span> <span class="fn">find</span>(<span class="var">self</span>, <span class="var">x</span>):
+        <span class="kw">if</span> <span class="var">self</span>.parent[<span class="var">x</span>] != <span class="var">x</span>:
+            <span class="var">self</span>.parent[<span class="var">x</span>] = <span class="var">self</span>.<span class="fn">find</span>(<span class="var">self</span>.parent[<span class="var">x</span>])  <span class="cm"># path compression</span>
+        <span class="kw">return</span> <span class="var">self</span>.parent[<span class="var">x</span>]
+
+    <span class="kw">def</span> <span class="fn">union</span>(<span class="var">self</span>, <span class="var">x</span>, <span class="var">y</span>):
+        <span class="var">px</span>, <span class="var">py</span> = <span class="var">self</span>.<span class="fn">find</span>(<span class="var">x</span>), <span class="var">self</span>.<span class="fn">find</span>(<span class="var">y</span>)
+        <span class="kw">if</span> <span class="var">px</span> == <span class="var">py</span>: <span class="kw">return</span> <span class="kw">False</span>
+        <span class="kw">if</span> <span class="var">self</span>.rank[<span class="var">px</span>] < <span class="var">self</span>.rank[<span class="var">py</span>]: <span class="var">px</span>, <span class="var">py</span> = <span class="var">py</span>, <span class="var">px</span>
+        <span class="var">self</span>.parent[<span class="var">py</span>] = <span class="var">px</span>
+        <span class="kw">if</span> <span class="var">self</span>.rank[<span class="var">px</span>] == <span class="var">self</span>.rank[<span class="var">py</span>]: <span class="var">self</span>.rank[<span class="var">px</span>] += <span class="num">1</span>
+        <span class="kw">return</span> <span class="kw">True</span>
+
+<span class="cm"># === TOPOLOGICAL SORT — Kahn's BFS ===</span>
+<span class="kw">def</span> <span class="fn">topo_sort</span>(<span class="var">n</span>, <span class="var">edges</span>):
+    <span class="var">adj</span> = defaultdict(<span class="fn">list</span>); <span class="var">indeg</span> = [<span class="num">0</span>] * <span class="var">n</span>
+    <span class="kw">for</span> <span class="var">u</span>, <span class="var">v</span> <span class="kw">in</span> <span class="var">edges</span>: <span class="var">adj</span>[<span class="var">u</span>].append(<span class="var">v</span>); <span class="var">indeg</span>[<span class="var">v</span>] += <span class="num">1</span>
+    <span class="var">q</span> = deque([<span class="var">i</span> <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">n</span>) <span class="kw">if</span> <span class="var">indeg</span>[<span class="var">i</span>] == <span class="num">0</span>])
+    <span class="var">order</span> = []
+    <span class="kw">while</span> <span class="var">q</span>:
+        <span class="var">u</span> = <span class="var">q</span>.popleft(); <span class="var">order</span>.append(<span class="var">u</span>)
+        <span class="kw">for</span> <span class="var">v</span> <span class="kw">in</span> <span class="var">adj</span>[<span class="var">u</span>]:
+            <span class="var">indeg</span>[<span class="var">v</span>] -= <span class="num">1</span>
+            <span class="kw">if</span> <span class="var">indeg</span>[<span class="var">v</span>] == <span class="num">0</span>: <span class="var">q</span>.append(<span class="var">v</span>)
+    <span class="kw">return</span> <span class="var">order</span> <span class="kw">if</span> <span class="fn">len</span>(<span class="var">order</span>) == <span class="var">n</span> <span class="kw">else</span> []  <span class="cm"># [] = cycle exists</span></pre>
+  </div>
+</section>
+
+<!-- ============ TOPIC 15: Dynamic Programming ============ -->
+<section class="topic-section" id="t15">
+  <div class="topic-label">
+    <span class="num-tag">TOPIC 15</span>
+    <div class="accent-line"></div>
+  </div>
+  <h2 class="topic-title" style="color:var(--accent3);">Dynamic Programming</h2>
+  <p class="topic-desc">// MEMOIZATION · TABULATION · OVERLAPPING SUBPROBLEMS · OPTIMAL SUBSTRUCTURE</p>
+
+  <div class="callout green">
+    <div class="callout-icon">🔑</div>
+    <div>DP applies when: (1) <strong>Optimal substructure</strong> — optimal solution built from optimal sub-solutions, (2) <strong>Overlapping subproblems</strong> — same subproblems solved multiple times. If both hold, use DP to avoid redundant work.</div>
+  </div>
+
+  <div class="dp-pattern">
+    <div class="dp-num">01</div>
+    <div class="dp-content">
+      <h4>1D DP — Linear Problems</h4>
+      <p>State depends on a single variable. dp[i] = best result using first i elements.<br>
+      Examples: Fibonacci, Climbing Stairs, House Robber, Coin Change, Jump Game, Decode Ways</p>
+    </div>
+  </div>
+  <div class="dp-pattern">
+    <div class="dp-num">02</div>
+    <div class="dp-content">
+      <h4>2D DP — Grid / String Problems</h4>
+      <p>State = dp[i][j] depends on two variables (position, length, indices).<br>
+      Examples: LCS, Edit Distance, Unique Paths, Min Path Sum, Longest Palindromic Subsequence</p>
+    </div>
+  </div>
+  <div class="dp-pattern">
+    <div class="dp-num">03</div>
+    <div class="dp-content">
+      <h4>Knapsack Variants</h4>
+      <p>0/1 Knapsack, Unbounded Knapsack, Subset Sum, Partition Equal Subset, Target Sum, Combination Sum IV.<br>
+      Pattern: choose or skip each item, optimize a capacity/target constraint.</p>
+    </div>
+  </div>
+  <div class="dp-pattern">
+    <div class="dp-num">04</div>
+    <div class="dp-content">
+      <h4>Interval DP</h4>
+      <p>dp[i][j] = optimal for subarray/substring from i to j. Process by length.<br>
+      Examples: Matrix Chain Multiplication, Burst Balloons, Palindrome Partitioning</p>
+    </div>
+  </div>
+  <div class="dp-pattern">
+    <div class="dp-num">05</div>
+    <div class="dp-content">
+      <h4>Bitmask DP</h4>
+      <p>State includes a bitmask representing subset of elements used. O(2ⁿ × n).<br>
+      Examples: TSP (Travelling Salesman), Minimum Cost to Visit All Nodes, Assignment Problem</p>
+    </div>
+  </div>
+  <div class="dp-pattern">
+    <div class="dp-num">06</div>
+    <div class="dp-content">
+      <h4>DP on Trees / Graphs</h4>
+      <p>Compute DP values for each node based on children. Root the tree, DFS, combine subtree results.<br>
+      Examples: Diameter, Max Path Sum, House Robber III, Subtree sizes for DSU on Tree</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>dynamic_programming.py</span>
+    </div>
+    <pre><span class="cm"># === COIN CHANGE — Bottom-Up DP ===</span>
+<span class="kw">def</span> <span class="fn">coin_change</span>(<span class="var">coins</span>, <span class="var">amount</span>):
+    <span class="var">dp</span> = [<span class="fn">float</span>(<span class="str">'inf'</span>)] * (<span class="var">amount</span> + <span class="num">1</span>); <span class="var">dp</span>[<span class="num">0</span>] = <span class="num">0</span>
+    <span class="kw">for</span> <span class="var">coin</span> <span class="kw">in</span> <span class="var">coins</span>:
+        <span class="kw">for</span> <span class="var">a</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">coin</span>, <span class="var">amount</span>+<span class="num">1</span>):
+            <span class="var">dp</span>[<span class="var">a</span>] = <span class="fn">min</span>(<span class="var">dp</span>[<span class="var">a</span>], <span class="var">dp</span>[<span class="var">a</span>-<span class="var">coin</span>] + <span class="num">1</span>)
+    <span class="kw">return</span> <span class="var">dp</span>[<span class="var">amount</span>] <span class="kw">if</span> <span class="var">dp</span>[<span class="var">amount</span>] != <span class="fn">float</span>(<span class="str">'inf'</span>) <span class="kw">else</span> -<span class="num">1</span>
+
+<span class="cm"># === LONGEST COMMON SUBSEQUENCE ===</span>
+<span class="kw">def</span> <span class="fn">lcs</span>(<span class="var">s1</span>, <span class="var">s2</span>):
+    <span class="var">m</span>, <span class="var">n</span> = <span class="fn">len</span>(<span class="var">s1</span>), <span class="fn">len</span>(<span class="var">s2</span>)
+    <span class="var">dp</span> = [[<span class="num">0</span>]*(<span class="var">n</span>+<span class="num">1</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="var">m</span>+<span class="num">1</span>)]
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="var">m</span>+<span class="num">1</span>):
+        <span class="kw">for</span> <span class="var">j</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="var">n</span>+<span class="num">1</span>):
+            <span class="kw">if</span> <span class="var">s1</span>[<span class="var">i</span>-<span class="num">1</span>] == <span class="var">s2</span>[<span class="var">j</span>-<span class="num">1</span>]:
+                <span class="var">dp</span>[<span class="var">i</span>][<span class="var">j</span>] = <span class="var">dp</span>[<span class="var">i</span>-<span class="num">1</span>][<span class="var">j</span>-<span class="num">1</span>] + <span class="num">1</span>
+            <span class="kw">else</span>:
+                <span class="var">dp</span>[<span class="var">i</span>][<span class="var">j</span>] = <span class="fn">max</span>(<span class="var">dp</span>[<span class="var">i</span>-<span class="num">1</span>][<span class="var">j</span>], <span class="var">dp</span>[<span class="var">i</span>][<span class="var">j</span>-<span class="num">1</span>])
+    <span class="kw">return</span> <span class="var">dp</span>[<span class="var">m</span>][<span class="var">n</span>]
+
+<span class="cm"># === 0/1 KNAPSACK ===</span>
+<span class="kw">def</span> <span class="fn">knapsack</span>(<span class="var">weights</span>, <span class="var">values</span>, <span class="var">W</span>):
+    <span class="var">n</span> = <span class="fn">len</span>(<span class="var">weights</span>)
+    <span class="var">dp</span> = [<span class="num">0</span>] * (<span class="var">W</span>+<span class="num">1</span>)
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">n</span>):
+        <span class="kw">for</span> <span class="var">w</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">W</span>, <span class="var">weights</span>[<span class="var">i</span>]-<span class="num">1</span>, -<span class="num">1</span>):  <span class="cm"># reverse to avoid reuse</span>
+            <span class="var">dp</span>[<span class="var">w</span>] = <span class="fn">max</span>(<span class="var">dp</span>[<span class="var">w</span>], <span class="var">dp</span>[<span class="var">w</span>-<span class="var">weights</span>[<span class="var">i</span>]] + <span class="var">values</span>[<span class="var">i</span>])
+    <span class="kw">return</span> <span class="var">dp</span>[<span class="var">W</span>]
+
+<span class="cm"># === EDIT DISTANCE (Levenshtein) ===</span>
+<span class="kw">def</span> <span class="fn">edit_dist</span>(<span class="var">s</span>, <span class="var">t</span>):
+    <span class="var">m</span>, <span class="var">n</span> = <span class="fn">len</span>(<span class="var">s</span>), <span class="fn">len</span>(<span class="var">t</span>)
+    <span class="var">dp</span> = [[<span class="var">j</span> <span class="kw">if</span> <span class="var">i</span>==<span class="num">0</span> <span class="kw">else</span> <span class="var">i</span> <span class="kw">if</span> <span class="var">j</span>==<span class="num">0</span> <span class="kw">else</span> <span class="num">0</span>
+             <span class="kw">for</span> <span class="var">j</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">n</span>+<span class="num">1</span>)] <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">m</span>+<span class="num">1</span>)]
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="var">m</span>+<span class="num">1</span>):
+        <span class="kw">for</span> <span class="var">j</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="var">n</span>+<span class="num">1</span>):
+            <span class="kw">if</span> <span class="var">s</span>[<span class="var">i</span>-<span class="num">1</span>]==<span class="var">t</span>[<span class="var">j</span>-<span class="num">1</span>]: <span class="var">dp</span>[<span class="var">i</span>][<span class="var">j</span>] = <span class="var">dp</span>[<span class="var">i</span>-<span class="num">1</span>][<span class="var">j</span>-<span class="num">1</span>]
+            <span class="kw">else</span>: <span class="var">dp</span>[<span class="var">i</span>][<span class="var">j</span>] = <span class="num">1</span> + <span class="fn">min</span>(<span class="var">dp</span>[<span class="var">i</span>-<span class="num">1</span>][<span class="var">j</span>], <span class="var">dp</span>[<span class="var">i</span>][<span class="var">j</span>-<span class="num">1</span>], <span class="var">dp</span>[<span class="var">i</span>-<span class="num">1</span>][<span class="var">j</span>-<span class="num">1</span>])
+    <span class="kw">return</span> <span class="var">dp</span>[<span class="var">m</span>][<span class="var">n</span>]</pre>
+  </div>
+</section>
+
+<!-- ============ TOPIC 16: Greedy ============ -->
+<section class="topic-section" id="t16">
+  <div class="topic-label">
+    <span class="num-tag">TOPIC 16</span>
+    <div class="accent-line"></div>
+  </div>
+  <h2 class="topic-title" style="color:var(--accent4);">Greedy Algorithms</h2>
+  <p class="topic-desc">// LOCAL OPTIMAL · GLOBAL OPTIMAL · EXCHANGE ARGUMENT · PROOF</p>
+
+  <div class="callout purple">
+    <div class="callout-icon">⚡</div>
+    <div>A greedy algorithm makes the <strong>locally optimal choice</strong> at each step. Works when: (1) Greedy choice property — local optimum leads to global optimum, (2) Optimal substructure. Proving correctness usually requires an <em>exchange argument</em> — show any deviation from greedy leads to equal or worse result.</div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent4);"></div>
+      <h3>Activity Selection</h3>
+      <p>Sort by finish time. Always pick the next activity that starts after current ends. O(n log n). Gives maximum non-overlapping activities.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent1);"></div>
+      <h3>Huffman Coding</h3>
+      <p>Build optimal prefix-free codes. Use min-heap: repeatedly merge two smallest frequencies. O(n log n). Foundation of lossless compression.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent2);"></div>
+      <h3>Fractional Knapsack</h3>
+      <p>Sort by value/weight ratio. Take as much of highest ratio items as possible. O(n log n). Unlike 0/1 knapsack, greedy works here.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent3);"></div>
+      <h3>Jump Game</h3>
+      <p>Track max reachable position. If current index exceeds max reach, return false. O(n) greedy beats O(n²) DP. Classic monotonic greedy.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent5);"></div>
+      <h3>Gas Station Circuit</h3>
+      <p>If total gas ≥ total cost, solution exists. Start from last failure point. O(n). Classic greedy with circular array and running sum.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent4);"></div>
+      <h3>Minimum Platforms</h3>
+      <p>Sort arrivals and departures separately. Use two pointers. At each point, count overlapping trains. O(n log n). Interval scheduling technique.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>greedy_algorithms.py</span>
+    </div>
+    <pre><span class="cm"># === INTERVAL SCHEDULING — Max non-overlapping intervals ===</span>
+<span class="kw">def</span> <span class="fn">erase_overlap_intervals</span>(<span class="var">intervals</span>):
+    <span class="var">intervals</span>.sort(<span class="var">key</span>=<span class="kw">lambda</span> <span class="var">x</span>: <span class="var">x</span>[<span class="num">1</span>])  <span class="cm"># sort by end time</span>
+    <span class="var">end</span> = <span class="fn">float</span>(<span class="str">'-inf'</span>); <span class="var">removed</span> = <span class="num">0</span>
+    <span class="kw">for</span> <span class="var">s</span>, <span class="var">e</span> <span class="kw">in</span> <span class="var">intervals</span>:
+        <span class="kw">if</span> <span class="var">s</span> >= <span class="var">end</span>: <span class="var">end</span> = <span class="var">e</span>   <span class="cm"># no overlap, take it</span>
+        <span class="kw">else</span>: <span class="var">removed</span> += <span class="num">1</span>       <span class="cm"># overlap, remove it</span>
+    <span class="kw">return</span> <span class="var">removed</span>
+
+<span class="cm"># === JUMP GAME II — Minimum jumps ===</span>
+<span class="kw">def</span> <span class="fn">jump</span>(<span class="var">nums</span>):
+    <span class="var">jumps</span> = <span class="var">farthest</span> = <span class="var">end</span> = <span class="num">0</span>
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(<span class="var">nums</span>)-<span class="num">1</span>):
+        <span class="var">farthest</span> = <span class="fn">max</span>(<span class="var">farthest</span>, <span class="var">i</span>+<span class="var">nums</span>[<span class="var">i</span>])
+        <span class="kw">if</span> <span class="var">i</span> == <span class="var">end</span>:
+            <span class="var">jumps</span> += <span class="num">1</span>; <span class="var">end</span> = <span class="var">farthest</span>
+    <span class="kw">return</span> <span class="var">jumps</span>
+
+<span class="cm"># === HUFFMAN ENCODING — Build optimal prefix tree ===</span>
+<span class="kw">import</span> heapq
+<span class="kw">def</span> <span class="fn">huffman</span>(<span class="var">freq</span>):
+    <span class="var">heap</span> = [[<span class="var">f</span>, [<span class="var">sym</span>, <span class="str2">""</span>]] <span class="kw">for</span> <span class="var">sym</span>, <span class="var">f</span> <span class="kw">in</span> <span class="var">freq</span>.items()]
+    heapq.heapify(<span class="var">heap</span>)
+    <span class="kw">while</span> <span class="fn">len</span>(<span class="var">heap</span>) > <span class="num">1</span>:
+        <span class="var">lo</span> = heapq.heappop(<span class="var">heap</span>); <span class="var">hi</span> = heapq.heappop(<span class="var">heap</span>)
+        <span class="kw">for</span> <span class="var">pair</span> <span class="kw">in</span> <span class="var">lo</span>[<span class="num">1</span>:]: <span class="var">pair</span>[<span class="num">1</span>] = <span class="str2">'0'</span> + <span class="var">pair</span>[<span class="num">1</span>]
+        <span class="kw">for</span> <span class="var">pair</span> <span class="kw">in</span> <span class="var">hi</span>[<span class="num">1</span>:]: <span class="var">pair</span>[<span class="num">1</span>] = <span class="str2">'1'</span> + <span class="var">pair</span>[<span class="num">1</span>]
+        heapq.heappush(<span class="var">heap</span>, [<span class="var">lo</span>[<span class="num">0</span>]+<span class="var">hi</span>[<span class="num">0</span>]] + <span class="var">lo</span>[<span class="num">1</span>:] + <span class="var">hi</span>[<span class="num">1</span>:])
+    <span class="kw">return</span> <span class="fn">sorted</span>(<span class="var">heap</span>[<span class="num">0</span>][<span class="num">1</span>:], <span class="var">key</span>=<span class="kw">lambda</span> <span class="var">p</span>: <span class="fn">len</span>(<span class="var">p</span>[-<span class="num">1</span>]))</pre>
+  </div>
+</section>
+
+<!-- ============ TOPIC 17: Backtracking ============ -->
+<section class="topic-section" id="t17">
+  <div class="topic-label">
+    <span class="num-tag">TOPIC 17</span>
+    <div class="accent-line"></div>
+  </div>
+  <h2 class="topic-title" style="color:var(--accent5);">Backtracking</h2>
+  <p class="topic-desc">// EXPLORE · CHOOSE · UNCHOOSE · CONSTRAINT PRUNING · DECISION TREE</p>
+
+  <div class="callout blue">
+    <div class="callout-icon">🌳</div>
+    <div>Backtracking = DFS on a decision tree. At each node: <strong>Choose</strong> an option, <strong>Explore</strong> further, <strong>Unchoose</strong> (backtrack). The power comes from <strong>pruning</strong> — cutting branches that can never lead to a valid solution early.</div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent5);"></div>
+      <h3>Permutations</h3>
+      <p>Generate all n! arrangements. At each level, try each unused element. O(n × n!). Use visited boolean array or swap-based approach.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent1);"></div>
+      <h3>Combinations / Subsets</h3>
+      <p>2ⁿ subsets. Choose to include or exclude each element. O(2ⁿ). For combinations(n,k): O(k × C(n,k)). Sort + start index avoids duplicates.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent2);"></div>
+      <h3>N-Queens</h3>
+      <p>Place N queens on N×N board with no conflicts. Track columns and diagonals with sets. O(N!). Classic constraint satisfaction problem.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent3);"></div>
+      <h3>Sudoku Solver</h3>
+      <p>Fill 9×9 grid satisfying row/col/box constraints. Try digits 1-9, backtrack on conflict. With pruning, solves most Sudokus quickly.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent4);"></div>
+      <h3>Word Search</h3>
+      <p>Find word in grid by DFS from each cell. Mark visited, explore 4 directions, unmark on backtrack. O(M×N × 4^L) where L = word length.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent5);"></div>
+      <h3>Palindrome Partition</h3>
+      <p>All ways to partition string into palindromes. At each cut point, check if prefix is palindrome, recurse on suffix. Prune non-palindrome prefixes.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>backtracking.py</span>
+    </div>
+    <pre><span class="cm"># === GENERAL BACKTRACKING TEMPLATE ===</span>
+<span class="kw">def</span> <span class="fn">backtrack</span>(<span class="var">state</span>, <span class="var">choices</span>, <span class="var">result</span>):
+    <span class="kw">if</span> <span class="fn">is_solution</span>(<span class="var">state</span>):
+        <span class="var">result</span>.append(<span class="fn">list</span>(<span class="var">state</span>)); <span class="kw">return</span>
+    <span class="kw">for</span> <span class="var">choice</span> <span class="kw">in</span> <span class="var">choices</span>:
+        <span class="kw">if</span> <span class="fn">is_valid</span>(<span class="var">state</span>, <span class="var">choice</span>):
+            <span class="var">state</span>.append(<span class="var">choice</span>)    <span class="cm"># Choose</span>
+            <span class="fn">backtrack</span>(<span class="var">state</span>, <span class="fn">next_choices</span>(<span class="var">choice</span>), <span class="var">result</span>)   <span class="cm"># Explore</span>
+            <span class="var">state</span>.pop()              <span class="cm"># Unchoose</span>
+
+<span class="cm"># === PERMUTATIONS — All orderings ===</span>
+<span class="kw">def</span> <span class="fn">permute</span>(<span class="var">nums</span>):
+    <span class="var">res</span> = []
+    <span class="kw">def</span> <span class="fn">bt</span>(<span class="var">path</span>, <span class="var">used</span>):
+        <span class="kw">if</span> <span class="fn">len</span>(<span class="var">path</span>) == <span class="fn">len</span>(<span class="var">nums</span>): <span class="var">res</span>.append(<span class="fn">list</span>(<span class="var">path</span>)); <span class="kw">return</span>
+        <span class="kw">for</span> <span class="var">i</span>, <span class="var">n</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">nums</span>):
+            <span class="kw">if</span> <span class="kw">not</span> <span class="var">used</span>[<span class="var">i</span>]:
+                <span class="var">used</span>[<span class="var">i</span>] = <span class="kw">True</span>; <span class="var">path</span>.append(<span class="var">n</span>)
+                <span class="fn">bt</span>(<span class="var">path</span>, <span class="var">used</span>)
+                <span class="var">used</span>[<span class="var">i</span>] = <span class="kw">False</span>; <span class="var">path</span>.pop()
+    <span class="fn">bt</span>([], [<span class="kw">False</span>]*<span class="fn">len</span>(<span class="var">nums</span>)); <span class="kw">return</span> <span class="var">res</span>
+
+<span class="cm"># === N-QUEENS ===</span>
+<span class="kw">def</span> <span class="fn">solve_n_queens</span>(<span class="var">n</span>):
+    <span class="var">res</span> = []; <span class="var">cols</span> = <span class="fn">set</span>(); <span class="var">diag1</span> = <span class="fn">set</span>(); <span class="var">diag2</span> = <span class="fn">set</span>()
+    <span class="kw">def</span> <span class="fn">bt</span>(<span class="var">row</span>, <span class="var">board</span>):
+        <span class="kw">if</span> <span class="var">row</span> == <span class="var">n</span>: <span class="var">res</span>.append([<span class="str2">''.join(r)</span> <span class="kw">for</span> <span class="var">r</span> <span class="kw">in</span> <span class="var">board</span>]); <span class="kw">return</span>
+        <span class="kw">for</span> <span class="var">col</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">n</span>):
+            <span class="kw">if</span> <span class="var">col</span> <span class="kw">in</span> <span class="var">cols</span> <span class="kw">or</span> (<span class="var">row</span>-<span class="var">col</span>) <span class="kw">in</span> <span class="var">diag1</span> <span class="kw">or</span> (<span class="var">row</span>+<span class="var">col</span>) <span class="kw">in</span> <span class="var">diag2</span>: <span class="kw">continue</span>
+            <span class="var">cols</span>.add(<span class="var">col</span>); <span class="var">diag1</span>.add(<span class="var">row</span>-<span class="var">col</span>); <span class="var">diag2</span>.add(<span class="var">row</span>+<span class="var">col</span>)
+            <span class="var">board</span>[<span class="var">row</span>][<span class="var">col</span>] = <span class="str2">'Q'</span>
+            <span class="fn">bt</span>(<span class="var">row</span>+<span class="num">1</span>, <span class="var">board</span>)
+            <span class="var">cols</span>.discard(<span class="var">col</span>); <span class="var">diag1</span>.discard(<span class="var">row</span>-<span class="var">col</span>); <span class="var">diag2</span>.discard(<span class="var">row</span>+<span class="var">col</span>)
+            <span class="var">board</span>[<span class="var">row</span>][<span class="var">col</span>] = <span class="str2">'.'</span>
+    <span class="fn">bt</span>(<span class="num">0</span>, [['.']*<span class="var">n</span> <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="var">n</span>)]); <span class="kw">return</span> <span class="var">res</span></pre>
+  </div>
+</section>
+
+<!-- ============ TOPIC 18: Advanced DSA ============ -->
+<section class="topic-section" id="t18">
+  <div class="topic-label">
+    <span class="num-tag">TOPIC 18</span>
+    <div class="accent-line"></div>
+  </div>
+  <h2 class="topic-title" style="color:var(--accent2);">Advanced DSA</h2>
+  <p class="topic-desc">// SEGMENT TREE · BIT · SPARSE TABLE · FLOYD CYCLE · BIT MANIPULATION · MATH</p>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent1);"></div>
+      <h3>Segment Tree</h3>
+      <p><span class="badge badge-b">O(n) build</span> <span class="badge badge-g">O(log n) query</span> <span class="badge badge-g">O(log n) update</span><br><br>Range queries (sum/min/max) and updates. 4n array storage. Supports lazy propagation for range updates. Essential for competitive programming.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent3);"></div>
+      <h3>Fenwick Tree (BIT)</h3>
+      <p><span class="badge badge-g">O(n) build</span> <span class="badge badge-g">O(log n) query</span> <span class="badge badge-g">O(log n) update</span><br><br>Prefix sums with point updates. Uses bit trick: i += i & (-i) to traverse. Simpler code than segment tree, but limited to invertible operations.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent4);"></div>
+      <h3>Sparse Table</h3>
+      <p><span class="badge badge-y">O(n log n) build</span> <span class="badge badge-b">O(1) query</span><br><br>Immutable range minimum/maximum queries in O(1). Precompute 2^j jumps. Cannot handle updates. Ideal for static arrays, LCA queries.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent2);"></div>
+      <h3>Bit Manipulation</h3>
+      <p>AND, OR, XOR, shifts. Key tricks: x & (x-1) clears lowest bit, x & (-x) isolates lowest bit, x ^ x = 0. Used in subset enumeration, power of two checks, counting set bits.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent5);"></div>
+      <h3>Mathematical Algorithms</h3>
+      <p>Sieve of Eratosthenes O(n log log n), GCD/LCM (Euclidean), Fast Exponentiation O(log n), Modular Inverse (Fermat's little theorem), Chinese Remainder Theorem.</p>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--accent1);"></div>
+      <h3>Floyd's Cycle Detection</h3>
+      <p>Fast and slow pointers for cycle detection in O(n) time O(1) space. Also finds cycle start. Works on linked lists, arrays (find duplicate), number sequences.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>advanced_dsa.py</span>
+    </div>
+    <pre><span class="cm"># === SEGMENT TREE — Sum with range update ===</span>
+<span class="kw">class</span> <span class="cls">SegTree</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="var">self</span>, <span class="var">arr</span>):
+        <span class="var">self</span>.n = <span class="fn">len</span>(<span class="var">arr</span>)
+        <span class="var">self</span>.tree = [<span class="num">0</span>] * (<span class="num">4</span> * <span class="var">self</span>.n)
+        <span class="var">self</span>.<span class="fn">build</span>(<span class="var">arr</span>, <span class="num">0</span>, <span class="num">0</span>, <span class="var">self</span>.n-<span class="num">1</span>)
+
+    <span class="kw">def</span> <span class="fn">build</span>(<span class="var">self</span>, <span class="var">arr</span>, <span class="var">node</span>, <span class="var">lo</span>, <span class="var">hi</span>):
+        <span class="kw">if</span> <span class="var">lo</span> == <span class="var">hi</span>: <span class="var">self</span>.tree[<span class="var">node</span>] = <span class="var">arr</span>[<span class="var">lo</span>]; <span class="kw">return</span>
+        <span class="var">mid</span> = (<span class="var">lo</span>+<span class="var">hi</span>)//<span class="num">2</span>
+        <span class="var">self</span>.<span class="fn">build</span>(<span class="var">arr</span>, <span class="num">2</span>*<span class="var">node</span>+<span class="num">1</span>, <span class="var">lo</span>, <span class="var">mid</span>)
+        <span class="var">self</span>.<span class="fn">build</span>(<span class="var">arr</span>, <span class="num">2</span>*<span class="var">node</span>+<span class="num">2</span>, <span class="var">mid</span>+<span class="num">1</span>, <span class="var">hi</span>)
+        <span class="var">self</span>.tree[<span class="var">node</span>] = <span class="var">self</span>.tree[<span class="num">2</span>*<span class="var">node</span>+<span class="num">1</span>] + <span class="var">self</span>.tree[<span class="num">2</span>*<span class="var">node</span>+<span class="num">2</span>]
+
+    <span class="kw">def</span> <span class="fn">query</span>(<span class="var">self</span>, <span class="var">l</span>, <span class="var">r</span>, <span class="var">node</span>=<span class="num">0</span>, <span class="var">lo</span>=<span class="num">0</span>, <span class="var">hi</span>=<span class="kw">None</span>):
+        <span class="kw">if</span> <span class="var">hi</span> <span class="kw">is</span> <span class="kw">None</span>: <span class="var">hi</span> = <span class="var">self</span>.n-<span class="num">1</span>
+        <span class="kw">if</span> <span class="var">l</span> > <span class="var">hi</span> <span class="kw">or</span> <span class="var">r</span> < <span class="var">lo</span>: <span class="kw">return</span> <span class="num">0</span>
+        <span class="kw">if</span> <span class="var">l</span> <= <span class="var">lo</span> <span class="kw">and</span> <span class="var">hi</span> <= <span class="var">r</span>: <span class="kw">return</span> <span class="var">self</span>.tree[<span class="var">node</span>]
+        <span class="var">mid</span> = (<span class="var">lo</span>+<span class="var">hi</span>)//<span class="num">2</span>
+        <span class="kw">return</span> (<span class="var">self</span>.<span class="fn">query</span>(<span class="var">l</span>, <span class="var">r</span>, <span class="num">2</span>*<span class="var">node</span>+<span class="num">1</span>, <span class="var">lo</span>, <span class="var">mid</span>) +
+                <span class="var">self</span>.<span class="fn">query</span>(<span class="var">l</span>, <span class="var">r</span>, <span class="num">2</span>*<span class="var">node</span>+<span class="num">2</span>, <span class="var">mid</span>+<span class="num">1</span>, <span class="var">hi</span>))
+
+<span class="cm"># === FENWICK TREE (BIT) ===</span>
+<span class="kw">class</span> <span class="cls">BIT</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="var">self</span>, <span class="var">n</span>): <span class="var">self</span>.bit = [<span class="num">0</span>]*(<span class="var">n</span>+<span class="num">1</span>); <span class="var">self</span>.n = <span class="var">n</span>
+    <span class="kw">def</span> <span class="fn">update</span>(<span class="var">self</span>, <span class="var">i</span>, <span class="var">delta</span>):
+        <span class="kw">while</span> <span class="var">i</span> <= <span class="var">self</span>.n: <span class="var">self</span>.bit[<span class="var">i</span>] += <span class="var">delta</span>; <span class="var">i</span> += <span class="var">i</span> & (-<span class="var">i</span>)
+    <span class="kw">def</span> <span class="fn">prefix_sum</span>(<span class="var">self</span>, <span class="var">i</span>):
+        <span class="var">s</span> = <span class="num">0</span>
+        <span class="kw">while</span> <span class="var">i</span> > <span class="num">0</span>: <span class="var">s</span> += <span class="var">self</span>.bit[<span class="var">i</span>]; <span class="var">i</span> -= <span class="var">i</span> & (-<span class="var">i</span>)
+        <span class="kw">return</span> <span class="var">s</span>
+
+<span class="cm"># === BIT MANIPULATION TRICKS ===</span>
+<span class="kw">def</span> <span class="fn">bit_tricks</span>(<span class="var">x</span>):
+    <span class="var">is_power_of_2</span> = <span class="var">x</span> > <span class="num">0</span> <span class="kw">and</span> (<span class="var">x</span> & (<span class="var">x</span>-<span class="num">1</span>)) == <span class="num">0</span>
+    <span class="var">lowest_set_bit</span> = <span class="var">x</span> & (-<span class="var">x</span>)
+    <span class="var">count_set_bits</span> = bin(<span class="var">x</span>).count(<span class="str2">'1'</span>)
+    <span class="var">clear_lowest</span> = <span class="var">x</span> & (<span class="var">x</span>-<span class="num">1</span>)
+    <span class="kw">return</span> <span class="var">is_power_of_2</span>, <span class="var">lowest_set_bit</span>, <span class="var">count_set_bits</span>
+
+<span class="cm"># === SIEVE OF ERATOSTHENES ===</span>
+<span class="kw">def</span> <span class="fn">sieve</span>(<span class="var">n</span>):
+    <span class="var">is_prime</span> = [<span class="kw">True</span>] * (<span class="var">n</span>+<span class="num">1</span>); <span class="var">is_prime</span>[<span class="num">0</span>] = <span class="var">is_prime</span>[<span class="num">1</span>] = <span class="kw">False</span>
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, <span class="fn">int</span>(<span class="var">n</span>**.<span class="num">5</span>)+<span class="num">1</span>):
+        <span class="kw">if</span> <span class="var">is_prime</span>[<span class="var">i</span>]:
+            <span class="kw">for</span> <span class="var">j</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">i</span>*<span class="var">i</span>, <span class="var">n</span>+<span class="num">1</span>, <span class="var">i</span>): <span class="var">is_prime</span>[<span class="var">j</span>] = <span class="kw">False</span>
+    <span class="kw">return</span> [<span class="var">i</span> <span class="kw">for</span> <span class="var">i</span>, <span class="var">p</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">is_prime</span>) <span class="kw">if</span> <span class="var">p</span>]
+
+<span class="cm"># === FAST EXPONENTIATION — O(log n) ===</span>
+<span class="kw">def</span> <span class="fn">fast_pow</span>(<span class="var">base</span>, <span class="var">exp</span>, <span class="var">mod</span>):
+    <span class="var">result</span> = <span class="num">1</span>; <span class="var">base</span> %= <span class="var">mod</span>
+    <span class="kw">while</span> <span class="var">exp</span> > <span class="num">0</span>:
+        <span class="kw">if</span> <span class="var">exp</span> % <span class="num">2</span> == <span class="num">1</span>: <span class="var">result</span> = <span class="var">result</span> * <span class="var">base</span> % <span class="var">mod</span>
+        <span class="var">base</span> = <span class="var">base</span> * <span class="var">base</span> % <span class="var">mod</span>; <span class="var">exp</span> //= <span class="num">2</span>
+    <span class="kw">return</span> <span class="var">result</span></pre>
+  </div>
+
+  <div class="callout green">
+    <div class="callout-icon">🏆</div>
+    <div><strong>Complete DSA Mastery Checklist:</strong> Arrays/Strings (sliding window, two pointers) → Recursion + Memoization → Sorting + Searching → Stack + Queue (monotonic) → Linked List (fast/slow pointers) → Trees (BFS/DFS, LCA) → Graphs (Dijkstra, Union-Find, Topo) → Heaps (two-heap tricks) → DP (1D/2D/knapsack) → Greedy (exchange argument) → Backtracking (pruning) → Advanced (Seg Tree, BIT, Bit Manipulation).</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Topic</th><th>Must-Know Problems</th><th>Pattern</th><th>Difficulty</th></tr>
+      <tr><td>Graphs</td><td>Number of Islands, Course Schedule</td><td>BFS/DFS/Topo</td><td class="ok">Medium</td></tr>
+      <tr><td>DP</td><td>Coin Change, Longest Inc. Subseq.</td><td>1D/2D Table</td><td class="ok">Medium</td></tr>
+      <tr><td>Backtracking</td><td>N-Queens, Combination Sum</td><td>DFS + Prune</td><td class="ok">Medium</td></tr>
+      <tr><td>Greedy</td><td>Jump Game, Interval Scheduling</td><td>Sort + Scan</td><td class="ok">Medium</td></tr>
+      <tr><td>Heap</td><td>Median Stream, K Closest Points</td><td>Two-Heap</td><td class="bad">Hard</td></tr>
+      <tr><td>Seg Tree</td><td>Range Sum Query, Count Inversions</td><td>Divide Tree</td><td class="bad">Hard</td></tr>
+      <tr><td>Bitmask DP</td><td>TSP, Shortest Path Visiting All</td><td>dp[mask][node]</td><td class="bad">Hard</td></tr>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<footer style="text-align:center;padding:50px 24px;border-top:1px solid var(--border);color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px;position:relative;z-index:1;">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--border);margin-bottom:12px;">DSA MASTERY COMPLETE</div>
+  Part 3 of 3 — Topics 13–18: Advanced &nbsp;·&nbsp;
+  <span style="color:var(--accent3);">All 18 Topics Covered ✓</span>
+</footer>
+
+</body>
+</html>

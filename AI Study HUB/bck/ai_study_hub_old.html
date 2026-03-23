@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Study Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --accent: #00e5ff;
+    --accent2: #b967ff;
+    --accent3: #ff6b35;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --green: #00ff88;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glowing orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.15;
+  }
+  .orb1 { width: 500px; height: 500px; background: var(--accent2); top: -200px; right: -100px; animation: drift 20s ease-in-out infinite; }
+  .orb2 { width: 400px; height: 400px; background: var(--accent); bottom: -100px; left: -100px; animation: drift 25s ease-in-out infinite reverse; }
+  .orb3 { width: 300px; height: 300px; background: var(--accent3); top: 40%; left: 40%; animation: drift 18s ease-in-out infinite 5s; }
+
+  @keyframes drift {
+    0%, 100% { transform: translate(0,0); }
+    33% { transform: translate(30px,-30px); }
+    66% { transform: translate(-20px,20px); }
+  }
+
+  /* Header */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 60px 40px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    animation: fadeIn 0.6s ease both;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+    animation: fadeIn 0.6s ease 0.1s both;
+  }
+
+  h1 span.cyan { color: var(--accent); }
+  h1 span.purple { color: var(--accent2); }
+
+  .subtitle {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 1px;
+    animation: fadeIn 0.6s ease 0.2s both;
+  }
+
+  .progress-bar-wrap {
+    margin: 32px auto 0;
+    max-width: 400px;
+    animation: fadeIn 0.6s ease 0.3s both;
+  }
+  .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .progress-bar { height: 3px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; animation: fillBar 1.5s ease 0.8s forwards; }
+  @keyframes fillBar { to { width: 35%; } }
+
+  /* Main layout */
+  main {
+    position: relative;
+    z-index: 10;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 60px 30px;
+  }
+
+  /* Section headers */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: var(--text);
+  }
+
+  /* MODULE CARDS */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    margin-bottom: 80px;
+  }
+
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .module-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .module-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 12px;
+  }
+
+  .module-card:hover::before { opacity: 1; }
+
+  .card-sql::before { background: linear-gradient(135deg, rgba(255, 47, 0, 0.05), transparent); }
+  .card-sql:hover { border-color: var(--accent); box-shadow: 0 0 30px rgba(255, 60, 0, 0.1); }
+
+  .card-numpy::before { background: linear-gradient(135deg, rgba(0,229,255,0.05), transparent); }
+  .card-numpy:hover { border-color: var(--accent); box-shadow: 0 0 30px rgba(0,229,255,0.1); }
+
+  .card-pandas::before { background: linear-gradient(135deg, rgba(0,255,136,0.05), transparent); }
+  .card-pandas:hover { border-color: var(--green); box-shadow: 0 0 30px rgba(0,255,136,0.1); }
+
+  .card-matplotlib::before { background: linear-gradient(135deg, rgba(255,107,53,0.05), transparent); }
+  .card-matplotlib:hover { border-color: var(--accent3); box-shadow: 0 0 30px rgba(255,107,53,0.1); }
+
+  .card-sklearn::before { background: linear-gradient(135deg, rgba(185,103,255,0.05), transparent); }
+  .card-sklearn:hover { border-color: var(--accent2); box-shadow: 0 0 30px rgba(185,103,255,0.1); }
+
+  .card-ml::before { background: linear-gradient(135deg, rgba(255,215,0,0.05), transparent); }
+  .card-ml:hover { border-color: #ffd700; box-shadow: 0 0 30px rgba(255,215,0,0.1); }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+
+  .card-tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-weight: 500;
+  }
+
+  .tag-numpy { background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
+  .tag-pandas { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+  .tag-matplotlib { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
+  .tag-sklearn { background: rgba(185,103,255,0.1); color: var(--accent2); border: 1px solid rgba(185,103,255,0.2); }
+  .tag-ml { background: rgba(255,215,0,0.1); color: #ffd700; border: 1px solid rgba(255,215,0,0.2); }
+
+  .card-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .card-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .topic-chip {
+    font-size: 10px;
+    padding: 3px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--muted);
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .open-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  .open-btn::after { content: '→'; transition: transform 0.2s; }
+  .module-card:hover .open-btn::after { transform: translateX(4px); }
+
+  /* ROADMAP */
+  .roadmap-section { margin-bottom: 80px; }
+
+  .roadmap {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3));
+    border-radius: 99px;
+  }
+
+  .roadmap-item {
+    position: relative;
+    margin-bottom: 28px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .roadmap-dot {
+    position: absolute;
+    left: -28px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .roadmap-dot.done { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  .roadmap-dot.active { background: var(--accent2); border-color: var(--accent2); box-shadow: 0 0 10px var(--accent2); animation: pulse 2s ease-in-out infinite; }
+  .roadmap-dot.todo { background: var(--surface2); }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 10px var(--accent2); }
+    50% { box-shadow: 0 0 20px var(--accent2), 0 0 40px rgba(185,103,255,0.3); }
+  }
+
+  .roadmap-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    transition: border-color 0.2s;
+  }
+
+  .roadmap-item:hover .roadmap-content { border-color: var(--border); }
+
+  .roadmap-phase {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .phase-num {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .phase-badge {
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    margin-left: auto;
+  }
+
+  .badge-done { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+  .badge-active { background: rgba(185,103,255,0.1); color: var(--accent2); border: 1px solid rgba(185,103,255,0.2); }
+  .badge-upcoming { background: rgba(107,107,138,0.1); color: var(--muted); border: 1px solid var(--border); }
+
+  .phase-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  .phase-libs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .lib-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+  }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 80px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 20px;
+    text-align: center;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* TIPS SECTION */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 80px;
+  }
+
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    animation: fadeUp 0.5s ease both;
+    border-left: 3px solid var(--accent);
+  }
+
+  .tip-card:nth-child(2) { border-left-color: var(--accent2); }
+  .tip-card:nth-child(3) { border-left-color: var(--accent3); }
+  .tip-card:nth-child(4) { border-left-color: var(--green); }
+
+  .tip-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+
+  .tip-text { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  /* Footer */
+  footer {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid var(--border);
+    padding: 30px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .footer-brand { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--text); }
+
+  /* Animations */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .modules-grid .module-card:nth-child(1) { animation-delay: 0.1s; }
+  .modules-grid .module-card:nth-child(2) { animation-delay: 0.15s; }
+  .modules-grid .module-card:nth-child(3) { animation-delay: 0.2s; }
+  .modules-grid .module-card:nth-child(4) { animation-delay: 0.25s; }
+  .modules-grid .module-card:nth-child(5) { animation-delay: 0.3s; }
+
+  .roadmap-item:nth-child(1) { animation-delay: 0.1s; }
+  .roadmap-item:nth-child(2) { animation-delay: 0.15s; }
+  .roadmap-item:nth-child(3) { animation-delay: 0.2s; }
+  .roadmap-item:nth-child(4) { animation-delay: 0.25s; }
+  .roadmap-item:nth-child(5) { animation-delay: 0.3s; }
+  .roadmap-item:nth-child(6) { animation-delay: 0.35s; }
+  .roadmap-item:nth-child(7) { animation-delay: 0.4s; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+  @media (max-width: 640px) {
+    header { padding: 40px 20px 30px; }
+    main { padding: 40px 16px; }
+    .modules-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<header>
+  <div class="badge">// SELF STUDY PORTAL</div>
+  <h1><span class="cyan">AI</span> Study<br><span class="purple">Hub</span></h1>
+  <p class="subtitle">Your personal roadmap from Python basics → Machine Learning mastery</p>
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><span>Overall Progress</span><span>35%</span></div>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Modules</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">7</div>
+      <div class="stat-label">Phases</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">∞</div>
+      <div class="stat-label">Topics</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">1</div>
+      <div class="stat-label">Goal: AGI</div>
+    </div>
+  </div>
+
+  <!-- MODULES -->
+  <div class="section-label">// 01 — STUDY MODULES</div>
+  <h2 class="section-title">Your Learning Library</h2>
+
+  <div class="modules-grid">
+
+    <a class="module-card card-numpy" href="numpy_complete_guide.html">
+      <div class="card-header">
+        <div class="card-icon">🔢</div>
+        <span class="card-tag tag-numpy">Foundation</span>
+      </div>
+      <div class="card-name">NumPy</div>
+      <div class="card-desc">Numerical computing powerhouse. Learn n-dimensional arrays, vectorized operations, broadcasting, and linear algebra fundamentals that underpin every ML framework.</div>
+      <div class="card-topics">
+        <span class="topic-chip">ndarray</span>
+        <span class="topic-chip">Broadcasting</span>
+        <span class="topic-chip">Linear Algebra</span>
+        <span class="topic-chip">Indexing</span>
+        <span class="topic-chip">Universal Functions</span>
+      </div>
+      <div class="card-footer">
+        <span>Complete Guide</span>
+        <span class="open-btn">Open Module</span>
+      </div>
+    </a>
+
+    <a class="module-card card-pandas" href="pandas_complete_guide.html">
+      <div class="card-header">
+        <div class="card-icon">🐼</div>
+        <span class="card-tag tag-pandas">Data Wrangling</span>
+      </div>
+      <div class="card-name">Pandas</div>
+      <div class="card-desc">The essential toolkit for data manipulation. Master DataFrames, Series, data cleaning, merging, groupby operations, and real-world data preprocessing pipelines.</div>
+      <div class="card-topics">
+        <span class="topic-chip">DataFrame</span>
+        <span class="topic-chip">GroupBy</span>
+        <span class="topic-chip">Merge & Join</span>
+        <span class="topic-chip">Time Series</span>
+        <span class="topic-chip">Data Cleaning</span>
+      </div>
+      <div class="card-footer">
+        <span>Complete Guide</span>
+        <span class="open-btn">Open Module</span>
+      </div>
+    </a>
+
+    <a class="module-card card-matplotlib" href="matplotlib_complete_guide.html">
+      <div class="card-header">
+        <div class="card-icon">📊</div>
+        <span class="card-tag tag-matplotlib">Visualization</span>
+      </div>
+      <div class="card-name">Matplotlib</div>
+      <div class="card-desc">Transform raw data into compelling visuals. Learn to create publication-quality plots, subplots, custom styling, and interactive visualizations for EDA and reporting.</div>
+      <div class="card-topics">
+        <span class="topic-chip">Pyplot</span>
+        <span class="topic-chip">Subplots</span>
+        <span class="topic-chip">Histograms</span>
+        <span class="topic-chip">Seaborn</span>
+        <span class="topic-chip">Custom Styles</span>
+      </div>
+      <div class="card-footer">
+        <span>Complete Guide</span>
+        <span class="open-btn">Open Module</span>
+      </div>
+    </a>
+
+    <a class="module-card card-sklearn" href="sklearn_guide.html">
+      <div class="card-header">
+        <div class="card-icon">⚙️</div>
+        <span class="card-tag tag-sklearn">ML Toolkit</span>
+      </div>
+      <div class="card-name">Scikit-Learn</div>
+      <div class="card-desc">The go-to ML library. Master classification, regression, clustering, model evaluation, hyperparameter tuning, and building complete end-to-end ML pipelines.</div>
+      <div class="card-topics">
+        <span class="topic-chip">Classifiers</span>
+        <span class="topic-chip">Pipelines</span>
+        <span class="topic-chip">Cross-Validation</span>
+        <span class="topic-chip">GridSearchCV</span>
+        <span class="topic-chip">Preprocessing</span>
+      </div>
+      <div class="card-footer">
+        <span>Complete Guide</span>
+        <span class="open-btn">Open Module</span>
+      </div>
+    </a>
+
+    <a class="module-card card-ml" href="ml_complete_guide.html">
+      <div class="card-header">
+        <div class="card-icon">🤖</div>
+        <span class="card-tag tag-ml">Core Theory</span>
+      </div>
+      <div class="card-name">Machine Learning</div>
+      <div class="card-desc">Deep dive into ML theory and algorithms. From gradient descent and decision trees to ensemble methods, neural networks, and deploying production-ready models.</div>
+      <div class="card-topics">
+        <span class="topic-chip">Gradient Descent</span>
+        <span class="topic-chip">Decision Trees</span>
+        <span class="topic-chip">Neural Networks</span>
+        <span class="topic-chip">Ensembles</span>
+        <span class="topic-chip">Model Deployment</span>
+      </div>
+      <div class="card-footer">
+        <span>Complete Guide</span>
+        <span class="open-btn">Open Module</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="roadmap-section">
+    <div class="section-label">// 02 — LEARNING PATH</div>
+    <h2 class="section-title">AI Mastery Roadmap</h2>
+
+    <div class="roadmap">
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot done"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">
+            <span class="phase-num">PHASE 01</span>
+            <span class="phase-title">Python Fundamentals</span>
+            <span class="phase-badge badge-done">Completed</span>
+          </div>
+          <p class="phase-desc">Variables, loops, functions, OOP, file I/O, list comprehensions. These are the building blocks every AI practitioner must have second nature.</p>
+          <div class="phase-libs"><span class="lib-tag">Python 3.x</span><span class="lib-tag">OOP</span><span class="lib-tag">Iterators</span></div>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot done"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">
+            <span class="phase-num">PHASE 02</span>
+            <span class="phase-title">Math & Statistics</span>
+            <span class="phase-badge badge-done">Completed</span>
+          </div>
+          <p class="phase-desc">Linear algebra (vectors, matrices, eigenvalues), calculus (derivatives, chain rule), probability & statistics. The mathematical language of machine learning.</p>
+          <div class="phase-libs"><span class="lib-tag">Linear Algebra</span><span class="lib-tag">Calculus</span><span class="lib-tag">Statistics</span><span class="lib-tag">Probability</span></div>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot active"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">
+            <span class="phase-num">PHASE 03</span>
+            <span class="phase-title">Data Science Stack</span>
+            <span class="phase-badge badge-active">In Progress</span>
+          </div>
+          <p class="phase-desc">NumPy for numerical computing, Pandas for data wrangling, Matplotlib/Seaborn for visualization. The three pillars of every data science workflow — your current focus.</p>
+          <div class="phase-libs"><span class="lib-tag">NumPy ✦</span><span class="lib-tag">Pandas ✦</span><span class="lib-tag">Matplotlib ✦</span><span class="lib-tag">Seaborn</span></div>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot todo"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">
+            <span class="phase-num">PHASE 04</span>
+            <span class="phase-title">Classical Machine Learning</span>
+            <span class="phase-badge badge-upcoming">Upcoming</span>
+          </div>
+          <p class="phase-desc">Supervised & unsupervised learning, model evaluation, feature engineering. Master Scikit-Learn and understand algorithms from first principles before applying them.</p>
+          <div class="phase-libs"><span class="lib-tag">Scikit-Learn ✦</span><span class="lib-tag">SVM</span><span class="lib-tag">Random Forests</span><span class="lib-tag">K-Means</span></div>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot todo"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">
+            <span class="phase-num">PHASE 05</span>
+            <span class="phase-title">Deep Learning</span>
+            <span class="phase-badge badge-upcoming">Upcoming</span>
+          </div>
+          <p class="phase-desc">Neural networks, backpropagation, CNNs for vision, RNNs/LSTMs for sequences. Learn to build, train, and debug deep networks for real-world problems.</p>
+          <div class="phase-libs"><span class="lib-tag">TensorFlow</span><span class="lib-tag">PyTorch</span><span class="lib-tag">Keras</span><span class="lib-tag">CUDA</span></div>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot todo"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">
+            <span class="phase-num">PHASE 06</span>
+            <span class="phase-title">NLP & Transformers</span>
+            <span class="phase-badge badge-upcoming">Upcoming</span>
+          </div>
+          <p class="phase-desc">Text processing, embeddings, attention mechanism, the Transformer architecture. Understand the technology behind GPT, BERT, and modern large language models.</p>
+          <div class="phase-libs"><span class="lib-tag">HuggingFace</span><span class="lib-tag">BERT</span><span class="lib-tag">GPT</span><span class="lib-tag">Tokenizers</span></div>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot todo"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase">
+            <span class="phase-num">PHASE 07</span>
+            <span class="phase-title">MLOps & Deployment</span>
+            <span class="phase-badge badge-upcoming">Upcoming</span>
+          </div>
+          <p class="phase-desc">Model serving, monitoring, CI/CD for ML, containerization, cloud platforms. Turn models from notebooks into production systems that scale and self-improve.</p>
+          <div class="phase-libs"><span class="lib-tag">Docker</span><span class="lib-tag">FastAPI</span><span class="lib-tag">MLflow</span><span class="lib-tag">AWS/GCP</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="section-label">// 03 — STUDY STRATEGY</div>
+  <h2 class="section-title">Tips for Effective Learning</h2>
+
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-title">📝 Code Every Day</div>
+      <div class="tip-text">Even 30 minutes daily beats 5-hour weekend sessions. Consistency builds intuition. Retype examples by hand — don't just copy-paste. Muscle memory is real.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">🔬 Project-Driven Learning</div>
+      <div class="tip-text">Pick a dataset you're genuinely curious about. Apply each library to that same dataset. This builds a connected mental model instead of isolated knowledge chunks.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">🧩 Understand Before Moving On</div>
+      <div class="tip-text">If you can't explain it simply, you don't understand it yet. Implement algorithms from scratch before relying on library abstractions — it reveals what's really happening.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">🏆 Kaggle Competitions</div>
+      <div class="tip-text">After Phase 4, jump into beginner Kaggle competitions. Reading top solutions teaches more than any tutorial. Real messy data reveals gaps that textbooks never show.</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span class="footer-brand">AI Study Hub</span>
+  <span>5 modules · 7 phases · 1 goal</span>
+  <span>Built for self-study</span>
+</footer>
+
+</body>
+</html>

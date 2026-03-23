@@ -1,0 +1,2288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReactMaster — Learn React Step by Step</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* === CSS Variables === */
+    :root {
+      --bg: #0d0e14;
+      --bg2: #13141d;
+      --bg3: #1a1c28;
+      --bg4: #212338;
+      --border: rgba(120, 130, 220, 0.12);
+      --accent: #7c6ff7;
+      --accent2: #5bc9a0;
+      --accent3: #f0965a;
+      --accent4: #e85d75;
+      --text: #e8eaf5;
+      --text2: #9398bb;
+      --text3: #5c6091;
+      --code-bg: #0a0b11;
+      --sidebar-w: 280px;
+      --header-h: 58px;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    .light {
+      --bg: #f5f6ff;
+      --bg2: #ffffff;
+      --bg3: #eceef8;
+      --bg4: #e0e3f5;
+      --border: rgba(80, 90, 180, 0.14);
+      --accent: #5a4fd6;
+      --accent2: #1a9e73;
+      --accent3: #d4700a;
+      --accent4: #c93050;
+      --text: #1a1d3a;
+      --text2: #4a5080;
+      --text3: #8890c0;
+      --code-bg: #1a1c28;
+      --shadow: 0 4px 24px rgba(80,80,180,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+    h1,h2,h3,h4 { font-family: 'Fraunces', serif; font-weight: 700; }
+
+    /* === LAYOUT === */
+    #app { display: flex; height: 100vh; overflow: hidden; }
+
+    /* === HEADER === */
+    #header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--header-h);
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 16px;
+    }
+    #header .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Fraunces', serif; font-size: 1.25rem;
+      font-weight: 700; color: var(--accent); white-space: nowrap;
+    }
+    #header .logo span { font-style: italic; color: var(--accent2); }
+    #search-wrap {
+      flex: 1; max-width: 380px; position: relative;
+    }
+    #search-input {
+      width: 100%; padding: 8px 14px 8px 36px;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    #search-input:focus { border-color: var(--accent); }
+    #search-input::placeholder { color: var(--text3); }
+    .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 0.9rem; }
+    #header .header-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+    .theme-btn {
+      padding: 6px 12px; border-radius: 8px;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); cursor: pointer; font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .theme-btn:hover { background: var(--bg4); border-color: var(--accent); }
+    .progress-badge {
+      padding: 5px 12px; border-radius: 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white; font-size: 0.75rem; font-weight: 600;
+    }
+
+    /* === SIDEBAR === */
+    #sidebar {
+      position: fixed; top: var(--header-h); left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      overflow-y: auto; padding: 16px 12px;
+      transition: transform 0.3s;
+      z-index: 90;
+    }
+    #sidebar::-webkit-scrollbar { width: 4px; }
+    #sidebar::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 4px; }
+    .cat-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text3);
+      padding: 12px 8px 6px; margin-top: 6px;
+    }
+    .topic-btn {
+      display: flex; align-items: center; gap: 10px; width: 100%;
+      padding: 9px 12px; border-radius: 8px; border: none;
+      background: transparent; color: var(--text2);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem;
+      cursor: pointer; text-align: left;
+      transition: all 0.15s; position: relative;
+    }
+    .topic-btn:hover { background: var(--bg3); color: var(--text); }
+    .topic-btn.active {
+      background: linear-gradient(135deg, rgba(124,111,247,0.2), rgba(91,201,160,0.1));
+      color: var(--text);
+      border: 1px solid rgba(124,111,247,0.3);
+    }
+    .topic-btn .icon { font-size: 1rem; flex-shrink: 0; }
+    .topic-btn .done-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent2); margin-left: auto; flex-shrink: 0;
+    }
+    .sidebar-footer {
+      padding: 16px 8px; border-top: 1px solid var(--border); margin-top: 16px;
+    }
+    .sidebar-nav-btn {
+      display: flex; align-items: center; gap: 8px; width: 100%;
+      padding: 9px 12px; border-radius: 8px; border: none;
+      background: transparent; color: var(--text2);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem;
+      cursor: pointer; text-align: left; transition: all 0.15s;
+    }
+    .sidebar-nav-btn:hover { background: var(--bg3); color: var(--text); }
+    .sidebar-nav-btn.active { color: var(--accent); font-weight: 600; }
+
+    /* === MAIN CONTENT === */
+    #main {
+      margin-left: var(--sidebar-w);
+      margin-top: var(--header-h);
+      flex: 1; overflow-y: auto; padding: 32px;
+      background: var(--bg);
+    }
+    #main::-webkit-scrollbar { width: 6px; }
+    #main::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 4px; }
+
+    /* === SEARCH RESULTS === */
+    .search-results { padding: 0; }
+    .search-results h2 { margin-bottom: 20px; font-size: 1.5rem; }
+    .search-result-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px; border-radius: var(--radius);
+      background: var(--bg2); border: 1px solid var(--border);
+      cursor: pointer; margin-bottom: 10px; transition: all 0.2s;
+    }
+    .search-result-item:hover { border-color: var(--accent); transform: translateX(4px); }
+    .search-result-item .ri { font-size: 1.4rem; }
+    .search-result-item h4 { margin-bottom: 2px; }
+    .search-result-item p { font-size: 0.8rem; color: var(--text2); }
+
+    /* === HOME PAGE === */
+    .home-hero {
+      text-align: center; padding: 48px 0 40px;
+    }
+    .home-hero h1 { font-size: 3.2rem; line-height: 1.1; margin-bottom: 16px; }
+    .home-hero h1 .acc { color: var(--accent); font-style: italic; }
+    .home-hero h1 .acc2 { color: var(--accent2); }
+    .home-hero p { font-size: 1.1rem; color: var(--text2); max-width: 560px; margin: 0 auto 32px; }
+    .home-hero .cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      padding: 12px 28px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #9d6ef7);
+      color: white; border: none; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,111,247,0.4); }
+    .btn-secondary {
+      padding: 12px 28px; border-radius: 10px;
+      background: var(--bg3); color: var(--text); border: 1px solid var(--border);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--bg4); border-color: var(--accent); }
+
+    /* Stats */
+    .stats-row {
+      display: flex; gap: 16px; justify-content: center; margin: 32px 0; flex-wrap: wrap;
+    }
+    .stat-card {
+      padding: 20px 28px; border-radius: var(--radius);
+      background: var(--bg2); border: 1px solid var(--border);
+      text-align: center; min-width: 120px;
+    }
+    .stat-card .num {
+      font-family: 'Fraunces', serif; font-size: 2.2rem; font-weight: 700;
+      color: var(--accent); line-height: 1;
+    }
+    .stat-card .lbl { font-size: 0.75rem; color: var(--text2); margin-top: 6px; }
+
+    /* Topic cards grid */
+    .section-title { font-size: 1.4rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .topics-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .topic-card {
+      padding: 20px; border-radius: var(--radius);
+      background: var(--bg2); border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden;
+    }
+    .topic-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .topic-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow); }
+    .topic-card:hover::before { opacity: 0.06; }
+    .topic-card .card-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .topic-card h3 { font-size: 1rem; margin-bottom: 6px; position: relative; }
+    .topic-card p { font-size: 0.8rem; color: var(--text2); position: relative; line-height: 1.5; }
+    .topic-card .cat-tag {
+      display: inline-block; padding: 3px 8px; border-radius: 4px;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em;
+      background: var(--bg4); color: var(--text2); margin-bottom: 10px;
+      position: relative;
+    }
+    .topic-card .completed-badge {
+      position: absolute; top: 12px; right: 12px;
+      background: var(--accent2); color: white;
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    /* === TOPIC LESSON PAGE === */
+    .lesson-header {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 28px 32px;
+      background: var(--bg2); border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .lesson-icon { font-size: 2.8rem; flex-shrink: 0; }
+    .lesson-header h1 { font-size: 2rem; margin-bottom: 8px; }
+    .lesson-header p { color: var(--text2); font-size: 0.95rem; }
+    .lesson-header .header-meta { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .meta-tag {
+      padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+    }
+    .meta-tag.cat { background: rgba(124,111,247,0.15); color: var(--accent); }
+    .meta-tag.qs { background: rgba(91,201,160,0.15); color: var(--accent2); }
+
+    .mark-btn {
+      padding: 10px 20px; border-radius: 8px; border: 1px solid var(--accent2);
+      background: transparent; color: var(--accent2);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; margin-left: auto; white-space: nowrap;
+    }
+    .mark-btn.done { background: var(--accent2); color: white; }
+    .mark-btn:hover { background: var(--accent2); color: white; }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex; gap: 4px; margin-bottom: 24px;
+      background: var(--bg2); padding: 4px; border-radius: 10px;
+      border: 1px solid var(--border); overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 8px 16px; border-radius: 7px; border: none;
+      background: transparent; color: var(--text2);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .tab-btn.active {
+      background: var(--accent); color: white;
+    }
+    .tab-btn:hover:not(.active) { background: var(--bg3); color: var(--text); }
+
+    /* Content sections */
+    .content-section {
+      background: var(--bg2); border-radius: var(--radius);
+      border: 1px solid var(--border); padding: 28px;
+      margin-bottom: 20px;
+    }
+    .content-section h2 { font-size: 1.25rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .content-section p { color: var(--text2); line-height: 1.75; margin-bottom: 12px; }
+    .content-section strong { color: var(--text); }
+
+    /* Explanation formatting */
+    .explanation {
+      color: var(--text2); line-height: 1.8; font-size: 0.95rem;
+    }
+    .explanation strong { color: var(--accent2); font-weight: 600; }
+
+    /* Step list */
+    .step-list { list-style: none; }
+    .step-list li {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white; font-size: 0.75rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-list li p { color: var(--text2); font-size: 0.9rem; line-height: 1.6; margin: 0; }
+
+    /* Mistakes list */
+    .mistake-list { list-style: none; }
+    .mistake-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 14px; border-radius: 8px;
+      background: rgba(232,93,117,0.08); margin-bottom: 8px;
+      border-left: 3px solid var(--accent4);
+    }
+    .mistake-list li::before { content: '⚠️'; flex-shrink: 0; }
+    .mistake-list li p { color: var(--text2); font-size: 0.875rem; line-height: 1.5; margin: 0; }
+
+    /* Code block */
+    .code-block {
+      background: var(--code-bg); border-radius: 10px;
+      border: 1px solid var(--border); overflow: hidden;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+    .code-header span { font-size: 0.8rem; color: var(--text3); font-family: 'DM Mono', monospace; }
+    .copy-btn {
+      padding: 4px 10px; border-radius: 6px;
+      background: var(--bg4); border: 1px solid var(--border);
+      color: var(--text2); font-size: 0.75rem; cursor: pointer; transition: all 0.2s;
+    }
+    .copy-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+    .code-block pre {
+      padding: 20px; overflow-x: auto; font-family: 'DM Mono', monospace;
+      font-size: 0.82rem; line-height: 1.65; color: #abb2bf;
+    }
+    .code-block pre::-webkit-scrollbar { height: 4px; }
+    .code-block pre::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 4px; }
+
+    /* Syntax highlighting (simple) */
+    .kw { color: #c678dd; }
+    .fn { color: #61afef; }
+    .str { color: #98c379; }
+    .cm { color: #5c6370; font-style: italic; }
+    .num { color: #d19a66; }
+    .tag { color: #e06c75; }
+    .attr { color: #d19a66; }
+
+    /* Interview Q&A */
+    .qa-list { list-style: none; }
+    .qa-item {
+      border-radius: 10px; border: 1px solid var(--border);
+      overflow: hidden; margin-bottom: 10px;
+      background: var(--bg2);
+    }
+    .qa-question {
+      padding: 14px 18px; cursor: pointer;
+      display: flex; align-items: flex-start; gap: 12px;
+      transition: background 0.15s;
+    }
+    .qa-question:hover { background: var(--bg3); }
+    .qa-q-icon {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: rgba(124,111,247,0.2); color: var(--accent);
+      font-size: 0.7rem; font-weight: 800; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; margin-top: 1px;
+    }
+    .qa-question p { color: var(--text); font-weight: 500; font-size: 0.9rem; line-height: 1.5; }
+    .qa-chevron { margin-left: auto; color: var(--text3); transition: transform 0.2s; flex-shrink: 0; }
+    .qa-item.open .qa-chevron { transform: rotate(180deg); }
+    .qa-answer {
+      display: none; padding: 14px 18px 18px;
+      border-top: 1px solid var(--border); background: rgba(124,111,247,0.04);
+    }
+    .qa-item.open .qa-answer { display: block; }
+    .qa-answer p { color: var(--text2); font-size: 0.875rem; line-height: 1.75; margin: 0; }
+
+    /* Prev/Next nav */
+    .lesson-nav {
+      display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap;
+    }
+    .nav-btn {
+      flex: 1; min-width: 160px; padding: 14px 20px; border-radius: var(--radius);
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text); cursor: pointer; transition: all 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem;
+    }
+    .nav-btn:hover { border-color: var(--accent); background: var(--bg3); }
+    .nav-btn .nav-label { color: var(--text3); font-size: 0.75rem; margin-bottom: 4px; }
+    .nav-btn .nav-title { font-weight: 600; }
+    .nav-btn.next { text-align: right; }
+
+    /* === API DEMO PAGE === */
+    .api-page {}
+    .api-page h2 { font-size: 1.8rem; margin-bottom: 8px; }
+    .api-page > p { color: var(--text2); margin-bottom: 24px; }
+    .api-controls {
+      display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .api-controls input, .api-controls select {
+      padding: 8px 14px; border-radius: 8px;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.875rem; outline: none; transition: border-color 0.2s;
+    }
+    .api-controls input:focus, .api-controls select:focus { border-color: var(--accent); }
+    .api-controls input { flex: 1; min-width: 180px; }
+    .btn-fetch {
+      padding: 8px 18px; border-radius: 8px;
+      background: var(--accent); border: none; color: white;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-fetch:hover { background: #9d8ef7; }
+
+    .loading-state {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 16px; padding: 60px; color: var(--text2);
+    }
+    .spinner {
+      width: 36px; height: 36px; border: 3px solid var(--bg4);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-state {
+      padding: 32px; text-align: center; color: var(--accent4);
+      background: rgba(232,93,117,0.08); border-radius: var(--radius);
+      border: 1px solid rgba(232,93,117,0.2);
+    }
+    .error-state p { font-size: 1.1rem; margin-bottom: 12px; }
+    .error-state button {
+      padding: 8px 18px; border-radius: 8px; border: 1px solid var(--accent4);
+      background: transparent; color: var(--accent4); cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    .error-state button:hover { background: var(--accent4); color: white; }
+
+    .posts-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+    .post-card {
+      padding: 18px 20px; border-radius: var(--radius);
+      background: var(--bg2); border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .post-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .post-card .post-id {
+      font-size: 0.7rem; color: var(--accent); font-family: 'DM Mono', monospace;
+      font-weight: 600; margin-bottom: 8px; display: block;
+    }
+    .post-card h4 { font-size: 0.9rem; margin-bottom: 8px; line-height: 1.4; text-transform: capitalize; }
+    .post-card p { font-size: 0.8rem; color: var(--text2); line-height: 1.6; }
+
+    .pagination {
+      display: flex; align-items: center; gap: 12px;
+      justify-content: center; margin-top: 24px;
+    }
+    .pagination button {
+      padding: 8px 16px; border-radius: 8px;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text); cursor: pointer; font-size: 0.875rem;
+      font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s;
+    }
+    .pagination button:hover:not(:disabled) { border-color: var(--accent); background: var(--bg3); }
+    .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pagination span { color: var(--text2); font-size: 0.875rem; }
+
+    /* Users Tab */
+    .users-table-wrap { overflow-x: auto; }
+    .users-table {
+      width: 100%; border-collapse: collapse; font-size: 0.875rem;
+    }
+    .users-table th {
+      padding: 10px 14px; text-align: left; background: var(--bg3);
+      color: var(--text2); font-weight: 600; font-size: 0.8rem;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .users-table td {
+      padding: 12px 14px; border-bottom: 1px solid var(--border);
+      color: var(--text2); vertical-align: middle;
+    }
+    .users-table tr:last-child td { border-bottom: none; }
+    .users-table tr:hover td { background: var(--bg3); color: var(--text); }
+    .user-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; color: white; margin-right: 10px;
+    }
+    .user-name-cell { display: flex; align-items: center; }
+
+    /* === TASK MANAGER PAGE === */
+    .task-page h2 { font-size: 1.8rem; margin-bottom: 8px; }
+    .task-page > .page-desc { color: var(--text2); margin-bottom: 28px; }
+    .task-form {
+      background: var(--bg2); border-radius: var(--radius);
+      border: 1px solid var(--border); padding: 24px; margin-bottom: 24px;
+    }
+    .task-form h3 { margin-bottom: 16px; font-size: 1.05rem; }
+    .form-row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 180px; }
+    .form-group label { font-size: 0.78rem; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 9px 13px; border-radius: 8px;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-actions { display: flex; gap: 10px; margin-top: 6px; }
+    .btn-add {
+      padding: 9px 22px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #9d6ef7);
+      color: white; border: none; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-add:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(124,111,247,0.4); }
+    .btn-cancel {
+      padding: 9px 18px; border-radius: 8px;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text2); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-cancel:hover { background: var(--bg4); }
+
+    /* Task filters */
+    .task-filters {
+      display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-btn {
+      padding: 6px 14px; border-radius: 20px;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text2); font-size: 0.8rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+    .filter-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
+    .task-count { margin-left: auto; font-size: 0.8rem; color: var(--text2); }
+
+    /* Kanban-style columns */
+    .task-columns { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .task-col {
+      background: var(--bg2); border-radius: var(--radius);
+      border: 1px solid var(--border); padding: 16px;
+    }
+    .task-col-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+    }
+    .task-col-header h4 { font-size: 0.9rem; font-weight: 600; }
+    .col-count {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--bg4); color: var(--text2);
+      font-size: 0.7rem; font-weight: 700; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .col-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .col-dot.todo { background: var(--text3); }
+    .col-dot.in-progress { background: var(--accent3); }
+    .col-dot.done { background: var(--accent2); }
+
+    .task-card {
+      background: var(--bg3); border-radius: 8px;
+      border: 1px solid var(--border); padding: 14px;
+      margin-bottom: 10px; transition: all 0.2s;
+    }
+    .task-card:hover { border-color: var(--accent); }
+    .task-card h5 { font-size: 0.9rem; margin-bottom: 6px; line-height: 1.4; }
+    .task-card p { font-size: 0.78rem; color: var(--text2); margin-bottom: 10px; line-height: 1.5; }
+    .task-card-footer { display: flex; align-items: center; gap: 8px; }
+    .priority-badge {
+      padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;
+    }
+    .priority-badge.high { background: rgba(232,93,117,0.15); color: var(--accent4); }
+    .priority-badge.medium { background: rgba(240,150,90,0.15); color: var(--accent3); }
+    .priority-badge.low { background: rgba(91,201,160,0.15); color: var(--accent2); }
+    .task-card-actions { display: flex; gap: 6px; margin-left: auto; }
+    .icon-btn {
+      width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg4); color: var(--text2); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover { border-color: var(--accent); color: var(--text); }
+    .icon-btn.delete:hover { border-color: var(--accent4); color: var(--accent4); }
+
+    /* Empty state */
+    .empty-col {
+      padding: 20px; text-align: center; color: var(--text3);
+      font-size: 0.8rem; border: 1px dashed var(--border);
+      border-radius: 8px;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      padding: 12px 20px; border-radius: 10px;
+      background: var(--accent2); color: white;
+      font-size: 0.875rem; font-weight: 500; z-index: 999;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s ease; pointer-events: none;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } }
+
+    /* Progress bar */
+    .progress-wrap { margin: 24px 0; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text2); margin-bottom: 8px; }
+    .progress-bar {
+      height: 8px; border-radius: 4px; background: var(--bg3);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.4s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); }
+      #sidebar.open { transform: translateX(0); }
+      #main { margin-left: 0; padding: 16px; }
+      .home-hero h1 { font-size: 2rem; }
+      .lesson-header { flex-direction: column; }
+    }
+
+    /* Tooltip */
+    [data-tip] { position: relative; cursor: help; }
+
+    /* Fade in animation */
+    .page-fade { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } }
+
+    /* Formatted explanation */
+    .expl-block { white-space: pre-line; }
+    .expl-block strong { color: var(--accent2); }
+
+    /* Category pill colors */
+    .pill-Fundamentals { background: rgba(124,111,247,0.15); color: var(--accent); }
+    .pill-Hooks { background: rgba(91,201,160,0.15); color: var(--accent2); }
+    .pill-Navigation { background: rgba(240,150,90,0.15); color: var(--accent3); }
+    .pill-Patterns { background: rgba(232,93,117,0.15); color: var(--accent4); }
+    .pill-Data { background: rgba(124,200,247,0.15); color: #7cc8f7; }
+    .pill-Advanced { background: rgba(180,124,247,0.15); color: #b47cf7; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header id="header">
+    <div class="logo">⚛️ React<span>Master</span></div>
+    <div id="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search topics, concepts…" oninput="handleSearch(this.value)" />
+    </div>
+    <div class="header-actions">
+      <span class="progress-badge" id="progress-badge">0 / 12 done</span>
+      <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark</button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <button class="sidebar-nav-btn active" id="nav-home" onclick="showPage('home')">🏠 Home</button>
+    <button class="sidebar-nav-btn" id="nav-api" onclick="showPage('api')">🌐 API Live Demo</button>
+    <button class="sidebar-nav-btn" id="nav-tasks" onclick="showPage('tasks')">✅ Task Manager</button>
+    <div style="height:1px;background:var(--border);margin:12px 0;"></div>
+    <div id="topic-list"><!-- injected by JS --></div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main id="main">
+    <div id="page-content"><!-- injected by JS --></div>
+  </main>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast" style="display:none;"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const topics = [
+  {
+    id:"intro", title:"Introduction to React", icon:"⚛️", category:"Fundamentals",
+    description:"What React is, why it exists, and how it works",
+    explanation:`React is a JavaScript library for building user interfaces, developed by Facebook (Meta) in 2013. It uses a component-based architecture where UIs are broken into reusable pieces.\n\n<strong>Why React?</strong>\n• Declarative: Describe what the UI should look like, React handles updates\n• Component-Based: Build encapsulated components that manage their own state\n• Virtual DOM: React maintains a lightweight copy of the DOM for performance\n• One-way Data Flow: Data flows from parent to child, making apps predictable\n• Huge Ecosystem: Rich community, libraries, and tooling`,
+    codeExample:`// The simplest React component
+import React from 'react';
+
+function HelloWorld() {
+  return (
+    <div className="greeting">
+      <h1>Hello, React! 👋</h1>
+      <p>Welcome to your first React component</p>
+    </div>
+  );
+}
+
+export default HelloWorld;
+
+// Rendering to the DOM (index.js)
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import HelloWorld from './HelloWorld';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<HelloWorld />);`,
+    steps:["Install Node.js and npm on your machine","Run `npx create-react-app my-app` to scaffold a new project","Navigate to the project: `cd my-app`","Start dev server: `npm start`","Open http://localhost:3000 in your browser","Edit `src/App.js` and see live changes"],
+    mistakes:["Trying to use React without understanding JavaScript fundamentals first","Not understanding the difference between React and React DOM","Modifying the DOM directly instead of letting React handle it","Forgetting to return JSX from components"],
+    qa:[
+      {q:"What is React and why would you use it?",a:"React is a JavaScript library for building user interfaces. It uses a component-based architecture, virtual DOM for performance, and declarative syntax to make UIs predictable and easier to debug. Use it when building complex, interactive UIs that need to update frequently."},
+      {q:"What is the Virtual DOM and how does it improve performance?",a:"The Virtual DOM is a lightweight JavaScript representation of the real DOM. When state changes, React creates a new Virtual DOM tree, diffs it against the previous one (reconciliation), and only updates changed parts in the real DOM. This batching is much faster than direct DOM manipulation."},
+      {q:"What's the difference between a library and a framework?",a:"A library (like React) provides tools you call when needed — you control the flow. A framework (like Angular) provides a structure that calls your code — it controls the flow (Inversion of Control). React is a library; Angular is a framework."},
+      {q:"What is reconciliation in React?",a:"Reconciliation is React's process of comparing the new Virtual DOM with the previous one to determine what changed. React uses a diffing algorithm that assumes elements of different types produce different trees, and uses `key` props to identify stable elements across renders."},
+      {q:"What is create-react-app and what does it set up?",a:"create-react-app scaffolds a React project with Webpack, Babel for JSX/ES6+, ESLint, Jest, a dev server with hot reloading, and production build optimization — all with zero configuration."}
+    ]
+  },
+  {
+    id:"jsx", title:"JSX", icon:"📝", category:"Fundamentals",
+    description:"JavaScript XML syntax — writing HTML in JavaScript",
+    explanation:`JSX (JavaScript XML) is a syntax extension for JavaScript that lets you write HTML-like markup inside JavaScript. It's not required but makes React code much more readable.\n\n<strong>Key Rules:</strong>\n• Return a single root element (or use Fragment &lt;&gt;&lt;/&gt;)\n• Close all tags (including self-closing like &lt;img /&gt;)\n• Use className instead of class\n• Use htmlFor instead of for\n• JavaScript expressions go in curly braces {}\n• camelCase for HTML attributes (onClick, tabIndex)`,
+    codeExample:`// JSX fundamentals
+function JSXDemo() {
+  const name = "React Developer";
+  const isLoggedIn = true;
+  const items = ["Apple", "Banana", "Cherry"];
+
+  return (
+    <div className="container">
+      {/* Comment in JSX */}
+      <h1>Hello, {name}!</h1>
+
+      {/* Conditional rendering */}
+      {isLoggedIn ? <p>Welcome back!</p> : <p>Please log in</p>}
+      {isLoggedIn && <button>Logout</button>}
+
+      {/* Rendering a list — key is required! */}
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+
+      {/* Inline styles (double curly braces) */}
+      <p style={{ color: 'blue', fontSize: '18px' }}>Styled</p>
+
+      {/* Self-closing tags must be closed */}
+      <input type="text" placeholder="Enter text" />
+      <img src="photo.jpg" alt="description" />
+    </div>
+  );
+}`,
+    steps:["Understand JSX compiles to React.createElement() calls","Always return one root element from a component","Use {} to embed JavaScript expressions in JSX","Replace class with className and for with htmlFor","Map arrays with .map() providing unique key props","Use ternary or && for conditional rendering"],
+    mistakes:["Returning multiple root elements without a Fragment","Using `class` instead of `className`","Forgetting to add `key` prop when rendering lists","Using statements (if/for) instead of expressions inside JSX","Forgetting to close self-closing tags"],
+    qa:[
+      {q:"What is JSX and is it required in React?",a:"JSX is a syntax extension that looks like HTML but compiles to React.createElement() calls. It's not required — you could write React.createElement() directly — but JSX makes code much more readable and maintainable."},
+      {q:"Why do we use className instead of class in JSX?",a:"Because JSX is JavaScript, and `class` is a reserved keyword in JavaScript (used for ES6 classes). React uses `className` to avoid the conflict. During compilation, `className` maps to the HTML `class` attribute."},
+      {q:"What is a React Fragment and when would you use it?",a:"A Fragment (<React.Fragment> or shorthand <>) lets you group multiple elements without adding an extra DOM node. Use it when a component needs to return multiple elements but you don't want an unnecessary wrapper div breaking CSS layouts."},
+      {q:"How does JSX prevent XSS attacks?",a:"React DOM escapes any values embedded in JSX before rendering. Everything is converted to a string, so you can never inject HTML through JSX expressions. This makes it safe to include user-provided content."},
+      {q:"What is the difference between {expression} and string in JSX?",a:"Curly braces {} evaluate JavaScript expressions and can contain variables, function calls, ternary operators, etc. String literals in JSX props can be written as attribute='value'. For dynamic values, always use curly braces."}
+    ]
+  },
+  {
+    id:"components", title:"Components", icon:"🧩", category:"Fundamentals",
+    description:"Functional & Class components — the building blocks of React",
+    explanation:`Components are independent, reusable pieces of UI. Think of them like JavaScript functions that accept inputs (props) and return React elements.\n\n<strong>Functional Components (Modern — Preferred)</strong>\n• Regular JavaScript functions\n• Use hooks for state and lifecycle\n• Cleaner, less boilerplate\n• Easier to test\n\n<strong>Class Components (Legacy)</strong>\n• ES6 classes extending React.Component\n• Use this.state and lifecycle methods\n• Still work but hooks replaced most use cases`,
+    codeExample:`// ✅ Functional Component (Modern)
+import React, { useState } from 'react';
+
+function Counter({ initialCount = 0, label = "Count" }) {
+  const [count, setCount] = useState(initialCount);
+
+  return (
+    <div className="counter">
+      <h2>{label}: {count}</h2>
+      <button onClick={() => setCount(c => c + 1)}>+</button>
+      <button onClick={() => setCount(c => c - 1)}>-</button>
+      <button onClick={() => setCount(initialCount)}>Reset</button>
+    </div>
+  );
+}
+
+// ⚠️ Class Component (Legacy — still valid)
+class CounterClass extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: props.initialCount || 0 };
+  }
+
+  render() {
+    return (
+      <div className="counter">
+        <h2>{this.props.label}: {this.state.count}</h2>
+        <button onClick={() => this.setState(s => ({count: s.count+1}))}>
+          +
+        </button>
+      </div>
+    );
+  }
+}
+
+// Component composition
+function App() {
+  return (
+    <div>
+      <Counter label="Likes" initialCount={10} />
+      <Counter label="Views" initialCount={100} />
+    </div>
+  );
+}`,
+    steps:["Create a function with a capitalized name (PascalCase)","Return JSX describing what the component renders","Export with `export default ComponentName`","Import and use with JSX: `<ComponentName />`","Pass data to components via props","Compose components by nesting them"],
+    mistakes:["Using lowercase component names (React treats lowercase as HTML)","Calling hooks inside class components","Mutating state directly instead of using setState","Not understanding that components re-render when state/props change"],
+    qa:[
+      {q:"What is the difference between functional and class components?",a:"Functional components are plain JavaScript functions that return JSX and use hooks for state/lifecycle. Class components extend React.Component, use this.state, and have lifecycle methods. Functional components are preferred since React 16.8 introduced hooks."},
+      {q:"What is a Pure Component?",a:"A Pure Component (React.PureComponent) only re-renders when props or state actually change, using a shallow comparison. It's the class component equivalent of React.memo for functional components. Use it to optimize performance by preventing unnecessary renders."},
+      {q:"What are controlled vs uncontrolled components?",a:"Controlled components have form data managed by React state. Uncontrolled components store data in the DOM itself (accessed via refs). Controlled components are preferred as they give React full control and make validation/transformation easier."},
+      {q:"What is component composition?",a:"Composition is using components inside other components to build complex UIs from simple pieces. React encourages composition over inheritance. Instead of extending components, you include them as children or props. The `children` prop is key to flexible composition."},
+      {q:"When would you still use a class component?",a:"Rarely in modern React. One case is Error Boundaries — they currently can only be class components (using componentDidCatch and getDerivedStateFromError). Otherwise, functional components with hooks handle all use cases better."}
+    ]
+  },
+  {
+    id:"props-state", title:"Props & State", icon:"🔄", category:"Fundamentals",
+    description:"How data flows in React — props down, events up",
+    explanation:`<strong>Props (Properties)</strong>\n• Data passed from parent to child\n• Read-only — child cannot modify props\n• Can be any JavaScript value\n• Enable component reusability\n\n<strong>State</strong>\n• Data managed inside a component\n• Can change over time (triggers re-render)\n• Private to the component\n• Updated with useState setter\n\n<strong>The Golden Rule:</strong> Data flows DOWN (props), events flow UP (callbacks)`,
+    codeExample:`// Props and State complete example
+import React, { useState } from 'react';
+
+// Child — receives props (read-only)
+function ProductCard({ name, price, onAddToCart }) {
+  return (
+    <div className="product-card">
+      <h3>{name}</h3>
+      <p>\${price.toFixed(2)}</p>
+      {/* Calling parent's function via prop */}
+      <button onClick={() => onAddToCart({ name, price })}>
+        Add to Cart
+      </button>
+    </div>
+  );
+}
+
+// Parent — owns state
+function ShoppingApp() {
+  const [cart, setCart] = useState([]);
+
+  const handleAddToCart = (product) => {
+    setCart(prev => [...prev, product]);
+  };
+
+  const products = [
+    { id: 1, name: 'React Book', price: 29.99 },
+    { id: 2, name: 'Keyboard', price: 79.99 },
+  ];
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+  return (
+    <div>
+      {products.map(product => (
+        <ProductCard
+          key={product.id}
+          name={product.name}
+          price={product.price}
+          onAddToCart={handleAddToCart}
+        />
+      ))}
+      <p>Cart: {cart.length} items | Total: \${total.toFixed(2)}</p>
+    </div>
+  );
+}`,
+    steps:["Define props as the first parameter of your function","Use destructuring to extract individual props","Pass props to children like HTML attributes","Use useState() for data that changes over time","Never mutate state directly — use the setter function","Pass callbacks as props for children to communicate upward"],
+    mistakes:["Mutating state directly: `state.items.push(item)` — use spread","Forgetting that state updates are asynchronous","Not lifting state up when siblings need to share data","Passing too many individual props — consider an object"],
+    qa:[
+      {q:"What is the difference between props and state?",a:"Props are read-only inputs passed from parent to child — the child can't modify them. State is mutable data managed inside a component that triggers re-renders when changed. Props enable reuse; state enables interactivity."},
+      {q:"Why should state updates be immutable?",a:"React uses shallow comparison to detect state changes. If you mutate state directly, the reference doesn't change, so React doesn't re-render. Always create new objects/arrays: use spread operator, Object.assign(), or Array methods that return new arrays."},
+      {q:"What is 'lifting state up'?",a:"When two sibling components need to share state, you move (lift) that state to their closest common ancestor. The parent holds the state and passes it down to both siblings as props, and passes updater functions for them to call."},
+      {q:"What is prop drilling and how do you solve it?",a:"Prop drilling is passing props through intermediate components that don't use them. Solutions: React Context API (for global/shared state), state management libraries (Redux, Zustand), or component composition."},
+      {q:"Can a component update its own props?",a:"No. Props are read-only from the component's perspective. Only the parent can change them. If a component needs to change a value, it should be in state or the parent should pass a callback function."}
+    ]
+  },
+  {
+    id:"events", title:"Event Handling", icon:"🖱️", category:"Fundamentals",
+    description:"Handling user interactions — clicks, inputs, forms, and more",
+    explanation:`React events are similar to DOM events but with differences:\n• Use camelCase: onClick not onclick\n• Pass a function reference: onClick={fn} not onClick="fn()"\n• Call e.preventDefault() to prevent default browser behavior\n• Synthetic Events: React wraps native events in a cross-browser wrapper\n\n<strong>Common Events:</strong> onClick, onChange, onSubmit, onKeyDown, onFocus, onBlur, onMouseEnter, onMouseLeave`,
+    codeExample:`import React, { useState } from 'react';
+
+function EventDemo() {
+  const [text, setText] = useState('');
+  const [log, setLog] = useState([]);
+
+  const addLog = (msg) => setLog(prev => [msg, ...prev.slice(0, 4)]);
+
+  // Click handler
+  const handleClick = (e) => {
+    addLog(\`Clicked! \${e.target.textContent}\`);
+  };
+
+  // Controlled input handler
+  const handleChange = (e) => {
+    setText(e.target.value);
+  };
+
+  // Keyboard handler
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') addLog('Enter pressed!');
+    if (e.key === 'Escape') setText('');
+  };
+
+  // Form submit — prevent default!
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (text.trim()) {
+      addLog(\`Submitted: "\${text}"\`);
+      setText('');
+    }
+  };
+
+  return (
+    <div>
+      {/* Different ways to attach handlers */}
+      <button onClick={handleClick}>Click Me</button>
+      <button onClick={() => addLog('Custom arg!')}>
+        With Argument
+      </button>
+
+      <form onSubmit={handleSubmit}>
+        <input
+          value={text}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          placeholder="Type and press Enter..."
+        />
+        <button type="submit">Submit</button>
+      </form>
+
+      <div className="log">
+        {log.map((e, i) => <p key={i}>→ {e}</p>)}
+      </div>
+    </div>
+  );
+}`,
+    steps:["Use camelCase event names: onClick, onChange, onSubmit","Pass function references, not invocations: onClick={fn}","Use arrow functions to pass arguments: onClick={() => fn(id)}","Access event object as a parameter: (e) => e.target.value","Call e.preventDefault() for forms/links","Call e.stopPropagation() to prevent event bubbling"],
+    mistakes:["Calling the function immediately: `onClick={handleClick()}` runs on render","Forgetting e.preventDefault() on form submissions","Not understanding event bubbling and propagation","Creating new function instances in tight list loops (performance)"],
+    qa:[
+      {q:"What are Synthetic Events in React?",a:"Synthetic Events are React's cross-browser wrapper around native browser events. They have the same interface as native events but work identically across all browsers. React pools synthetic events for performance, though in React 17+ the pooling was removed."},
+      {q:"What is the difference between onClick={fn} and onClick={() => fn()}?",a:"onClick={fn} passes the function reference — React calls it with the event object. onClick={() => fn()} creates a new arrow function on each render that ignores the event. Use the second form when you need to pass custom arguments."},
+      {q:"How do you handle events in a list efficiently?",a:"Use event delegation — attach one handler to the parent container. In React, use data attributes: `<li data-id={item.id} onClick={handleClick}>`. In the handler, read `e.target.dataset.id` to identify which item was clicked."},
+      {q:"What is the difference between e.preventDefault() and e.stopPropagation()?",a:"e.preventDefault() cancels the default browser action (form submission, link navigation). e.stopPropagation() stops the event from bubbling up the DOM tree to parent elements. They serve different purposes and can be used together."},
+      {q:"How do you handle input events in controlled components?",a:"Bind the input's value to state and use onChange to update state. Every keystroke triggers onChange, which updates state, triggering a re-render with the new value. This gives React full control over the form data."}
+    ]
+  },
+  {
+    id:"hooks", title:"React Hooks", icon:"🪝", category:"Hooks",
+    description:"useState, useEffect, useContext, useRef, useMemo, useCallback",
+    explanation:`Hooks let you use state and other React features in functional components. Introduced in React 16.8.\n\n<strong>Rules of Hooks:</strong>\n1. Only call hooks at the top level (not inside loops, conditions, nested functions)\n2. Only call hooks from React functional components or custom hooks\n\n<strong>Core Hooks:</strong>\n• useState — local component state\n• useEffect — side effects (fetching, DOM ops)\n• useContext — consume context values\n• useRef — mutable ref, DOM access\n• useMemo — memoize expensive calculations\n• useCallback — memoize functions`,
+    codeExample:`import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+
+function HooksDemo() {
+  const [count, setCount] = useState(0);
+  const [query, setQuery] = useState('');
+
+  // useRef — doesn't cause re-render
+  const inputRef = useRef(null);
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+
+  // useEffect — runs after render
+  useEffect(() => {
+    document.title = \`Count: \${count}\`;
+    return () => { document.title = 'React App'; }; // cleanup
+  }, [count]); // only when count changes
+
+  // useEffect with empty deps — runs once on mount
+  useEffect(() => {
+    inputRef.current?.focus();
+    return () => console.log('Component unmounted!');
+  }, []);
+
+  // useMemo — expensive calculation
+  const filteredItems = useMemo(() => {
+    const items = ['Apple', 'Banana', 'Cherry', 'Avocado'];
+    return items.filter(item =>
+      item.toLowerCase().includes(query.toLowerCase())
+    );
+  }, [query]); // Only recalculate when query changes
+
+  // useCallback — stable function reference
+  const handleIncrement = useCallback(() => {
+    setCount(c => c + 1);
+  }, []); // Stable forever — no deps change
+
+  return (
+    <div>
+      <p>Renders: {renderCount.current}</p>
+      <p>Count: {count}</p>
+      <button onClick={handleIncrement}>Increment</button>
+
+      <input
+        ref={inputRef}
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+        placeholder="Filter fruits..."
+      />
+      <ul>{filteredItems.map(i => <li key={i}>{i}</li>)}</ul>
+    </div>
+  );
+}`,
+    steps:["Import hooks: `import { useState, useEffect } from 'react'`","Call useState with initial value, destructure [value, setter]","Use useEffect for side effects — always specify dependency array","Empty array [] means 'run once on mount'","Return cleanup function from useEffect for subscriptions/timers","Use useMemo and useCallback to optimize expensive operations"],
+    mistakes:["Missing dependency array (causes infinite loop)","Including functions in deps without useCallback","Calling hooks inside conditions — violates rules","Not cleaning up timers/subscriptions in useEffect","Overusing useMemo/useCallback (premature optimization)"],
+    qa:[
+      {q:"What are the Rules of Hooks and why do they exist?",a:"1) Only call hooks at the top level — not in loops, conditions, or nested functions. 2) Only call hooks from React functional components or custom hooks. These rules ensure React can correctly associate hook calls with their state between renders (React relies on call order)."},
+      {q:"Explain the useEffect dependency array",a:"No array = run after every render; [] = run once after mount; [a, b] = run when a or b changes. Always include all values used inside the effect that could change (eslint rule: exhaustive-deps). Omitting deps causes stale closures."},
+      {q:"What is the difference between useMemo and useCallback?",a:"useMemo memoizes a computed value: `useMemo(() => compute(a, b), [a, b])`. useCallback memoizes a function reference: `useCallback(() => fn(a), [a])`. useCallback(fn, deps) is equivalent to useMemo(() => fn, deps)."},
+      {q:"What is a custom hook and when would you create one?",a:"A custom hook is a function starting with 'use' that calls other hooks. Create one to extract reusable stateful logic. Examples: useFetch for API calls, useLocalStorage, useWindowSize, useDebounce. They follow the same rules as built-in hooks."},
+      {q:"What is a stale closure in React hooks?",a:"A stale closure occurs when a useEffect or event handler captures an outdated value because of how JavaScript closures work. Solution: include the value in the dependency array, use the functional form of setState (prev => prev + 1), or use useRef for mutable values."}
+    ]
+  },
+  {
+    id:"router", title:"React Router", icon:"🗺️", category:"Navigation",
+    description:"Client-side routing with React Router v6",
+    explanation:`React Router enables navigation between views in a single-page app without full page reloads.\n\n<strong>Key Components (v6):</strong>\n• &lt;BrowserRouter&gt; — wraps app, uses HTML5 history API\n• &lt;Routes&gt; — container for Route definitions\n• &lt;Route path="/..." element={Component}&gt; — maps URL to component\n• &lt;Link to="/..."&gt; — navigation without page reload\n• &lt;NavLink&gt; — Link + active class\n• useNavigate() — programmatic navigation\n• useParams() — access URL parameters\n• useLocation() — access current URL`,
+    codeExample:`// React Router v6 — App.js
+import { BrowserRouter, Routes, Route, Link, NavLink,
+         Navigate, useNavigate, useParams, Outlet } from 'react-router-dom';
+
+const Home = () => <h1>🏠 Home Page</h1>;
+const About = () => <h1>ℹ️ About Page</h1>;
+const NotFound = () => <h1>404 — Page Not Found</h1>;
+
+// Dynamic route — reads :userId from URL
+const UserProfile = () => {
+  const { userId } = useParams();
+  return <h1>👤 User Profile: {userId}</h1>;
+};
+
+// Protected Route pattern
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('token');
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+// useNavigate for programmatic navigation
+const LoginPage = () => {
+  const navigate = useNavigate();
+  const handleLogin = () => {
+    localStorage.setItem('token', 'abc123');
+    navigate('/dashboard');
+  };
+  return <button onClick={handleLogin}>Log In</button>;
+};
+
+// Main App
+function App() {
+  return (
+    <BrowserRouter>
+      <nav>
+        <NavLink to="/" end>Home</NavLink>
+        <NavLink to="/about">About</NavLink>
+        <NavLink to="/user/42">User 42</NavLink>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/user/:userId" element={<UserProfile />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute><Dashboard /></ProtectedRoute>
+        } />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}`,
+    steps:["Install: `npm install react-router-dom`","Wrap app in `<BrowserRouter>` in index.js","Define routes with `<Routes>` and `<Route>` components","Use `<Link>` for navigation, `<NavLink>` for active-state links","Access URL params with `useParams()` hook","Navigate programmatically with `useNavigate()` hook"],
+    mistakes:["Using v5 syntax with v6 (Switch→Routes, component→element)","Not wrapping app in BrowserRouter","Forgetting `end` prop on NavLink to='/' (matches all routes)","Using <a href> instead of <Link> (causes full page reload)"],
+    qa:[
+      {q:"What is the difference between BrowserRouter and HashRouter?",a:"BrowserRouter uses the HTML5 History API and creates clean URLs (/about). HashRouter uses URL hashes (#/about). BrowserRouter requires server configuration for direct URL access. HashRouter works without server config, useful for static file hosting."},
+      {q:"How do you pass data between routes?",a:"Options: 1) URL params: `/users/:id` via useParams(). 2) Query strings via useLocation(). 3) Navigation state: navigate('/page', { state: data }) via useLocation().state. 4) Global state (Context/Redux). 5) useSearchParams()."},
+      {q:"What are nested routes in React Router v6?",a:"Nested routes render child components within parent components based on URL segments. Use <Outlet /> in the parent to render children. For example, /dashboard renders Dashboard, /dashboard/settings renders Dashboard with Settings inside its Outlet."},
+      {q:"How do you implement a 404 page in React Router v6?",a:"Add a catch-all route with path='*' as the last route: <Route path='*' element={<NotFound />} />. React Router matches top-to-bottom and the wildcard catches anything not matched by previous routes."},
+      {q:"What is the difference between Link and NavLink?",a:"Both prevent full page reloads. NavLink additionally provides an `active` CSS class when the current URL matches the link's destination. It's used for navigation menus where you want to highlight the current page."}
+    ]
+  },
+  {
+    id:"forms", title:"Forms & Validation", icon:"📋", category:"Patterns",
+    description:"Controlled forms, validation, and best practices",
+    explanation:`Forms in React can be controlled (React manages data) or uncontrolled (DOM manages data).\n\n<strong>Controlled Forms (recommended):</strong>\n• Form data lives in React state\n• onChange updates state on every keystroke\n• Full control over validation and transformation\n\n<strong>Validation Tips:</strong>\n• Show errors only after user touches the field\n• Validate on blur (field exit) for better UX\n• Use regex for format validation\n• Always validate on the server too`,
+    codeExample:`import React, { useState } from 'react';
+
+function useForm(initialValues, validate) {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues(prev => ({ ...prev, [name]: value }));
+    if (touched[name]) {
+      setErrors(validate({ ...values, [name]: value }));
+    }
+  };
+
+  const handleBlur = (e) => {
+    setTouched(prev => ({ ...prev, [e.target.name]: true }));
+    setErrors(validate(values));
+  };
+
+  const handleSubmit = (onSubmit) => (e) => {
+    e.preventDefault();
+    const errs = validate(values);
+    setErrors(errs);
+    setTouched(Object.keys(values).reduce((a,k) => ({...a,[k]:true}), {}));
+    if (Object.keys(errs).length === 0) onSubmit(values);
+  };
+
+  return { values, errors, touched, handleChange, handleBlur, handleSubmit };
+}
+
+function validate(values) {
+  const errors = {};
+  if (!values.email) errors.email = 'Email required';
+  else if (!/\\S+@\\S+\\.\\S+/.test(values.email))
+    errors.email = 'Invalid email format';
+  if (!values.password) errors.password = 'Password required';
+  else if (values.password.length < 8)
+    errors.password = 'Minimum 8 characters';
+  return errors;
+}
+
+function LoginForm() {
+  const [done, setDone] = useState(false);
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit }
+    = useForm({ email: '', password: '' }, validate);
+
+  if (done) return <p>✅ Logged in!</p>;
+
+  return (
+    <form onSubmit={handleSubmit(d => setDone(true))} noValidate>
+      <div>
+        <input
+          name="email" type="email"
+          value={values.email}
+          onChange={handleChange} onBlur={handleBlur}
+          placeholder="Email address"
+        />
+        {touched.email && errors.email &&
+          <span className="err">{errors.email}</span>}
+      </div>
+      <div>
+        <input
+          name="password" type="password"
+          value={values.password}
+          onChange={handleChange} onBlur={handleBlur}
+          placeholder="Password"
+        />
+        {touched.password && errors.password &&
+          <span className="err">{errors.password}</span>}
+      </div>
+      <button type="submit">Login</button>
+    </form>
+  );
+}`,
+    steps:["Create state holding all form field values","Set `value={state.fieldName}` on each input (controlled)","Add `onChange` handler updating state for each field","Add `onSubmit` on the form calling `e.preventDefault()`","Implement validation returning an errors object","Show errors only after user has touched the field (onBlur)"],
+    mistakes:["Forgetting e.preventDefault() in form's onSubmit","Using `for` instead of `htmlFor` on labels","Not handling all input types (checkbox uses `checked`, not `value`)","Validating before user interacts (bad UX)","Not setting `name` attribute on inputs"],
+    qa:[
+      {q:"What is the difference between controlled and uncontrolled forms?",a:"Controlled: React state is the single source of truth; every change updates state via onChange. Uncontrolled: DOM holds the data; accessed via useRef when needed. Controlled is preferred for validation; uncontrolled for simple cases or file inputs."},
+      {q:"Why do we need e.preventDefault() in form submissions?",a:"By default, HTML form submission reloads the page and sends data to the server. In React SPAs, we handle submission in JavaScript. e.preventDefault() cancels this default behavior."},
+      {q:"How would you handle file input in React?",a:"File inputs are always uncontrolled (you can't set their value programmatically). Use a ref to access the file: const fileRef = useRef(); then fileRef.current.files[0] in the handler. Track the filename in state for display only."},
+      {q:"What are the advantages of React Hook Form over Formik?",a:"React Hook Form uses uncontrolled inputs with refs, so it only re-renders on submission, not on every keystroke. This makes it significantly faster for large forms. It also has a smaller bundle size and simpler API."},
+      {q:"How do you handle dynamic form fields?",a:"Store fields as an array in state. To add: spread existing array + new field. To remove: filter by id. To update: map and replace the matching id. React Hook Form has a `useFieldArray` hook for this."}
+    ]
+  },
+  {
+    id:"api", title:"API Integration", icon:"🌐", category:"Data",
+    description:"Fetching data with fetch/axios, loading states, error handling",
+    explanation:`React applications commonly fetch data from APIs. Best practices:\n\n• Always show loading state\n• Always handle errors gracefully\n• Cancel requests on component unmount (AbortController)\n• Never make async the useEffect callback directly\n• Consider React Query or SWR for complex data fetching needs\n\n<strong>Common Patterns:</strong> useFetch custom hook, loading/error/data states, pagination, optimistic updates`,
+    codeExample:`import React, { useState, useEffect } from 'react';
+
+// Custom useFetch hook — reusable!
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(url, { signal: controller.signal });
+        if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+        const json = await res.json();
+        setData(json);
+      } catch (err) {
+        if (err.name !== 'AbortError') setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+    return () => controller.abort(); // Cancel on unmount
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+function PostsList() {
+  const [page, setPage] = useState(1);
+  const url = \`https://jsonplaceholder.typicode.com/posts?_page=\${page}&_limit=5\`;
+  const { data: posts, loading, error } = useFetch(url);
+
+  if (loading) return <div className="spinner" />;
+
+  if (error) return (
+    <div className="error">
+      <p>❌ {error}</p>
+      <button onClick={() => setPage(1)}>Retry</button>
+    </div>
+  );
+
+  return (
+    <div>
+      {posts?.map(post => (
+        <div key={post.id} className="post-card">
+          <small>#{post.id}</small>
+          <h3>{post.title}</h3>
+          <p>{post.body.substring(0, 100)}...</p>
+        </div>
+      ))}
+      <div className="pagination">
+        <button onClick={() => setPage(p => p-1)} disabled={page===1}>← Prev</button>
+        <span>Page {page}</span>
+        <button onClick={() => setPage(p => p+1)}>Next →</button>
+      </div>
+    </div>
+  );
+}`,
+    steps:["Use useEffect to trigger fetches when component mounts or deps change","Create state for data, loading, and error","Use async/await inside useEffect with a nested async function","Check response.ok and throw errors for non-2xx responses","Always use try/catch/finally to handle errors and reset loading","Return AbortController cleanup to cancel on unmount"],
+    mistakes:["Making useEffect async directly (should use nested async function)","Not handling error states — API calls can fail","Not cancelling requests on unmount (memory leak)","Fetching on every render without a dependency array","Not checking response.ok before parsing JSON"],
+    qa:[
+      {q:"Why can't you make useEffect async directly?",a:"useEffect expects its callback to return either nothing or a cleanup function. Async functions return Promises, not cleanup functions. React would try to call the Promise as a cleanup, causing errors. Solution: declare an async function inside useEffect and call it."},
+      {q:"How do you handle race conditions in data fetching?",a:"Race conditions occur when multiple fetches are in flight and an earlier one completes after a later one. Solutions: AbortController to cancel previous requests, a boolean flag `let cancelled = false` checked before setting state, or libraries like React Query."},
+      {q:"What is the difference between fetch and axios?",a:"Fetch is built into browsers, requires manual JSON parsing, doesn't reject on HTTP errors. Axios is a library that auto-parses JSON, throws on HTTP errors, supports interceptors and request cancellation, and works in Node.js."},
+      {q:"What is React Query and why would you use it?",a:"React Query handles caching, background refetching, loading/error states, pagination, and optimistic updates. It eliminates most boilerplate for server state management. Use it when you have complex data fetching needs with caching requirements."},
+      {q:"How do you implement optimistic updates?",a:"1) Immediately update the UI before the API call completes. 2) Make the API call. 3) On success, confirm the update. 4) On error, revert to previous state and show an error message."}
+    ]
+  },
+  {
+    id:"state-mgmt", title:"State Management", icon:"🏪", category:"Advanced",
+    description:"Context API, useReducer, Redux basics — managing global state",
+    explanation:`As apps grow, passing state through props becomes unwieldy. State management provides a global store accessible anywhere.\n\n<strong>When to use global state:</strong>\n• Data needed by many unrelated components\n• Complex state logic\n• Synchronization across views\n\n<strong>Options (simple → complex):</strong>\n1. useState + prop drilling — small apps\n2. Context API — medium apps\n3. Zustand — simple, minimal boilerplate\n4. Redux Toolkit — large apps, complex logic`,
+    codeExample:`// === Context API ===
+import React, { createContext, useContext, useState } from 'react';
+
+const ThemeContext = createContext(null);
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+// Custom hook — clean abstraction
+const useTheme = () => {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error('useTheme must be inside ThemeProvider');
+  return ctx;
+};
+
+// Use anywhere in the tree!
+function Header() {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <button onClick={toggleTheme}>
+      {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+    </button>
+  );
+}
+
+// === useReducer for complex state ===
+const cartReducer = (state, action) => {
+  switch (action.type) {
+    case 'ADD_ITEM':
+      const exists = state.find(i => i.id === action.item.id);
+      if (exists) return state.map(i =>
+        i.id === action.item.id ? {...i, qty: i.qty + 1} : i
+      );
+      return [...state, { ...action.item, qty: 1 }];
+
+    case 'REMOVE_ITEM':
+      return state.filter(i => i.id !== action.id);
+
+    case 'CLEAR':
+      return [];
+
+    default:
+      return state;
+  }
+};
+
+function CartApp() {
+  const [cart, dispatch] = useReducer(cartReducer, []);
+
+  return (
+    <div>
+      <button onClick={() => dispatch({
+        type: 'ADD_ITEM', item: { id: 1, name: 'Widget', price: 9.99 }
+      })}>Add Widget</button>
+      <button onClick={() => dispatch({ type: 'CLEAR' })}>Clear</button>
+      <p>Items: {cart.length}</p>
+    </div>
+  );
+}`,
+    steps:["Identify what state needs to be global vs local","For Context: createContext → Provider → useContext","Wrap app (or subtree) with the Provider","Access context values with useContext() in any descendant","Use useReducer for complex state with multiple action types","Consider a library (Zustand, Redux Toolkit) for large-scale apps"],
+    mistakes:["Putting everything in Context (causes unnecessary re-renders)","Not memoizing context values (re-renders all consumers)","Using Redux for simple apps that only need local state","Mutating state in reducers — they must be pure functions"],
+    qa:[
+      {q:"What is the Context API and what problem does it solve?",a:"Context API provides a way to share values (theme, auth, language) across the component tree without passing props at every level (prop drilling). It creates a global state accessible to any component that consumes the context."},
+      {q:"What is the difference between useContext and Redux?",a:"Context is built into React, simple, suitable for low-frequency updates. Redux is a full state management library with centralized store, strict unidirectional data flow, time-travel debugging, and middleware. Redux is better for frequently-changing state in large apps."},
+      {q:"When should you use useReducer instead of useState?",a:"Use useReducer when: state has complex logic with multiple sub-values; next state depends on previous in non-trivial ways; you have many related state updates triggered by the same action; you want Redux-like patterns."},
+      {q:"What is a flux architecture?",a:"Flux is a pattern for managing data flow: Action → Dispatcher → Store → View. Data flows in one direction only. Redux is inspired by Flux. This predictable flow makes state changes traceable and debugging easier."},
+      {q:"What is Zustand and how is it simpler than Redux?",a:"Zustand is a minimal state management library. You create a store with create(), define state and actions in one place, and consume it with a hook — no providers, no boilerplate, no action/reducer split. A basic Redux equivalent requires 5x more code."}
+    ]
+  },
+  {
+    id:"performance", title:"Performance", icon:"⚡", category:"Advanced",
+    description:"React.memo, lazy loading, code splitting, profiling",
+    explanation:`React is fast by default, but large apps can have performance issues.\n\n<strong>Prevent Unnecessary Re-renders:</strong>\n• React.memo — memoize component, skip re-render if props unchanged\n• useMemo — memoize expensive calculations\n• useCallback — stable function references\n\n<strong>Code Splitting:</strong>\n• React.lazy + Suspense — load components on demand\n\n<strong>Golden Rule:</strong> Profile FIRST. Don't optimize prematurely. Measure before adding complexity.`,
+    codeExample:`import React, { memo, useState, useMemo, useCallback, lazy, Suspense } from 'react';
+
+// React.memo — only re-renders if props change
+const ExpensiveItem = memo(function ExpensiveItem({ item, onDelete }) {
+  console.log(\`Rendering: \${item.name}\`);
+  return (
+    <div>
+      <span>{item.name}</span>
+      <button onClick={() => onDelete(item.id)}>Delete</button>
+    </div>
+  );
+});
+
+function ItemList() {
+  const [items, setItems] = useState([
+    { id: 1, name: 'Apple' }, { id: 2, name: 'Banana' }
+  ]);
+  const [count, setCount] = useState(0); // changing this won't re-render items!
+
+  // ✅ useCallback — stable function reference
+  // Without this: new function ref every render → memo broken
+  const handleDelete = useCallback((id) => {
+    setItems(prev => prev.filter(item => item.id !== id));
+  }, []);
+
+  // ✅ useMemo — only recalculate when items change
+  const stats = useMemo(() => ({
+    total: items.length,
+    names: items.map(i => i.name).join(', ')
+  }), [items]);
+
+  return (
+    <div>
+      <p>{stats.total} items: {stats.names}</p>
+      <button onClick={() => setCount(c => c+1)}>
+        Re-render parent: {count}
+      </button>
+      {items.map(item => (
+        <ExpensiveItem key={item.id} item={item} onDelete={handleDelete} />
+      ))}
+    </div>
+  );
+}
+
+// Code Splitting with lazy
+const HeavyChart = lazy(() => import('./HeavyChart'));
+
+function Dashboard() {
+  const [show, setShow] = useState(false);
+  return (
+    <div>
+      <button onClick={() => setShow(true)}>Load Chart</button>
+      {show && (
+        <Suspense fallback={<div>Loading chart...</div>}>
+          <HeavyChart />
+        </Suspense>
+      )}
+    </div>
+  );
+}`,
+    steps:["Profile first — use React DevTools Profiler","Wrap stable children with React.memo","Use useCallback for functions passed as props to memo'd components","Use useMemo for expensive calculations","Implement code splitting with React.lazy for large components","Use virtualization (react-window) for lists with 100+ items"],
+    mistakes:["Optimizing before measuring — adds complexity without benefit","Using React.memo on every component regardless of need","Forgetting that memo only does shallow prop comparison","Passing new object/array literals as props to memo'd components"],
+    qa:[
+      {q:"What is React.memo and how is it different from useMemo?",a:"React.memo is a HOC that memoizes a component, preventing re-renders if props haven't changed. useMemo is a hook that memoizes a computed value inside a component. React.memo wraps components; useMemo wraps values."},
+      {q:"When does React.memo NOT prevent re-renders?",a:"When the parent passes new object/array/function references (even with same values). Objects {} !== {} in JavaScript. Solutions: memoize objects with useMemo, memoize functions with useCallback before passing them as props."},
+      {q:"What is virtualization and when should you use it?",a:"Virtualization renders only items currently visible in the viewport. Libraries like react-window or react-virtual handle this. Use when rendering 100+ items — thousands of DOM nodes are slow to render and take significant memory."},
+      {q:"What is the React Profiler?",a:"The React DevTools Profiler records rendering performance. Click 'Record', interact with your app, stop recording, then see which components rendered, how long they took, and why. Look for high 'actual duration' components that render frequently."},
+      {q:"What is code splitting and how does React.lazy enable it?",a:"Code splitting breaks your bundle into smaller chunks loaded on demand. React.lazy(() => import('./Component')) downloads the component only when first rendered. Pair with <Suspense fallback={...}> to show a loading state while downloading."}
+    ]
+  },
+  {
+    id:"structure", title:"Project Structure", icon:"📁", category:"Advanced",
+    description:"Best practices for organizing React applications",
+    explanation:`A well-organized project is easier to maintain, scale, and onboard.\n\n<strong>Common Patterns:</strong>\n• Feature-based: group by feature/domain (recommended for large apps)\n• Type-based: group by type (components, hooks, services)\n• Hybrid: combine both\n\n<strong>Key Principles:</strong>\n• Colocation: keep related files together\n• Separation of Concerns: separate logic, UI, data\n• Barrel exports (index.js) for clean imports\n• Absolute imports to avoid ../../../../utils`,
+    codeExample:`// Recommended Structure for Medium-Large Apps
+/*
+src/
+├── components/           # Shared/reusable UI components
+│   ├── Button/
+│   │   ├── Button.jsx
+│   │   ├── Button.module.css
+│   │   ├── Button.test.jsx
+│   │   └── index.js      # Barrel export
+│   └── Modal/
+│
+├── features/             # Feature modules
+│   ├── auth/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   └── index.js
+│   └── dashboard/
+│
+├── hooks/                # Shared custom hooks
+│   ├── useFetch.js
+│   └── useDebounce.js
+│
+├── pages/                # Route-level components
+│   ├── Home.jsx
+│   └── Dashboard.jsx
+│
+├── services/             # API calls
+│   ├── api.js            # Axios instance
+│   └── userService.js
+│
+├── utils/                # Pure utility functions
+│   ├── formatDate.js
+│   └── validators.js
+│
+├── App.jsx
+└── main.jsx
+*/
+
+// services/api.js — Axios instance with interceptors
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+  timeout: 10000,
+});
+
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) config.headers.Authorization = \`Bearer \${token}\`;
+  return config;
+});
+
+api.interceptors.response.use(
+  res => res.data,
+  err => {
+    if (err.response?.status === 401) window.location.href = '/login';
+    return Promise.reject(err);
+  }
+);
+
+export default api;
+
+// services/userService.js
+export const userService = {
+  getAll: () => api.get('/users'),
+  getById: id => api.get(\`/users/\${id}\`),
+  create: data => api.post('/users', data),
+  update: (id, data) => api.put(\`/users/\${id}\`, data),
+  delete: id => api.delete(\`/users/\${id}\`),
+};`,
+    steps:["Start simple — don't over-engineer from the beginning","Create separate folders for components, pages, hooks, services","Colocate component-specific files (styles, tests) with the component","Use barrel exports (index.js) for clean imports","Set up path aliases in vite/webpack for absolute imports","As app grows, consider moving to feature-based structure"],
+    mistakes:["Putting everything in one folder (doesn't scale)","Mixing business logic with UI components","Not separating API calls from components","Deep nesting making imports messy","Inconsistent naming conventions"],
+    qa:[
+      {q:"How would you structure a large React application?",a:"Feature-based structure: each feature has its own folder with components, hooks, services, and state. Shared utilities live at the top level. Use barrel exports for clean imports and set up path aliases."},
+      {q:"What is colocation in React projects?",a:"Colocation means keeping files that change together near each other. A component's CSS, tests, and types should be in the same folder as the component. This makes it easier to find related files and reduces breaking dependencies when refactoring."},
+      {q:"What are barrel exports and their trade-offs?",a:"Barrel exports use index.js to re-export from multiple files, enabling clean imports. Trade-offs: simpler imports but can cause circular dependencies and may break tree-shaking in some bundler configurations."},
+      {q:"How do you handle environment variables in React?",a:"In CRA, prefix with REACT_APP_: REACT_APP_API_URL. In Vite, prefix with VITE_: VITE_API_URL. Access via process.env.REACT_APP_X or import.meta.env.VITE_X. Never commit .env files with secrets."},
+      {q:"What is the difference between a smart and dumb component?",a:"Smart (container) components handle logic, state, and data fetching. Dumb (presentational) components are pure UI receiving data via props. This separation improves reusability and testability. Modern React blurs this with hooks, but the principle remains."}
+    ]
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentPage = 'home';
+let currentTopic = null;
+let currentTab = 'explanation';
+let completedTopics = new Set(JSON.parse(localStorage.getItem('reactmaster-done') || '[]'));
+let isDark = true;
+
+function saveCompleted() {
+  localStorage.setItem('reactmaster-done', JSON.stringify([...completedTopics]));
+}
+
+// ============================================================
+// RENDER ENGINE
+// ============================================================
+function render() {
+  updateProgressBadge();
+  updateSidebar();
+  if (currentPage === 'home') renderHome();
+  else if (currentPage === 'api') renderAPIPage();
+  else if (currentPage === 'tasks') renderTaskPage();
+  else if (currentPage === 'search') renderSearchPage();
+  else if (currentPage === 'topic') renderTopicPage();
+}
+
+function updateProgressBadge() {
+  document.getElementById('progress-badge').textContent = `${completedTopics.size} / ${topics.length} done`;
+}
+
+function updateSidebar() {
+  const categories = [...new Set(topics.map(t => t.category))];
+  let html = '';
+  categories.forEach(cat => {
+    html += `<div class="cat-label">${cat}</div>`;
+    topics.filter(t => t.category === cat).forEach(t => {
+      const done = completedTopics.has(t.id);
+      html += `<button class="topic-btn ${currentTopic === t.id && currentPage === 'topic' ? 'active' : ''}"
+        onclick="showTopic('${t.id}')">
+        <span class="icon">${t.icon}</span>
+        <span>${t.title}</span>
+        ${done ? '<span class="done-dot"></span>' : ''}
+      </button>`;
+    });
+  });
+  document.getElementById('topic-list').innerHTML = html;
+
+  // Update nav buttons active state
+  ['home','api','tasks'].forEach(p => {
+    const btn = document.getElementById(`nav-${p}`);
+    if (btn) {
+      btn.classList.toggle('active', currentPage === p);
+    }
+  });
+}
+
+// ============================================================
+// HOME PAGE
+// ============================================================
+function renderHome() {
+  const pct = Math.round((completedTopics.size / topics.length) * 100);
+  const cats = [...new Set(topics.map(t => t.category))];
+  let catSections = '';
+  cats.forEach(cat => {
+    const catTopics = topics.filter(t => t.category === cat);
+    catSections += `
+      <div class="section-title">${cat}</div>
+      <div class="topics-grid">
+        ${catTopics.map(t => `
+          <div class="topic-card" onclick="showTopic('${t.id}')">
+            ${completedTopics.has(t.id) ? '<div class="completed-badge">✓</div>' : ''}
+            <div class="card-icon">${t.icon}</div>
+            <div class="cat-tag pill-${t.category}">${t.category}</div>
+            <h3>${t.title}</h3>
+            <p>${t.description}</p>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  });
+
+  document.getElementById('page-content').innerHTML = `
+    <div class="page-fade">
+      <div class="home-hero">
+        <h1>Learn <span class="acc">React</span><br>the <span class="acc2">right way</span></h1>
+        <p>From zero to interview-ready. Master concepts, read code examples, and prepare for technical interviews — all in one place.</p>
+        <div class="cta-group">
+          <button class="btn-primary" onclick="showTopic('intro')">Start Learning ⚛️</button>
+          <button class="btn-secondary" onclick="showPage('tasks')">Try Task Manager ✅</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="num">${topics.length}</div><div class="lbl">Topics</div></div>
+        <div class="stat-card"><div class="num">${topics.reduce((a,t) => a + t.qa.length, 0)}</div><div class="lbl">Interview Questions</div></div>
+        <div class="stat-card"><div class="num">${completedTopics.size}</div><div class="lbl">Completed</div></div>
+        <div class="stat-card"><div class="num">${topics.reduce((a,t) => a + t.steps.length, 0)}</div><div class="lbl">Step-by-step Guides</div></div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Your Progress</span><span>${pct}%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+
+      ${catSections}
+    </div>
+  `;
+}
+
+// ============================================================
+// TOPIC PAGE
+// ============================================================
+function renderTopicPage() {
+  const t = topics.find(x => x.id === currentTopic);
+  if (!t) return;
+  const idx = topics.indexOf(t);
+  const prev = topics[idx - 1];
+  const next = topics[idx + 1];
+  const done = completedTopics.has(t.id);
+
+  const tabs = [
+    { id:'explanation', label:'📖 Explanation' },
+    { id:'code', label:'💻 Code Example' },
+    { id:'steps', label:'🪜 Step-by-Step' },
+    { id:'mistakes', label:'⚠️ Common Mistakes' },
+    { id:'interview', label:'🎯 Interview Q&A' },
+  ];
+
+  let content = '';
+  if (currentTab === 'explanation') {
+    content = `
+      <div class="content-section">
+        <h2>📖 Explanation</h2>
+        <div class="explanation">${formatExplanation(t.explanation)}</div>
+      </div>
+    `;
+  } else if (currentTab === 'code') {
+    content = `
+      <div class="content-section">
+        <h2>💻 Code Example</h2>
+        <div class="code-block">
+          <div class="code-header">
+            <span>JavaScript / JSX</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre>${escapeHtml(t.codeExample)}</pre>
+        </div>
+      </div>
+    `;
+  } else if (currentTab === 'steps') {
+    content = `
+      <div class="content-section">
+        <h2>🪜 Step-by-Step Guide</h2>
+        <ul class="step-list">
+          ${t.steps.map((s, i) => `
+            <li>
+              <div class="step-num">${i + 1}</div>
+              <p>${s}</p>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  } else if (currentTab === 'mistakes') {
+    content = `
+      <div class="content-section">
+        <h2>⚠️ Common Mistakes</h2>
+        <ul class="mistake-list">
+          ${t.mistakes.map(m => `
+            <li><p>${m}</p></li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  } else if (currentTab === 'interview') {
+    content = `
+      <div class="content-section">
+        <h2>🎯 Interview Q&A</h2>
+        <p style="color:var(--text2);margin-bottom:16px;font-size:0.875rem;">Click a question to reveal the answer</p>
+        <ul class="qa-list">
+          ${t.qa.map((item, i) => `
+            <li class="qa-item" id="qa-${i}">
+              <div class="qa-question" onclick="toggleQA(${i})">
+                <div class="qa-q-icon">Q</div>
+                <p>${item.q}</p>
+                <span class="qa-chevron">▼</span>
+              </div>
+              <div class="qa-answer">
+                <p>${item.a}</p>
+              </div>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  document.getElementById('page-content').innerHTML = `
+    <div class="page-fade">
+      <div class="lesson-header">
+        <div class="lesson-icon">${t.icon}</div>
+        <div style="flex:1">
+          <h1>${t.title}</h1>
+          <p>${t.description}</p>
+          <div class="header-meta">
+            <span class="meta-tag cat">${t.category}</span>
+            <span class="meta-tag qs">${t.qa.length} Interview Questions</span>
+            <span class="meta-tag" style="background:rgba(91,201,160,0.15);color:var(--accent2)">${t.steps.length} Steps</span>
+          </div>
+        </div>
+        <button class="mark-btn ${done ? 'done' : ''}" onclick="toggleComplete('${t.id}')">
+          ${done ? '✓ Completed' : 'Mark Complete'}
+        </button>
+      </div>
+
+      <div class="tab-bar">
+        ${tabs.map(tab => `
+          <button class="tab-btn ${currentTab === tab.id ? 'active' : ''}"
+            onclick="switchTab('${tab.id}')">
+            ${tab.label}
+          </button>
+        `).join('')}
+      </div>
+
+      ${content}
+
+      <div class="lesson-nav">
+        ${prev ? `
+          <button class="nav-btn" onclick="showTopic('${prev.id}')">
+            <div class="nav-label">← Previous</div>
+            <div class="nav-title">${prev.icon} ${prev.title}</div>
+          </button>
+        ` : '<div></div>'}
+        ${next ? `
+          <button class="nav-btn next" onclick="showTopic('${next.id}')">
+            <div class="nav-label">Next →</div>
+            <div class="nav-title">${next.title} ${next.icon}</div>
+          </button>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// API DEMO PAGE
+// ============================================================
+let apiState = {
+  tab: 'posts',
+  posts: null, users: null,
+  loading: false, error: null,
+  page: 1, searchId: ''
+};
+
+function renderAPIPage() {
+  const tabs = [
+    { id:'posts', label:'📄 Posts' },
+    { id:'users', label:'👥 Users' },
+    { id:'todos', label:'✅ Todos' },
+  ];
+
+  document.getElementById('page-content').innerHTML = `
+    <div class="api-page page-fade">
+      <h2>🌐 API Live Demo</h2>
+      <p>Live data fetched from <strong>JSONPlaceholder</strong> — a free REST API for testing. This demonstrates loading states, error handling, and pagination.</p>
+
+      <div class="tab-bar" style="margin-bottom:20px">
+        ${tabs.map(t => `
+          <button class="tab-btn ${apiState.tab === t.id ? 'active' : ''}"
+            onclick="switchAPITab('${t.id}')">
+            ${t.label}
+          </button>
+        `).join('')}
+      </div>
+
+      <div id="api-controls-area">
+        ${renderAPIControls()}
+      </div>
+      <div id="api-data-area">
+        ${renderAPIData()}
+      </div>
+    </div>
+  `;
+
+  if (!apiState[apiState.tab]) {
+    fetchAPIData();
+  }
+}
+
+function renderAPIControls() {
+  if (apiState.tab === 'posts') {
+    return `
+      <div class="api-controls">
+        <input type="number" id="search-id" min="1" max="100"
+          placeholder="Search post by ID (1-100)"
+          value="${apiState.searchId}"
+          oninput="apiState.searchId=this.value" />
+        <button class="btn-fetch" onclick="fetchAPIData()">🔍 Fetch</button>
+        <button class="btn-secondary" style="padding:8px 14px;font-size:0.875rem"
+          onclick="apiState.searchId='';apiState.page=1;fetchAPIData()">Reset</button>
+      </div>
+    `;
+  }
+  return `<div class="api-controls">
+    <button class="btn-fetch" onclick="fetchAPIData()">🔄 Reload</button>
+  </div>`;
+}
+
+function renderAPIData() {
+  if (apiState.loading) {
+    return `<div class="loading-state"><div class="spinner"></div><p>Fetching from JSONPlaceholder API…</p></div>`;
+  }
+  if (apiState.error) {
+    return `<div class="error-state"><p>❌ ${apiState.error}</p><button onclick="fetchAPIData()">Try Again</button></div>`;
+  }
+  if (!apiState[apiState.tab]) {
+    return `<div class="loading-state"><div class="spinner"></div><p>Loading…</p></div>`;
+  }
+
+  if (apiState.tab === 'posts') {
+    const data = apiState.posts || [];
+    const posts = Array.isArray(data) ? data : [data];
+    return `
+      <div class="posts-grid">
+        ${posts.map(p => `
+          <div class="post-card">
+            <span class="post-id">POST #${p.id} · USER #${p.userId}</span>
+            <h4>${p.title}</h4>
+            <p>${p.body.substring(0, 120)}…</p>
+          </div>
+        `).join('')}
+      </div>
+      ${!apiState.searchId ? `
+        <div class="pagination">
+          <button onclick="apiPage(-1)" ${apiState.page <= 1 ? 'disabled' : ''}>← Previous</button>
+          <span>Page ${apiState.page} of 20</span>
+          <button onclick="apiPage(1)" ${apiState.page >= 20 ? 'disabled' : ''}>Next →</button>
+        </div>
+      ` : ''}
+    `;
+  }
+
+  if (apiState.tab === 'users') {
+    const users = apiState.users || [];
+    return `
+      <div class="users-table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Name</th><th>Username</th><th>Email</th><th>City</th><th>Company</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${users.map(u => `
+              <tr>
+                <td>
+                  <div class="user-name-cell">
+                    <div class="user-avatar">${u.name[0]}</div>
+                    ${u.name}
+                  </div>
+                </td>
+                <td>@${u.username}</td>
+                <td>${u.email}</td>
+                <td>${u.address.city}</td>
+                <td>${u.company.name}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  if (apiState.tab === 'todos') {
+    const todos = apiState.todos || [];
+    return `
+      <div class="posts-grid">
+        ${todos.slice(0, 12).map(todo => `
+          <div class="post-card" style="cursor:default">
+            <span class="post-id" style="color:${todo.completed ? 'var(--accent2)' : 'var(--text3)'}">
+              ${todo.completed ? '✅ Completed' : '⏳ Pending'} · User #${todo.userId}
+            </span>
+            <h4 style="text-decoration:${todo.completed ? 'line-through' : 'none'};opacity:${todo.completed ? 0.6 : 1}">
+              ${todo.title}
+            </h4>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  return '';
+}
+
+function switchAPITab(tab) {
+  apiState.tab = tab;
+  apiState.loading = false;
+  apiState.error = null;
+  renderAPIPage();
+  if (!apiState[tab]) fetchAPIData();
+}
+
+function apiPage(dir) {
+  apiState.page = Math.max(1, Math.min(20, apiState.page + dir));
+  fetchAPIData();
+}
+
+async function fetchAPIData() {
+  apiState.loading = true;
+  apiState.error = null;
+  document.getElementById('api-data-area').innerHTML = renderAPIData();
+
+  try {
+    let url = '';
+    if (apiState.tab === 'posts') {
+      if (apiState.searchId) {
+        url = `https://jsonplaceholder.typicode.com/posts/${apiState.searchId}`;
+      } else {
+        url = `https://jsonplaceholder.typicode.com/posts?_page=${apiState.page}&_limit=9`;
+      }
+    } else if (apiState.tab === 'users') {
+      url = 'https://jsonplaceholder.typicode.com/users';
+    } else {
+      url = 'https://jsonplaceholder.typicode.com/todos?_limit=12';
+    }
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+    const data = await res.json();
+
+    if (apiState.tab === 'posts') apiState.posts = data;
+    else if (apiState.tab === 'users') apiState.users = data;
+    else apiState.todos = data;
+
+    apiState.loading = false;
+    apiState.error = null;
+  } catch (err) {
+    apiState.loading = false;
+    apiState.error = err.message;
+  }
+
+  document.getElementById('api-controls-area').innerHTML = renderAPIControls();
+  document.getElementById('api-data-area').innerHTML = renderAPIData();
+}
+
+// ============================================================
+// TASK MANAGER PAGE
+// ============================================================
+let tasks = JSON.parse(localStorage.getItem('reactmaster-tasks') || '[]');
+let taskFilter = 'all';
+let editingTaskId = null;
+let taskForm = { title:'', description:'', priority:'medium', status:'todo' };
+
+if (tasks.length === 0) {
+  tasks = [
+    { id:'t1', title:'Learn useState hook', description:'Understand how to manage local state in functional components', priority:'high', status:'done', created: Date.now()-1000000 },
+    { id:'t2', title:'Build a counter component', description:'Practice state management with a simple counter', priority:'medium', status:'done', created: Date.now()-900000 },
+    { id:'t3', title:'Study useEffect patterns', description:'Learn about dependency arrays and cleanup functions', priority:'high', status:'in-progress', created: Date.now()-800000 },
+    { id:'t4', title:'Create a custom hook', description:'Extract useFetch logic into a reusable hook', priority:'medium', status:'in-progress', created: Date.now()-700000 },
+    { id:'t5', title:'Implement React Router', description:'Add multi-page navigation to a React app', priority:'low', status:'todo', created: Date.now()-600000 },
+    { id:'t6', title:'Practice form validation', description:'Build a registration form with real-time validation', priority:'medium', status:'todo', created: Date.now()-500000 },
+  ];
+  saveTasks();
+}
+
+function saveTasks() {
+  localStorage.setItem('reactmaster-tasks', JSON.stringify(tasks));
+}
+
+function renderTaskPage() {
+  const filtered = taskFilter === 'all' ? tasks
+    : tasks.filter(t => t.status === taskFilter);
+
+  const cols = [
+    { key:'todo', label:'To Do', dotClass:'todo' },
+    { key:'in-progress', label:'In Progress', dotClass:'in-progress' },
+    { key:'done', label:'Done', dotClass:'done' },
+  ];
+
+  document.getElementById('page-content').innerHTML = `
+    <div class="task-page page-fade">
+      <h2>✅ Task Manager</h2>
+      <p class="page-desc">A mini project built with React hooks — add, edit, delete, and organize tasks by status. All data persists in localStorage.</p>
+
+      <!-- Add/Edit Form -->
+      <div class="task-form">
+        <h3>${editingTaskId ? '✏️ Edit Task' : '➕ Add New Task'}</h3>
+        <div class="form-row">
+          <div class="form-group" style="flex:2">
+            <label>Task Title *</label>
+            <input type="text" id="task-title" value="${escapeHtml(taskForm.title)}"
+              oninput="taskForm.title=this.value" placeholder="What needs to be done?" />
+          </div>
+          <div class="form-group">
+            <label>Priority</label>
+            <select id="task-priority" onchange="taskForm.priority=this.value">
+              <option value="low" ${taskForm.priority==='low'?'selected':''}>🟢 Low</option>
+              <option value="medium" ${taskForm.priority==='medium'?'selected':''}>🟡 Medium</option>
+              <option value="high" ${taskForm.priority==='high'?'selected':''}>🔴 High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="task-status" onchange="taskForm.status=this.value">
+              <option value="todo" ${taskForm.status==='todo'?'selected':''}>To Do</option>
+              <option value="in-progress" ${taskForm.status==='in-progress'?'selected':''}>In Progress</option>
+              <option value="done" ${taskForm.status==='done'?'selected':''}>Done</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:14px">
+          <label>Description</label>
+          <textarea id="task-desc" oninput="taskForm.description=this.value"
+            placeholder="Optional description…">${escapeHtml(taskForm.description)}</textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-add" onclick="saveTask()">
+            ${editingTaskId ? '💾 Update Task' : '➕ Add Task'}
+          </button>
+          ${editingTaskId ? `<button class="btn-cancel" onclick="cancelEdit()">Cancel</button>` : ''}
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="task-filters">
+        ${['all','todo','in-progress','done'].map(f => `
+          <button class="filter-btn ${taskFilter===f?'active':''}" onclick="setTaskFilter('${f}')">
+            ${f==='all'?'All':f==='todo'?'To Do':f==='in-progress'?'In Progress':'Done'}
+          </button>
+        `).join('')}
+        <span class="task-count">${filtered.length} task${filtered.length!==1?'s':''}</span>
+      </div>
+
+      <!-- Kanban Columns -->
+      <div class="task-columns">
+        ${cols.map(col => {
+          const colTasks = filtered.filter(t => t.status === col.key);
+          return `
+            <div class="task-col">
+              <div class="task-col-header">
+                <div class="col-dot ${col.dotClass}"></div>
+                <h4>${col.label}</h4>
+                <div class="col-count">${colTasks.length}</div>
+              </div>
+              ${colTasks.length === 0 ? `<div class="empty-col">No tasks here</div>` : ''}
+              ${colTasks.map(task => `
+                <div class="task-card">
+                  <h5>${escapeHtml(task.title)}</h5>
+                  ${task.description ? `<p>${escapeHtml(task.description)}</p>` : ''}
+                  <div class="task-card-footer">
+                    <span class="priority-badge ${task.priority}">${task.priority}</span>
+                    <div class="task-card-actions">
+                      <button class="icon-btn" title="Edit" onclick="editTask('${task.id}')">✏️</button>
+                      <button class="icon-btn" title="Move" onclick="cycleStatus('${task.id}')">🔄</button>
+                      <button class="icon-btn delete" title="Delete" onclick="deleteTask('${task.id}')">🗑️</button>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function saveTask() {
+  const title = document.getElementById('task-title').value.trim();
+  if (!title) { showToast('⚠️ Title is required!'); return; }
+
+  if (editingTaskId) {
+    tasks = tasks.map(t => t.id === editingTaskId
+      ? { ...t, title: taskForm.title, description: taskForm.description,
+          priority: taskForm.priority, status: taskForm.status }
+      : t
+    );
+    showToast('✅ Task updated!');
+    editingTaskId = null;
+  } else {
+    tasks.push({
+      id: 't' + Date.now(),
+      title: taskForm.title,
+      description: taskForm.description,
+      priority: taskForm.priority,
+      status: taskForm.status,
+      created: Date.now()
+    });
+    showToast('✅ Task added!');
+  }
+
+  taskForm = { title:'', description:'', priority:'medium', status:'todo' };
+  saveTasks();
+  renderTaskPage();
+}
+
+function editTask(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  editingTaskId = id;
+  taskForm = { title: task.title, description: task.description,
+    priority: task.priority, status: task.status };
+  renderTaskPage();
+  window.scrollTo(0, 0);
+}
+
+function cancelEdit() {
+  editingTaskId = null;
+  taskForm = { title:'', description:'', priority:'medium', status:'todo' };
+  renderTaskPage();
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  saveTasks();
+  showToast('🗑️ Task deleted');
+  renderTaskPage();
+}
+
+function cycleStatus(id) {
+  const cycle = { 'todo': 'in-progress', 'in-progress': 'done', 'done': 'todo' };
+  tasks = tasks.map(t => t.id === id ? { ...t, status: cycle[t.status] } : t);
+  saveTasks();
+  showToast('🔄 Status updated');
+  renderTaskPage();
+}
+
+function setTaskFilter(f) {
+  taskFilter = f;
+  renderTaskPage();
+}
+
+// ============================================================
+// SEARCH PAGE
+// ============================================================
+let searchQuery = '';
+
+function handleSearch(val) {
+  searchQuery = val;
+  if (!val.trim()) {
+    currentPage = 'home';
+    render();
+    return;
+  }
+  currentPage = 'search';
+  renderSearchPage();
+  updateSidebar();
+}
+
+function renderSearchPage() {
+  const q = searchQuery.toLowerCase();
+  const results = topics.filter(t =>
+    t.title.toLowerCase().includes(q) ||
+    t.description.toLowerCase().includes(q) ||
+    t.explanation.toLowerCase().includes(q) ||
+    t.codeExample.toLowerCase().includes(q) ||
+    t.qa.some(item => item.q.toLowerCase().includes(q) || item.a.toLowerCase().includes(q))
+  );
+
+  document.getElementById('page-content').innerHTML = `
+    <div class="search-results page-fade">
+      <h2>🔍 "${searchQuery}" — ${results.length} result${results.length !== 1 ? 's' : ''}</h2>
+      ${results.length === 0 ? `<p style="color:var(--text2)">No topics match your search. Try different keywords.</p>` : ''}
+      ${results.map(t => `
+        <div class="search-result-item" onclick="showTopic('${t.id}')">
+          <div class="ri">${t.icon}</div>
+          <div>
+            <h4>${t.title}</h4>
+            <p>${t.description}</p>
+          </div>
+          <span class="meta-tag cat" style="margin-left:auto;flex-shrink:0">${t.category}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(page) {
+  currentPage = page;
+  currentTopic = null;
+  document.getElementById('search-input').value = '';
+  searchQuery = '';
+  render();
+}
+
+function showTopic(id) {
+  currentPage = 'topic';
+  currentTopic = id;
+  currentTab = 'explanation';
+  document.getElementById('search-input').value = '';
+  searchQuery = '';
+  document.getElementById('main').scrollTop = 0;
+  render();
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  renderTopicPage();
+}
+
+function toggleComplete(id) {
+  if (completedTopics.has(id)) completedTopics.delete(id);
+  else completedTopics.add(id);
+  saveCompleted();
+  showToast(completedTopics.has(id) ? '🎉 Topic marked complete!' : 'Unmarked');
+  render();
+}
+
+function toggleQA(index) {
+  const item = document.getElementById(`qa-${index}`);
+  item.classList.toggle('open');
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function toggleTheme() {
+  isDark = !isDark;
+  document.body.classList.toggle('light', !isDark);
+  document.getElementById('theme-btn').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatExplanation(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`(.*?)`/g, '<code style="background:var(--bg4);padding:2px 6px;border-radius:4px;font-family:DM Mono,monospace;font-size:0.85em">$1</code>')
+    .replace(/\n/g, '<br>');
+}
+
+function copyCode(btn) {
+  const code = btn.closest('.code-block').querySelector('pre').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    btn.style.background = 'var(--accent2)';
+    btn.style.color = 'white';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; btn.style.color = ''; }, 2000);
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => { t.style.display = 'none'; }, 2500);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.05 — Vision | NN Guide</title>
+<link rel="stylesheet" href="shared.css">
+<style>:root{--neon:#00b8ff}</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="topnav-logo">NN<span>.GUIDE</span></a>
+  <div class="topnav-links"><a href="01-math.html">01 Math</a><a href="02-fundamentals.html">02 Fundamentals</a><a href="03-python.html">03 Python</a><a href="04-workflow.html">04 Workflow</a><a href="05-cnn.html" class="active">05 CNN</a><a href="06-rnn.html">06 RNN</a><a href="07-nlp.html">07 NLP</a><a href="08-transformers.html">08 Transformers</a><a href="09-advanced.html">09 Advanced</a><a href="10-specializations.html">10 Specs</a><a href="11-projects.html">11 Projects</a></div>
+</nav>
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow" style="width:500px;height:500px;background:rgba(0,0,0,.5);top:-180px;right:-120px;"></div>
+  <div class="chapter-num">Chapter 05 — Vision</div>
+  <h1><span style="color:#00b8ff">CONVOLUTIONAL NEURAL</span><br>NETWORKS</h1>
+  <p class="hero-sub">Convolutions, pooling, BatchNorm, ResNet, EfficientNet, transfer learning — mastering computer vision with CNNs.</p>
+  <div class="hero-meta"><div class="hero-stat"><div class="hero-stat-val" style="color:#00b8ff">7</div><div class="hero-stat-label">Architectures</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#00b8ff">12</div><div class="hero-stat-label">Code Examples</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#00b8ff">8</div><div class="hero-stat-label">Interview Q&A</div></div></div>
+</div>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">Contents</div>
+    <a class="sb-link active" onclick="show('convolution')"><span class="sb-icon">🖼️</span>Convolution Op</a>
+<a class="sb-link" onclick="show('architectures')"><span class="sb-icon">🏗️</span>Architectures</a>
+<a class="sb-link" onclick="show('transfer')"><span class="sb-icon">🔀</span>Transfer Learning</a>
+<a class="sb-link" onclick="show('interview')"><span class="sb-icon">🎯</span>Interview Q&A</a>
+
+    <div class="sb-chapters">
+      <div class="sb-ch-label">Navigate</div>
+      <a class="sb-ch-link" href="04-workflow.html">← 04 · Workflow</a><a class="sb-ch-link" href="06-rnn.html">→ 06 · RNN</a>
+    </div>
+  </aside>
+  <div class="content">
+    <div class="section active" id="s-convolution"><div class="sec-head"><span class="sec-tag tag-i">Intermediate</span><h2 class="sec-head h2">CONVOLUTION OPERATION</h2><div class="sec-meta">How CNNs process spatial data</div></div><div class="card"><div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">🔹</span>Why Convolutions?</div><p>A fully-connected layer on a 224×224×3 image would need 224×224×3×hidden_size weights — millions per layer, no spatial awareness. Convolutions share weights spatially — a 3×3 filter applied everywhere: efficient, translation-invariant, captures local patterns.</p><div class="formula">Output[i,j] = Σₖ Σₗ Input[i+k, j+l] · Filter[k,l] + bias
+Output_size = (Input_size - Kernel + 2·Padding) / Stride + 1</div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · Conv2d Parameters</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="cm"># Conv2d(in_channels, out_channels, kernel_size, stride, padding)</span>
+conv = nn.<span class="cls">Conv2d</span>(<span class="num">3</span>, <span class="num">64</span>, kernel_size=<span class="num">3</span>, stride=<span class="num">1</span>, padding=<span class="num">1</span>)
+<span class="cm"># Input: (B, 3, H, W) → Output: (B, 64, H, W)  (same spatial dims with pad=1)</span>
+
+<span class="cm"># Parameter count: 3×64×3×3 + 64 = 1,792</span>
+<span class="fn">print</span>(<span class="fn">sum</span>(p.<span class="fn">numel</span>() <span class="kw">for</span> p <span class="kw">in</span> conv.<span class="fn">parameters</span>()))  <span class="cm"># 1792</span></pre></div></div><div class="section" id="s-architectures"><div class="sec-head"><span class="sec-tag tag-i">Intermediate</span><h2 class="sec-head h2">CNN ARCHITECTURES</h2><div class="sec-meta">LeNet → VGG → ResNet → EfficientNet</div></div><div class="tbl"><table><tr><th>Architecture</th><th>Year</th><th>Depth</th><th>Key Innovation</th></tr><tr><td>LeNet-5</td><td>1998</td><td>5</td><td>First practical CNN, digit recognition</td></tr><tr><td>AlexNet</td><td>2012</td><td>8</td><td>ReLU, Dropout, GPU training, won ImageNet</td></tr><tr><td>VGG-16/19</td><td>2014</td><td>16-19</td><td>Small 3×3 convs, depth works</td></tr><tr><td>GoogLeNet</td><td>2014</td><td>22</td><td>Inception modules, 1×1 convs</td></tr><tr><td>ResNet-50</td><td>2015</td><td>50</td><td>Residual/skip connections — solved depth</td></tr><tr><td>DenseNet</td><td>2017</td><td>121</td><td>Dense connections, feature reuse</td></tr><tr><td>EfficientNet</td><td>2019</td><td>varies</td><td>Compound scaling, NAS-designed</td></tr></table></div><div class="code-box"><div class="code-top"><span class="code-label">Python · ResNet Block</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">class</span> <span class="cls">ResBlock</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, channels):
+        <span class="fn">super</span>().__init__()
+        self.block = nn.<span class="cls">Sequential</span>(
+            nn.<span class="cls">Conv2d</span>(channels, channels, <span class="num">3</span>, padding=<span class="num">1</span>, bias=<span class="kw">False</span>),
+            nn.<span class="cls">BatchNorm2d</span>(channels), nn.<span class="cls">ReLU</span>(),
+            nn.<span class="cls">Conv2d</span>(channels, channels, <span class="num">3</span>, padding=<span class="num">1</span>, bias=<span class="kw">False</span>),
+            nn.<span class="cls">BatchNorm2d</span>(channels))
+        self.relu = nn.<span class="cls">ReLU</span>()
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="kw">return</span> self.<span class="fn">relu</span>(self.<span class="fn">block</span>(x) + x)  <span class="cm"># skip connection!</span></pre></div></div><div class="section" id="s-transfer"><div class="sec-head"><span class="sec-tag tag-a">Advanced</span><h2 class="sec-head h2">TRANSFER LEARNING</h2><div class="sec-meta">Fine-tune pretrained models on custom data</div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · Transfer Learning</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">import</span> torchvision.models <span class="kw">as</span> models
+
+<span class="cm"># Load pretrained ResNet50</span>
+model = models.<span class="fn">resnet50</span>(weights=<span class="str">'IMAGENET1K_V2'</span>)
+
+<span class="cm"># Freeze all layers</span>
+<span class="kw">for</span> param <span class="kw">in</span> model.<span class="fn">parameters</span>():
+    param.requires_grad = <span class="kw">False</span>
+
+<span class="cm"># Replace final layer for your task</span>
+model.fc = nn.<span class="cls">Sequential</span>(
+    nn.<span class="cls">Dropout</span>(<span class="num">0.5</span>),
+    nn.<span class="cls">Linear</span>(<span class="num">2048</span>, num_classes))
+
+<span class="cm"># Phase 2: unfreeze and fine-tune with small LR</span>
+<span class="kw">for</span> param <span class="kw">in</span> model.layer4.<span class="fn">parameters</span>():
+    param.requires_grad = <span class="kw">True</span>
+
+optimizer = torch.optim.<span class="cls">AdamW</span>([
+    {<span class="str">'params'</span>: model.fc.<span class="fn">parameters</span>(), <span class="str">'lr'</span>: <span class="num">1e-3</span>},
+    {<span class="str">'params'</span>: model.layer4.<span class="fn">parameters</span>(), <span class="str">'lr'</span>: <span class="num">1e-4</span>}])</pre></div><div class="callout cl-green"><span class="callout-icon">✅</span><span><strong>Rule:</strong> For small custom datasets (<10K images), freeze everything and train only the head. For medium datasets, fine-tune last 2 blocks. For large datasets, fine-tune everything with small LR.</span></div></div><div class="section" id="s-interview"><div class="sec-head"><span class="sec-tag tag-q">Interview</span><h2 class="sec-head h2">INTERVIEW Q&A</h2><div class="sec-meta">CNN · 8 Questions</div></div><div class="qa-level">Intermediate</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q01</span><span class="qa-text">Why use 3×3 convolutions instead of larger kernels?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a">VGG demonstrated that two 3×3 convs have the same receptive field as one 5×5 but with fewer parameters (2×9×C² vs 25×C²) and an extra non-linearity. Three 3×3 convs ≈ one 7×7 with 3×9=27 vs 49 params. Benefits: fewer parameters → less overfitting, more efficient computation, more non-linearities → more expressive. Modern architectures (ResNet, EfficientNet) use 3×3 almost exclusively, with 1×1 convolutions for channel mixing and dimension reduction.</div></div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q02</span><span class="qa-text">What is the purpose of pooling layers?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Pooling reduces spatial dimensions, providing: (1) <strong>Translation invariance</strong> — a shifted feature still activates the same pool region; (2) <strong>Dimension reduction</strong> — less computation in subsequent layers; (3) <strong>Increasing receptive field</strong> — deeper layers see larger image regions. <strong>Max pooling</strong> takes the maximum value in a window — detects whether a feature is present anywhere in the region. <strong>Average pooling</strong> computes the mean — smoother, often used at the end (global average pooling replaces flatten). Trend: modern architectures use strided convolutions instead of explicit pooling — learnable downsampling.</div></div><div class="qa-level">Advanced</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q03</span><span class="qa-text">What is the residual connection and why does it solve the degradation problem?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Before ResNet (He 2015), adding more layers made networks worse — not due to overfitting but because deep networks were harder to optimise. The degradation problem: the network should at minimum be able to learn identity mappings, but gradient descent struggles to find them. Residual connections make identity the default: y = F(x) + x. Now the network only needs to learn the residual F(x) = desired_output - x. If F(x)=0, we get identity for free. Crucially, the skip connection provides a gradient highway: ∂L/∂x = ∂L/∂y · (∂F/∂x + 1). The '+1' ensures the gradient reaches early layers. This enabled training networks with 100-1000+ layers.</div></div></div>
+  </div>
+</div>
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+function toggleQA(el) {
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.qa-item.open').forEach(e => e.classList.remove('open'));
+  if (!open) el.classList.add('open');
+}
+</script>
+</body>
+</html>

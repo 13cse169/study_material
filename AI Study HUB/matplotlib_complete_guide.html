@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matplotlib: Complete Visualization Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Fira+Code:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:       #0f0f13;
+  --bg2:      #14141a;
+  --surface:  #1a1a24;
+  --surface2: #1e1e2c;
+  --border:   #252535;
+  --border2:  #303050;
+  --ink:      #e8e8f0;
+  --ink2:     #9898b8;
+  --muted:    #50506a;
+  /* Chart-inspired accent palette */
+  --blue:    #4e9eff;
+  --orange:  #ff7b2f;
+  --green:   #3ecf8e;
+  --red:     #ff5c6a;
+  --purple:  #b57eff;
+  --yellow:  #ffe566;
+  --teal:    #1fc8db;
+  /* Theme accent = matplotlib blue */
+  --accent:  #4e9eff;
+  --accent-d:rgba(78,158,255,0.1);
+  --code-bg: #0a0a10;
+  --grid:    rgba(78,158,255,0.04);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* Animated grid background */
+body::before {
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── HEADER ── */
+header {
+  position:relative;
+  z-index:10;
+  overflow:hidden;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.hdr-rainbow {
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--blue) 0%, var(--teal) 14%,
+    var(--green) 28%, var(--yellow) 42%,
+    var(--orange) 56%, var(--red) 70%,
+    var(--purple) 85%, var(--blue) 100%);
+}
+
+.hdr-inner {
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  min-height: 300px;
+}
+
+.hdr-left {
+  padding: 52px 56px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:relative;
+}
+
+.hdr-chart {
+  border-left: 1px solid var(--border);
+  padding: 36px 32px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:20px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Tiny sparkline bars in header */
+.hdr-bars {
+  display:flex;
+  align-items:flex-end;
+  gap:5px;
+  height:80px;
+  margin-top: 8px;
+}
+.hdr-bars span {
+  flex:1;
+  border-radius: 2px 2px 0 0;
+  animation: barRise 0.8s ease both;
+}
+@keyframes barRise {
+  from { transform: scaleY(0); transform-origin: bottom; }
+  to   { transform: scaleY(1); transform-origin: bottom; }
+}
+
+.spark-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform:uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.hdr-stats {
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.hdr-stat {
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding: 8px 14px;
+  display:flex;
+  flex-direction:column;
+}
+.hdr-stat .n {
+  font-size:22px;font-weight:800;
+  color:var(--accent);line-height:1;
+}
+.hdr-stat .l {
+  font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--muted);margin-top:2px;
+}
+
+.badge {
+  font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--accent);
+  font-weight:700;
+  margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.badge::before {
+  content:'';width:32px;height:2px;
+  background:var(--accent);
+}
+
+header h1 {
+  font-size: clamp(2.6rem, 5vw, 4.8rem);
+  font-weight:800;
+  line-height:1.0;
+  letter-spacing:-1px;
+  margin-bottom:14px;
+}
+.h1-accent { color:var(--orange); }
+
+header p {
+  color:var(--ink2);font-size:14px;
+  font-weight:400;max-width:500px;line-height:1.8;
+  font-family:'Spectral',serif;font-style:italic;
+}
+
+/* ── LAYOUT ── */
+.wrapper { display:flex; position:relative;z-index:1; }
+
+/* ── SIDEBAR ── */
+nav {
+  width:240px;min-width:240px;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  position:sticky;top:0;height:100vh;
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+  padding:16px 0 48px;
+}
+
+.nav-grp {
+  padding:14px 14px 4px;
+  font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--muted);font-weight:700;
+  display:flex;align-items:center;gap:8px;
+  margin-top:6px;
+}
+.nav-grp::after {
+  content:'';flex:1;height:1px;
+  background:var(--border);
+}
+
+nav a {
+  display:flex;align-items:center;gap:9px;
+  padding:7px 14px;
+  color:var(--ink2);text-decoration:none;
+  font-size:12.5px;font-weight:500;
+  transition:all 0.15s;
+  border-left:2px solid transparent;
+}
+nav a:hover { color:var(--ink);background:var(--surface); }
+nav a.active {
+  color:var(--accent);background:var(--accent-d);
+  border-left-color:var(--accent);
+}
+.ni { font-size:13px;min-width:16px; }
+.nb {
+  margin-left:auto;
+  font-family:'Fira Code',monospace;
+  font-size:9px;padding:1px 5px;
+  border-radius:2px;letter-spacing:1px;
+  text-transform:uppercase;
+}
+.nb-g{background:rgba(62,207,142,.1);color:var(--green);}
+.nb-y{background:rgba(255,229,102,.1);color:var(--yellow);}
+.nb-r{background:rgba(255,92,106,.1); color:var(--red);}
+
+/* ── MAIN ── */
+main {
+  flex:1;
+  padding:50px 58px;
+  max-width:900px;
+  overflow-x:hidden;
+  position:relative;z-index:1;
+}
+
+/* ── SECTION ── */
+.section { margin-bottom:80px; }
+
+.sec-hdr {
+  display:flex;align-items:flex-start;gap:16px;
+  margin-bottom:28px;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--border2);
+  position:relative;
+}
+.sec-hdr::after {
+  content:'';position:absolute;
+  bottom:-1px;left:0;width:48px;height:2px;
+  background:var(--accent);
+}
+
+.s-num {
+  font-size:48px;font-weight:800;
+  line-height:1;color:var(--surface2);
+  user-select:none;min-width:52px;
+  text-align:right;margin-top:-4px;
+  letter-spacing:-2px;
+}
+
+.s-info { flex:1; }
+.s-tag {
+  font-family:'Fira Code',monospace;
+  font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;
+  padding:2px 8px;border-radius:2px;
+  display:inline-block;margin-bottom:8px;
+}
+.tag-b{background:rgba(62,207,142,.08);color:var(--green);border:1px solid rgba(62,207,142,.2);}
+.tag-i{background:rgba(255,229,102,.08);color:var(--yellow);border:1px solid rgba(255,229,102,.2);}
+.tag-a{background:rgba(255,92,106,.08); color:var(--red);  border:1px solid rgba(255,92,106,.2);}
+
+.s-info h2 {
+  font-size:24px;font-weight:700;
+  letter-spacing:-0.5px;
+  color:var(--ink);margin-bottom:3px;
+}
+.s-info .sub {
+  color:var(--ink2);font-size:13px;font-weight:400;
+  font-family:'Spectral',serif;font-style:italic;
+}
+
+h3 {
+  font-size:10px;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--accent);
+  margin:28px 0 12px;
+  display:flex;align-items:center;gap:10px;
+}
+h3::after { content:'';flex:1;height:1px;background:var(--border); }
+
+p { margin-bottom:12px;color:var(--ink2);font-size:14px;line-height:1.8;font-weight:400; }
+ul,ol { padding-left:20px;margin-bottom:14px; }
+li { margin-bottom:5px;color:var(--ink2);font-size:14px; }
+strong { color:var(--ink);font-weight:700; }
+code {
+  font-family:'Fira Code',monospace;
+  font-size:12px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  padding:1px 6px;border-radius:3px;
+  color:var(--orange);
+}
+
+/* ── CODE BLOCK ── */
+.cb {
+  background:var(--code-bg);
+  border:1px solid var(--border);
+  border-radius:8px;
+  margin:16px 0;
+  overflow:hidden;
+  position:relative;
+}
+.cb-line {
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--orange),var(--blue) 60%,transparent);
+}
+.cb-top {
+  display:flex;align-items:center;gap:10px;
+  padding:9px 16px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+}
+.dots{display:flex;gap:5px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;}
+.dots span:nth-child(2){background:#febc2e;}
+.dots span:nth-child(3){background:#28c840;}
+.cb-lbl {
+  font-family:'Fira Code',monospace;
+  font-size:10px;color:var(--muted);
+  letter-spacing:1px;text-transform:uppercase;flex:1;
+}
+.cp {
+  font-family:'Fira Code',monospace;
+  font-size:10px;
+  background:rgba(255,123,47,.1);
+  border:1px solid rgba(255,123,47,.25);
+  color:var(--orange);
+  padding:3px 10px;border-radius:3px;
+  cursor:pointer;letter-spacing:1px;
+  transition:all .15s;
+}
+.cp:hover { background:rgba(255,123,47,.2); }
+
+pre {
+  padding:20px 24px;
+  overflow-x:auto;
+  font-family:'Fira Code',monospace;
+  font-size:12.5px;line-height:1.95;
+  color:#bbbcd8;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+
+/* syntax */
+.kw { color:#ff7b9d; }
+.fn { color:#4e9eff; }
+.st { color:#86d9b0; }
+.cm { color:#3a3a5a; font-style:italic; }
+.nm { color:#ffe566; }
+.cl { color:#ff9f43; }
+.op { color:#3ecf8e; }
+.at { color:#b57eff; }
+.de { color:#ff7b2f; }
+
+/* ── CALLOUTS ── */
+.note {
+  display:flex;gap:12px;
+  padding:14px 18px;border-radius:6px;
+  margin:14px 0;font-size:13.5px;
+  font-family:'Spectral',serif;line-height:1.7;
+}
+.note .ic { font-size:17px;min-width:20px;padding-top:2px; }
+.note.tip  { background:rgba(62,207,142,.05); border:1px solid rgba(62,207,142,.15);border-left:3px solid var(--green); }
+.note.warn { background:rgba(255,229,102,.05);border:1px solid rgba(255,229,102,.15);border-left:3px solid var(--yellow); }
+.note.info { background:var(--accent-d);      border:1px solid rgba(78,158,255,.18); border-left:3px solid var(--blue); }
+.note.hot  { background:rgba(255,92,106,.05); border:1px solid rgba(255,92,106,.15); border-left:3px solid var(--red); }
+
+/* ── TABLE ── */
+table { width:100%;border-collapse:collapse;margin:16px 0;font-size:13px; }
+th {
+  background:var(--surface2);
+  padding:9px 13px;text-align:left;
+  font-family:'Fira Code',monospace;
+  font-size:10px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--accent);
+  border-bottom:1px solid var(--border2);
+}
+td {
+  padding:9px 13px;
+  border-bottom:1px solid var(--border);
+  color:var(--ink2);font-size:13px;
+}
+tr:hover td { background:var(--accent-d); }
+
+/* ── CARDS ── */
+.g2 { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0; }
+.g3 { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0; }
+.g4 { display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0; }
+
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;padding:16px;
+  transition:all .2s;
+  position:relative;overflow:hidden;
+}
+.card::before {
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+  opacity:0;transition:opacity .2s;
+}
+.card:hover { border-color:var(--border2);transform:translateY(-2px); }
+.card:hover::before { opacity:1; }
+.card.c-blue::before { background:var(--blue); }
+.card.c-orange::before { background:var(--orange); }
+.card.c-green::before { background:var(--green); }
+.card.c-purple::before { background:var(--purple); }
+.card.c-red::before { background:var(--red); }
+.card.c-yellow::before { background:var(--yellow); }
+.card .icon { font-size:22px;margin-bottom:8px; }
+.card h4 { font-size:13px;font-weight:700;color:var(--ink);margin-bottom:5px; }
+.card p { font-size:12px;color:var(--muted);margin:0;line-height:1.5; }
+
+/* ── DIVIDER ── */
+hr.dv {
+  border:none;margin:70px 0;
+  position:relative;height:1px;
+  background:var(--border);
+}
+hr.dv::before {
+  content:'◈';
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  background:var(--bg);padding:0 14px;
+  color:var(--border2);font-size:12px;
+}
+
+/* ── COLOR SWATCHES ── */
+.swatches { display:flex;gap:8px;flex-wrap:wrap;margin:12px 0; }
+.sw {
+  display:flex;align-items:center;gap:6px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:4px;padding:6px 10px;
+  font-family:'Fira Code',monospace;font-size:11px;color:var(--ink2);
+}
+.sw-dot { width:14px;height:14px;border-radius:3px;flex-shrink:0; }
+
+@media(max-width:900px){
+  nav{display:none;}
+  main{padding:24px 18px;}
+  .g2,.g3,.g4{grid-template-columns:1fr;}
+  .hdr-chart{display:none;}
+  header h1{font-size:2.4rem;}
+  .hdr-left{padding:36px 24px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-rainbow"></div>
+  <div class="hdr-inner">
+    <div class="hdr-left">
+      <div class="badge">Complete Reference · Beginner → Advanced</div>
+      <h1>Matplotlib<br><span class="h1-accent">Visualization</span><br>in Python</h1>
+      <p>Every chart type, layout tool, and styling technique — from your first line plot to publication-quality multi-panel figures.</p>
+    </div>
+    <div class="hdr-chart">
+      <div class="spark-label">Topics Covered</div>
+      <div class="hdr-bars">
+        <span style="height:35%;background:var(--blue);animation-delay:.0s"></span>
+        <span style="height:55%;background:var(--teal);animation-delay:.05s"></span>
+        <span style="height:70%;background:var(--green);animation-delay:.1s"></span>
+        <span style="height:50%;background:var(--yellow);animation-delay:.15s"></span>
+        <span style="height:85%;background:var(--orange);animation-delay:.2s"></span>
+        <span style="height:65%;background:var(--red);animation-delay:.25s"></span>
+        <span style="height:90%;background:var(--purple);animation-delay:.3s"></span>
+        <span style="height:75%;background:var(--blue);animation-delay:.35s"></span>
+        <span style="height:60%;background:var(--teal);animation-delay:.4s"></span>
+        <span style="height:95%;background:var(--green);animation-delay:.45s"></span>
+        <span style="height:80%;background:var(--orange);animation-delay:.5s"></span>
+        <span style="height:70%;background:var(--red);animation-delay:.55s"></span>
+      </div>
+      <div class="hdr-stats">
+        <div class="hdr-stat"><span class="n">22</span><span class="l">Topics</span></div>
+        <div class="hdr-stat"><span class="n">3</span><span class="l">Levels</span></div>
+        <div class="hdr-stat"><span class="n">80+</span><span class="l">Examples</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrapper">
+
+<nav id="nav">
+  <div class="nav-grp">🟢 Beginner</div>
+  <a href="#intro"><span class="ni">🏁</span> What is Matplotlib? <span class="nb nb-g">start</span></a>
+  <a href="#anatomy"><span class="ni">🔬</span> Anatomy of a Figure</a>
+  <a href="#pyplot"><span class="ni">📐</span> pyplot Interface</a>
+  <a href="#lineplot"><span class="ni">📈</span> Line Plots</a>
+  <a href="#scatter"><span class="ni">⚙️</span> Scatter Plots</a>
+  <a href="#bar"><span class="ni">📊</span> Bar Charts</a>
+  <a href="#histogram"><span class="ni">📉</span> Histograms</a>
+  <a href="#styling"><span class="ni">🎨</span> Colors & Styles</a>
+  <a href="#labels"><span class="ni">🏷️</span> Labels & Legends</a>
+  <a href="#save"><span class="ni">💾</span> Saving Figures</a>
+
+  <div class="nav-grp">🟡 Intermediate</div>
+  <a href="#subplots"><span class="ni">🗂️</span> Subplots <span class="nb nb-y">mid</span></a>
+  <a href="#oo"><span class="ni">🏗️</span> Object-Oriented API</a>
+  <a href="#charttypes"><span class="ni">🥧</span> More Chart Types</a>
+  <a href="#axes"><span class="ni">📏</span> Axes & Limits</a>
+  <a href="#annotations"><span class="ni">✏️</span> Annotations & Text</a>
+  <a href="#pandas"><span class="ni">🐼</span> Pandas Integration</a>
+
+  <div class="nav-grp">🔴 Advanced</div>
+  <a href="#gridspec"><span class="ni">🔲</span> GridSpec Layouts <span class="nb nb-r">adv</span></a>
+  <a href="#3d"><span class="ni">🌐</span> 3D Plots</a>
+  <a href="#colormaps"><span class="ni">🌈</span> Colormaps & Norms</a>
+  <a href="#custom"><span class="ni">⚡</span> Custom Styles</a>
+  <a href="#animation"><span class="ni">🎬</span> Animations</a>
+  <a href="#production"><span class="ni">🚀</span> Production Patterns</a>
+</nav>
+
+<main>
+
+<!-- ===== INTRO ===== -->
+<section class="section" id="intro">
+  <div class="sec-hdr">
+    <div class="s-num">01</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner · Foundation</span>
+      <h2>What is Matplotlib?</h2>
+      <p class="sub">Python's foundational visualization library — 2D plots, charts, and figures</p>
+    </div>
+  </div>
+
+  <p>Matplotlib is the most widely used plotting library in Python. It powers visualizations in Jupyter notebooks, research papers, dashboards, and production systems. Almost every Python visualization library (Seaborn, Pandas plots, Plotly) uses Matplotlib under the hood.</p>
+
+  <div class="g3">
+    <div class="card c-blue"><div class="icon">📈</div><h4>Line, Scatter, Bar</h4><p>All standard chart types with full customization</p></div>
+    <div class="card c-orange"><div class="icon">🗂️</div><h4>Multi-Panel Layouts</h4><p>Subplots, GridSpec, nested axes, insets</p></div>
+    <div class="card c-green"><div class="icon">🎨</div><h4>Full Style Control</h4><p>Colors, fonts, sizes, themes, custom styles</p></div>
+    <div class="card c-purple"><div class="icon">📄</div><h4>Publication Quality</h4><p>Export at any DPI in PNG, PDF, SVG, EPS</p></div>
+    <div class="card c-red"><div class="icon">🌐</div><h4>3D Plots</h4><p>Surface, wireframe, scatter, contour in 3D</p></div>
+    <div class="card c-yellow"><div class="icon">🎬</div><h4>Animations</h4><p>FuncAnimation for video or interactive GIFs</p></div>
+  </div>
+
+  <h3>Installation & Import Convention</h3>
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Terminal + Python</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="cm"># Install</span>
+pip install matplotlib numpy pandas seaborn
+
+<span class="cm"># Standard imports — used throughout this guide</span>
+<span class="kw">import</span> matplotlib          <span class="kw">as</span> mpl
+<span class="kw">import</span> matplotlib.pyplot   <span class="kw">as</span> plt
+<span class="kw">import</span> numpy               <span class="kw">as</span> np
+<span class="kw">import</span> pandas              <span class="kw">as</span> pd
+
+<span class="cm"># Check version</span>
+print(mpl.__version__)     <span class="cm"># e.g. 3.8.2</span>
+
+<span class="cm"># Jupyter notebook — show plots inline</span>
+<span class="at">%matplotlib</span> inline
+
+<span class="cm"># Jupyter — interactive (pan/zoom)</span>
+<span class="at">%matplotlib</span> widget
+
+<span class="cm"># Script — non-blocking show</span>
+plt.show()                 <span class="cm"># always call at end of script</span>
+
+<span class="cm"># Global defaults — run once at top of file</span>
+mpl.rcParams[<span class="st">'figure.dpi'</span>]       = <span class="nm">120</span>
+mpl.rcParams[<span class="st">'figure.figsize'</span>]   = [<span class="nm">8</span>, <span class="nm">5</span>]
+mpl.rcParams[<span class="st">'font.size'</span>]        = <span class="nm">12</span>
+mpl.rcParams[<span class="st">'axes.grid'</span>]        = <span class="kw">True</span>
+mpl.rcParams[<span class="st">'axes.spines.top'</span>]  = <span class="kw">False</span>
+mpl.rcParams[<span class="st">'axes.spines.right'</span>]= <span class="kw">False</span></pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== ANATOMY ===== -->
+<section class="section" id="anatomy">
+  <div class="sec-hdr">
+    <div class="s-num">02</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner</span>
+      <h2>Anatomy of a Figure</h2>
+      <p class="sub">Understanding Figure, Axes, Axis, and every visual component</p>
+    </div>
+  </div>
+
+  <p>Understanding the <strong>object hierarchy</strong> is critical. Every element in Matplotlib is an object you can access and customize.</p>
+
+  <table>
+    <tr><th>Object</th><th>What It Is</th><th>How to Access</th></tr>
+    <tr><td><code>Figure</code></td><td>Top-level container — the whole canvas</td><td><code>fig = plt.figure()</code></td></tr>
+    <tr><td><code>Axes</code></td><td>A single plot area (has x-axis, y-axis, data)</td><td><code>fig, ax = plt.subplots()</code></td></tr>
+    <tr><td><code>Axis</code></td><td>The actual x or y axis line with ticks</td><td><code>ax.xaxis</code>, <code>ax.yaxis</code></td></tr>
+    <tr><td><code>Artist</code></td><td>Everything drawn: lines, text, patches</td><td>returned by plot commands</td></tr>
+    <tr><td><code>Line2D</code></td><td>A line drawn on an Axes</td><td><code>line, = ax.plot(x, y)</code></td></tr>
+    <tr><td><code>PathPatch</code></td><td>Filled shapes (bars, polygons)</td><td><code>ax.bar()</code>, <code>ax.add_patch()</code></td></tr>
+    <tr><td><code>Text</code></td><td>Any label or annotation</td><td><code>ax.set_title()</code>, <code>ax.text()</code></td></tr>
+  </table>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — exploring the object hierarchy</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Create figure and axes</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">8</span>, <span class="nm">5</span>))
+
+<span class="cm"># ── FIGURE properties ────────────────────────────────</span>
+fig.set_size_inches(<span class="nm">10</span>, <span class="nm">6</span>)
+fig.set_dpi(<span class="nm">120</span>)
+fig.patch.set_facecolor(<span class="st">'#f8f8f8'</span>)  <span class="cm"># figure background</span>
+print(fig.get_axes())                <span class="cm"># list of all Axes in figure</span>
+
+<span class="cm"># ── AXES properties ──────────────────────────────────</span>
+ax.set_facecolor(<span class="st">'white'</span>)           <span class="cm"># plot area background</span>
+ax.set_aspect(<span class="st">'equal'</span>)             <span class="cm"># force equal x/y scaling</span>
+print(type(ax))                      <span class="cm"># matplotlib.axes._axes.Axes</span>
+
+<span class="cm"># ── AXES COMPONENTS ──────────────────────────────────</span>
+ax.xaxis                             <span class="cm"># XAxis object</span>
+ax.yaxis                             <span class="cm"># YAxis object</span>
+ax.spines[<span class="st">'top'</span>]                    <span class="cm"># Spine (border) objects</span>
+ax.spines[<span class="st">'right'</span>]
+ax.spines[<span class="st">'left'</span>]
+ax.spines[<span class="st">'bottom'</span>]
+ax.title                             <span class="cm"># Text object for title</span>
+ax.xaxis.label                       <span class="cm"># Text object for x-label</span>
+ax.yaxis.label                       <span class="cm"># Text object for y-label</span>
+
+<span class="cm"># ── COMMON AXIS SETUP ────────────────────────────────</span>
+x = np.linspace(<span class="nm">0</span>, <span class="nm">2</span>*np.pi, <span class="nm">200</span>)
+ax.plot(x, np.sin(x))
+
+ax.set_title(<span class="st">'Sine Wave'</span>, fontsize=<span class="nm">16</span>, fontweight=<span class="st">'bold'</span>, pad=<span class="nm">12</span>)
+ax.set_xlabel(<span class="st">'Angle (radians)'</span>, fontsize=<span class="nm">13</span>)
+ax.set_ylabel(<span class="st">'Amplitude'</span>, fontsize=<span class="nm">13</span>)
+ax.set_xlim(<span class="nm">0</span>, <span class="nm">2</span>*np.pi)
+ax.set_ylim(-<span class="nm">1.2</span>, <span class="nm">1.2</span>)
+
+<span class="cm"># ── SPINES ───────────────────────────────────────────</span>
+ax.spines[<span class="st">'top'</span>].set_visible(<span class="kw">False</span>)
+ax.spines[<span class="st">'right'</span>].set_visible(<span class="kw">False</span>)
+ax.spines[<span class="st">'left'</span>].set_color(<span class="st">'#ccc'</span>)
+ax.spines[<span class="st">'bottom'</span>].set_linewidth(<span class="nm">1.5</span>)
+ax.spines[<span class="st">'bottom'</span>].set_color(<span class="st">'#333'</span>)
+
+plt.tight_layout()
+plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== PYPLOT ===== -->
+<section class="section" id="pyplot">
+  <div class="sec-hdr">
+    <div class="s-num">03</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner</span>
+      <h2>The pyplot Interface</h2>
+      <p class="sub">State-machine API — fast, convenient, great for quick exploratory plots</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — pyplot basics and figure management</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── FIGURE CREATION ──────────────────────────────────</span>
+plt.figure()                         <span class="cm"># default 6.4 × 4.8 inches</span>
+plt.figure(figsize=(<span class="nm">10</span>, <span class="nm">6</span>))          <span class="cm"># width × height in inches</span>
+plt.figure(figsize=(<span class="nm">8</span>, <span class="nm">5</span>), dpi=<span class="nm">150</span>) <span class="cm"># high-res</span>
+plt.figure(num=<span class="nm">1</span>)                    <span class="cm"># named/numbered figure</span>
+plt.figure(facecolor=<span class="st">'#f0f0f0'</span>)     <span class="cm"># background color</span>
+
+<span class="cm"># ── PYPLOT STATE MACHINE ─────────────────────────────</span>
+<span class="cm"># plt functions always operate on the CURRENT figure/axes</span>
+plt.figure(figsize=(<span class="nm">8</span>, <span class="nm">4</span>))
+x = np.linspace(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">200</span>)
+
+plt.plot(x, np.sin(x))              <span class="cm"># plot to current axes</span>
+plt.plot(x, np.cos(x))              <span class="cm"># add second line (same axes)</span>
+plt.title(<span class="st">'Trig Functions'</span>)
+plt.xlabel(<span class="st">'x'</span>)
+plt.ylabel(<span class="st">'y'</span>)
+plt.legend([<span class="st">'sin(x)'</span>, <span class="st">'cos(x)'</span>])
+plt.grid(<span class="kw">True</span>, alpha=<span class="nm">0.3</span>)
+plt.tight_layout()
+plt.show()
+
+<span class="cm"># ── FIGURE MANAGEMENT ────────────────────────────────</span>
+plt.clf()                            <span class="cm"># clear current figure (keeps window)</span>
+plt.cla()                            <span class="cm"># clear current axes only</span>
+plt.close()                          <span class="cm"># close current figure</span>
+plt.close(<span class="st">'all'</span>)                     <span class="cm"># close ALL open figures</span>
+plt.close(<span class="nm">2</span>)                         <span class="cm"># close figure number 2</span>
+
+plt.gcf()                            <span class="cm"># get current figure</span>
+plt.gca()                            <span class="cm"># get current axes</span>
+
+<span class="cm"># ── SUBPLOT SHORTHAND ────────────────────────────────</span>
+plt.subplot(<span class="nm">2</span>, <span class="nm">2</span>, <span class="nm">1</span>)                <span class="cm"># 2 rows, 2 cols, plot #1</span>
+plt.plot([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>])
+plt.subplot(<span class="nm">2</span>, <span class="nm">2</span>, <span class="nm">2</span>)                <span class="cm"># switch to plot #2</span>
+plt.plot([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], [<span class="nm">6</span>, <span class="nm">5</span>, <span class="nm">4</span>])
+plt.subplot(<span class="nm">223</span>)                     <span class="cm"># shorthand: 2 rows,2 cols,#3</span>
+plt.subplot(<span class="nm">224</span>)
+plt.tight_layout()
+plt.show()</pre>
+  </div>
+
+  <div class="note info">
+    <span class="ic">💡</span>
+    <div><strong>pyplot vs. OO API:</strong> Use <code>plt.*</code> for quick one-off plots. Use the Object-Oriented API (<code>fig, ax = plt.subplots()</code>) for anything you'll reuse, style precisely, or embed in a function. See topic 12 for the OO API.</div>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== LINE PLOT ===== -->
+<section class="section" id="lineplot">
+  <div class="sec-hdr">
+    <div class="s-num">04</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner</span>
+      <h2>Line Plots</h2>
+      <p class="sub">The most fundamental chart — plotting continuous data against an axis</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — Line plots, every parameter</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+fig, axes = plt.subplots(<span class="nm">1</span>, <span class="nm">3</span>, figsize=(<span class="nm">15</span>, <span class="nm">4</span>))
+x = np.linspace(<span class="nm">0</span>, <span class="nm">2</span>*np.pi, <span class="nm">200</span>)
+
+<span class="cm"># ── BASIC LINE ───────────────────────────────────────</span>
+axes[<span class="nm">0</span>].plot(x, np.sin(x))          <span class="cm"># simplest form</span>
+axes[<span class="nm">0</span>].set_title(<span class="st">'Basic'</span>)
+
+<span class="cm"># ── STYLED LINE ──────────────────────────────────────</span>
+axes[<span class="nm">1</span>].plot(x, np.sin(x),
+    color=<span class="st">'#4e9eff'</span>,               <span class="cm"># hex color</span>
+    linewidth=<span class="nm">2.5</span>,                  <span class="cm"># lw= alias</span>
+    linestyle=<span class="st">'--'</span>,                 <span class="cm"># ls= alias: '-','--','-.',':'</span>
+    alpha=<span class="nm">0.9</span>,                      <span class="cm"># transparency</span>
+    label=<span class="st">'sin(x)'</span>
+)
+axes[<span class="nm">1</span>].plot(x, np.cos(x),
+    color=<span class="st">'#ff7b2f'</span>, lw=<span class="nm">2</span>, ls=<span class="st">'-.'</span>,
+    label=<span class="st">'cos(x)'</span>
+)
+axes[<span class="nm">1</span>].legend()
+axes[<span class="nm">1</span>].set_title(<span class="st">'Styled'</span>)
+
+<span class="cm"># ── LINE WITH MARKERS ────────────────────────────────</span>
+x_few = np.linspace(<span class="nm">0</span>, <span class="nm">2</span>*np.pi, <span class="nm">20</span>)
+axes[<span class="nm">2</span>].plot(x_few, np.sin(x_few),
+    marker=<span class="st">'o'</span>,                     <span class="cm"># marker shape</span>
+    markersize=<span class="nm">8</span>,                    <span class="cm"># ms= alias</span>
+    markerfacecolor=<span class="st">'white'</span>,        <span class="cm"># hollow markers</span>
+    markeredgecolor=<span class="st">'#4e9eff'</span>,
+    markeredgewidth=<span class="nm">2</span>,
+    linewidth=<span class="nm">1.5</span>, color=<span class="st">'#4e9eff'</span>
+)
+axes[<span class="nm">2</span>].set_title(<span class="st">'With Markers'</span>)
+
+plt.tight_layout()
+plt.show()
+
+<span class="cm"># ── ALL LINESTYLE OPTIONS ────────────────────────────</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">8</span>, <span class="nm">4</span>))
+styles = [<span class="st">'-'</span>, <span class="st">'--'</span>, <span class="st">'-.'</span>, <span class="st">':'</span>]
+names  = [<span class="st">'solid'</span>, <span class="st">'dashed'</span>, <span class="st">'dashdot'</span>, <span class="st">'dotted'</span>]
+<span class="kw">for</span> i, (s, n) <span class="kw">in</span> enumerate(zip(styles, names)):
+    ax.plot(x, np.sin(x) + i, ls=s, lw=<span class="nm">2</span>, label=n)
+ax.legend(loc=<span class="st">'upper right'</span>)
+
+<span class="cm"># ── ALL MARKER OPTIONS ────────────────────────────────</span>
+markers = [<span class="st">'.'</span>,<span class="st">','</span>,<span class="st">'o'</span>,<span class="st">'v'</span>,<span class="st">'^'</span>,<span class="st">'&lt;'</span>,<span class="st">'&gt;'</span>,<span class="st">'s'</span>,<span class="st">'p'</span>,<span class="st">'*'</span>,<span class="st">'h'</span>,<span class="st">'+'</span>,<span class="st">'x'</span>,<span class="st">'D'</span>,<span class="st">'d'</span>,<span class="st">'|'</span>,<span class="st">'_'</span>]
+<span class="cm"># point   pixel   circle  triangle_down  triangle_up  ...</span>
+
+<span class="cm"># ── FILL BETWEEN LINES ───────────────────────────────</span>
+fig, ax = plt.subplots()
+x = np.linspace(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">200</span>)
+y1 = np.sin(x)
+y2 = np.sin(x) + <span class="nm">0.5</span>
+ax.plot(x, y1, color=<span class="st">'steelblue'</span>)
+ax.plot(x, y2, color=<span class="st">'tomato'</span>)
+ax.fill_between(x, y1, y2,
+    alpha=<span class="nm">0.3</span>, color=<span class="st">'steelblue'</span>,  <span class="cm"># fill between two lines</span>
+    where=(y2 > y1)                  <span class="cm"># only fill where condition</span>
+)
+
+<span class="cm"># ── VERTICAL / HORIZONTAL LINES ──────────────────────</span>
+ax.axhline(y=<span class="nm">0</span>, color=<span class="st">'black'</span>, lw=<span class="nm">0.8</span>, ls=<span class="st">'--'</span>)    <span class="cm"># horizontal ref line</span>
+ax.axvline(x=<span class="nm">5</span>, color=<span class="st">'red'</span>, lw=<span class="nm">1</span>, ls=<span class="st">':'</span>)           <span class="cm"># vertical ref line</span>
+ax.axhspan(<span class="nm">0.5</span>, <span class="nm">1.0</span>, alpha=<span class="nm">0.1</span>, color=<span class="st">'yellow'</span>)     <span class="cm"># horizontal band</span>
+ax.axvspan(<span class="nm">2</span>, <span class="nm">4</span>, alpha=<span class="nm">0.1</span>, color=<span class="st">'green'</span>)           <span class="cm"># vertical band</span>
+plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== SCATTER ===== -->
+<section class="section" id="scatter">
+  <div class="sec-hdr">
+    <div class="s-num">05</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner</span>
+      <h2>Scatter Plots</h2>
+      <p class="sub">Show relationships between two variables — encode a third via size or color</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — scatter, bubble charts, color encoding</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+np.random.seed(<span class="nm">42</span>)
+n = <span class="nm">150</span>
+x = np.random.randn(n)
+y = x * <span class="nm">0.8</span> + np.random.randn(n) * <span class="nm">0.5</span>
+size   = np.random.uniform(<span class="nm">20</span>, <span class="nm">300</span>, n)   <span class="cm"># for bubble chart</span>
+colors = np.random.randn(n)              <span class="cm"># for color encoding</span>
+
+fig, axes = plt.subplots(<span class="nm">1</span>, <span class="nm">3</span>, figsize=(<span class="nm">15</span>, <span class="nm">4</span>))
+
+<span class="cm"># ── BASIC SCATTER ────────────────────────────────────</span>
+axes[<span class="nm">0</span>].scatter(x, y)
+axes[<span class="nm">0</span>].set_title(<span class="st">'Basic'</span>)
+
+<span class="cm"># ── STYLED SCATTER ───────────────────────────────────</span>
+axes[<span class="nm">1</span>].scatter(x, y,
+    s=<span class="nm">60</span>,                             <span class="cm"># marker SIZE (points^2)</span>
+    c=<span class="st">'steelblue'</span>,                    <span class="cm"># color</span>
+    marker=<span class="st">'o'</span>,                       <span class="cm"># marker shape</span>
+    alpha=<span class="nm">0.7</span>,                        <span class="cm"># transparency</span>
+    edgecolors=<span class="st">'white'</span>,               <span class="cm"># marker edge color</span>
+    linewidths=<span class="nm">0.5</span>                    <span class="cm"># edge width</span>
+)
+axes[<span class="nm">1</span>].set_title(<span class="st">'Styled'</span>)
+
+<span class="cm"># ── BUBBLE + COLORMAP ────────────────────────────────</span>
+sc = axes[<span class="nm">2</span>].scatter(x, y,
+    s=size,                            <span class="cm"># variable size = bubble</span>
+    c=colors,                          <span class="cm"># variable color</span>
+    cmap=<span class="st">'coolwarm'</span>,                  <span class="cm"># colormap</span>
+    alpha=<span class="nm">0.8</span>,
+    edgecolors=<span class="st">'none'</span>
+)
+plt.colorbar(sc, ax=axes[<span class="nm">2</span>], label=<span class="st">'Value'</span>)
+axes[<span class="nm">2</span>].set_title(<span class="st">'Bubble + Colormap'</span>)
+
+plt.tight_layout(); plt.show()
+
+<span class="cm"># ── CATEGORICAL SCATTER ──────────────────────────────</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">7</span>, <span class="nm">5</span>))
+groups = {<span class="st">'A'</span>: (<span class="nm">0</span>, <span class="nm">0</span>), <span class="st">'B'</span>: (<span class="nm">2</span>, <span class="nm">1</span>), <span class="st">'C'</span>: (-<span class="nm">1</span>, <span class="nm">2</span>)}
+colors_g = [<span class="st">'#4e9eff'</span>, <span class="st">'#ff7b2f'</span>, <span class="st">'#3ecf8e'</span>]
+<span class="kw">for</span> (name, (mx, my)), clr <span class="kw">in</span> zip(groups.items(), colors_g):
+    gx = np.random.randn(<span class="nm">50</span>) + mx
+    gy = np.random.randn(<span class="nm">50</span>) + my
+    ax.scatter(gx, gy, c=clr, label=<span class="st">f'Group {name}'</span>, alpha=<span class="nm">0.7</span>, s=<span class="nm">50</span>)
+ax.legend()
+ax.set_title(<span class="st">'Categorical Scatter'</span>)
+plt.tight_layout(); plt.show()
+
+<span class="cm"># ── ADD TREND LINE ────────────────────────────────────</span>
+fig, ax = plt.subplots()
+ax.scatter(x, y, alpha=<span class="nm">0.5</span>, s=<span class="nm">40</span>, color=<span class="st">'steelblue'</span>)
+<span class="cm"># Linear regression line</span>
+m, b = np.polyfit(x, y, <span class="nm">1</span>)          <span class="cm"># slope, intercept</span>
+x_line = np.linspace(x.min(), x.max(), <span class="nm">100</span>)
+ax.plot(x_line, m*x_line + b, color=<span class="st">'tomato'</span>, lw=<span class="nm">2</span>, label=<span class="st">f'y={m:.2f}x+{b:.2f}'</span>)
+ax.legend(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== BAR ===== -->
+<section class="section" id="bar">
+  <div class="sec-hdr">
+    <div class="s-num">06</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner</span>
+      <h2>Bar Charts</h2>
+      <p class="sub">Grouped, stacked, horizontal, and error bars</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — All bar chart variants</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+categories = [<span class="st">'Q1'</span>, <span class="st">'Q2'</span>, <span class="st">'Q3'</span>, <span class="st">'Q4'</span>]
+sales_a    = [<span class="nm">42</span>, <span class="nm">58</span>, <span class="nm">71</span>, <span class="nm">63</span>]
+sales_b    = [<span class="nm">38</span>, <span class="nm">45</span>, <span class="nm">55</span>, <span class="nm">80</span>]
+x = np.arange(len(categories))
+w = <span class="nm">0.35</span>                               <span class="cm"># bar width</span>
+
+fig, axes = plt.subplots(<span class="nm">2</span>, <span class="nm">2</span>, figsize=(<span class="nm">12</span>, <span class="nm">8</span>))
+
+<span class="cm"># ── SIMPLE BAR ───────────────────────────────────────</span>
+axes[<span class="nm">0</span>,<span class="nm">0</span>].bar(categories, sales_a,
+    color=<span class="st">'steelblue'</span>,               <span class="cm"># fill color</span>
+    edgecolor=<span class="st">'navy'</span>,                <span class="cm"># border color</span>
+    linewidth=<span class="nm">0.8</span>,
+    width=<span class="nm">0.6</span>,                        <span class="cm"># bar width (0-1)</span>
+    alpha=<span class="nm">0.85</span>
+)
+axes[<span class="nm">0</span>,<span class="nm">0</span>].set_title(<span class="st">'Simple Bar'</span>)
+
+<span class="cm"># ── GROUPED BAR ──────────────────────────────────────</span>
+b1 = axes[<span class="nm">0</span>,<span class="nm">1</span>].bar(x - w/<span class="nm">2</span>, sales_a, w, label=<span class="st">'Product A'</span>, color=<span class="st">'#4e9eff'</span>)
+b2 = axes[<span class="nm">0</span>,<span class="nm">1</span>].bar(x + w/<span class="nm">2</span>, sales_b, w, label=<span class="st">'Product B'</span>, color=<span class="st">'#ff7b2f'</span>)
+axes[<span class="nm">0</span>,<span class="nm">1</span>].set_xticks(x); axes[<span class="nm">0</span>,<span class="nm">1</span>].set_xticklabels(categories)
+axes[<span class="nm">0</span>,<span class="nm">1</span>].legend()
+axes[<span class="nm">0</span>,<span class="nm">1</span>].set_title(<span class="st">'Grouped Bar'</span>)
+<span class="cm"># Add value labels on bars</span>
+axes[<span class="nm">0</span>,<span class="nm">1</span>].bar_label(b1, padding=<span class="nm">3</span>, fontsize=<span class="nm">9</span>)
+axes[<span class="nm">0</span>,<span class="nm">1</span>].bar_label(b2, padding=<span class="nm">3</span>, fontsize=<span class="nm">9</span>)
+
+<span class="cm"># ── STACKED BAR ──────────────────────────────────────</span>
+axes[<span class="nm">1</span>,<span class="nm">0</span>].bar(categories, sales_a, label=<span class="st">'Product A'</span>, color=<span class="st">'#4e9eff'</span>)
+axes[<span class="nm">1</span>,<span class="nm">0</span>].bar(categories, sales_b, bottom=sales_a,  <span class="cm"># stack on top</span>
+    label=<span class="st">'Product B'</span>, color=<span class="st">'#ff7b2f'</span>)
+axes[<span class="nm">1</span>,<span class="nm">0</span>].legend()
+axes[<span class="nm">1</span>,<span class="nm">0</span>].set_title(<span class="st">'Stacked Bar'</span>)
+
+<span class="cm"># ── HORIZONTAL BAR WITH ERROR ────────────────────────</span>
+errors = [<span class="nm">3</span>, <span class="nm">5</span>, <span class="nm">4</span>, <span class="nm">7</span>]
+axes[<span class="nm">1</span>,<span class="nm">1</span>].barh(categories, sales_a,
+    xerr=errors,                       <span class="cm"># error bars</span>
+    capsize=<span class="nm">5</span>,                         <span class="cm"># error bar cap width</span>
+    color=<span class="st">'#3ecf8e'</span>,
+    error_kw={<span class="st">'ecolor'</span>:<span class="st">'gray'</span>, <span class="st">'alpha'</span>:<span class="nm">0.8</span>}
+)
+axes[<span class="nm">1</span>,<span class="nm">1</span>].set_title(<span class="st">'Horizontal + Error Bars'</span>)
+
+plt.tight_layout(); plt.show()
+
+<span class="cm"># ── COLORFUL BARS ─────────────────────────────────────</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">8</span>, <span class="nm">4</span>))
+vals   = [<span class="nm">42</span>, <span class="nm">58</span>, <span class="nm">71</span>, <span class="nm">63</span>, <span class="nm">55</span>, <span class="nm">49</span>]
+labels = [<span class="st">'Jan'</span>,<span class="st">'Feb'</span>,<span class="st">'Mar'</span>,<span class="st">'Apr'</span>,<span class="st">'May'</span>,<span class="st">'Jun'</span>]
+clrs = [<span class="st">'#4e9eff'</span> <span class="kw">if</span> v >= max(vals) <span class="kw">else</span> <span class="st">'#6080aa'</span> <span class="kw">for</span> v <span class="kw">in</span> vals]
+bars = ax.bar(labels, vals, color=clrs, edgecolor=<span class="st">'none'</span>, width=<span class="nm">0.6</span>)
+ax.bar_label(bars, padding=<span class="nm">4</span>)
+ax.set_ylim(<span class="nm">0</span>, max(vals) * <span class="nm">1.2</span>)
+ax.spines[<span class="st">'top'</span>].set_visible(<span class="kw">False</span>)
+ax.spines[<span class="st">'right'</span>].set_visible(<span class="kw">False</span>)
+plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== HISTOGRAM ===== -->
+<section class="section" id="histogram">
+  <div class="sec-hdr">
+    <div class="s-num">07</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner</span>
+      <h2>Histograms &amp; Distributions</h2>
+      <p class="sub">Visualize the distribution of numerical data</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — Histograms, KDE, box plots, violin</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+np.random.seed(<span class="nm">0</span>)
+data = np.random.normal(<span class="nm">50</span>, <span class="nm">15</span>, <span class="nm">1000</span>)
+
+fig, axes = plt.subplots(<span class="nm">2</span>, <span class="nm">3</span>, figsize=(<span class="nm">15</span>, <span class="nm">8</span>))
+
+<span class="cm"># ── BASIC HISTOGRAM ──────────────────────────────────</span>
+axes[<span class="nm">0</span>,<span class="nm">0</span>].hist(data,
+    bins=<span class="nm">30</span>,                          <span class="cm"># number of bins</span>
+    color=<span class="st">'steelblue'</span>,
+    edgecolor=<span class="st">'white'</span>,
+    linewidth=<span class="nm">0.5</span>
+)
+axes[<span class="nm">0</span>,<span class="nm">0</span>].set_title(<span class="st">'Basic Histogram'</span>)
+axes[<span class="nm">0</span>,<span class="nm">0</span>].set_xlabel(<span class="st">'Value'</span>)
+axes[<span class="nm">0</span>,<span class="nm">0</span>].set_ylabel(<span class="st">'Count'</span>)
+
+<span class="cm"># ── DENSITY (NORMED) ─────────────────────────────────</span>
+axes[<span class="nm">0</span>,<span class="nm">1</span>].hist(data, bins=<span class="nm">30</span>,
+    density=<span class="kw">True</span>,                     <span class="cm"># normalize to probability density</span>
+    color=<span class="st">'#4e9eff'</span>, alpha=<span class="nm">0.7</span>,
+    edgecolor=<span class="st">'none'</span>
+)
+<span class="cm"># Overlay KDE manually</span>
+<span class="kw">from</span> scipy.stats <span class="kw">import</span> gaussian_kde
+kde = gaussian_kde(data)
+x_range = np.linspace(data.min(), data.max(), <span class="nm">200</span>)
+axes[<span class="nm">0</span>,<span class="nm">1</span>].plot(x_range, kde(x_range), color=<span class="st">'#ff7b2f'</span>, lw=<span class="nm">2</span>)
+axes[<span class="nm">0</span>,<span class="nm">1</span>].set_title(<span class="st">'Density + KDE'</span>)
+
+<span class="cm"># ── MULTIPLE OVERLAPPING ─────────────────────────────</span>
+d1 = np.random.normal(<span class="nm">45</span>, <span class="nm">10</span>, <span class="nm">500</span>)
+d2 = np.random.normal(<span class="nm">60</span>, <span class="nm">12</span>, <span class="nm">500</span>)
+axes[<span class="nm">0</span>,<span class="nm">2</span>].hist(d1, bins=<span class="nm">25</span>, alpha=<span class="nm">0.6</span>, label=<span class="st">'Group A'</span>, color=<span class="st">'#4e9eff'</span>)
+axes[<span class="nm">0</span>,<span class="nm">2</span>].hist(d2, bins=<span class="nm">25</span>, alpha=<span class="nm">0.6</span>, label=<span class="st">'Group B'</span>, color=<span class="st">'#ff7b2f'</span>)
+axes[<span class="nm">0</span>,<span class="nm">2</span>].legend()
+axes[<span class="nm">0</span>,<span class="nm">2</span>].set_title(<span class="st">'Overlapping'</span>)
+
+<span class="cm"># ── BOX PLOT ─────────────────────────────────────────</span>
+groups = [np.random.normal(m, <span class="nm">8</span>, <span class="nm">100</span>) <span class="kw">for</span> m <span class="kw">in</span> [<span class="nm">40</span>,<span class="nm">50</span>,<span class="nm">55</span>,<span class="nm">45</span>]]
+bp = axes[<span class="nm">1</span>,<span class="nm">0</span>].boxplot(groups,
+    labels=[<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>,<span class="st">'D'</span>],
+    patch_artist=<span class="kw">True</span>,                <span class="cm"># fill boxes with color</span>
+    notch=<span class="kw">False</span>,                       <span class="cm"># notched boxes show CI</span>
+    showfliers=<span class="kw">True</span>,                   <span class="cm"># show outlier points</span>
+    medianprops={<span class="st">'color'</span>:<span class="st">'white'</span>, <span class="st">'linewidth'</span>:<span class="nm">2</span>}
+)
+colors_bp = [<span class="st">'#4e9eff'</span>,<span class="st">'#ff7b2f'</span>,<span class="st">'#3ecf8e'</span>,<span class="st">'#b57eff'</span>]
+<span class="kw">for</span> patch, clr <span class="kw">in</span> zip(bp[<span class="st">'boxes'</span>], colors_bp):
+    patch.set_facecolor(clr); patch.set_alpha(<span class="nm">0.7</span>)
+axes[<span class="nm">1</span>,<span class="nm">0</span>].set_title(<span class="st">'Box Plot'</span>)
+
+<span class="cm"># ── VIOLIN PLOT ──────────────────────────────────────</span>
+vp = axes[<span class="nm">1</span>,<span class="nm">1</span>].violinplot(groups,
+    positions=[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>],
+    showmeans=<span class="kw">True</span>,
+    showmedians=<span class="kw">True</span>,
+    showextrema=<span class="kw">True</span>
+)
+<span class="kw">for</span> pc <span class="kw">in</span> vp[<span class="st">'bodies'</span>]:
+    pc.set_facecolor(<span class="st">'#4e9eff'</span>); pc.set_alpha(<span class="nm">0.6</span>)
+axes[<span class="nm">1</span>,<span class="nm">1</span>].set_title(<span class="st">'Violin Plot'</span>)
+
+<span class="cm"># ── STEP HISTOGRAM ───────────────────────────────────</span>
+axes[<span class="nm">1</span>,<span class="nm">2</span>].hist(data, bins=<span class="nm">30</span>, histtype=<span class="st">'step'</span>,
+    color=<span class="st">'tomato'</span>, lw=<span class="nm">2</span>)
+axes[<span class="nm">1</span>,<span class="nm">2</span>].hist(data, bins=<span class="nm">30</span>, histtype=<span class="st">'stepfilled'</span>,
+    color=<span class="st">'tomato'</span>, alpha=<span class="nm">0.2</span>)
+axes[<span class="nm">1</span>,<span class="nm">2</span>].set_title(<span class="st">'Step Histogram'</span>)
+
+plt.tight_layout(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== STYLING ===== -->
+<section class="section" id="styling">
+  <div class="sec-hdr">
+    <div class="s-num">08</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner</span>
+      <h2>Colors &amp; Styles</h2>
+      <p class="sub">How to specify colors, use built-in style sheets, and set defaults</p>
+    </div>
+  </div>
+
+  <h3>Color Specification Methods</h3>
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — Colors, styles, rcParams</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib <span class="kw">as</span> mpl
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── COLOR SPECIFICATION ──────────────────────────────</span>
+color_demos = {
+    <span class="st">'hex'</span>:          <span class="st">'#4e9eff'</span>,           <span class="cm"># hex string</span>
+    <span class="st">'hex_short'</span>:    <span class="st">'#09f'</span>,              <span class="cm"># 3-char hex</span>
+    <span class="st">'hex_alpha'</span>:    <span class="st">'#4e9effaa'</span>,         <span class="cm"># hex + alpha</span>
+    <span class="st">'rgb'</span>:          (<span class="nm">0.3</span>, <span class="nm">0.6</span>, <span class="nm">1.0</span>),     <span class="cm"># RGB tuple [0-1]</span>
+    <span class="st">'rgba'</span>:         (<span class="nm">0.3</span>, <span class="nm">0.6</span>, <span class="nm">1.0</span>, <span class="nm">0.5</span>),<span class="cm"># RGBA tuple</span>
+    <span class="st">'named'</span>:        <span class="st">'steelblue'</span>,         <span class="cm"># CSS name</span>
+    <span class="st">'xkcd'</span>:         <span class="st">'xkcd:sky blue'</span>,     <span class="cm"># xkcd color survey</span>
+    <span class="st">'tableau'</span>:      <span class="st">'tab:blue'</span>,          <span class="cm"># Tableau palette</span>
+    <span class="st">'cn_cycle'</span>:     <span class="st">'C0'</span>,                <span class="cm"># C0-C9 from color cycle</span>
+    <span class="st">'grayscale'</span>:    <span class="st">'0.8'</span>,               <span class="cm"># string 0.0-1.0 gray</span>
+}
+
+<span class="cm"># ── BUILT-IN STYLE SHEETS ────────────────────────────</span>
+print(plt.style.available)   <span class="cm"># list all available styles</span>
+<span class="cm"># Some popular ones:</span>
+<span class="cm"># 'seaborn-v0_8', 'seaborn-v0_8-whitegrid', 'ggplot'</span>
+<span class="cm"># 'bmh', 'fivethirtyeight', 'dark_background'</span>
+<span class="cm"># 'grayscale', 'Solarize_Light2'</span>
+
+plt.style.use(<span class="st">'seaborn-v0_8-whitegrid'</span>)
+
+<span class="cm"># Style as context manager (temporary)</span>
+<span class="kw">with</span> plt.style.context(<span class="st">'dark_background'</span>):
+    fig, ax = plt.subplots()
+    ax.plot([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>],[<span class="nm">1</span>,<span class="nm">4</span>,<span class="nm">9</span>])
+    plt.show()
+<span class="cm"># After context: returns to previous style</span>
+
+<span class="cm"># Multiple styles (later ones override earlier)</span>
+plt.style.use([<span class="st">'seaborn-v0_8'</span>, <span class="st">'dark_background'</span>])
+
+<span class="cm"># ── rcPARAMS — global defaults ───────────────────────</span>
+mpl.rcParams.update({
+    <span class="st">'figure.figsize'</span>:       (<span class="nm">9</span>, <span class="nm">5</span>),
+    <span class="st">'figure.dpi'</span>:           <span class="nm">120</span>,
+    <span class="st">'figure.facecolor'</span>:     <span class="st">'white'</span>,
+    <span class="st">'axes.facecolor'</span>:       <span class="st">'white'</span>,
+    <span class="st">'axes.grid'</span>:            <span class="kw">True</span>,
+    <span class="st">'grid.alpha'</span>:           <span class="nm">0.3</span>,
+    <span class="st">'grid.linestyle'</span>:       <span class="st">'--'</span>,
+    <span class="st">'axes.spines.top'</span>:      <span class="kw">False</span>,
+    <span class="st">'axes.spines.right'</span>:    <span class="kw">False</span>,
+    <span class="st">'font.family'</span>:          <span class="st">'DejaVu Sans'</span>,
+    <span class="st">'font.size'</span>:            <span class="nm">12</span>,
+    <span class="st">'axes.titlesize'</span>:       <span class="nm">14</span>,
+    <span class="st">'axes.labelsize'</span>:       <span class="nm">12</span>,
+    <span class="st">'xtick.labelsize'</span>:      <span class="nm">10</span>,
+    <span class="st">'ytick.labelsize'</span>:      <span class="nm">10</span>,
+    <span class="st">'legend.fontsize'</span>:      <span class="nm">10</span>,
+    <span class="st">'lines.linewidth'</span>:      <span class="nm">2.0</span>,
+    <span class="st">'axes.prop_cycle'</span>:      mpl.cycler(color=[
+        <span class="st">'#4e9eff'</span>,<span class="st">'#ff7b2f'</span>,<span class="st">'#3ecf8e'</span>,<span class="st">'#b57eff'</span>,
+        <span class="st">'#ff5c6a'</span>,<span class="st">'#ffe566'</span>,<span class="st">'#1fc8db'</span>
+    ]),
+    <span class="st">'savefig.dpi'</span>:          <span class="nm">200</span>,
+    <span class="st">'savefig.bbox'</span>:         <span class="st">'tight'</span>,
+    <span class="st">'savefig.facecolor'</span>:    <span class="st">'white'</span>,
+})
+
+<span class="cm"># Reset to defaults</span>
+mpl.rcParams.update(mpl.rcParamsDefault)
+
+<span class="cm"># ── COLOR CYCLE — default plot colors ────────────────</span>
+prop_cycle = plt.rcParams[<span class="st">'axes.prop_cycle'</span>]
+colors = prop_cycle.by_key()[<span class="st">'color'</span>]   <span class="cm"># list of colors in cycle</span>
+<span class="cm"># Access by index: 'C0','C1','C2' ... maps to cycle</span></pre>
+  </div>
+
+  <h3>Common Named Colors & Palettes</h3>
+  <div class="swatches">
+    <div class="sw"><div class="sw-dot" style="background:#4e9eff"></div>steelblue</div>
+    <div class="sw"><div class="sw-dot" style="background:#ff7b2f"></div>darkorange</div>
+    <div class="sw"><div class="sw-dot" style="background:#3ecf8e"></div>mediumseagreen</div>
+    <div class="sw"><div class="sw-dot" style="background:#ff5c6a"></div>tomato</div>
+    <div class="sw"><div class="sw-dot" style="background:#b57eff"></div>mediumpurple</div>
+    <div class="sw"><div class="sw-dot" style="background:#ffe566"></div>gold</div>
+    <div class="sw"><div class="sw-dot" style="background:#1fc8db"></div>darkcyan</div>
+    <div class="sw"><div class="sw-dot" style="background:#e8e8e8"></div>lightgray</div>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== LABELS ===== -->
+<section class="section" id="labels">
+  <div class="sec-hdr">
+    <div class="s-num">09</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner</span>
+      <h2>Labels, Titles &amp; Legends</h2>
+      <p class="sub">Make your chart self-explanatory with great text and legends</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — All text and legend options</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+fig, ax = plt.subplots(figsize=(<span class="nm">9</span>, <span class="nm">5</span>))
+x = np.linspace(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">200</span>)
+ax.plot(x, np.sin(x), label=<span class="st">'sin(x)'</span>)
+ax.plot(x, np.cos(x), label=<span class="st">'cos(x)'</span>)
+
+<span class="cm"># ── TITLES ───────────────────────────────────────────</span>
+ax.set_title(<span class="st">'Trig Functions'</span>,
+    fontsize=<span class="nm">18</span>,
+    fontweight=<span class="st">'bold'</span>,
+    color=<span class="st">'#222'</span>,
+    pad=<span class="nm">14</span>,                           <span class="cm"># space between title and axes</span>
+    loc=<span class="st">'left'</span>                        <span class="cm"># 'left','center','right'</span>
+)
+<span class="cm"># Subtitle via text (no native subtitle)</span>
+ax.text(<span class="nm">0.0</span>, <span class="nm">1.01</span>, <span class="st">'From 0 to 10 radians'</span>,
+    transform=ax.transAxes,
+    fontsize=<span class="nm">11</span>, color=<span class="st">'gray'</span>)
+
+<span class="cm"># ── AXIS LABELS ──────────────────────────────────────</span>
+ax.set_xlabel(<span class="st">'x (radians)'</span>, fontsize=<span class="nm">13</span>, labelpad=<span class="nm">10</span>)
+ax.set_ylabel(<span class="st">'Amplitude'</span>,   fontsize=<span class="nm">13</span>, labelpad=<span class="nm">10</span>)
+
+<span class="cm"># ── TICK LABELS ──────────────────────────────────────</span>
+ax.set_xticks([<span class="nm">0</span>, np.pi, <span class="nm">2</span>*np.pi, <span class="nm">3</span>*np.pi])
+ax.set_xticklabels([<span class="st">'0'</span>, <span class="st">'π'</span>, <span class="st">'2π'</span>, <span class="st">'3π'</span>], fontsize=<span class="nm">12</span>)
+ax.tick_params(axis=<span class="st">'x'</span>,
+    labelsize=<span class="nm">11</span>,
+    rotation=<span class="nm">0</span>,
+    length=<span class="nm">5</span>,                          <span class="cm"># tick length</span>
+    width=<span class="nm">1.5</span>,                         <span class="cm"># tick width</span>
+    color=<span class="st">'#555'</span>,                      <span class="cm"># tick color</span>
+    labelcolor=<span class="st">'#333'</span>                  <span class="cm"># tick label color</span>
+)
+<span class="cm"># Rotate x-labels (useful for dates/long names)</span>
+plt.setp(ax.get_xticklabels(), rotation=<span class="nm">45</span>, ha=<span class="st">'right'</span>)
+
+<span class="cm"># ── LEGEND ───────────────────────────────────────────</span>
+leg = ax.legend(
+    loc=<span class="st">'upper right'</span>,               <span class="cm"># 'best','upper left', (0.8,0.8) etc.</span>
+    fontsize=<span class="nm">11</span>,
+    title=<span class="st">'Functions'</span>,               <span class="cm"># legend title</span>
+    title_fontsize=<span class="nm">12</span>,
+    framealpha=<span class="nm">0.9</span>,                   <span class="cm"># legend box transparency</span>
+    edgecolor=<span class="st">'#ccc'</span>,                 <span class="cm"># legend box border</span>
+    fancybox=<span class="kw">True</span>,                    <span class="cm"># rounded corners</span>
+    shadow=<span class="kw">False</span>,
+    ncols=<span class="nm">2</span>,                          <span class="cm"># columns in legend</span>
+    markerscale=<span class="nm">1.5</span>,                  <span class="cm"># scale legend markers</span>
+    handlelength=<span class="nm">1.5</span>,                 <span class="cm"># length of legend line</span>
+    borderpad=<span class="nm">0.8</span>,                    <span class="cm"># inner padding</span>
+    labelspacing=<span class="nm">0.5</span>                  <span class="cm"># space between entries</span>
+)
+
+<span class="cm"># Legend outside plot</span>
+ax.legend(loc=<span class="st">'upper left'</span>, bbox_to_anchor=(<span class="nm">1</span>, <span class="nm">1</span>))
+plt.tight_layout()
+<span class="cm"># OR:</span>
+fig.legend(loc=<span class="st">'lower center'</span>,
+    bbox_to_anchor=(<span class="nm">0.5</span>, -<span class="nm">0.05</span>), ncols=<span class="nm">3</span>)
+
+<span class="cm"># ── GRID ─────────────────────────────────────────────</span>
+ax.grid(<span class="kw">True</span>,
+    which=<span class="st">'major'</span>,                    <span class="cm"># 'major','minor','both'</span>
+    axis=<span class="st">'both'</span>,                      <span class="cm"># 'x','y','both'</span>
+    linestyle=<span class="st">'--'</span>,
+    linewidth=<span class="nm">0.5</span>,
+    color=<span class="st">'gray'</span>,
+    alpha=<span class="nm">0.4</span>,
+    zorder=<span class="nm">0</span>                          <span class="cm"># draw behind data</span>
+)
+ax.minorticks_on()                   <span class="cm"># enable minor ticks</span>
+ax.grid(<span class="kw">True</span>, which=<span class="st">'minor'</span>, alpha=<span class="nm">0.15</span>)
+
+plt.tight_layout(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== SAVE ===== -->
+<section class="section" id="save">
+  <div class="sec-hdr">
+    <div class="s-num">10</div>
+    <div class="s-info">
+      <span class="s-tag tag-b">Beginner</span>
+      <h2>Saving Figures</h2>
+      <p class="sub">Export to PNG, PDF, SVG, EPS — at any resolution</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — savefig and all format options</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> io
+
+fig, ax = plt.subplots(figsize=(<span class="nm">8</span>, <span class="nm">5</span>))
+ax.plot([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>],[<span class="nm">1</span>,<span class="nm">4</span>,<span class="nm">9</span>], color=<span class="st">'steelblue'</span>)
+ax.set_title(<span class="st">'My Chart'</span>)
+
+<span class="cm"># ── BASIC SAVE ───────────────────────────────────────</span>
+plt.savefig(<span class="st">'chart.png'</span>)
+
+<span class="cm"># ── ALL OPTIONS ──────────────────────────────────────</span>
+plt.savefig(<span class="st">'chart.png'</span>,
+    dpi=<span class="nm">300</span>,                          <span class="cm"># resolution (72/100/150/300/600)</span>
+    bbox_inches=<span class="st">'tight'</span>,             <span class="cm"># trim whitespace — almost always use this</span>
+    pad_inches=<span class="nm">0.1</span>,                   <span class="cm"># padding when bbox_inches='tight'</span>
+    facecolor=<span class="st">'white'</span>,               <span class="cm"># background color</span>
+    edgecolor=<span class="st">'none'</span>,                 <span class="cm"># edge color</span>
+    transparent=<span class="kw">False</span>,               <span class="cm"># transparent background</span>
+    format=<span class="st">'png'</span>                      <span class="cm"># override file extension</span>
+)
+
+<span class="cm"># ── FORMATS ──────────────────────────────────────────</span>
+plt.savefig(<span class="st">'chart.pdf'</span>)             <span class="cm"># vector, perfect for LaTeX</span>
+plt.savefig(<span class="st">'chart.svg'</span>)             <span class="cm"># vector, web-ready</span>
+plt.savefig(<span class="st">'chart.eps'</span>)             <span class="cm"># vector, journals</span>
+plt.savefig(<span class="st">'chart.png'</span>, dpi=<span class="nm">300</span>)   <span class="cm"># raster, presentations</span>
+plt.savefig(<span class="st">'chart.jpeg'</span>, quality=<span class="nm">95</span>)<span class="cm"># JPEG (lossy)</span>
+plt.savefig(<span class="st">'chart.webp'</span>)            <span class="cm"># modern web format</span>
+
+<span class="cm"># ── SAVE TO BUFFER (for web/FastAPI) ─────────────────</span>
+buf = io.BytesIO()
+plt.savefig(buf, format=<span class="st">'png'</span>, dpi=<span class="nm">150</span>, bbox_inches=<span class="st">'tight'</span>)
+buf.seek(<span class="nm">0</span>)
+png_data = buf.read()                 <span class="cm"># bytes — send over HTTP</span>
+buf.close()
+
+<span class="cm"># ── SAVE MULTIPLE PAGES TO PDF ───────────────────────</span>
+<span class="kw">from</span> matplotlib.backends.backend_pdf <span class="kw">import</span> PdfPages
+<span class="kw">with</span> PdfPages(<span class="st">'report.pdf'</span>) <span class="kw">as</span> pdf:
+    fig1, ax1 = plt.subplots()
+    ax1.plot([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>])
+    pdf.savefig(fig1, bbox_inches=<span class="st">'tight'</span>)
+    plt.close(fig1)
+
+    fig2, ax2 = plt.subplots()
+    ax2.bar([<span class="st">'A'</span>,<span class="st">'B'</span>],[<span class="nm">3</span>,<span class="nm">7</span>])
+    pdf.savefig(fig2, bbox_inches=<span class="st">'tight'</span>)
+    plt.close(fig2)
+
+    <span class="cm"># Add PDF metadata</span>
+    d = pdf.infodict()
+    d[<span class="st">'Title'</span>] = <span class="st">'Monthly Report'</span>
+    d[<span class="st">'Author'</span>] = <span class="st">'Data Team'</span>
+
+<span class="cm"># ── TIGHT LAYOUT vs CONSTRAINED LAYOUT ───────────────</span>
+fig, axes = plt.subplots(<span class="nm">2</span>, <span class="nm">2</span>)
+plt.tight_layout(pad=<span class="nm">1.5</span>)           <span class="cm"># auto-adjust, pad in inches</span>
+<span class="cm"># OR set at creation (better for complex layouts):</span>
+fig, axes = plt.subplots(<span class="nm">2</span>, <span class="nm">2</span>, layout=<span class="st">'constrained'</span>)  <span class="cm"># pandas 3.6+</span>
+plt.savefig(<span class="st">'grid.png'</span>, dpi=<span class="nm">200</span>, bbox_inches=<span class="st">'tight'</span>)</pre>
+  </div>
+
+  <table>
+    <tr><th>Format</th><th>Use Case</th><th>DPI Needed</th></tr>
+    <tr><td>PNG</td><td>Web, presentations, general use</td><td>150-300</td></tr>
+    <tr><td>SVG</td><td>Web, scalable graphics</td><td>N/A (vector)</td></tr>
+    <tr><td>PDF</td><td>LaTeX papers, print</td><td>N/A (vector)</td></tr>
+    <tr><td>EPS</td><td>Academic journals</td><td>N/A (vector)</td></tr>
+    <tr><td>JPEG</td><td>When file size matters</td><td>200+</td></tr>
+  </table>
+</section>
+
+<hr class="dv">
+
+<!-- ===== SUBPLOTS ===== -->
+<section class="section" id="subplots">
+  <div class="sec-hdr">
+    <div class="s-num">11</div>
+    <div class="s-info">
+      <span class="s-tag tag-i">Intermediate</span>
+      <h2>Subplots &amp; Multi-Panel Figures</h2>
+      <p class="sub">Create grids of plots — share axes, custom sizes, and spacing</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — plt.subplots() complete reference</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+x = np.linspace(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">200</span>)
+
+<span class="cm"># ── BASIC SUBPLOTS ───────────────────────────────────</span>
+fig, ax  = plt.subplots()               <span class="cm"># 1 plot</span>
+fig, axs = plt.subplots(<span class="nm">2</span>, <span class="nm">3</span>)          <span class="cm"># 2×3 grid; axs is 2D array</span>
+fig, axs = plt.subplots(<span class="nm">1</span>, <span class="nm">3</span>)          <span class="cm"># 1×3; axs is 1D array</span>
+
+<span class="cm"># Access individual axes</span>
+axs[<span class="nm">0</span>, <span class="nm">0</span>].plot(x, np.sin(x))
+axs[<span class="nm">0</span>, <span class="nm">1</span>].scatter(x, np.cos(x), s=<span class="nm">5</span>)
+axs[<span class="nm">1</span>, <span class="nm">0</span>].bar([<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>],[<span class="nm">3</span>,<span class="nm">7</span>,<span class="nm">5</span>])
+
+<span class="cm"># Flatten to iterate easily</span>
+fig, axs = plt.subplots(<span class="nm">2</span>, <span class="nm">3</span>, figsize=(<span class="nm">15</span>, <span class="nm">8</span>))
+<span class="kw">for</span> ax, fn <span class="kw">in</span> zip(axs.flat, [np.sin, np.cos, np.tan, np.exp, np.log, np.sqrt]):
+    ax.plot(x[:len(x)//<span class="nm">2</span>], fn(x[:len(x)//<span class="nm">2</span>]))
+
+<span class="cm"># ── SHARED AXES ──────────────────────────────────────</span>
+fig, axs = plt.subplots(<span class="nm">2</span>, <span class="nm">1</span>, sharex=<span class="kw">True</span>, figsize=(<span class="nm">9</span>, <span class="nm">6</span>))
+<span class="cm"># sharex=True: all share x-axis range; zoom syncs</span>
+axs[<span class="nm">0</span>].plot(x, np.sin(x)); axs[<span class="nm">0</span>].set_ylabel(<span class="st">'sin'</span>)
+axs[<span class="nm">1</span>].plot(x, np.cos(x)); axs[<span class="nm">1</span>].set_ylabel(<span class="st">'cos'</span>)
+axs[<span class="nm">0</span>].label_outer()   <span class="cm"># hide inner x tick labels</span>
+
+fig, axs = plt.subplots(<span class="nm">1</span>, <span class="nm">3</span>, sharey=<span class="kw">True</span>)  <span class="cm"># share y-axis</span>
+
+<span class="cm"># ── FIGURE SIZE AND SPACING ──────────────────────────</span>
+fig, axs = plt.subplots(<span class="nm">2</span>, <span class="nm">3</span>, figsize=(<span class="nm">15</span>, <span class="nm">8</span>))
+plt.subplots_adjust(
+    left=<span class="nm">0.08</span>,                          <span class="cm"># left margin [0-1]</span>
+    right=<span class="nm">0.95</span>,                         <span class="cm"># right margin</span>
+    top=<span class="nm">0.92</span>,                           <span class="cm"># top margin</span>
+    bottom=<span class="nm">0.10</span>,                        <span class="cm"># bottom margin</span>
+    wspace=<span class="nm">0.3</span>,                         <span class="cm"># width spacing between subplots</span>
+    hspace=<span class="nm">0.4</span>                          <span class="cm"># height spacing between subplots</span>
+)
+<span class="cm"># Simpler: let matplotlib figure it out</span>
+plt.tight_layout(pad=<span class="nm">1.5</span>, w_pad=<span class="nm">1</span>, h_pad=<span class="nm">1</span>)
+
+<span class="cm"># ── DIFFERENT COLUMN WIDTHS ──────────────────────────</span>
+fig, axs = plt.subplots(<span class="nm">1</span>, <span class="nm">3</span>,
+    figsize=(<span class="nm">12</span>, <span class="nm">4</span>),
+    gridspec_kw={<span class="st">'width_ratios'</span>: [<span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">1</span>]}  <span class="cm"># first plot 3x wider</span>
+)
+
+<span class="cm"># ── INSET AXES ───────────────────────────────────────</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">9</span>, <span class="nm">5</span>))
+ax.plot(x, np.sin(x))
+<span class="cm"># Add zoomed inset</span>
+axins = ax.inset_axes([<span class="nm">0.65</span>, <span class="nm">0.55</span>, <span class="nm">0.3</span>, <span class="nm">0.35</span>])   <span class="cm"># [x,y,w,h] in axes coords</span>
+axins.plot(x, np.sin(x), color=<span class="st">'C0'</span>)
+axins.set_xlim(<span class="nm">1</span>, <span class="nm">3</span>); axins.set_ylim(<span class="nm">0</span>, <span class="nm">1.1</span>)
+ax.indicate_inset_zoom(axins, edgecolor=<span class="st">'gray'</span>)   <span class="cm"># draw connector lines</span>
+
+plt.tight_layout(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== OO API ===== -->
+<section class="section" id="oo">
+  <div class="sec-hdr">
+    <div class="s-num">12</div>
+    <div class="s-info">
+      <span class="s-tag tag-i">Intermediate</span>
+      <h2>Object-Oriented API</h2>
+      <p class="sub">The right way to build reusable, embeddable, precise figures</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — OO API patterns, functions, and twin axes</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> matplotlib.ticker <span class="kw">as</span> ticker
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── OO PATTERN ───────────────────────────────────────</span>
+<span class="cm"># fig = canvas, ax = plot area. Use ax.* methods.</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">9</span>, <span class="nm">5</span>))
+x = np.linspace(<span class="nm">0</span>, <span class="nm">4</span>*np.pi, <span class="nm">300</span>)
+
+line1, = ax.plot(x, np.sin(x), lw=<span class="nm">2</span>, color=<span class="st">'#4e9eff'</span>, label=<span class="st">'sin'</span>)
+line2, = ax.plot(x, np.cos(x), lw=<span class="nm">2</span>, color=<span class="st">'#ff7b2f'</span>, label=<span class="st">'cos'</span>)
+
+ax.set_title(<span class="st">'Trigonometry'</span>, fontsize=<span class="nm">16</span>)
+ax.set_xlabel(<span class="st">'Angle'</span>)
+ax.set_ylabel(<span class="st">'Value'</span>)
+ax.legend()
+fig.tight_layout()
+plt.show()
+
+<span class="cm"># ── USE IN FUNCTION (reusable) ───────────────────────</span>
+<span class="kw">def</span> <span class="fn">make_chart</span>(x, y, title=<span class="st">''</span>, color=<span class="st">'steelblue'</span>):
+    <span class="st">"""Returns fig, ax — caller decides where to show/save."""</span>
+    fig, ax = plt.subplots(figsize=(<span class="nm">8</span>, <span class="nm">4</span>))
+    ax.plot(x, y, color=color, lw=<span class="nm">2</span>)
+    ax.set_title(title)
+    ax.spines[[<span class="st">'top'</span>,<span class="st">'right'</span>]].set_visible(<span class="kw">False</span>)
+    ax.grid(<span class="kw">True</span>, alpha=<span class="nm">0.3</span>)
+    <span class="kw">return</span> fig, ax
+
+fig, ax = make_chart(x, np.sin(x), <span class="st">'Sine'</span>, <span class="st">'tomato'</span>)
+fig.savefig(<span class="st">'sine.png'</span>, dpi=<span class="nm">150</span>, bbox_inches=<span class="st">'tight'</span>)
+plt.close(fig)
+
+<span class="cm"># ── TWIN AXES — two y-scales on one plot ─────────────</span>
+fig, ax1 = plt.subplots(figsize=(<span class="nm">9</span>, <span class="nm">5</span>))
+months = np.arange(<span class="nm">1</span>, <span class="nm">13</span>)
+revenue = [<span class="nm">120</span>,<span class="nm">145</span>,<span class="nm">180</span>,<span class="nm">160</span>,<span class="nm">200</span>,<span class="nm">220</span>,<span class="nm">210</span>,<span class="nm">190</span>,<span class="nm">230</span>,<span class="nm">260</span>,<span class="nm">280</span>,<span class="nm">310</span>]
+growth  = [<span class="nm">5</span>,<span class="nm">12</span>,<span class="nm">24</span>,<span class="nm">11</span>,<span class="nm">25</span>,<span class="nm">10</span>,<span class="nm">-5</span>,<span class="nm">-9</span>,<span class="nm">21</span>,<span class="nm">13</span>,<span class="nm">8</span>,<span class="nm">11</span>]
+
+color1, color2 = <span class="st">'#4e9eff'</span>, <span class="st">'#ff7b2f'</span>
+
+bars = ax1.bar(months, revenue, color=color1, alpha=<span class="nm">0.7</span>, label=<span class="st">'Revenue'</span>)
+ax1.set_xlabel(<span class="st">'Month'</span>); ax1.set_ylabel(<span class="st">'Revenue ($K)'</span>, color=color1)
+ax1.tick_params(axis=<span class="st">'y'</span>, labelcolor=color1)
+
+ax2 = ax1.twinx()                        <span class="cm"># share x axis, new y axis</span>
+ax2.plot(months, growth, color=color2, marker=<span class="st">'o'</span>, lw=<span class="nm">2</span>, label=<span class="st">'Growth %'</span>)
+ax2.set_ylabel(<span class="st">'Growth (%)'</span>, color=color2)
+ax2.tick_params(axis=<span class="st">'y'</span>, labelcolor=color2)
+ax2.axhline(<span class="nm">0</span>, color=<span class="st">'gray'</span>, lw=<span class="nm">0.8</span>, ls=<span class="st">'--'</span>)
+
+<span class="cm"># Combined legend</span>
+lines1, labels1 = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+ax1.legend(lines1 + lines2, labels1 + labels2, loc=<span class="st">'upper left'</span>)
+fig.tight_layout(); plt.show()
+
+<span class="cm"># ── TICK FORMATTING ──────────────────────────────────</span>
+ax.yaxis.set_major_formatter(ticker.FuncFormatter(<span class="kw">lambda</span> x, _: <span class="st">f'${x:,.0f}'</span>))
+ax.xaxis.set_major_formatter(ticker.FormatStrFormatter(<span class="st">'%.1f'</span>))
+ax.xaxis.set_major_locator(ticker.MultipleLocator(<span class="nm">2</span>))   <span class="cm"># tick every 2 units</span>
+ax.xaxis.set_minor_locator(ticker.AutoMinorLocator(<span class="nm">5</span>))   <span class="cm"># 5 minor ticks per major</span>
+ax.yaxis.set_major_formatter(ticker.PercentFormatter(xmax=<span class="nm">100</span>))</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== CHART TYPES ===== -->
+<section class="section" id="charttypes">
+  <div class="sec-hdr">
+    <div class="s-num">13</div>
+    <div class="s-info">
+      <span class="s-tag tag-i">Intermediate</span>
+      <h2>More Chart Types</h2>
+      <p class="sub">Pie, heatmap, contour, step, stem, polar, and more</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — Extended chart type gallery</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── PIE CHART ────────────────────────────────────────</span>
+sizes  = [<span class="nm">35</span>, <span class="nm">28</span>, <span class="nm">20</span>, <span class="nm">17</span>]
+labels = [<span class="st">'Eng'</span>, <span class="st">'Sales'</span>, <span class="st">'HR'</span>, <span class="st">'Finance'</span>]
+fig, ax = plt.subplots(figsize=(<span class="nm">6</span>, <span class="nm">6</span>))
+wedges, texts, autotexts = ax.pie(sizes,
+    labels=labels,
+    autopct=<span class="st">'%1.1f%%'</span>,              <span class="cm"># percentage format</span>
+    startangle=<span class="nm">90</span>,                  <span class="cm"># start from top</span>
+    explode=[<span class="nm">0.05</span>, <span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">0</span>],      <span class="cm"># explode first slice</span>
+    colors=[<span class="st">'#4e9eff'</span>,<span class="st">'#ff7b2f'</span>,<span class="st">'#3ecf8e'</span>,<span class="st">'#b57eff'</span>],
+    wedgeprops={<span class="st">'edgecolor'</span>:<span class="st">'white'</span>, <span class="st">'linewidth'</span>:<span class="nm">2</span>},
+    shadow=<span class="kw">False</span>
+)
+ax.set_title(<span class="st">'Headcount by Dept'</span>)
+
+<span class="cm"># Donut chart variant</span>
+ax.add_artist(plt.Circle((<span class="nm">0</span>,<span class="nm">0</span>), <span class="nm">0.65</span>, color=<span class="st">'white'</span>))  <span class="cm"># center circle</span>
+
+<span class="cm"># ── HEATMAP (imshow) ─────────────────────────────────</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">8</span>, <span class="nm">6</span>))
+data = np.random.rand(<span class="nm">8</span>, <span class="nm">10</span>)
+im = ax.imshow(data, cmap=<span class="st">'viridis'</span>, aspect=<span class="st">'auto'</span>,
+    vmin=<span class="nm">0</span>, vmax=<span class="nm">1</span>)
+plt.colorbar(im, ax=ax, label=<span class="st">'Value'</span>)
+ax.set_xticks(range(<span class="nm">10</span>)); ax.set_yticks(range(<span class="nm">8</span>))
+<span class="cm"># Add value labels</span>
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="nm">8</span>):
+    <span class="kw">for</span> j <span class="kw">in</span> range(<span class="nm">10</span>):
+        ax.text(j, i, <span class="st">f'{data[i,j]:.2f}'</span>,
+            ha=<span class="st">'center'</span>, va=<span class="st">'center'</span>, fontsize=<span class="nm">8</span>,
+            color=<span class="st">'white'</span> <span class="kw">if</span> data[i,j] < <span class="nm">0.5</span> <span class="kw">else</span> <span class="st">'black'</span>)
+ax.set_title(<span class="st">'Heatmap'</span>)
+
+<span class="cm"># ── CONTOUR PLOTS ────────────────────────────────────</span>
+xx, yy = np.meshgrid(np.linspace(-<span class="nm">3</span>, <span class="nm">3</span>, <span class="nm">100</span>), np.linspace(-<span class="nm">3</span>, <span class="nm">3</span>, <span class="nm">100</span>))
+zz = np.sin(xx) * np.cos(yy)
+
+fig, axes = plt.subplots(<span class="nm">1</span>, <span class="nm">2</span>, figsize=(<span class="nm">12</span>, <span class="nm">4</span>))
+<span class="cm"># Filled contour</span>
+cf = axes[<span class="nm">0</span>].contourf(xx, yy, zz, levels=<span class="nm">20</span>, cmap=<span class="st">'RdBu_r'</span>)
+plt.colorbar(cf, ax=axes[<span class="nm">0</span>])
+axes[<span class="nm">0</span>].set_title(<span class="st">'contourf'</span>)
+<span class="cm"># Contour lines</span>
+cs = axes[<span class="nm">1</span>].contour(xx, yy, zz, levels=<span class="nm">10</span>, cmap=<span class="st">'viridis'</span>)
+axes[<span class="nm">1</span>].clabel(cs, inline=<span class="kw">True</span>, fontsize=<span class="nm">8</span>)  <span class="cm"># add labels on contour lines</span>
+axes[<span class="nm">1</span>].set_title(<span class="st">'contour + labels'</span>)
+
+<span class="cm"># ── STEP / STEM ──────────────────────────────────────</span>
+fig, axes = plt.subplots(<span class="nm">1</span>, <span class="nm">2</span>, figsize=(<span class="nm">12</span>, <span class="nm">4</span>))
+t = np.arange(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">0.5</span>)
+axes[<span class="nm">0</span>].step(t, np.sin(t), where=<span class="st">'mid'</span>)  <span class="cm"># 'pre','mid','post'</span>
+axes[<span class="nm">0</span>].set_title(<span class="st">'Step Plot'</span>)
+axes[<span class="nm">1</span>].stem(t, np.cos(t),
+    linefmt=<span class="st">'C0-'</span>, markerfmt=<span class="st">'C0o'</span>, basefmt=<span class="st">'k-'</span>)
+axes[<span class="nm">1</span>].set_title(<span class="st">'Stem Plot'</span>)
+
+<span class="cm"># ── POLAR PLOT ───────────────────────────────────────</span>
+fig, ax = plt.subplots(subplot_kw={<span class="st">'projection'</span>: <span class="st">'polar'</span>})
+theta  = np.linspace(<span class="nm">0</span>, <span class="nm">2</span>*np.pi, <span class="nm">200</span>)
+r = <span class="nm">1</span> + <span class="nm">0.5</span> * np.cos(<span class="nm">5</span>*theta)  <span class="cm"># 5-petal flower</span>
+ax.plot(theta, r, lw=<span class="nm">2</span>, color=<span class="st">'tomato'</span>)
+ax.fill(theta, r, alpha=<span class="nm">0.2</span>, color=<span class="st">'tomato'</span>)
+ax.set_title(<span class="st">'Polar Plot'</span>)
+
+<span class="cm"># ── QUIVER (vector field) ────────────────────────────</span>
+fig, ax = plt.subplots()
+X, Y = np.meshgrid(np.arange(-<span class="nm">2</span>, <span class="nm">2.1</span>, <span class="nm">0.4</span>), np.arange(-<span class="nm">2</span>, <span class="nm">2.1</span>, <span class="nm">0.4</span>))
+U, V = -Y, X                         <span class="cm"># vector components</span>
+ax.quiver(X, Y, U, V, np.sqrt(U**<span class="nm">2</span>+V**<span class="nm">2</span>), cmap=<span class="st">'viridis'</span>)
+ax.set_title(<span class="st">'Vector Field (quiver)'</span>)
+
+<span class="cm"># ── ERRORBAR ─────────────────────────────────────────</span>
+fig, ax = plt.subplots()
+t = np.arange(<span class="nm">5</span>)
+y = [<span class="nm">2.1</span>,<span class="nm">3.5</span>,<span class="nm">2.8</span>,<span class="nm">4.2</span>,<span class="nm">3.9</span>]
+yerr = [<span class="nm">0.3</span>,<span class="nm">0.5</span>,<span class="nm">0.4</span>,<span class="nm">0.6</span>,<span class="nm">0.3</span>]
+ax.errorbar(t, y, yerr=yerr,
+    fmt=<span class="st">'o-'</span>, color=<span class="st">'steelblue'</span>,
+    capsize=<span class="nm">5</span>, elinewidth=<span class="nm">1.5</span>, capthick=<span class="nm">1.5</span>)
+ax.set_title(<span class="st">'Errorbar'</span>)
+
+plt.tight_layout(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== AXES ===== -->
+<section class="section" id="axes">
+  <div class="sec-hdr">
+    <div class="s-num">14</div>
+    <div class="s-info">
+      <span class="s-tag tag-i">Intermediate</span>
+      <h2>Axes, Limits &amp; Ticks</h2>
+      <p class="sub">Precise control over scales, limits, ticks, and tick formatting</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — Axis customization reference</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot  <span class="kw">as</span> plt
+<span class="kw">import</span> matplotlib.ticker  <span class="kw">as</span> ticker
+<span class="kw">import</span> matplotlib.dates   <span class="kw">as</span> mdates
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+fig, ax = plt.subplots(figsize=(<span class="nm">9</span>, <span class="nm">5</span>))
+
+<span class="cm"># ── LIMITS ───────────────────────────────────────────</span>
+ax.set_xlim(<span class="nm">0</span>, <span class="nm">10</span>)                    <span class="cm"># set x-axis range</span>
+ax.set_ylim(-<span class="nm">2</span>, <span class="nm">2</span>)                    <span class="cm"># set y-axis range</span>
+ax.set_xlim(left=<span class="nm">0</span>)                   <span class="cm"># only set left bound</span>
+ax.set_ylim(bottom=<span class="nm">0</span>)                 <span class="cm"># only set bottom bound</span>
+ax.autoscale(enable=<span class="kw">True</span>, axis=<span class="st">'y'</span>)  <span class="cm"># auto-scale y only</span>
+ax.set_aspect(<span class="st">'equal'</span>)               <span class="cm"># equal x/y scaling</span>
+ax.invert_xaxis()                     <span class="cm"># flip axis direction</span>
+ax.invert_yaxis()
+
+<span class="cm"># ── LOG SCALE ────────────────────────────────────────</span>
+ax.set_xscale(<span class="st">'log'</span>)                  <span class="cm"># log10 x-axis</span>
+ax.set_yscale(<span class="st">'log'</span>)                  <span class="cm"># log10 y-axis</span>
+ax.set_yscale(<span class="st">'symlog'</span>)              <span class="cm"># symmetric log (handles 0 and negatives)</span>
+ax.set_yscale(<span class="st">'logit'</span>)               <span class="cm"># logit scale [0,1]</span>
+
+<span class="cm"># ── TICK POSITIONS ───────────────────────────────────</span>
+ax.set_xticks([<span class="nm">0</span>, <span class="nm">2</span>, <span class="nm">4</span>, <span class="nm">6</span>, <span class="nm">8</span>, <span class="nm">10</span>])   <span class="cm"># explicit tick positions</span>
+ax.set_xticklabels([<span class="st">'0'</span>,<span class="st">'2'</span>,<span class="st">'4'</span>,<span class="st">'6'</span>,<span class="st">'8'</span>,<span class="st">'10'</span>])  <span class="cm"># tick labels</span>
+ax.set_yticks([])                      <span class="cm"># remove all y-ticks</span>
+ax.tick_params(axis=<span class="st">'x'</span>, labelrotation=<span class="nm">45</span>)
+
+<span class="cm"># ── TICKER LOCATORS ──────────────────────────────────</span>
+ax.xaxis.set_major_locator(ticker.MultipleLocator(<span class="nm">2</span>))   <span class="cm"># tick every 2</span>
+ax.xaxis.set_minor_locator(ticker.AutoMinorLocator(<span class="nm">5</span>))   <span class="cm"># 5 minor / major</span>
+ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=<span class="nm">8</span>))  <span class="cm"># at most 8 ticks</span>
+ax.yaxis.set_major_locator(ticker.LogLocator())            <span class="cm"># for log scale</span>
+ax.xaxis.set_major_locator(ticker.FixedLocator([<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">5</span>]))<span class="cm"># specific positions</span>
+ax.xaxis.set_major_locator(ticker.NullLocator())           <span class="cm"># hide all ticks</span>
+
+<span class="cm"># ── TICK FORMATTERS ──────────────────────────────────</span>
+ax.yaxis.set_major_formatter(ticker.FuncFormatter(
+    <span class="kw">lambda</span> x, _: <span class="st">f'${x:,.0f}'</span>                            <span class="cm"># currency</span>
+))
+ax.yaxis.set_major_formatter(ticker.PercentFormatter(<span class="nm">100</span>))<span class="cm"># 0.45 → '45%'</span>
+ax.xaxis.set_major_formatter(ticker.FormatStrFormatter(<span class="st">'%.2f'</span>))
+ax.yaxis.set_major_formatter(ticker.ScalarFormatter(useMathText=<span class="kw">True</span>))
+ax.ticklabel_format(style=<span class="st">'sci'</span>, axis=<span class="st">'y'</span>, scilimits=(<span class="nm">0</span>,<span class="nm">0</span>))
+
+<span class="cm"># ── DATE AXIS ────────────────────────────────────────</span>
+dates = pd.date_range(<span class="st">'2024-01-01'</span>, periods=<span class="nm">365</span>, freq=<span class="st">'D'</span>)
+vals  = np.cumsum(np.random.randn(<span class="nm">365</span>))
+
+fig, ax = plt.subplots(figsize=(<span class="nm">12</span>, <span class="nm">4</span>))
+ax.plot(dates, vals)
+<span class="cm"># Format date ticks</span>
+ax.xaxis.set_major_locator(mdates.MonthLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">'%b %Y'</span>))
+ax.xaxis.set_minor_locator(mdates.WeekdayLocator())
+plt.setp(ax.get_xticklabels(), rotation=<span class="nm">45</span>, ha=<span class="st">'right'</span>)
+fig.autofmt_xdate()                    <span class="cm"># auto-rotate date labels</span>
+plt.tight_layout(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== ANNOTATIONS ===== -->
+<section class="section" id="annotations">
+  <div class="sec-hdr">
+    <div class="s-num">15</div>
+    <div class="s-info">
+      <span class="s-tag tag-i">Intermediate</span>
+      <h2>Annotations &amp; Text</h2>
+      <p class="sub">Add arrows, callouts, shapes, and text to explain your data</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — Annotations, arrows, shapes, text</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot  <span class="kw">as</span> plt
+<span class="kw">import</span> matplotlib.patches <span class="kw">as</span> mpatches
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+fig, ax = plt.subplots(figsize=(<span class="nm">10</span>, <span class="nm">6</span>))
+x = np.linspace(<span class="nm">0</span>, <span class="nm">4</span>*np.pi, <span class="nm">300</span>)
+ax.plot(x, np.sin(x), color=<span class="st">'steelblue'</span>, lw=<span class="nm">2</span>)
+
+<span class="cm"># ── SIMPLE TEXT ──────────────────────────────────────</span>
+ax.text(<span class="nm">1.5</span>, <span class="nm">0.9</span>, <span class="st">'Peak'</span>,
+    fontsize=<span class="nm">12</span>,
+    color=<span class="st">'red'</span>,
+    ha=<span class="st">'center'</span>,                      <span class="cm"># horizontal align: left/center/right</span>
+    va=<span class="st">'bottom'</span>,                      <span class="cm"># vertical align: top/center/bottom</span>
+    fontweight=<span class="st">'bold'</span>,
+    rotation=<span class="nm">0</span>
+)
+
+<span class="cm"># Text relative to axes (not data) using transform</span>
+ax.text(<span class="nm">0.02</span>, <span class="nm">0.95</span>, <span class="st">'Panel A'</span>,
+    transform=ax.transAxes,            <span class="cm"># axes coords: (0,0)=BL, (1,1)=TR</span>
+    fontsize=<span class="nm">14</span>, fontweight=<span class="st">'bold'</span>,
+    va=<span class="st">'top'</span>
+)
+
+<span class="cm"># Figure-level text (title, suptitle)</span>
+fig.suptitle(<span class="st">'Sine Wave Analysis'</span>, fontsize=<span class="nm">18</span>, fontweight=<span class="st">'bold'</span>)
+fig.text(<span class="nm">0.5</span>, <span class="nm">0.01</span>, <span class="st">'Source: Generated'</span>,
+    ha=<span class="st">'center'</span>, fontsize=<span class="nm">9</span>, color=<span class="st">'gray'</span>)
+
+<span class="cm"># ── ANNOTATE WITH ARROW ──────────────────────────────</span>
+ax.annotate(<span class="st">'Local maximum'</span>,
+    xy=(np.pi/<span class="nm">2</span>, <span class="nm">1</span>),                 <span class="cm"># POINT being annotated</span>
+    xytext=(<span class="nm">2</span>, <span class="nm">1.4</span>),                  <span class="cm"># TEXT location</span>
+    fontsize=<span class="nm">11</span>,
+    arrowprops=dict(
+        arrowstyle=<span class="st">'->'</span>,              <span class="cm"># '->', '-|>', 'fancy', 'wedge'</span>
+        color=<span class="st">'gray'</span>,
+        lw=<span class="nm">1.5</span>,
+        connectionstyle=<span class="st">'arc3,rad=0.3'</span><span class="cm"># curved arrow</span>
+    ),
+    color=<span class="st">'#333'</span>
+)
+
+ax.annotate(<span class="st">'Zero crossing'</span>,
+    xy=(np.pi, <span class="nm">0</span>),
+    xytext=(np.pi, -<span class="nm">0.6</span>),
+    ha=<span class="st">'center'</span>,
+    arrowprops=dict(arrowstyle=<span class="st">'->'</span>, color=<span class="st">'tomato'</span>),
+    color=<span class="st">'tomato'</span>, fontsize=<span class="nm">10</span>
+)
+
+<span class="cm"># ── BBOX (text box) ──────────────────────────────────</span>
+ax.text(<span class="nm">8</span>, <span class="nm">0.8</span>, <span class="st">'n = 300'</span>,
+    fontsize=<span class="nm">10</span>,
+    bbox=dict(
+        boxstyle=<span class="st">'round,pad=0.4'</span>,    <span class="cm"># 'round','square','rarrow','sawtooth'</span>
+        facecolor=<span class="st">'lightyellow'</span>,
+        edgecolor=<span class="st">'orange'</span>,
+        alpha=<span class="nm">0.9</span>,
+        linewidth=<span class="nm">1.5</span>
+    )
+)
+
+<span class="cm"># ── SHAPES / PATCHES ─────────────────────────────────</span>
+<span class="cm"># Rectangle</span>
+rect = mpatches.Rectangle((<span class="nm">3</span>, -<span class="nm">0.5</span>), <span class="nm">2</span>, <span class="nm">1</span>,  <span class="cm"># (x,y), width, height</span>
+    linewidth=<span class="nm">1.5</span>, edgecolor=<span class="st">'green'</span>,
+    facecolor=<span class="st">'lightgreen'</span>, alpha=<span class="nm">0.3</span>)
+ax.add_patch(rect)
+<span class="cm"># Circle</span>
+circ = mpatches.Circle((np.pi, <span class="nm">0</span>), radius=<span class="nm">0.2</span>,
+    edgecolor=<span class="st">'red'</span>, facecolor=<span class="st">'none'</span>, linewidth=<span class="nm">2</span>)
+ax.add_patch(circ)
+<span class="cm"># Arrow patch</span>
+arrow = mpatches.FancyArrowPatch(
+    posA=(<span class="nm">6</span>, -<span class="nm">1</span>), posB=(<span class="nm">8</span>, <span class="nm">0.5</span>),
+    arrowstyle=<span class="st">'fancy'</span>,
+    color=<span class="st">'purple'</span>, lw=<span class="nm">1.5</span>)
+ax.add_patch(arrow)
+
+plt.tight_layout(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== PANDAS ===== -->
+<section class="section" id="pandas">
+  <div class="sec-hdr">
+    <div class="s-num">16</div>
+    <div class="s-info">
+      <span class="s-tag tag-i">Intermediate</span>
+      <h2>Pandas Integration</h2>
+      <p class="sub">Plot directly from DataFrames and Series using the .plot() accessor</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — DataFrame.plot() and Matplotlib integration</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy  <span class="kw">as</span> np
+
+<span class="cm"># Sample data</span>
+np.random.seed(<span class="nm">42</span>)
+df = pd.DataFrame({
+    <span class="st">'month'</span>:   pd.date_range(<span class="st">'2024-01'</span>, periods=<span class="nm">12</span>, freq=<span class="st">'ME'</span>),
+    <span class="st">'product_a'</span>: np.random.randint(<span class="nm">50</span>, <span class="nm">120</span>, <span class="nm">12</span>),
+    <span class="st">'product_b'</span>: np.random.randint(<span class="nm">30</span>, <span class="nm">90</span>, <span class="nm">12</span>),
+    <span class="st">'product_c'</span>: np.random.randint(<span class="nm">20</span>, <span class="nm">70</span>, <span class="nm">12</span>),
+}).set_index(<span class="st">'month'</span>)
+
+<span class="cm"># ── df.plot() — quick plots ───────────────────────────</span>
+df.plot()                              <span class="cm"># default: line plot of all columns</span>
+df.plot(kind=<span class="st">'line'</span>)                  <span class="cm"># explicit line</span>
+df.plot(kind=<span class="st">'bar'</span>)                   <span class="cm"># bar chart</span>
+df.plot(kind=<span class="st">'barh'</span>)                  <span class="cm"># horizontal bar</span>
+df.plot(kind=<span class="st">'hist'</span>)                  <span class="cm"># histogram</span>
+df.plot(kind=<span class="st">'box'</span>)                   <span class="cm"># box plot</span>
+df.plot(kind=<span class="st">'scatter'</span>, x=<span class="st">'product_a'</span>, y=<span class="st">'product_b'</span>)
+df.plot(kind=<span class="st">'pie'</span>, y=<span class="st">'product_a'</span>)
+df.plot(kind=<span class="st">'area'</span>)                  <span class="cm"># stacked area</span>
+df.plot(kind=<span class="st">'kde'</span>)                   <span class="cm"># kernel density estimate</span>
+
+<span class="cm"># ── OPTIONS ──────────────────────────────────────────</span>
+ax = df.plot(
+    kind=<span class="st">'line'</span>,
+    figsize=(<span class="nm">10</span>, <span class="nm">5</span>),                   <span class="cm"># figure size</span>
+    title=<span class="st">'Monthly Sales'</span>,
+    xlabel=<span class="st">'Month'</span>, ylabel=<span class="st">'Units'</span>,
+    color=[<span class="st">'#4e9eff'</span>,<span class="st">'#ff7b2f'</span>,<span class="st">'#3ecf8e'</span>],
+    linewidth=<span class="nm">2</span>,
+    marker=<span class="st">'o'</span>,
+    legend=<span class="kw">True</span>,
+    grid=<span class="kw">True</span>,
+    alpha=<span class="nm">0.9</span>,
+    rot=<span class="nm">45</span>,                            <span class="cm"># rotate x tick labels</span>
+    fontsize=<span class="nm">11</span>
+)
+ax.figure.tight_layout()              <span class="cm"># .figure gives you the Figure</span>
+plt.savefig(<span class="st">'sales.png'</span>, dpi=<span class="nm">150</span>, bbox_inches=<span class="st">'tight'</span>)
+
+<span class="cm"># ── PLOT ON EXISTING AXES ────────────────────────────</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">10</span>, <span class="nm">5</span>))
+df[<span class="st">'product_a'</span>].plot(ax=ax, color=<span class="st">'steelblue'</span>, lw=<span class="nm">2</span>, label=<span class="st">'Product A'</span>)
+df[<span class="st">'product_b'</span>].plot(ax=ax, color=<span class="st">'tomato'</span>,    lw=<span class="nm">2</span>, label=<span class="st">'Product B'</span>)
+ax.set_title(<span class="st">'Product Comparison'</span>)
+ax.legend(); plt.tight_layout(); plt.show()
+
+<span class="cm"># ── GROUPED BAR FROM PANDAS ──────────────────────────</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">12</span>, <span class="nm">5</span>))
+df.plot(kind=<span class="st">'bar'</span>, ax=ax,
+    color=[<span class="st">'#4e9eff'</span>,<span class="st">'#ff7b2f'</span>,<span class="st">'#3ecf8e'</span>],
+    edgecolor=<span class="st">'none'</span>, alpha=<span class="nm">0.85</span>)
+ax.set_title(<span class="st">'Monthly Sales by Product'</span>)
+ax.legend(title=<span class="st">'Product'</span>)
+plt.setp(ax.get_xticklabels(), rotation=<span class="nm">45</span>, ha=<span class="st">'right'</span>)
+plt.tight_layout(); plt.show()
+
+<span class="cm"># ── SCATTER MATRIX ───────────────────────────────────</span>
+<span class="kw">from</span> pandas.plotting <span class="kw">import</span> scatter_matrix
+scatter_matrix(df, alpha=<span class="nm">0.6</span>, figsize=(<span class="nm">8</span>, <span class="nm">8</span>), diagonal=<span class="st">'hist'</span>)
+plt.suptitle(<span class="st">'Scatter Matrix'</span>)
+plt.tight_layout(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== GRIDSPEC ===== -->
+<section class="section" id="gridspec">
+  <div class="sec-hdr">
+    <div class="s-num">17</div>
+    <div class="s-info">
+      <span class="s-tag tag-a">Advanced</span>
+      <h2>GridSpec — Advanced Layouts</h2>
+      <p class="sub">Spans, unequal panels, nested GridSpec, and subplot_mosaic</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — GridSpec, mosaic, subplot2grid</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot   <span class="kw">as</span> plt
+<span class="kw">import</span> matplotlib.gridspec <span class="kw">as</span> gridspec
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── GRIDSPEC — full control ───────────────────────────</span>
+fig = plt.figure(figsize=(<span class="nm">12</span>, <span class="nm">8</span>))
+gs = gridspec.GridSpec(
+    nrows=<span class="nm">3</span>, ncols=<span class="nm">3</span>,
+    figure=fig,
+    width_ratios=[<span class="nm">2</span>, <span class="nm">1</span>, <span class="nm">1</span>],           <span class="cm"># column widths</span>
+    height_ratios=[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">1</span>],          <span class="cm"># row heights</span>
+    hspace=<span class="nm">0.4</span>, wspace=<span class="nm">0.3</span>
+)
+
+<span class="cm"># Create axes with spans</span>
+ax1 = fig.add_subplot(gs[<span class="nm">0</span>, :])        <span class="cm"># row 0, all columns (wide)</span>
+ax2 = fig.add_subplot(gs[<span class="nm">1</span>, <span class="nm">0</span>])        <span class="cm"># row 1, col 0</span>
+ax3 = fig.add_subplot(gs[<span class="nm">1</span>, <span class="nm">1</span>:<span class="nm">3</span>])     <span class="cm"># row 1, cols 1-2</span>
+ax4 = fig.add_subplot(gs[<span class="nm">2</span>, <span class="nm">0</span>:<span class="nm">2</span>])     <span class="cm"># row 2, cols 0-1</span>
+ax5 = fig.add_subplot(gs[<span class="nm">2</span>, <span class="nm">2</span>])        <span class="cm"># row 2, col 2</span>
+
+x = np.linspace(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">200</span>)
+ax1.plot(x, np.sin(x));  ax1.set_title(<span class="st">'Wide top panel'</span>)
+ax2.scatter(np.random.randn(<span class="nm">50</span>), np.random.randn(<span class="nm">50</span>), s=<span class="nm">20</span>)
+ax3.bar([<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>],[<span class="nm">5</span>,<span class="nm">8</span>,<span class="nm">3</span>])
+ax4.plot(x, np.cos(x))
+ax5.hist(np.random.randn(<span class="nm">100</span>), bins=<span class="nm">15</span>)
+plt.suptitle(<span class="st">'GridSpec Layout'</span>, fontsize=<span class="nm">16</span>)
+plt.tight_layout(); plt.show()
+
+<span class="cm"># ── NESTED GRIDSPEC ──────────────────────────────────</span>
+fig = plt.figure(figsize=(<span class="nm">12</span>, <span class="nm">6</span>))
+outer = gridspec.GridSpec(<span class="nm">1</span>, <span class="nm">2</span>)          <span class="cm"># 2 columns outer</span>
+
+<span class="cm"># Left column: single axis</span>
+ax_left = fig.add_subplot(outer[<span class="nm">0</span>])
+ax_left.plot(x, np.sin(x))
+
+<span class="cm"># Right column: nested 2×1</span>
+inner = gridspec.GridSpecFromSubplotSpec(<span class="nm">2</span>, <span class="nm">1</span>,
+    subplot_spec=outer[<span class="nm">1</span>], hspace=<span class="nm">0.4</span>)
+ax_r1 = fig.add_subplot(inner[<span class="nm">0</span>])
+ax_r2 = fig.add_subplot(inner[<span class="nm">1</span>])
+ax_r1.plot(x[:len(x)//<span class="nm">2</span>], np.cos(x[:len(x)//<span class="nm">2</span>]))
+ax_r2.hist(np.random.randn(<span class="nm">200</span>), bins=<span class="nm">20</span>)
+plt.tight_layout(); plt.show()
+
+<span class="cm"># ── SUBPLOT_MOSAIC — most readable ───────────────────</span>
+fig, axd = plt.subplot_mosaic(<span class="st">"""
+    AAB
+    CDB
+    CEE
+"""</span>, figsize=(<span class="nm">12</span>, <span class="nm">8</span>))
+<span class="cm"># A spans top-left 2 cols, B spans right col, etc.</span>
+
+axd[<span class="st">'A'</span>].plot(x, np.sin(x)); axd[<span class="st">'A'</span>].set_title(<span class="st">'A - wide'</span>)
+axd[<span class="st">'B'</span>].scatter(np.random.randn(<span class="nm">50</span>), np.random.randn(<span class="nm">50'</span>), s=<span class="nm">20</span>)
+axd[<span class="st">'C'</span>].bar([<span class="st">'X'</span>,<span class="st">'Y'</span>],[<span class="nm">4</span>,<span class="nm">7</span>])
+axd[<span class="st">'D'</span>].imshow(np.random.rand(<span class="nm">10</span>,<span class="nm">10</span>), cmap=<span class="st">'hot'</span>)
+axd[<span class="st">'E'</span>].plot(x, np.cos(x))
+plt.suptitle(<span class="st">'subplot_mosaic Layout'</span>)
+plt.tight_layout(); plt.show()
+
+<span class="cm"># ── subplot2grid (legacy, still useful) ──────────────</span>
+fig = plt.figure(figsize=(<span class="nm">10</span>, <span class="nm">6</span>))
+ax1 = plt.subplot2grid((<span class="nm">3</span>, <span class="nm">3</span>), (<span class="nm">0</span>, <span class="nm">0</span>), colspan=<span class="nm">3</span>)  <span class="cm"># row0, spans 3 cols</span>
+ax2 = plt.subplot2grid((<span class="nm">3</span>, <span class="nm">3</span>), (<span class="nm">1</span>, <span class="nm">0</span>), colspan=<span class="nm">2</span>)  <span class="cm"># row1 cols 0-1</span>
+ax3 = plt.subplot2grid((<span class="nm">3</span>, <span class="nm">3</span>), (<span class="nm">1</span>, <span class="nm">2</span>), rowspan=<span class="nm">2</span>)  <span class="cm"># col2 rows 1-2</span>
+plt.tight_layout(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== 3D ===== -->
+<section class="section" id="3d">
+  <div class="sec-hdr">
+    <div class="s-num">18</div>
+    <div class="s-info">
+      <span class="s-tag tag-a">Advanced</span>
+      <h2>3D Plots</h2>
+      <p class="sub">Surface, wireframe, scatter, contour, and bar in 3D space</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — mpl_toolkits.mplot3d</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> mpl_toolkits.mplot3d <span class="kw">import</span> Axes3D   <span class="cm"># required import</span>
+
+<span class="cm"># ── SURFACE PLOT ─────────────────────────────────────</span>
+fig, ax = plt.subplots(subplot_kw={<span class="st">'projection'</span>: <span class="st">'3d'</span>},
+                        figsize=(<span class="nm">9</span>, <span class="nm">7</span>))
+
+x = np.linspace(-<span class="nm">5</span>, <span class="nm">5</span>, <span class="nm">60</span>)
+y = np.linspace(-<span class="nm">5</span>, <span class="nm">5</span>, <span class="nm">60</span>)
+X, Y = np.meshgrid(x, y)
+Z = np.sin(np.sqrt(X**<span class="nm">2</span> + Y**<span class="nm">2</span>))
+
+surf = ax.plot_surface(X, Y, Z,
+    cmap=<span class="st">'viridis'</span>,                    <span class="cm"># colormap</span>
+    alpha=<span class="nm">0.9</span>,                         <span class="cm"># transparency</span>
+    rstride=<span class="nm">1</span>, cstride=<span class="nm">1</span>,              <span class="cm"># grid density</span>
+    linewidth=<span class="nm">0</span>,                        <span class="cm"># no mesh lines</span>
+    antialiased=<span class="kw">True</span>
+)
+fig.colorbar(surf, ax=ax, shrink=<span class="nm">0.5</span>)
+ax.set_title(<span class="st">'3D Surface: sin(√(x²+y²))'</span>)
+ax.set_xlabel(<span class="st">'X'</span>); ax.set_ylabel(<span class="st">'Y'</span>); ax.set_zlabel(<span class="st">'Z'</span>)
+ax.view_init(elev=<span class="nm">30</span>, azim=<span class="nm">-60</span>)      <span class="cm"># camera angle</span>
+plt.tight_layout(); plt.show()
+
+<span class="cm"># ── WIREFRAME ────────────────────────────────────────</span>
+fig, ax = plt.subplots(subplot_kw={<span class="st">'projection'</span>: <span class="st">'3d'</span>})
+ax.plot_wireframe(X, Y, Z,
+    rstride=<span class="nm">4</span>, cstride=<span class="nm">4</span>,              <span class="cm"># every 4th grid line</span>
+    color=<span class="st">'steelblue'</span>, lw=<span class="nm">0.5</span>)
+ax.set_title(<span class="st">'Wireframe'</span>)
+
+<span class="cm"># ── 3D SCATTER ───────────────────────────────────────</span>
+fig, ax = plt.subplots(subplot_kw={<span class="st">'projection'</span>: <span class="st">'3d'</span>})
+n = <span class="nm">200</span>
+ax.scatter(np.random.randn(n),
+           np.random.randn(n),
+           np.random.randn(n),
+    c=np.random.rand(n),               <span class="cm"># color by value</span>
+    cmap=<span class="st">'plasma'</span>, s=<span class="nm">30</span>, alpha=<span class="nm">0.7</span>)
+ax.set_title(<span class="st">'3D Scatter'</span>)
+
+<span class="cm"># ── 3D LINE ──────────────────────────────────────────</span>
+fig, ax = plt.subplots(subplot_kw={<span class="st">'projection'</span>: <span class="st">'3d'</span>})
+t = np.linspace(<span class="nm">0</span>, <span class="nm">4</span>*np.pi, <span class="nm">300</span>)
+ax.plot(np.cos(t), np.sin(t), t/<span class="nm">4</span>,   <span class="cm"># x, y, z arrays</span>
+    color=<span class="st">'tomato'</span>, lw=<span class="nm">1.5</span>)
+ax.set_title(<span class="st">'3D Helix'</span>)
+
+<span class="cm"># ── 3D BAR ───────────────────────────────────────────</span>
+fig, ax = plt.subplots(subplot_kw={<span class="st">'projection'</span>: <span class="st">'3d'</span>})
+xp = yp = np.arange(<span class="nm">4</span>)
+xx, yy = np.meshgrid(xp, yp)
+xx, yy = xx.ravel(), yy.ravel()
+zz = np.zeros_like(xx)
+dz = np.random.rand(<span class="nm">16</span>) * <span class="nm">10</span>
+ax.bar3d(xx, yy, zz, <span class="nm">0.8</span>, <span class="nm">0.8</span>, dz,   <span class="cm"># x,y,z, dx,dy,dz</span>
+    color=plt.cm.viridis(dz/dz.max()), alpha=<span class="nm">0.8</span>)
+ax.set_title(<span class="st">'3D Bar Chart'</span>)
+
+<span class="cm"># ── 3D CONTOUR PROJECTION ────────────────────────────</span>
+fig, ax = plt.subplots(subplot_kw={<span class="st">'projection'</span>: <span class="st">'3d'</span>})
+ax.plot_surface(X, Y, Z, cmap=<span class="st">'coolwarm'</span>, alpha=<span class="nm">0.7</span>)
+ax.contourf(X, Y, Z, zdir=<span class="st">'z'</span>, offset=-<span class="nm">2</span>, cmap=<span class="st">'coolwarm'</span>)  <span class="cm"># projected floor</span>
+ax.set_zlim(-<span class="nm">2</span>, <span class="nm">1.5</span>)
+ax.set_title(<span class="st">'Surface + Floor Contour'</span>)
+plt.tight_layout(); plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== COLORMAPS ===== -->
+<section class="section" id="colormaps">
+  <div class="sec-hdr">
+    <div class="s-num">19</div>
+    <div class="s-info">
+      <span class="s-tag tag-a">Advanced</span>
+      <h2>Colormaps &amp; Color Norms</h2>
+      <p class="sub">Perceptually uniform maps, diverging, categorical, and custom colormaps</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — Colormaps, norms, colorbar</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib        <span class="kw">as</span> mpl
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> matplotlib.colors <span class="kw">as</span> mcolors
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── COLORMAP CATEGORIES ──────────────────────────────</span>
+<span class="cm"># SEQUENTIAL (for ordered 0→max data)</span>
+sequential = [<span class="st">'viridis'</span>, <span class="st">'plasma'</span>, <span class="st">'inferno'</span>, <span class="st">'magma'</span>, <span class="st">'cividis'</span>,
+              <span class="st">'Blues'</span>, <span class="st">'Greens'</span>, <span class="st">'YlOrRd'</span>, <span class="st">'hot'</span>]
+
+<span class="cm"># DIVERGING (for data with midpoint, e.g. -1 to 1)</span>
+diverging = [<span class="st">'RdBu'</span>, <span class="st">'RdBu_r'</span>, <span class="st">'coolwarm'</span>, <span class="st">'bwr'</span>,
+             <span class="st">'PiYG'</span>, <span class="st">'PRGn'</span>, <span class="st">'RdYlGn'</span>, <span class="st">'seismic'</span>]
+
+<span class="cm"># CATEGORICAL (discrete classes)</span>
+categorical = [<span class="st">'tab10'</span>, <span class="st">'tab20'</span>, <span class="st">'Set1'</span>, <span class="st">'Set2'</span>, <span class="st">'Set3'</span>,
+               <span class="st">'Pastel1'</span>, <span class="st">'Paired'</span>, <span class="st">'Accent'</span>]
+
+<span class="cm"># CYCLIC (wraps around: angle data)</span>
+cyclic = [<span class="st">'hsv'</span>, <span class="st">'twilight'</span>, <span class="st">'twilight_shifted'</span>]
+
+<span class="cm"># ── USING A COLORMAP ─────────────────────────────────</span>
+cmap = plt.cm.viridis                   <span class="cm"># get colormap object</span>
+cmap = mpl.colormaps[<span class="st">'plasma'</span>]         <span class="cm"># newer API</span>
+cmap.reversed()                         <span class="cm"># reverse any cmap: cmap + '_r'</span>
+
+<span class="cm"># Map scalar [0,1] to color</span>
+color = cmap(<span class="nm">0.7</span>)                        <span class="cm"># → (R,G,B,A) tuple</span>
+colors = cmap(np.linspace(<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">10</span>))   <span class="cm"># 10 evenly-spaced colors</span>
+
+<span class="cm"># ── COLOR NORMALIZATIONS ─────────────────────────────</span>
+<span class="cm"># Linear (default)</span>
+norm = mcolors.Normalize(vmin=<span class="nm">0</span>, vmax=<span class="nm">100</span>)
+
+<span class="cm"># Log normalization</span>
+norm = mcolors.LogNorm(vmin=<span class="nm">1</span>, vmax=<span class="nm">1000</span>)
+
+<span class="cm"># Symmetric log (handles zero)</span>
+norm = mcolors.SymLogNorm(linthresh=<span class="nm">1</span>, vmin=-<span class="nm">100</span>, vmax=<span class="nm">100</span>)
+
+<span class="cm"># Two-slope (different scales each side of center)</span>
+norm = mcolors.TwoSlopeNorm(vcenter=<span class="nm">0</span>, vmin=-<span class="nm">10</span>, vmax=<span class="nm">100</span>)
+
+<span class="cm"># Boundary norm (discrete bins)</span>
+bounds = [<span class="nm">0</span>, <span class="nm">20</span>, <span class="nm">40</span>, <span class="nm">60</span>, <span class="nm">80</span>, <span class="nm">100</span>]
+norm = mcolors.BoundaryNorm(bounds, ncolors=<span class="nm">256</span>)
+
+<span class="cm"># Use with imshow, scatter, etc.</span>
+fig, ax = plt.subplots()
+sc = ax.scatter(np.random.randn(<span class="nm">100</span>), np.random.randn(<span class="nm">100</span>),
+    c=np.random.randn(<span class="nm">100</span>)*<span class="nm">5</span>,         <span class="cm"># data values</span>
+    cmap=<span class="st">'coolwarm'</span>,
+    norm=mcolors.TwoSlopeNorm(vcenter=<span class="nm">0</span>)  <span class="cm"># symmetric around 0</span>
+)
+plt.colorbar(sc)
+
+<span class="cm"># ── COLORBAR CUSTOMIZATION ───────────────────────────</span>
+fig, ax = plt.subplots()
+data = np.random.rand(<span class="nm">10</span>, <span class="nm">10</span>)
+im = ax.imshow(data, cmap=<span class="st">'viridis'</span>)
+cb = plt.colorbar(im, ax=ax,
+    orientation=<span class="st">'vertical'</span>,           <span class="cm"># 'horizontal'</span>
+    shrink=<span class="nm">0.8</span>,                        <span class="cm"># length as fraction</span>
+    aspect=<span class="nm">20</span>,                         <span class="cm"># height/width ratio</span>
+    pad=<span class="nm">0.05</span>,                          <span class="cm"># space between plot and bar</span>
+    extend=<span class="st">'both'</span>,                    <span class="cm"># 'neither','min','max','both'</span>
+    label=<span class="st">'Value'</span>,
+    ticks=[<span class="nm">0</span>, <span class="nm">0.25</span>, <span class="nm">0.5</span>, <span class="nm">0.75</span>, <span class="nm">1</span>]
+)
+cb.ax.tick_params(labelsize=<span class="nm">9</span>)
+
+<span class="cm"># ── CUSTOM COLORMAP ──────────────────────────────────</span>
+<span class="cm"># From list of colors</span>
+custom = mcolors.LinearSegmentedColormap.from_list(
+    <span class="st">'my_cmap'</span>,
+    [<span class="st">'#0f0f13'</span>, <span class="st">'#4e9eff'</span>, <span class="st">'#ffffff'</span>, <span class="st">'#ff7b2f'</span>, <span class="st">'#ff0000'</span>],
+    N=<span class="nm">256</span>                               <span class="cm"># number of gradient steps</span>
+)
+
+<span class="cm"># List colormap (discrete)</span>
+colors_list = [<span class="st">'#4e9eff'</span>, <span class="st">'#ff7b2f'</span>, <span class="st">'#3ecf8e'</span>, <span class="st">'#b57eff'</span>]
+disc_cmap = mcolors.ListedColormap(colors_list)
+mpl.colormaps.register(custom)         <span class="cm"># register for reuse</span>
+plt.show()</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== CUSTOM STYLES ===== -->
+<section class="section" id="custom">
+  <div class="sec-hdr">
+    <div class="s-num">20</div>
+    <div class="s-info">
+      <span class="s-tag tag-a">Advanced</span>
+      <h2>Custom Style Sheets</h2>
+      <p class="sub">Create and distribute your own .mplstyle file for consistent branding</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python + .mplstyle — Brand-consistent theme</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="cm">## ── dark_studio.mplstyle ─────────────────────────────
+## Save as ~/.config/matplotlib/stylelib/dark_studio.mplstyle</span>
+
+<span class="cm">## Figure</span>
+figure.figsize: 9, 5.5
+figure.dpi: 120
+figure.facecolor: 0f0f13
+figure.edgecolor: 0f0f13
+
+<span class="cm">## Axes</span>
+axes.facecolor:  14141a
+axes.edgecolor:  252535
+axes.labelcolor: e8e8f0
+axes.titlecolor: e8e8f0
+axes.titlesize: 15
+axes.titleweight: bold
+axes.titlepad: 12
+axes.labelsize: 12
+axes.labelpad: 6
+axes.spines.top: False
+axes.spines.right: False
+axes.grid: True
+
+<span class="cm">## Grid</span>
+grid.color:     252535
+grid.linestyle: --
+grid.linewidth: 0.5
+grid.alpha:     0.5
+
+<span class="cm">## Lines</span>
+lines.linewidth: 2.2
+lines.markersize: 7
+
+<span class="cm">## Color cycle</span>
+axes.prop_cycle: cycler('color', ['4e9eff', 'ff7b2f', '3ecf8e', 'b57eff', 'ff5c6a', 'ffe566', '1fc8db'])
+
+<span class="cm">## Ticks</span>
+xtick.color:      9898b8
+ytick.color:      9898b8
+xtick.labelsize:  10
+ytick.labelsize:  10
+xtick.direction:  out
+ytick.direction:  out
+
+<span class="cm">## Text</span>
+text.color: e8e8f0
+font.family: DejaVu Sans
+font.size: 11
+
+<span class="cm">## Legend</span>
+legend.facecolor:    1a1a24
+legend.edgecolor:    252535
+legend.labelcolor:   e8e8f0
+legend.fontsize:     10
+legend.framealpha:   0.9
+
+<span class="cm">## Saving</span>
+savefig.dpi:       200
+savefig.bbox:      tight
+savefig.facecolor: 0f0f13</pre>
+  </div>
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — Load and use custom style</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib <span class="kw">as</span> mpl
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> os
+
+<span class="cm"># ── INSTALL CUSTOM STYLE ─────────────────────────────</span>
+<span class="cm"># Option 1: Save to Matplotlib's style directory</span>
+style_dir = mpl.get_configdir() + <span class="st">'/stylelib'</span>
+os.makedirs(style_dir, exist_ok=<span class="kw">True</span>)
+<span class="cm"># Copy dark_studio.mplstyle there, then:</span>
+plt.style.use(<span class="st">'dark_studio'</span>)
+
+<span class="cm"># Option 2: Direct file path</span>
+plt.style.use(<span class="st">'./dark_studio.mplstyle'</span>)
+
+<span class="cm"># ── PUBLICATION-QUALITY STYLE ────────────────────────</span>
+publication_style = {
+    <span class="st">'figure.figsize'</span>:       (<span class="nm">7</span>, <span class="nm">4.5</span>),
+    <span class="st">'figure.dpi'</span>:           <span class="nm">300</span>,
+    <span class="st">'figure.facecolor'</span>:     <span class="st">'white'</span>,
+    <span class="st">'axes.facecolor'</span>:       <span class="st">'white'</span>,
+    <span class="st">'axes.spines.top'</span>:      <span class="kw">False</span>,
+    <span class="st">'axes.spines.right'</span>:    <span class="kw">False</span>,
+    <span class="st">'axes.linewidth'</span>:       <span class="nm">0.8</span>,
+    <span class="st">'axes.grid'</span>:            <span class="kw">False</span>,
+    <span class="st">'font.family'</span>:          <span class="st">'serif'</span>,
+    <span class="st">'font.serif'</span>:           [<span class="st">'Times New Roman'</span>],
+    <span class="st">'font.size'</span>:            <span class="nm">10</span>,
+    <span class="st">'axes.titlesize'</span>:       <span class="nm">11</span>,
+    <span class="st">'axes.labelsize'</span>:       <span class="nm">10</span>,
+    <span class="st">'xtick.labelsize'</span>:      <span class="nm">9</span>,
+    <span class="st">'ytick.labelsize'</span>:      <span class="nm">9</span>,
+    <span class="st">'lines.linewidth'</span>:      <span class="nm">1.5</span>,
+    <span class="st">'legend.fontsize'</span>:      <span class="nm">9</span>,
+    <span class="st">'legend.frameon'</span>:       <span class="kw">False</span>,
+    <span class="st">'savefig.dpi'</span>:          <span class="nm">600</span>,
+    <span class="st">'savefig.format'</span>:       <span class="st">'pdf'</span>,
+    <span class="st">'savefig.bbox'</span>:         <span class="st">'tight'</span>,
+    <span class="st">'savefig.pad_inches'</span>:   <span class="nm">0.05</span>,
+}
+
+<span class="kw">with</span> mpl.rc_context(publication_style):
+    fig, ax = plt.subplots()
+    x = np.linspace(<span class="nm">0</span>, <span class="nm">2</span>*np.pi, <span class="nm">200</span>)
+    ax.plot(x, np.sin(x), label=<span class="st">'sin(x)'</span>)
+    ax.plot(x, np.cos(x), label=<span class="st">'cos(x)'</span>, ls=<span class="st">'--'</span>)
+    ax.set_xlabel(<span class="st">'$x$ (rad)'</span>)           <span class="cm"># LaTeX math text</span>
+    ax.set_ylabel(<span class="st">'$f(x)$'</span>)
+    ax.legend()
+    fig.savefig(<span class="st">'publication.pdf'</span>)</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== ANIMATION ===== -->
+<section class="section" id="animation">
+  <div class="sec-hdr">
+    <div class="s-num">21</div>
+    <div class="s-info">
+      <span class="s-tag tag-a">Advanced</span>
+      <h2>Animations</h2>
+      <p class="sub">FuncAnimation and ArtistAnimation — create GIFs and video</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — FuncAnimation and ArtistAnimation</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib.pyplot  <span class="kw">as</span> plt
+<span class="kw">import</span> matplotlib.animation <span class="kw">as</span> animation
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── FuncAnimation — most common ──────────────────────</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">8</span>, <span class="nm">4</span>))
+x = np.linspace(<span class="nm">0</span>, <span class="nm">4</span>*np.pi, <span class="nm">300</span>)
+
+ax.set_xlim(<span class="nm">0</span>, <span class="nm">4</span>*np.pi)
+ax.set_ylim(-<span class="nm">1.5</span>, <span class="nm">1.5</span>)
+line, = ax.plot([], [], lw=<span class="nm">2</span>, color=<span class="st">'#4e9eff'</span>)
+
+<span class="kw">def</span> <span class="fn">init</span>():
+    line.set_data([], [])
+    <span class="kw">return</span> line,
+
+<span class="kw">def</span> <span class="fn">animate</span>(i):
+    <span class="cm"># Called for each frame; i goes 0, 1, 2, ..., frames-1</span>
+    y = np.sin(x + i * <span class="nm">0.1</span>)          <span class="cm"># wave shifts each frame</span>
+    line.set_data(x, y)
+    <span class="kw">return</span> line,
+
+ani = animation.FuncAnimation(
+    fig,
+    animate,
+    frames=<span class="nm">120</span>,                        <span class="cm"># total frames</span>
+    interval=<span class="nm">40</span>,                       <span class="cm"># ms between frames (25fps)</span>
+    blit=<span class="kw">True</span>,                         <span class="cm"># only redraw changed artists</span>
+    init_func=init,
+    repeat=<span class="kw">True</span>                        <span class="cm"># loop</span>
+)
+
+<span class="cm"># ── SAVE ANIMATION ───────────────────────────────────</span>
+ani.save(<span class="st">'wave.gif'</span>,
+    writer=<span class="st">'pillow'</span>,                   <span class="cm"># pip install pillow</span>
+    fps=<span class="nm">25</span>, dpi=<span class="nm">100</span>)
+
+ani.save(<span class="st">'wave.mp4'</span>,
+    writer=<span class="st">'ffmpeg'</span>,                   <span class="cm"># brew install ffmpeg</span>
+    fps=<span class="nm">30</span>, dpi=<span class="nm">150</span>,
+    bitrate=<span class="nm">1800</span>)
+
+<span class="cm"># Show in Jupyter</span>
+<span class="kw">from</span> IPython.display <span class="kw">import</span> HTML
+HTML(ani.to_jshtml())
+
+plt.close(fig)
+
+<span class="cm"># ── MULTI-ELEMENT ANIMATION ──────────────────────────</span>
+fig, ax = plt.subplots(figsize=(<span class="nm">8</span>, <span class="nm">5</span>))
+ax.set_xlim(<span class="nm">0</span>, <span class="nm">10</span>); ax.set_ylim(-<span class="nm">2</span>, <span class="nm">2</span>)
+line1, = ax.plot([], [], color=<span class="st">'#4e9eff'</span>, lw=<span class="nm">2</span>, label=<span class="st">'sin'</span>)
+line2, = ax.plot([], [], color=<span class="st">'#ff7b2f'</span>, lw=<span class="nm">2</span>, label=<span class="st">'cos'</span>)
+pt1,   = ax.plot([], [], <span class="st">'o'</span>, color=<span class="st">'#4e9eff'</span>, ms=<span class="nm">10</span>)
+ax.legend()
+
+x_data, y1_data, y2_data = [], [], []
+
+<span class="kw">def</span> <span class="fn">animate2</span>(i):
+    t = i * <span class="nm">10</span> / <span class="nm">300</span>
+    x_data.append(t)
+    y1_data.append(np.sin(t * <span class="nm">2</span>))
+    y2_data.append(np.cos(t * <span class="nm">2</span>))
+    line1.set_data(x_data, y1_data)
+    line2.set_data(x_data, y2_data)
+    pt1.set_data([x_data[-<span class="nm">1</span>]], [y1_data[-<span class="nm">1</span>]])
+    <span class="kw">return</span> line1, line2, pt1
+
+ani2 = animation.FuncAnimation(fig, animate2,
+    frames=<span class="nm">300</span>, interval=<span class="nm">30</span>, blit=<span class="kw">True</span>)
+
+<span class="cm"># ── ArtistAnimation — precompute all frames ──────────</span>
+fig, ax = plt.subplots()
+ims = []
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="nm">40</span>):
+    data = np.random.rand(<span class="nm">10</span>, <span class="nm">10</span>)
+    im = ax.imshow(data, cmap=<span class="st">'viridis'</span>, animated=<span class="kw">True</span>)
+    ims.append([im])                   <span class="cm"># list of lists of artists</span>
+
+ani3 = animation.ArtistAnimation(
+    fig, ims, interval=<span class="nm">200</span>, blit=<span class="kw">True</span>)
+ani3.save(<span class="st">'frames.gif'</span>, writer=<span class="st">'pillow'</span>)
+plt.close(fig)</pre>
+  </div>
+</section>
+
+<hr class="dv">
+
+<!-- ===== PRODUCTION ===== -->
+<section class="section" id="production">
+  <div class="sec-hdr">
+    <div class="s-num">22</div>
+    <div class="s-info">
+      <span class="s-tag tag-a">Advanced · Patterns</span>
+      <h2>Production Patterns &amp; Best Practices</h2>
+      <p class="sub">Reusable functions, multi-page reports, embedding in web apps</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="cb-line"></div>
+    <div class="cb-top"><div class="dots"><span></span><span></span><span></span></div><div class="cb-lbl">Python — Reusable chart functions, Flask, FastAPI</div><button class="cp" onclick="cp(this)">copy</button></div>
+<pre><span class="kw">import</span> matplotlib        <span class="kw">as</span> mpl
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy  <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> io, base64
+
+<span class="cm"># ── REUSABLE CHART BUILDER ───────────────────────────</span>
+<span class="kw">def</span> <span class="fn">line_chart</span>(df: pd.DataFrame,
+               x_col: str,
+               y_cols: list,
+               title: str = <span class="st">''</span>,
+               figsize=(<span class="nm">10</span>, <span class="nm">5</span>),
+               colors: list = <span class="kw">None</span>,
+               save_path: str = <span class="kw">None</span>) -> plt.Figure:
+    <span class="st">"""
+    Build a styled multi-line chart. Returns Figure.
+    """</span>
+    fig, ax = plt.subplots(figsize=figsize)
+
+    default_colors = [<span class="st">'#4e9eff'</span>,<span class="st">'#ff7b2f'</span>,<span class="st">'#3ecf8e'</span>,<span class="st">'#b57eff'</span>,<span class="st">'#ff5c6a'</span>]
+    clrs = colors <span class="kw">or</span> default_colors
+
+    <span class="kw">for</span> col, clr <span class="kw">in</span> zip(y_cols, clrs):
+        ax.plot(df[x_col], df[col],
+            label=col, color=clr, lw=<span class="nm">2</span>, marker=<span class="st">'o'</span>, ms=<span class="nm">4</span>)
+
+    ax.set_title(title, fontsize=<span class="nm">15</span>, fontweight=<span class="st">'bold'</span>, loc=<span class="st">'left'</span>)
+    ax.spines[[<span class="st">'top'</span>,<span class="st">'right'</span>]].set_visible(<span class="kw">False</span>)
+    ax.grid(<span class="kw">True</span>, axis=<span class="st">'y'</span>, alpha=<span class="nm">0.3</span>)
+    ax.legend(frameon=<span class="kw">False</span>)
+    fig.tight_layout()
+
+    <span class="kw">if</span> save_path:
+        fig.savefig(save_path, dpi=<span class="nm">150</span>, bbox_inches=<span class="st">'tight'</span>)
+
+    <span class="kw">return</span> fig
+
+
+<span class="cm"># ── FIGURE TO BASE64 (for web embedding) ─────────────</span>
+<span class="kw">def</span> <span class="fn">fig_to_base64</span>(fig: plt.Figure, dpi=<span class="nm">120</span>) -> str:
+    <span class="st">"""Convert figure to base64 PNG string for HTML embedding."""</span>
+    buf = io.BytesIO()
+    fig.savefig(buf, format=<span class="st">'png'</span>, dpi=dpi, bbox_inches=<span class="st">'tight'</span>)
+    buf.seek(<span class="nm">0</span>)
+    b64 = base64.b64encode(buf.read()).decode(<span class="st">'utf-8'</span>)
+    plt.close(fig)
+    <span class="kw">return</span> <span class="st">f'data:image/png;base64,{b64}'</span>
+
+<span class="cm"># Use in Flask/FastAPI template</span>
+<span class="cm"># &lt;img src="{{ img_src }}" /&gt;</span>
+
+
+<span class="cm"># ── FLASK ENDPOINT ───────────────────────────────────</span>
+<span class="kw">from</span> flask <span class="kw">import</span> Flask, Response
+app = Flask(__name__)
+
+<span class="at">@app.route</span>(<span class="st">'/chart.png'</span>)
+<span class="kw">def</span> <span class="fn">serve_chart</span>():
+    mpl.use(<span class="st">'Agg'</span>)                        <span class="cm"># non-interactive backend!</span>
+    fig, ax = plt.subplots()
+    ax.plot([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>],[<span class="nm">1</span>,<span class="nm">4</span>,<span class="nm">9</span>])
+    buf = io.BytesIO()
+    fig.savefig(buf, format=<span class="st">'png'</span>, dpi=<span class="nm">150</span>, bbox_inches=<span class="st">'tight'</span>)
+    plt.close(fig)
+    buf.seek(<span class="nm">0</span>)
+    <span class="kw">return</span> Response(buf, mimetype=<span class="st">'image/png'</span>)
+
+
+<span class="cm"># ── FASTAPI ENDPOINT ─────────────────────────────────</span>
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> fastapi.responses <span class="kw">import</span> StreamingResponse
+fastapp = FastAPI()
+
+<span class="at">@fastapp.get</span>(<span class="st">'/chart'</span>)
+<span class="kw">async def</span> <span class="fn">chart</span>():
+    mpl.use(<span class="st">'Agg'</span>)
+    fig, ax = plt.subplots()
+    ax.plot([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>],[<span class="nm">4</span>,<span class="nm">2</span>,<span class="nm">8</span>], color=<span class="st">'steelblue'</span>)
+    buf = io.BytesIO()
+    fig.savefig(buf, format=<span class="st">'png'</span>, dpi=<span class="nm">150</span>, bbox_inches=<span class="st">'tight'</span>)
+    plt.close(fig); buf.seek(<span class="nm">0</span>)
+    <span class="kw">return</span> StreamingResponse(buf, media_type=<span class="st">'image/png'</span>)
+
+
+<span class="cm"># ── ALWAYS USE Agg IN SERVERS/SCRIPTS ────────────────</span>
+<span class="cm"># Never use TkAgg/Qt5Agg on headless servers — it crashes!</span>
+mpl.use(<span class="st">'Agg'</span>)                          <span class="cm"># set before import pyplot</span>
+<span class="cm"># Or in matplotlib.rc file: backend: Agg</span>
+
+
+<span class="cm"># ── MEMORY MANAGEMENT ────────────────────────────────</span>
+<span class="kw">def</span> <span class="fn">generate_many_charts</span>(data_list):
+    <span class="kw">for</span> i, data <span class="kw">in</span> enumerate(data_list):
+        fig, ax = plt.subplots()
+        ax.plot(data)
+        fig.savefig(<span class="st">f'chart_{i}.png'</span>)
+        plt.close(fig)                    <span class="cm"># ← CRITICAL: free memory!</span>
+        <span class="cm"># Without close(), each fig stays in memory</span>
+
+<span class="cm"># Check open figures</span>
+print(plt.get_fignums())                 <span class="cm"># list of open figure numbers</span>
+print(plt.gcf().number)                 <span class="cm"># current figure number</span>
+plt.close(<span class="st">'all'</span>)                        <span class="cm"># close everything at end</span></pre>
+  </div>
+
+  <h3>What to Explore Next</h3>
+  <div class="g3">
+    <div class="card c-blue"><div class="icon">🌊</div><h4>Seaborn</h4><p>Statistical plots — violin, heatmap, pairplot — built on Matplotlib</p></div>
+    <div class="card c-orange"><div class="icon">📊</div><h4>Plotly</h4><p>Interactive charts for the web with hover, zoom, and dashboards</p></div>
+    <div class="card c-green"><div class="icon">⚡</div><h4>Altair</h4><p>Grammar-of-graphics declarative API, great for exploratory work</p></div>
+    <div class="card c-purple"><div class="icon">🗺️</div><h4>Cartopy</h4><p>Geographic maps and projections on top of Matplotlib</p></div>
+    <div class="card c-red"><div class="icon">🎞️</div><h4>Manim</h4><p>Mathematical animation engine — 3Blue1Brown style videos</p></div>
+    <div class="card c-yellow"><div class="icon">📐</div><h4>SciPy Viz</h4><p>Scientific visualization: dendrograms, spectrogram, signal plots</p></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function cp(btn) {
+  const pre = btn.closest('.cb').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'copied!';
+    btn.style.color = '#3ecf8e';
+    setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 2000);
+  });
+}
+
+// Scroll-spy
+const sections = document.querySelectorAll('section[id]');
+const links    = document.querySelectorAll('nav a[href^="#"]');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = '#' + e.target.id;
+      links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === id));
+    }
+  });
+}, { threshold: 0.25 });
+sections.forEach(s => io.observe(s));
+
+// Smooth scroll
+links.forEach(l => l.addEventListener('click', e => {
+  e.preventDefault();
+  const t = document.querySelector(l.getAttribute('href'));
+  if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}));
+</script>
+</body>
+</html>
