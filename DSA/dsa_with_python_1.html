@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Roadmap with Python</title>
+
+<style>
+
+body{
+font-family:Arial, Helvetica, sans-serif;
+margin:0;
+background:#0f172a;
+color:white;
+}
+
+header{
+background:#1e293b;
+padding:20px;
+text-align:center;
+font-size:28px;
+font-weight:bold;
+}
+
+.container{
+display:flex;
+}
+
+.sidebar{
+width:250px;
+background:#020617;
+height:100vh;
+overflow:auto;
+padding:20px;
+}
+
+.sidebar a{
+display:block;
+color:#cbd5f5;
+padding:10px;
+text-decoration:none;
+border-radius:6px;
+margin-bottom:6px;
+}
+
+.sidebar a:hover{
+background:#2563eb;
+}
+
+.content{
+flex:1;
+padding:40px;
+}
+
+.card{
+background:#1e293b;
+padding:25px;
+border-radius:12px;
+margin-bottom:30px;
+box-shadow:0 0 10px rgba(0,0,0,0.4);
+}
+
+.card h2{
+margin-top:0;
+color:#60a5fa;
+}
+
+.code{
+background:black;
+padding:15px;
+border-radius:8px;
+margin:10px 0;
+color:#22c55e;
+font-family:monospace;
+}
+
+.problem{
+background:#334155;
+padding:15px;
+border-radius:8px;
+margin-top:10px;
+}
+
+button{
+background:#2563eb;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+}
+
+.solution{
+display:none;
+background:#020617;
+padding:12px;
+border-radius:6px;
+margin-top:10px;
+}
+
+img{
+width:100%;
+border-radius:10px;
+margin-top:10px;
+}
+
+</style>
+
+<script>
+
+function showSolution(id){
+let s=document.getElementById(id)
+
+if(s.style.display==="block")
+s.style.display="none"
+else
+s.style.display="block"
+}
+
+</script>
+
+</head>
+
+<body>
+
+<header>
+DSA Roadmap with Python
+</header>
+
+<div class="container">
+
+<div class="sidebar">
+
+<a href="#arrays">Arrays</a>
+<a href="#strings">Strings</a>
+<a href="#recursion">Recursion</a>
+<a href="#stack">Stack</a>
+<a href="#queue">Queue</a>
+<a href="#linkedlist">Linked List</a>
+<a href="#tree">Trees</a>
+<a href="#graph">Graphs</a>
+
+</div>
+
+<div class="content">
+
+
+<div class="card" id="arrays">
+
+<h2>1. Arrays / Lists</h2>
+
+<p>
+An array stores multiple values in a single variable.  
+In Python arrays are handled using lists.
+</p>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Array_structure.png">
+
+<h3>Example</h3>
+
+<div class="code">
+arr = [10,20,30,40]
+
+print(arr[0])
+print(arr[-1])
+</div>
+
+<div class="problem">
+
+<b>Practice Problem</b><br>
+Find the second largest element in a list.
+
+<br><br>
+
+<button onclick="showSolution('s1')">Show Solution</button>
+
+<div class="solution" id="s1">
+
+<div class="code">
+arr=[10,20,4,45,99]
+
+arr.sort()
+
+print(arr[-2])
+</div>
+
+</div>
+</div>
+</div>
+
+
+
+<div class="card" id="strings">
+
+<h2>2. Strings</h2>
+
+<p>
+A string is a sequence of characters.  
+It is widely used in search, pattern matching, and validation tasks.
+</p>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/String_example.png">
+
+<h3>Example</h3>
+
+<div class="code">
+text = "python"
+
+print(text[::-1])
+</div>
+
+<div class="problem">
+
+<b>Practice Problem</b><br>
+Check if a string is a palindrome.
+
+<br><br>
+
+<button onclick="showSolution('s2')">Show Solution</button>
+
+<div class="solution" id="s2">
+
+<div class="code">
+s="madam"
+
+if s==s[::-1]:
+    print("Palindrome")
+else:
+    print("Not Palindrome")
+</div>
+
+</div>
+</div>
+</div>
+
+
+
+<div class="card" id="recursion">
+
+<h2>3. Recursion</h2>
+
+<p>
+Recursion happens when a function calls itself to solve a smaller part of the same task.
+</p>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Recursion.png">
+
+<h3>Example</h3>
+
+<div class="code">
+def factorial(n):
+
+ if n==1:
+  return 1
+
+ return n * factorial(n-1)
+
+print(factorial(5))
+</div>
+
+<div class="problem">
+
+<b>Practice Problem</b><br>
+Write a recursive Fibonacci program.
+
+<button onclick="showSolution('s3')">Show Solution</button>
+
+<div class="solution" id="s3">
+
+<div class="code">
+def fib(n):
+
+ if n<=1:
+  return n
+
+ return fib(n-1)+fib(n-2)
+
+print(fib(6))
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+
+<div class="card" id="stack">
+
+<h2>4. Stack</h2>
+
+<p>
+Stack follows Last In First Out (LIFO).
+</p>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/Lifo_stack.png">
+
+<div class="code">
+stack=[]
+
+stack.append(10)
+stack.append(20)
+
+print(stack.pop())
+</div>
+
+<div class="problem">
+
+<b>Practice Problem</b><br>
+Check valid parentheses.
+
+<button onclick="showSolution('s4')">Show Solution</button>
+
+<div class="solution" id="s4">
+
+<div class="code">
+def valid(s):
+
+ stack=[]
+
+ for c in s:
+
+  if c=="(":
+   stack.append(c)
+
+  elif c==")":
+
+   if not stack:
+    return False
+
+   stack.pop()
+
+ return not stack
+
+print(valid("()()"))
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+
+<div class="card" id="queue">
+
+<h2>5. Queue</h2>
+
+<p>
+Queue follows First In First Out (FIFO).
+</p>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Data_Queue.svg">
+
+<div class="code">
+from collections import deque
+
+q=deque()
+
+q.append(10)
+q.append(20)
+
+print(q.popleft())
+</div>
+
+</div>
+
+
+
+<div class="card" id="linkedlist">
+
+<h2>6. Linked List</h2>
+
+<p>
+A linked list is a chain of nodes where each node stores data and a pointer to the next node.
+</p>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Singly-linked-list.svg">
+
+</div>
+
+
+
+<div class="card" id="tree">
+
+<h2>7. Trees</h2>
+
+<p>
+A tree is a hierarchical data structure used in databases, file systems, and AI search algorithms.
+</p>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Binary_tree.svg">
+
+</div>
+
+
+
+<div class="card" id="graph">
+
+<h2>8. Graphs</h2>
+
+<p>
+Graphs store relationships between nodes.  
+They are used in route finding, social networks, and recommendation engines.
+</p>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/6n-graf.svg">
+
+<div class="code">
+graph={
+"A":["B","C"],
+"B":["D"],
+"C":[],
+"D":[]
+}
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

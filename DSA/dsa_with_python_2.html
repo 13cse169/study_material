@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DSA Learning Portal</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#0f172a;
+color:white;
+}
+
+header{
+background:#1e293b;
+padding:20px;
+text-align:center;
+font-size:28px;
+font-weight:bold;
+}
+
+.container{
+display:flex;
+}
+
+.sidebar{
+width:250px;
+background:#020617;
+height:100vh;
+padding:20px;
+}
+
+.sidebar a{
+display:block;
+color:#cbd5f5;
+padding:10px;
+margin-bottom:6px;
+text-decoration:none;
+border-radius:6px;
+}
+
+.sidebar a:hover{
+background:#2563eb;
+}
+
+.content{
+flex:1;
+padding:40px;
+}
+
+.card{
+background:#1e293b;
+padding:25px;
+border-radius:12px;
+margin-bottom:30px;
+}
+
+.progressbar{
+height:20px;
+background:#334155;
+border-radius:10px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.progress{
+height:100%;
+width:0%;
+background:#22c55e;
+}
+
+.code{
+background:black;
+padding:12px;
+border-radius:6px;
+margin-top:10px;
+color:#22c55e;
+font-family:monospace;
+}
+
+.problem{
+background:#334155;
+padding:15px;
+border-radius:8px;
+margin-top:10px;
+}
+
+button{
+background:#2563eb;
+border:none;
+padding:8px 12px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+margin-top:8px;
+}
+
+.solution{
+display:none;
+background:#020617;
+padding:12px;
+border-radius:6px;
+margin-top:10px;
+}
+
+.visual{
+display:flex;
+align-items:flex-end;
+gap:5px;
+height:200px;
+margin-top:20px;
+}
+
+.bar{
+width:20px;
+background:#60a5fa;
+}
+
+</style>
+
+<script>
+
+function toggle(id){
+let s=document.getElementById(id)
+s.style.display=s.style.display==="block"?"none":"block"
+}
+
+function markComplete(){
+let p=document.getElementById("progress")
+let current=parseInt(p.style.width)||0
+p.style.width=(current+10)+"%"
+}
+
+function generateBars(){
+
+let container=document.getElementById("bars")
+container.innerHTML=""
+
+for(let i=0;i<20;i++){
+
+let value=Math.floor(Math.random()*150)+20
+
+let bar=document.createElement("div")
+bar.className="bar"
+bar.style.height=value+"px"
+
+container.appendChild(bar)
+
+}
+
+}
+
+function bubbleSort(){
+
+let bars=document.getElementsByClassName("bar")
+
+let arr=[]
+
+for(let b of bars)
+arr.push(parseInt(b.style.height))
+
+for(let i=0;i<arr.length;i++)
+for(let j=0;j<arr.length-i-1;j++)
+if(arr[j]>arr[j+1]){
+let temp=arr[j]
+arr[j]=arr[j+1]
+arr[j+1]=temp
+}
+
+for(let i=0;i<bars.length;i++)
+bars[i].style.height=arr[i]+"px"
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<header>DSA with Python Learning Portal</header>
+
+<div class="container">
+
+<div class="sidebar">
+
+<a href="#progress">Progress</a>
+<a href="#arrays">Arrays</a>
+<a href="#strings">Strings</a>
+<a href="#recursion">Recursion</a>
+<a href="#stack">Stack</a>
+<a href="#sorting">Sorting Visualizer</a>
+
+</div>
+
+<div class="content">
+
+
+<div class="card" id="progress">
+
+<h2>Your Progress</h2>
+
+<p>Click complete after finishing a topic.</p>
+
+<div class="progressbar">
+<div class="progress" id="progress"></div>
+</div>
+
+<br>
+<button onclick="markComplete()">Mark Topic Complete</button>
+
+</div>
+
+
+<div class="card" id="arrays">
+
+<h2>Arrays</h2>
+
+<p>
+Arrays store multiple elements in one structure.  
+Python uses lists to represent arrays.
+</p>
+
+<div class="code">
+arr = [10,20,30]
+
+print(arr[1])
+</div>
+
+<div class="problem">
+
+<b>Problem</b>
+
+Find the largest element in a list.
+
+<br>
+
+<button onclick="toggle('a1')">Show Solution</button>
+
+<div class="solution" id="a1">
+
+<div class="code">
+arr=[5,8,1,9]
+
+print(max(arr))
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="card" id="strings">
+
+<h2>Strings</h2>
+
+<p>
+Strings represent text data.
+</p>
+
+<div class="code">
+text="python"
+
+print(text[::-1])
+</div>
+
+<div class="problem">
+
+<b>Problem</b>
+
+Check palindrome.
+
+<button onclick="toggle('s1')">Show Solution</button>
+
+<div class="solution" id="s1">
+
+<div class="code">
+s="madam"
+
+if s==s[::-1]:
+ print("Palindrome")
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="card" id="recursion">
+
+<h2>Recursion</h2>
+
+<p>
+Recursion is when a function calls itself to solve smaller subproblems.
+</p>
+
+<div class="code">
+def factorial(n):
+
+ if n==1:
+  return 1
+
+ return n*factorial(n-1)
+
+print(factorial(5))
+</div>
+
+</div>
+
+
+
+<div class="card" id="stack">
+
+<h2>Stack</h2>
+
+<p>
+Stack uses Last In First Out order.
+</p>
+
+<div class="code">
+stack=[]
+
+stack.append(10)
+stack.append(20)
+
+print(stack.pop())
+</div>
+
+</div>
+
+
+
+<div class="card" id="sorting">
+
+<h2>Sorting Visualizer</h2>
+
+<p>
+Generate random bars and see bubble sort.
+</p>
+
+<button onclick="generateBars()">Generate Data</button>
+<button onclick="bubbleSort()">Sort</button>
+
+<div class="visual" id="bars"></div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>
