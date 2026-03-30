@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Mastery — Part 1: Foundations</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #2a2a3a;
+    --accent1: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #a259ff;
+    --accent4: #00ff88;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --code-bg: #0d0d14;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    overflow: hidden;
+    z-index: 1;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,229,255,0.12) 0%, transparent 70%);
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    color: var(--accent1);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+    animation: fadeDown 0.6s ease both;
+  }
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+    animation: fadeDown 0.7s ease 0.1s both;
+  }
+  h1 span { color: var(--accent1); }
+  .header-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-top: 16px;
+    font-family: 'Space Mono', monospace;
+    animation: fadeDown 0.7s ease 0.2s both;
+  }
+  .topic-pills {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+    margin-top: 36px;
+    animation: fadeDown 0.7s ease 0.3s both;
+  }
+  .pill {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 8px 18px; border-radius: 100px;
+    font-size: 13px; cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none; color: var(--text);
+  }
+  .pill:hover { border-color: var(--accent1); color: var(--accent1); transform: translateY(-2px); }
+
+  /* MAIN LAYOUT */
+  main { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* TOPIC SECTION */
+  .topic-section {
+    margin-bottom: 80px;
+    opacity: 0; transform: translateY(30px);
+    animation: slideUp 0.6s ease forwards;
+  }
+  .topic-section:nth-child(1) { animation-delay: 0.1s; }
+  .topic-section:nth-child(2) { animation-delay: 0.2s; }
+  .topic-section:nth-child(3) { animation-delay: 0.3s; }
+  .topic-section:nth-child(4) { animation-delay: 0.4s; }
+  .topic-section:nth-child(5) { animation-delay: 0.5s; }
+  .topic-section:nth-child(6) { animation-delay: 0.6s; }
+
+  .topic-header {
+    display: flex; align-items: center; gap: 20px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .topic-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--muted);
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 3px;
+  }
+  .topic-title {
+    font-size: 2rem; font-weight: 800; letter-spacing: -1px;
+  }
+  .topic-accent { width: 4px; height: 36px; border-radius: 2px; flex-shrink: 0; }
+
+  /* CARDS GRID */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 28px;
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+  .card:hover::before { opacity: 1; }
+  .card-icon { font-size: 28px; margin-bottom: 14px; }
+  .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.3px; }
+  .card p { color: var(--muted); font-size: 14px; line-height: 1.7; font-family: 'Space Mono', monospace; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 24px 0;
+  }
+  .code-header {
+    background: var(--surface); padding: 10px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .code-header span { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots i { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+  pre {
+    padding: 24px;
+    overflow-x: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .kw { color: #ff79c6; } .fn { color: #50fa7b; } .str { color: #f1fa8c; }
+  .cm { color: #6272a4; font-style: italic; } .num { color: #bd93f9; }
+  .op { color: var(--accent1); } .var { color: #ffb86c; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--surface); padding: 12px 18px;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); text-align: left; font-family: 'Space Mono', monospace;
+  }
+  td { padding: 12px 18px; border-top: 1px solid var(--border); font-size: 14px; font-family: 'Space Mono', monospace; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .good { color: var(--accent4); } .ok { color: var(--accent2); } .bad { color: #ff5555; }
+
+  /* COMPLEXITY BOX */
+  .complexity-box {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;
+    margin: 20px 0;
+  }
+  .cx-item {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px; text-align: center;
+  }
+  .cx-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-bottom: 8px; font-family: 'Space Mono', monospace; }
+  .cx-val { font-family: 'Space Mono', monospace; font-size: 1.1rem; font-weight: 700; }
+
+  /* CALLOUT */
+  .callout {
+    border-radius: 8px; padding: 18px 22px; margin: 20px 0;
+    display: flex; gap: 14px; align-items: flex-start;
+    font-family: 'Space Mono', monospace; font-size: 13px; line-height: 1.7;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .callout.info { background: rgba(0,229,255,0.07); border: 1px solid rgba(0,229,255,0.2); }
+  .callout.warn { background: rgba(255,107,53,0.07); border: 1px solid rgba(255,107,53,0.2); }
+  .callout.tip { background: rgba(0,255,136,0.07); border: 1px solid rgba(0,255,136,0.2); }
+
+  /* LIST */
+  .dsa-list { margin: 16px 0; padding-left: 0; list-style: none; }
+  .dsa-list li {
+    padding: 10px 0 10px 22px; position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 14px; line-height: 1.7; color: var(--text);
+    font-family: 'Space Mono', monospace;
+  }
+  .dsa-list li::before {
+    content: '▸'; position: absolute; left: 0;
+    color: var(--accent1); font-size: 10px; top: 13px;
+  }
+
+  /* TAGS */
+  .tag {
+    display: inline-block; font-size: 11px; font-family: 'Space Mono', monospace;
+    padding: 3px 10px; border-radius: 3px; margin: 3px 3px 3px 0;
+  }
+
+  /* WIDE CARD */
+  .wide-card { grid-column: 1 / -1; }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    text-align: center; margin: 36px 0; position: relative;
+  }
+  .section-divider::before {
+    content: ''; position: absolute; top: 50%; left: 0; right: 0;
+    height: 1px; background: var(--border);
+  }
+  .section-divider span {
+    position: relative; background: var(--bg);
+    padding: 0 18px; font-family: 'Space Mono', monospace;
+    font-size: 11px; color: var(--muted); letter-spacing: 2px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media(max-width: 600px) {
+    header { padding: 50px 20px 40px; }
+    .topic-title { font-size: 1.5rem; }
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">DSA MASTERY SERIES — PART 1 OF 3</div>
+  <h1>Topics <span>1–6</span><br>Foundations</h1>
+  <p class="header-sub">// Python · Complexity · Arrays · Strings · Recursion · Searching</p>
+  <div class="topic-pills">
+    <a href="#t1" class="pill">01 Python Basics</a>
+    <a href="#t2" class="pill">02 Complexity</a>
+    <a href="#t3" class="pill">03 Arrays</a>
+    <a href="#t4" class="pill">04 Strings</a>
+    <a href="#t5" class="pill">05 Recursion</a>
+    <a href="#t6" class="pill">06 Searching</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ TOPIC 1: Python Basics ============ -->
+<section class="topic-section" id="t1">
+  <div class="topic-header">
+    <div class="topic-accent" style="background: var(--accent1);"></div>
+    <div class="topic-num">TOPIC 01</div>
+    <h2 class="topic-title">Python Basics for DSA</h2>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--c:var(--accent1);">
+      <div class="card::before" style="background:var(--accent1);"></div>
+      <div class="card-icon">🐍</div>
+      <h3>Core Data Types</h3>
+      <p>int, float, str, bool, list, tuple, dict, set — each optimized for different use cases in algorithmic problem solving.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📦</div>
+      <h3>Built-in Collections</h3>
+      <p>list (dynamic array), dict (hash map), set (hash set), tuple (immutable). collections module: deque, Counter, defaultdict, OrderedDict.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔧</div>
+      <h3>Key Functions</h3>
+      <p>sorted(), len(), range(), enumerate(), zip(), map(), filter(), min(), max(), sum() — essential for clean algorithmic code.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>python_dsa_essentials.py</span>
+    </div>
+    <pre><span class="cm"># === Python DSA Essentials ===</span>
+
+<span class="cm"># List operations — O(1) append, O(n) insert</span>
+<span class="var">arr</span> = [<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">5</span>]
+<span class="var">arr</span>.append(<span class="num">9</span>)          <span class="cm"># O(1)</span>
+<span class="var">arr</span>.pop()              <span class="cm"># O(1)</span>
+<span class="var">arr</span>.insert(<span class="num">0</span>, <span class="num">7</span>)       <span class="cm"># O(n)</span>
+<span class="var">arr</span>.sort()             <span class="cm"># O(n log n)</span>
+
+<span class="cm"># Dictionary — O(1) average lookup</span>
+<span class="var">freq</span> = {}
+<span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="var">arr</span>:
+    <span class="var">freq</span>[<span class="var">x</span>] = <span class="var">freq</span>.get(<span class="var">x</span>, <span class="num">0</span>) + <span class="num">1</span>
+
+<span class="cm"># Collections module</span>
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict, deque, Counter
+<span class="var">d</span> = defaultdict(<span class="var">list</span>)  <span class="cm"># auto-initializes keys</span>
+<span class="var">q</span> = deque()            <span class="cm"># O(1) append/pop from both ends</span>
+<span class="var">c</span> = Counter(<span class="var">arr</span>)       <span class="cm"># frequency counter</span>
+
+<span class="cm"># List comprehension</span>
+<span class="var">squares</span> = [<span class="var">x</span>**<span class="num">2</span> <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="var">arr</span> <span class="kw">if</span> <span class="var">x</span> % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="cm"># Heap (min-heap by default)</span>
+<span class="kw">import</span> heapq
+<span class="var">h</span> = []
+heapq.heappush(<span class="var">h</span>, <span class="num">5</span>)
+<span class="var">min_val</span> = heapq.heappop(<span class="var">h</span>)  <span class="cm"># O(log n)</span>
+
+<span class="cm"># Infinity constants</span>
+<span class="var">INF</span> = <span class="fn">float</span>(<span class="str">'inf'</span>)
+<span class="var">NEG_INF</span> = <span class="fn">float</span>(<span class="str">'-inf'</span>)</pre>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card wide-card">
+      <h3>Essential Python Tricks for DSA</h3>
+      <ul class="dsa-list">
+        <li><strong>Multiple assignment:</strong> a, b = b, a — swap without temp variable</li>
+        <li><strong>Slicing:</strong> arr[::−1] reverses a list in O(n); arr[l:r] creates subarray</li>
+        <li><strong>bisect module:</strong> bisect_left/right for binary search on sorted lists in O(log n)</li>
+        <li><strong>sys.setrecursionlimit(10**6):</strong> increase default recursion depth for deep DFS/recursion</li>
+        <li><strong>Ternary:</strong> val = x if condition else y — clean inline conditional</li>
+        <li><strong>enumerate(arr, start=1):</strong> index + value in loops — avoids separate counter</li>
+        <li><strong>zip(*matrix):</strong> transpose a 2D matrix elegantly in one line</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOPIC 2: Complexity ============ -->
+<section class="topic-section" id="t2">
+  <div class="topic-header">
+    <div class="topic-accent" style="background: var(--accent2);"></div>
+    <div class="topic-num">TOPIC 02</div>
+    <h2 class="topic-title">Time & Space Complexity</h2>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">ℹ️</div>
+    <div>Big-O notation describes the <strong>upper bound</strong> of an algorithm's growth rate as input size n → ∞. It ignores constants and lower-order terms. Always analyze worst-case unless specified.</div>
+  </div>
+
+  <div class="complexity-box">
+    <div class="cx-item"><div class="cx-label">CONSTANT</div><div class="cx-val good">O(1)</div></div>
+    <div class="cx-item"><div class="cx-label">LOGARITHMIC</div><div class="cx-val good">O(log n)</div></div>
+    <div class="cx-item"><div class="cx-label">LINEAR</div><div class="cx-val good">O(n)</div></div>
+    <div class="cx-item"><div class="cx-label">LINEARITHMIC</div><div class="cx-val ok">O(n log n)</div></div>
+    <div class="cx-item"><div class="cx-label">QUADRATIC</div><div class="cx-val bad">O(n²)</div></div>
+    <div class="cx-item"><div class="cx-label">CUBIC</div><div class="cx-val bad">O(n³)</div></div>
+    <div class="cx-item"><div class="cx-label">EXPONENTIAL</div><div class="cx-val bad">O(2ⁿ)</div></div>
+    <div class="cx-item"><div class="cx-label">FACTORIAL</div><div class="cx-val bad">O(n!)</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>n</th><th>O(log n)</th><th>O(n)</th><th>O(n log n)</th><th>O(n²)</th><th>O(2ⁿ)</th></tr>
+      <tr><td>10</td><td class="good">3</td><td class="good">10</td><td class="good">33</td><td class="ok">100</td><td class="bad">1,024</td></tr>
+      <tr><td>100</td><td class="good">7</td><td class="good">100</td><td class="good">664</td><td class="ok">10,000</td><td class="bad">1.27×10³⁰</td></tr>
+      <tr><td>1,000</td><td class="good">10</td><td class="good">1K</td><td class="ok">9,966</td><td class="bad">1M</td><td class="bad">∞</td></tr>
+      <tr><td>10⁶</td><td class="good">20</td><td class="ok">1M</td><td class="ok">20M</td><td class="bad">10¹²</td><td class="bad">∞</td></tr>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>complexity_examples.py</span>
+    </div>
+    <pre><span class="cm"># O(1) — Constant</span>
+<span class="kw">def</span> <span class="fn">get_first</span>(<span class="var">arr</span>): <span class="kw">return</span> <span class="var">arr</span>[<span class="num">0</span>]
+
+<span class="cm"># O(log n) — Binary search halves search space each step</span>
+<span class="kw">def</span> <span class="fn">binary_search</span>(<span class="var">arr</span>, <span class="var">target</span>):
+    <span class="var">l</span>, <span class="var">r</span> = <span class="num">0</span>, <span class="fn">len</span>(<span class="var">arr</span>) - <span class="num">1</span>
+    <span class="kw">while</span> <span class="var">l</span> <= <span class="var">r</span>:
+        <span class="var">m</span> = (<span class="var">l</span> + <span class="var">r</span>) // <span class="num">2</span>
+        <span class="kw">if</span> <span class="var">arr</span>[<span class="var">m</span>] == <span class="var">target</span>: <span class="kw">return</span> <span class="var">m</span>
+        <span class="kw">elif</span> <span class="var">arr</span>[<span class="var">m</span>] < <span class="var">target</span>: <span class="var">l</span> = <span class="var">m</span> + <span class="num">1</span>
+        <span class="kw">else</span>: <span class="var">r</span> = <span class="var">m</span> - <span class="num">1</span>
+    <span class="kw">return</span> -<span class="num">1</span>
+
+<span class="cm"># O(n) — Single loop</span>
+<span class="kw">def</span> <span class="fn">linear_scan</span>(<span class="var">arr</span>): <span class="kw">return</span> <span class="fn">sum</span>(<span class="var">arr</span>)
+
+<span class="cm"># O(n²) — Nested loops</span>
+<span class="kw">def</span> <span class="fn">bubble_sort</span>(<span class="var">arr</span>):
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(<span class="var">arr</span>)):
+        <span class="kw">for</span> <span class="var">j</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(<span class="var">arr</span>)-<span class="var">i</span>-<span class="num">1</span>):
+            <span class="kw">if</span> <span class="var">arr</span>[<span class="var">j</span>] > <span class="var">arr</span>[<span class="var">j</span>+<span class="num">1</span>]:
+                <span class="var">arr</span>[<span class="var">j</span>], <span class="var">arr</span>[<span class="var">j</span>+<span class="num">1</span>] = <span class="var">arr</span>[<span class="var">j</span>+<span class="num">1</span>], <span class="var">arr</span>[<span class="var">j</span>]</pre>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">📐</div>
+      <h3>Space Complexity Rules</h3>
+      <ul class="dsa-list">
+        <li>Only count <em>extra</em> space used (not input)</li>
+        <li>Recursive calls use O(depth) stack space</li>
+        <li>In-place algorithms use O(1) extra space</li>
+        <li>Memoization trades space for time</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <h3>Big-O Rules</h3>
+      <ul class="dsa-list">
+        <li>Drop constants: O(2n) → O(n)</li>
+        <li>Drop lower terms: O(n² + n) → O(n²)</li>
+        <li>Sequential loops: add complexities</li>
+        <li>Nested loops: multiply complexities</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <h3>Interview Target Complexities</h3>
+      <ul class="dsa-list">
+        <li>n ≤ 20 → O(2ⁿ) or O(n!) acceptable</li>
+        <li>n ≤ 500 → O(n²) or O(n³)</li>
+        <li>n ≤ 10⁴ → O(n²) is fine</li>
+        <li>n ≤ 10⁶ → Need O(n log n) or O(n)</li>
+        <li>n ≤ 10⁸ → Need O(n) or O(log n)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOPIC 3: Arrays ============ -->
+<section class="topic-section" id="t3">
+  <div class="topic-header">
+    <div class="topic-accent" style="background: var(--accent3);"></div>
+    <div class="topic-num">TOPIC 03</div>
+    <h2 class="topic-title">Arrays</h2>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>Array Fundamentals</h3>
+      <p>Contiguous memory, O(1) random access via index. Fixed-size in most languages; Python lists are dynamic arrays that double in size when full.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🪟</div>
+      <h3>Sliding Window</h3>
+      <p>Maintain a window of elements, expand/shrink from ends. Converts O(n²) brute force to O(n). Used for subarray sum, max substring, etc.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">👉👈</div>
+      <h3>Two Pointers</h3>
+      <p>Left and right pointers moving toward each other (or same direction). Solves pair sum, palindrome check, container with most water in O(n).</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">➕</div>
+      <h3>Prefix Sums</h3>
+      <p>Pre-compute cumulative sums. Range sum query becomes O(1): sum(l,r) = prefix[r] - prefix[l-1]. Foundation for many DP problems.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔀</div>
+      <h3>Kadane's Algorithm</h3>
+      <p>Maximum subarray sum in O(n). Track current sum and global max. Classic DP-on-arrays problem: if current becomes negative, reset to 0.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗺️</div>
+      <h3>2D Arrays / Matrices</h3>
+      <p>Grid problems: BFS/DFS traversal, spiral order, rotate 90°, diagonal traversal. Matrix multiplication in O(n³). Sparse matrices use dicts.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>array_patterns.py</span>
+    </div>
+    <pre><span class="cm"># === SLIDING WINDOW — Max sum subarray of size k ===</span>
+<span class="kw">def</span> <span class="fn">max_sum_window</span>(<span class="var">arr</span>, <span class="var">k</span>):
+    <span class="var">window</span> = <span class="fn">sum</span>(<span class="var">arr</span>[:<span class="var">k</span>])
+    <span class="var">best</span> = <span class="var">window</span>
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">k</span>, <span class="fn">len</span>(<span class="var">arr</span>)):
+        <span class="var">window</span> += <span class="var">arr</span>[<span class="var">i</span>] - <span class="var">arr</span>[<span class="var">i</span>-<span class="var">k</span>]
+        <span class="var">best</span> = <span class="fn">max</span>(<span class="var">best</span>, <span class="var">window</span>)
+    <span class="kw">return</span> <span class="var">best</span>
+
+<span class="cm"># === TWO POINTERS — Two sum in sorted array ===</span>
+<span class="kw">def</span> <span class="fn">two_sum_sorted</span>(<span class="var">arr</span>, <span class="var">target</span>):
+    <span class="var">l</span>, <span class="var">r</span> = <span class="num">0</span>, <span class="fn">len</span>(<span class="var">arr</span>) - <span class="num">1</span>
+    <span class="kw">while</span> <span class="var">l</span> < <span class="var">r</span>:
+        <span class="var">s</span> = <span class="var">arr</span>[<span class="var">l</span>] + <span class="var">arr</span>[<span class="var">r</span>]
+        <span class="kw">if</span> <span class="var">s</span> == <span class="var">target</span>: <span class="kw">return</span> [<span class="var">l</span>, <span class="var">r</span>]
+        <span class="kw">elif</span> <span class="var">s</span> < <span class="var">target</span>: <span class="var">l</span> += <span class="num">1</span>
+        <span class="kw">else</span>: <span class="var">r</span> -= <span class="num">1</span>
+
+<span class="cm"># === PREFIX SUM — Range sum query ===</span>
+<span class="kw">def</span> <span class="fn">build_prefix</span>(<span class="var">arr</span>):
+    <span class="var">prefix</span> = [<span class="num">0</span>] * (<span class="fn">len</span>(<span class="var">arr</span>) + <span class="num">1</span>)
+    <span class="kw">for</span> <span class="var">i</span>, <span class="var">v</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">arr</span>):
+        <span class="var">prefix</span>[<span class="var">i</span>+<span class="num">1</span>] = <span class="var">prefix</span>[<span class="var">i</span>] + <span class="var">v</span>
+    <span class="kw">return</span> <span class="var">prefix</span>
+<span class="cm"># range_sum(l, r) = prefix[r+1] - prefix[l]</span>
+
+<span class="cm"># === KADANE'S ALGORITHM — Max subarray ===</span>
+<span class="kw">def</span> <span class="fn">kadane</span>(<span class="var">arr</span>):
+    <span class="var">cur</span> = <span class="var">best</span> = <span class="var">arr</span>[<span class="num">0</span>]
+    <span class="kw">for</span> <span class="var">n</span> <span class="kw">in</span> <span class="var">arr</span>[<span class="num">1</span>:]:
+        <span class="var">cur</span> = <span class="fn">max</span>(<span class="var">n</span>, <span class="var">cur</span> + <span class="var">n</span>)
+        <span class="var">best</span> = <span class="fn">max</span>(<span class="var">best</span>, <span class="var">cur</span>)
+    <span class="kw">return</span> <span class="var">best</span></pre>
+  </div>
+
+  <div class="callout tip">
+    <div class="callout-icon">💡</div>
+    <div><strong>Common Array Interview Patterns:</strong> Two Sum (hash map), Best Time to Buy/Sell Stock (min tracker), Product of Array Except Self (prefix+suffix), Find Duplicate (Floyd's cycle), Rotate Array (reverse trick).</div>
+  </div>
+</section>
+
+<!-- ============ TOPIC 4: Strings ============ -->
+<section class="topic-section" id="t4">
+  <div class="topic-header">
+    <div class="topic-accent" style="background: var(--accent4);"></div>
+    <div class="topic-num">TOPIC 04</div>
+    <h2 class="topic-title">Strings</h2>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🔤</div>
+      <h3>String Basics in Python</h3>
+      <p>Strings are immutable sequences. s[i] is O(1). Concatenation with + is O(n) — prefer ''.join(list). Slicing creates a new string in O(k).</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔎</div>
+      <h3>Pattern Matching</h3>
+      <p>Naive O(nm), KMP O(n+m), Rabin-Karp (rolling hash), Z-algorithm. Python's built-in str.find() uses a mix of Boyer-Moore and Horspool.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔁</div>
+      <h3>Palindromes</h3>
+      <p>Expand around center: O(n²). Manacher's algorithm: O(n). Two-pointer from center. DP table for all palindromic substrings in O(n²).</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">#️⃣</div>
+      <h3>Anagrams & Frequency</h3>
+      <p>Counter/dict comparison: O(n). Sliding window with char frequency for substring problems. Sort-based anagram check: O(n log n).</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>string_algorithms.py</span>
+    </div>
+    <pre><span class="cm"># === KMP — Pattern Matching in O(n+m) ===</span>
+<span class="kw">def</span> <span class="fn">kmp_search</span>(<span class="var">text</span>, <span class="var">pattern</span>):
+    <span class="kw">def</span> <span class="fn">build_lps</span>(<span class="var">p</span>):
+        <span class="var">lps</span> = [<span class="num">0</span>] * <span class="fn">len</span>(<span class="var">p</span>); <span class="var">l</span> = <span class="num">0</span>; <span class="var">i</span> = <span class="num">1</span>
+        <span class="kw">while</span> <span class="var">i</span> < <span class="fn">len</span>(<span class="var">p</span>):
+            <span class="kw">if</span> <span class="var">p</span>[<span class="var">i</span>] == <span class="var">p</span>[<span class="var">l</span>]: <span class="var">l</span> += <span class="num">1</span>; <span class="var">lps</span>[<span class="var">i</span>] = <span class="var">l</span>; <span class="var">i</span> += <span class="num">1</span>
+            <span class="kw">elif</span> <span class="var">l</span>: <span class="var">l</span> = <span class="var">lps</span>[<span class="var">l</span>-<span class="num">1</span>]
+            <span class="kw">else</span>: <span class="var">i</span> += <span class="num">1</span>
+        <span class="kw">return</span> <span class="var">lps</span>
+    <span class="var">lps</span> = <span class="fn">build_lps</span>(<span class="var">pattern</span>)
+    <span class="var">i</span> = <span class="var">j</span> = <span class="num">0</span>; <span class="var">results</span> = []
+    <span class="kw">while</span> <span class="var">i</span> < <span class="fn">len</span>(<span class="var">text</span>):
+        <span class="kw">if</span> <span class="var">text</span>[<span class="var">i</span>] == <span class="var">pattern</span>[<span class="var">j</span>]: <span class="var">i</span> += <span class="num">1</span>; <span class="var">j</span> += <span class="num">1</span>
+        <span class="kw">if</span> <span class="var">j</span> == <span class="fn">len</span>(<span class="var">pattern</span>):
+            <span class="var">results</span>.append(<span class="var">i</span>-<span class="var">j</span>); <span class="var">j</span> = <span class="var">lps</span>[<span class="var">j</span>-<span class="num">1</span>]
+        <span class="kw">elif</span> <span class="var">i</span> < <span class="fn">len</span>(<span class="var">text</span>) <span class="kw">and</span> <span class="var">text</span>[<span class="var">i</span>] != <span class="var">pattern</span>[<span class="var">j</span>]:
+            <span class="kw">if</span> <span class="var">j</span>: <span class="var">j</span> = <span class="var">lps</span>[<span class="var">j</span>-<span class="num">1</span>]
+            <span class="kw">else</span>: <span class="var">i</span> += <span class="num">1</span>
+    <span class="kw">return</span> <span class="var">results</span>
+
+<span class="cm"># === Longest Palindromic Substring — Expand Around Center ===</span>
+<span class="kw">def</span> <span class="fn">longest_palindrome</span>(<span class="var">s</span>):
+    <span class="var">res</span> = <span class="str">""</span>
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(<span class="var">s</span>)):
+        <span class="kw">for</span> <span class="var">l</span>, <span class="var">r</span> <span class="kw">in</span> [(<span class="var">i</span>,<span class="var">i</span>), (<span class="var">i</span>,<span class="var">i</span>+<span class="num">1</span>)]:   <span class="cm"># odd and even</span>
+            <span class="kw">while</span> <span class="var">l</span>>=<span class="num">0</span> <span class="kw">and</span> <span class="var">r</span><<span class="fn">len</span>(<span class="var">s</span>) <span class="kw">and</span> <span class="var">s</span>[<span class="var">l</span>]==<span class="var">s</span>[<span class="var">r</span>]:
+                <span class="var">l</span>-=<span class="num">1</span>; <span class="var">r</span>+=<span class="num">1</span>
+            <span class="kw">if</span> <span class="var">r</span>-<span class="var">l</span>-<span class="num">1</span> > <span class="fn">len</span>(<span class="var">res</span>): <span class="var">res</span> = <span class="var">s</span>[<span class="var">l</span>+<span class="num">1</span>:<span class="var">r</span>]
+    <span class="kw">return</span> <span class="var">res</span>
+
+<span class="cm"># === Sliding Window — Longest substring without repeats ===</span>
+<span class="kw">def</span> <span class="fn">length_of_longest_substring</span>(<span class="var">s</span>):
+    <span class="var">seen</span> = {}; <span class="var">l</span> = <span class="var">res</span> = <span class="num">0</span>
+    <span class="kw">for</span> <span class="var">r</span>, <span class="var">c</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">s</span>):
+        <span class="kw">if</span> <span class="var">c</span> <span class="kw">in</span> <span class="var">seen</span>: <span class="var">l</span> = <span class="fn">max</span>(<span class="var">l</span>, <span class="var">seen</span>[<span class="var">c</span>]+<span class="num">1</span>)
+        <span class="var">seen</span>[<span class="var">c</span>] = <span class="var">r</span>
+        <span class="var">res</span> = <span class="fn">max</span>(<span class="var">res</span>, <span class="var">r</span>-<span class="var">l</span>+<span class="num">1</span>)
+    <span class="kw">return</span> <span class="var">res</span></pre>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card wide-card">
+      <h3>Key String Topics & Interview Problems</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:12px;">
+        <div>
+          <div style="color:var(--accent1);font-size:12px;letter-spacing:2px;margin-bottom:8px;font-family:'Space Mono',monospace;">EASY</div>
+          <ul class="dsa-list">
+            <li>Reverse a String</li>
+            <li>Check Anagram</li>
+            <li>Valid Palindrome</li>
+            <li>Count vowels / consonants</li>
+          </ul>
+        </div>
+        <div>
+          <div style="color:var(--accent2);font-size:12px;letter-spacing:2px;margin-bottom:8px;font-family:'Space Mono',monospace;">MEDIUM</div>
+          <ul class="dsa-list">
+            <li>Longest Substring Without Repeats</li>
+            <li>Group Anagrams</li>
+            <li>String to Integer (atoi)</li>
+            <li>Minimum Window Substring</li>
+          </ul>
+        </div>
+        <div>
+          <div style="color:var(--accent3);font-size:12px;letter-spacing:2px;margin-bottom:8px;font-family:'Space Mono',monospace;">HARD</div>
+          <ul class="dsa-list">
+            <li>Regular Expression Matching</li>
+            <li>Wildcard Matching</li>
+            <li>Longest Valid Parentheses</li>
+            <li>Shortest Palindrome</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOPIC 5: Recursion ============ -->
+<section class="topic-section" id="t5">
+  <div class="topic-header">
+    <div class="topic-accent" style="background: var(--accent2);"></div>
+    <div class="topic-num">TOPIC 05</div>
+    <h2 class="topic-title">Recursion</h2>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">🔄</div>
+    <div>Recursion is a function calling itself with a smaller subproblem. Every recursive solution needs: <strong>(1) Base case</strong> — when to stop, <strong>(2) Recursive case</strong> — smaller subproblem, <strong>(3) Progress</strong> — must move toward base case.</div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">📞</div>
+      <h3>Call Stack</h3>
+      <p>Each call adds a frame to the stack. Stack overflow if depth is too large. Python default limit: 1000. Use sys.setrecursionlimit() for deeper recursion.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌲</div>
+      <h3>Recursion Tree</h3>
+      <p>Visualize recursive calls as a tree. Count total nodes to find time complexity. Overlapping subproblems → use memoization (DP).</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">↩️</div>
+      <h3>Tail Recursion</h3>
+      <p>When the recursive call is the last operation. Python does NOT optimize tail calls (unlike Scheme/Scala). Convert to iteration for O(1) space.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📝</div>
+      <h3>Memoization</h3>
+      <p>Cache results of expensive function calls. @functools.lru_cache decorator in Python. Converts exponential to polynomial time for overlapping subproblems.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>recursion_examples.py</span>
+    </div>
+    <pre><span class="kw">from</span> functools <span class="kw">import</span> lru_cache
+
+<span class="cm"># === Fibonacci — without and with memoization ===</span>
+<span class="kw">def</span> <span class="fn">fib_naive</span>(<span class="var">n</span>):           <span class="cm"># O(2^n) — very slow</span>
+    <span class="kw">if</span> <span class="var">n</span> <= <span class="num">1</span>: <span class="kw">return</span> <span class="var">n</span>
+    <span class="kw">return</span> <span class="fn">fib_naive</span>(<span class="var">n</span>-<span class="num">1</span>) + <span class="fn">fib_naive</span>(<span class="var">n</span>-<span class="num">2</span>)
+
+@lru_cache(maxsize=<span class="kw">None</span>)
+<span class="kw">def</span> <span class="fn">fib_memo</span>(<span class="var">n</span>):           <span class="cm"># O(n) — with caching</span>
+    <span class="kw">if</span> <span class="var">n</span> <= <span class="num">1</span>: <span class="kw">return</span> <span class="var">n</span>
+    <span class="kw">return</span> <span class="fn">fib_memo</span>(<span class="var">n</span>-<span class="num">1</span>) + <span class="fn">fib_memo</span>(<span class="var">n</span>-<span class="num">2</span>)
+
+<span class="cm"># === Tower of Hanoi — Classic recursion ===</span>
+<span class="kw">def</span> <span class="fn">hanoi</span>(<span class="var">n</span>, <span class="var">src</span>, <span class="var">aux</span>, <span class="var">dst</span>):
+    <span class="kw">if</span> <span class="var">n</span> == <span class="num">1</span>:
+        <span class="fn">print</span>(<span class="str">f"Move disk 1 from {<span class="var">src</span>} to {<span class="var">dst</span>}"</span>); <span class="kw">return</span>
+    <span class="fn">hanoi</span>(<span class="var">n</span>-<span class="num">1</span>, <span class="var">src</span>, <span class="var">dst</span>, <span class="var">aux</span>)
+    <span class="fn">print</span>(<span class="str">f"Move disk {<span class="var">n</span>} from {<span class="var">src</span>} to {<span class="var">dst</span>}"</span>)
+    <span class="fn">hanoi</span>(<span class="var">n</span>-<span class="num">1</span>, <span class="var">aux</span>, <span class="var">src</span>, <span class="var">dst</span>)
+
+<span class="cm"># === Merge Sort — Divide & Conquer recursion ===</span>
+<span class="kw">def</span> <span class="fn">merge_sort</span>(<span class="var">arr</span>):
+    <span class="kw">if</span> <span class="fn">len</span>(<span class="var">arr</span>) <= <span class="num">1</span>: <span class="kw">return</span> <span class="var">arr</span>
+    <span class="var">mid</span> = <span class="fn">len</span>(<span class="var">arr</span>) // <span class="num">2</span>
+    <span class="var">L</span> = <span class="fn">merge_sort</span>(<span class="var">arr</span>[:<span class="var">mid</span>])
+    <span class="var">R</span> = <span class="fn">merge_sort</span>(<span class="var">arr</span>[<span class="var">mid</span>:])
+    <span class="kw">return</span> <span class="fn">merge</span>(<span class="var">L</span>, <span class="var">R</span>)
+
+<span class="kw">def</span> <span class="fn">merge</span>(<span class="var">L</span>, <span class="var">R</span>):
+    <span class="var">res</span> = []; <span class="var">i</span> = <span class="var">j</span> = <span class="num">0</span>
+    <span class="kw">while</span> <span class="var">i</span> < <span class="fn">len</span>(<span class="var">L</span>) <span class="kw">and</span> <span class="var">j</span> < <span class="fn">len</span>(<span class="var">R</span>):
+        <span class="kw">if</span> <span class="var">L</span>[<span class="var">i</span>] <= <span class="var">R</span>[<span class="var">j</span>]: <span class="var">res</span>.append(<span class="var">L</span>[<span class="var">i</span>]); <span class="var">i</span>+=<span class="num">1</span>
+        <span class="kw">else</span>: <span class="var">res</span>.append(<span class="var">R</span>[<span class="var">j</span>]); <span class="var">j</span>+=<span class="num">1</span>
+    <span class="kw">return</span> <span class="var">res</span> + <span class="var">L</span>[<span class="var">i</span>:] + <span class="var">R</span>[<span class="var">j</span>:]</pre>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-icon">⚠️</div>
+    <div><strong>Common Recursion Mistakes:</strong> Forgetting base case (infinite recursion), modifying shared state without care, not handling n=0 or empty input, ignoring stack overflow risk for large n.</div>
+  </div>
+</section>
+
+<!-- ============ TOPIC 6: Searching ============ -->
+<section class="topic-section" id="t6">
+  <div class="topic-header">
+    <div class="topic-accent" style="background: var(--accent1);"></div>
+    <div class="topic-num">TOPIC 06</div>
+    <h2 class="topic-title">Searching Algorithms</h2>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>Linear Search</h3>
+      <p>Scan every element. O(n) time, O(1) space. Works on unsorted data. Best for small arrays or when data is unordered.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <h3>Binary Search</h3>
+      <p>Requires sorted input. Halves search space each step → O(log n). Template: find exact value, find leftmost, find rightmost insertion point.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📐</div>
+      <h3>Binary Search on Answer</h3>
+      <p>When the answer is monotonic (e.g., "find min k satisfying condition"), binary search on the answer space. Powerful technique for optimization problems.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌊</div>
+      <h3>Ternary Search</h3>
+      <p>For unimodal functions — find maximum/minimum. Divides into thirds, eliminates one-third each iteration. O(log₃ n) comparisons.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>searching_algorithms.py</span>
+    </div>
+    <pre><span class="cm"># === BINARY SEARCH — Standard Template ===</span>
+<span class="kw">def</span> <span class="fn">binary_search</span>(<span class="var">arr</span>, <span class="var">target</span>):
+    <span class="var">l</span>, <span class="var">r</span> = <span class="num">0</span>, <span class="fn">len</span>(<span class="var">arr</span>) - <span class="num">1</span>
+    <span class="kw">while</span> <span class="var">l</span> <= <span class="var">r</span>:
+        <span class="var">mid</span> = <span class="var">l</span> + (<span class="var">r</span> - <span class="var">l</span>) // <span class="num">2</span>  <span class="cm"># avoids integer overflow</span>
+        <span class="kw">if</span> <span class="var">arr</span>[<span class="var">mid</span>] == <span class="var">target</span>: <span class="kw">return</span> <span class="var">mid</span>
+        <span class="kw">elif</span> <span class="var">arr</span>[<span class="var">mid</span>] < <span class="var">target</span>: <span class="var">l</span> = <span class="var">mid</span> + <span class="num">1</span>
+        <span class="kw">else</span>: <span class="var">r</span> = <span class="var">mid</span> - <span class="num">1</span>
+    <span class="kw">return</span> -<span class="num">1</span>
+
+<span class="cm"># === LEFTMOST INSERTION — bisect_left equivalent ===</span>
+<span class="kw">def</span> <span class="fn">lower_bound</span>(<span class="var">arr</span>, <span class="var">target</span>):
+    <span class="var">l</span>, <span class="var">r</span> = <span class="num">0</span>, <span class="fn">len</span>(<span class="var">arr</span>)
+    <span class="kw">while</span> <span class="var">l</span> < <span class="var">r</span>:
+        <span class="var">mid</span> = (<span class="var">l</span> + <span class="var">r</span>) // <span class="num">2</span>
+        <span class="kw">if</span> <span class="var">arr</span>[<span class="var">mid</span>] < <span class="var">target</span>: <span class="var">l</span> = <span class="var">mid</span> + <span class="num">1</span>
+        <span class="kw">else</span>: <span class="var">r</span> = <span class="var">mid</span>
+    <span class="kw">return</span> <span class="var">l</span>
+
+<span class="cm"># === BINARY SEARCH ON ANSWER — Min capacity to ship in D days ===</span>
+<span class="kw">def</span> <span class="fn">ship_within_days</span>(<span class="var">weights</span>, <span class="var">D</span>):
+    <span class="kw">def</span> <span class="fn">can_ship</span>(<span class="var">cap</span>):
+        <span class="var">days</span> = <span class="num">1</span>; <span class="var">cur</span> = <span class="num">0</span>
+        <span class="kw">for</span> <span class="var">w</span> <span class="kw">in</span> <span class="var">weights</span>:
+            <span class="kw">if</span> <span class="var">cur</span> + <span class="var">w</span> > <span class="var">cap</span>: <span class="var">days</span> += <span class="num">1</span>; <span class="var">cur</span> = <span class="num">0</span>
+            <span class="var">cur</span> += <span class="var">w</span>
+        <span class="kw">return</span> <span class="var">days</span> <= <span class="var">D</span>
+    <span class="var">l</span>, <span class="var">r</span> = <span class="fn">max</span>(<span class="var">weights</span>), <span class="fn">sum</span>(<span class="var">weights</span>)
+    <span class="kw">while</span> <span class="var">l</span> < <span class="var">r</span>:
+        <span class="var">mid</span> = (<span class="var">l</span> + <span class="var">r</span>) // <span class="num">2</span>
+        <span class="kw">if</span> <span class="fn">can_ship</span>(<span class="var">mid</span>): <span class="var">r</span> = <span class="var">mid</span>
+        <span class="kw">else</span>: <span class="var">l</span> = <span class="var">mid</span> + <span class="num">1</span>
+    <span class="kw">return</span> <span class="var">l</span>
+
+<span class="cm"># === SEARCH IN ROTATED SORTED ARRAY ===</span>
+<span class="kw">def</span> <span class="fn">search_rotated</span>(<span class="var">nums</span>, <span class="var">target</span>):
+    <span class="var">l</span>, <span class="var">r</span> = <span class="num">0</span>, <span class="fn">len</span>(<span class="var">nums</span>)-<span class="num">1</span>
+    <span class="kw">while</span> <span class="var">l</span> <= <span class="var">r</span>:
+        <span class="var">m</span> = (<span class="var">l</span>+<span class="var">r</span>)//<span class="num">2</span>
+        <span class="kw">if</span> <span class="var">nums</span>[<span class="var">m</span>] == <span class="var">target</span>: <span class="kw">return</span> <span class="var">m</span>
+        <span class="kw">if</span> <span class="var">nums</span>[<span class="var">l</span>] <= <span class="var">nums</span>[<span class="var">m</span>]:
+            <span class="kw">if</span> <span class="var">nums</span>[<span class="var">l</span>] <= <span class="var">target</span> < <span class="var">nums</span>[<span class="var">m</span>]: <span class="var">r</span>=<span class="var">m</span>-<span class="num">1</span>
+            <span class="kw">else</span>: <span class="var">l</span>=<span class="var">m</span>+<span class="num">1</span>
+        <span class="kw">else</span>:
+            <span class="kw">if</span> <span class="var">nums</span>[<span class="var">m</span>] < <span class="var">target</span> <= <span class="var">nums</span>[<span class="var">r</span>]: <span class="var">l</span>=<span class="var">m</span>+<span class="num">1</span>
+            <span class="kw">else</span>: <span class="var">r</span>=<span class="var">m</span>-<span class="num">1</span>
+    <span class="kw">return</span> -<span class="num">1</span></pre>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Algorithm</th><th>Time</th><th>Space</th><th>Requires</th><th>Use When</th></tr>
+      <tr><td>Linear Search</td><td class="ok">O(n)</td><td class="good">O(1)</td><td>Nothing</td><td>Unsorted, small data</td></tr>
+      <tr><td>Binary Search</td><td class="good">O(log n)</td><td class="good">O(1)</td><td>Sorted array</td><td>Large sorted data</td></tr>
+      <tr><td>Jump Search</td><td class="ok">O(√n)</td><td class="good">O(1)</td><td>Sorted array</td><td>Uniform cost jumps</td></tr>
+      <tr><td>Interpolation</td><td class="good">O(log log n)</td><td class="good">O(1)</td><td>Sorted + uniform</td><td>Uniformly distributed data</td></tr>
+      <tr><td>Exponential</td><td class="good">O(log n)</td><td class="good">O(1)</td><td>Sorted array</td><td>Unbounded/unknown size</td></tr>
+    </table>
+  </div>
+
+  <div class="callout tip">
+    <div class="callout-icon">💡</div>
+    <div><strong>Binary Search "On Answer" Pattern:</strong> Whenever a problem asks "find minimum/maximum X such that condition holds" — if the condition is monotonic (once true stays true, or vice versa), binary search over the answer space directly!</div>
+  </div>
+</section>
+
+</main>
+
+<footer style="text-align:center;padding:40px;border-top:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;position:relative;z-index:1;">
+  DSA Mastery Series — Part 1 of 3 &nbsp;·&nbsp; Topics 1–6: Foundations &nbsp;·&nbsp;
+  <span style="color:var(--accent1);">Continue to Part 2 → Sorting, Hashing, Stack, Queue, Linked List, Trees</span>
+</footer>
+
+</body>
+</html>

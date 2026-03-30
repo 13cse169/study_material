@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.11 — Projects | NN Guide</title>
+<link rel="stylesheet" href="shared.css">
+<style>:root{--neon:#00ff9d}</style>
+</head>
+<body>
+<nav class="topnav"><a href="index.html" class="topnav-logo">NN<span>.GUIDE</span></a>
+<div class="topnav-links"><a href="01-math.html">01 Math</a><a href="02-fundamentals.html">02 Fundamentals</a><a href="03-python.html">03 Python</a><a href="04-workflow.html">04 Workflow</a><a href="05-cnn.html">05 CNN</a><a href="06-rnn.html">06 RNN</a><a href="07-nlp.html">07 NLP</a><a href="08-transformers.html">08 Transformers</a><a href="09-advanced.html">09 Advanced</a><a href="10-specializations.html">10 Specs</a><a href="11-projects.html" class="active">11 Projects</a></div></nav>
+<div class="hero"><div class="hero-grid"></div>
+<div class="chapter-num">Chapter 11 — Projects</div>
+<h1><span style="color:#00ff9d">DEEP LEARNING</span><br>PROJECTS</h1>
+<p class="hero-sub">10 portfolio-worthy projects from image classification to multimodal LLMs — each with architecture, code, and deployment strategy.</p>
+<div class="hero-meta"><div class="hero-stat"><div class="hero-stat-val" style="color:#00ff9d">10</div><div class="hero-stat-label">Projects</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#00ff9d">3</div><div class="hero-stat-label">Levels</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#00ff9d">8</div><div class="hero-stat-label">Interview Q&A</div></div></div></div>
+<div class="page-layout">
+<aside class="sidebar"><div class="sidebar-header">Contents</div><a class="sb-link active" onclick="show('all')"><span class="sb-icon">🏗️</span>All 10 Projects</a>
+<a class="sb-link" onclick="show('interview')"><span class="sb-icon">🎯</span>Interview Q&A</a>
+
+<div class="sb-chapters"><div class="sb-ch-label">Navigate</div><a class="sb-ch-link" href="10-specializations.html">← 10 · Specializations</a></div></aside>
+<div class="content"><div class="section active" id="s-all"><div class="sec-head"><span class="sec-tag tag-p">Portfolio</span><h2 class="sec-head h2">ALL 10 PROJECTS</h2><div class="sec-meta">Full portfolio from beginner to advanced — each project is production-grade</div></div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 01 — Image Classifier <span class="sec-tag tag-b" style="margin-left:auto;font-size:.55rem">Beginner</span></div>
+<p>MNIST/CIFAR-10 classification with CNN from scratch. Achieves 99.2% on MNIST.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">ResNet-18 · PyTorch · Torchvision</div>
+</div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 02 — Sentiment Analyser <span class="sec-tag tag-b" style="margin-left:auto;font-size:.55rem">Beginner</span></div>
+<p>Fine-tune DistilBERT on IMDb to classify positive/negative reviews. Deploy as REST API.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">DistilBERT · HuggingFace · FastAPI</div>
+</div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 03 — Object Detection <span class="sec-tag tag-i" style="margin-left:auto;font-size:.55rem">Intermediate</span></div>
+<p>Real-time object detection with YOLOv8. Custom training on own dataset using Roboflow.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">YOLOv8 · OpenCV · Roboflow</div>
+</div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 04 — Text Summariser <span class="sec-tag tag-i" style="margin-left:auto;font-size:.55rem">Intermediate</span></div>
+<p>Abstractive summarisation using BART fine-tuned on CNN/DailyMail. ROUGE score evaluation.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">BART · HuggingFace · Streamlit</div>
+</div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 05 — GAN Image Generator <span class="sec-tag tag-i" style="margin-left:auto;font-size:.55rem">Intermediate</span></div>
+<p>Train DCGAN to generate realistic faces. Includes progressive training and FID evaluation.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">DCGAN · PyTorch · Weights & Biases</div>
+</div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 06 — Stock Price Predictor <span class="sec-tag tag-i" style="margin-left:auto;font-size:.55rem">Intermediate</span></div>
+<p>LSTM time-series forecasting with multi-step prediction and uncertainty estimation.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">LSTM · PyTorch · yfinance · Plotly</div>
+</div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 07 — Custom Chatbot (RAG) <span class="sec-tag tag-a" style="margin-left:auto;font-size:.55rem">Advanced</span></div>
+<p>Domain-specific chatbot using RAG — vector search + LLaMA 3. Deployable locally or cloud.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">LLaMA 3 · ChromaDB · LangChain · Streamlit</div>
+</div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 08 — Medical Image Segmentation <span class="sec-tag tag-a" style="margin-left:auto;font-size:.55rem">Advanced</span></div>
+<p>U-Net for tumour segmentation on MRI scans. Transfer learning from ImageNet pretrained encoder.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">U-Net · PyTorch · MONAI · W&B</div>
+</div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 09 — LoRA Fine-tuned LLM <span class="sec-tag tag-a" style="margin-left:auto;font-size:.55rem">Advanced</span></div>
+<p>Fine-tune Llama-3-8B with QLoRA on custom instruction dataset. Merge and GGUF export.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">QLoRA · PEFT · TRL · llama.cpp</div>
+</div><div class="card">
+<div class="card-title"><span class="icon" style="background:rgba(0,255,157,.08)">🏗️</span>Project 10 — Multimodal Vision-Language <span class="sec-tag tag-a" style="margin-left:auto;font-size:.55rem">Advanced</span></div>
+<p>Build a LLaVA-style VQA system: CLIP image encoder + LLM decoder. Train on VQAv2.</p>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--neon);margin:.5rem 0">CLIP · LLaMA · HuggingFace · Gradio</div>
+</div><div class="callout cl-green"><span class="callout-icon">🚀</span><span><strong>Deployment tip:</strong> Host models on HuggingFace Spaces (free). Use Streamlit or Gradio for UI. Containerise with Docker. Push code to GitHub with a detailed README and model card.</span></div></div><div class="section" id="s-interview"><div class="sec-head"><span class="sec-tag tag-q">Interview</span><h2 class="sec-head h2">INTERVIEW Q&A</h2><div class="sec-meta">Projects & Deployment · 8 Questions</div></div><div class="qa-level">Intermediate</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q01</span><span class="qa-text">How would you deploy a deep learning model to production?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Production deployment pipeline: (1) <strong>Model optimisation:</strong> Quantise (INT8/INT4), prune, or distil for smaller/faster inference. Export to ONNX for framework-agnostic serving. (2) <strong>Serving:</strong> FastAPI/Flask for REST API; Triton Inference Server for high-throughput GPU serving; vLLM for LLM inference (PagedAttention). (3) <strong>Containerisation:</strong> Docker image with GPU support (CUDA base image). (4) <strong>Scaling:</strong> Kubernetes for orchestration, auto-scaling based on queue depth. (5) <strong>Monitoring:</strong> Track latency, throughput, prediction distribution drift (Evidently), GPU utilisation. (6) <strong>CI/CD:</strong> Automated testing of model performance on each new version.</div></div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q02</span><span class="qa-text">How do you evaluate a generative model?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Evaluation depends on the task: <strong>Image generation:</strong> FID (Fréchet Inception Distance) — lower=better, compares feature distribution of real vs generated images. IS (Inception Score) — higher=better. Human evaluation. <strong>Text generation:</strong> Perplexity, BLEU (for translation), ROUGE (for summarisation), BERTScore (semantic), Human preference (via A/B testing). <strong>Chatbots:</strong> MT-Bench, AlpacaEval, LMSYS Chatbot Arena (human ELO ratings). <strong>Code generation:</strong> Pass@k — fraction of problems solved if k attempts allowed (HumanEval). None of these perfectly capture quality — human evaluation remains the gold standard.</div></div><div class="qa-level">Advanced</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q03</span><span class="qa-text">How would you approach debugging a model that isn't converging?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Systematic debugging: (1) <strong>Overfit a single batch</strong> — if loss doesn't go to zero on 1 batch, there's a code bug. (2) <strong>Check gradient flow</strong> — log grad norms per layer: if any layer's grad is zero, ReLU dying or no connection. (3) <strong>Learning rate</strong> — run LR range test, plot loss vs LR. (4) <strong>Data sanity check</strong> — print random batches, check label distribution, verify normalisation. (5) <strong>Loss on random init</strong> — cross-entropy loss should ≈ log(n_classes) initially. (6) <strong>Architecture</strong> — remove complexity (BatchNorm, Dropout) temporarily. (7) <strong>Precision</strong> — check for NaN/Inf in activations (register forward hooks). (8) Reduce dataset to 1K samples and verify it overfits.</div></div></div></div></div>
+<script>
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.sb-link').forEach(s=>s.classList.remove('active'));document.getElementById('s-'+id).classList.add('active');event.currentTarget.classList.add('active');}
+function toggleQA(el){const o=el.classList.contains('open');document.querySelectorAll('.qa-item.open').forEach(e=>e.classList.remove('open'));if(!o)el.classList.add('open');}
+</script></body></html>

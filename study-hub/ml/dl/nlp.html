@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP Complete Guide — Beginner to Advanced</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1208;
+  --ink2: #3d2e14;
+  --paper: #faf6ef;
+  --paper2: #f3ece0;
+  --paper3: #ede3d0;
+  --amber: #d97706;
+  --amber-light: #fbbf24;
+  --teal: #0d9488;
+  --rose: #be123c;
+  --violet: #7c3aed;
+  --sage: #4d7c0f;
+  --border: #d4c4a0;
+  --muted: #7a6545;
+  --shadow: rgba(26,18,8,0.12);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  font-weight: 300;
+}
+
+/* ── NOISE TEXTURE ── */
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:0.4;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0 2rem;
+  height: 58px;
+  display: flex; align-items:center; justify-content:space-between;
+  position: sticky; top:0; z-index:100;
+  box-shadow: 0 2px 20px rgba(0,0,0,.3);
+}
+
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem; letter-spacing:-.01em;
+  display:flex; align-items:center; gap:.5rem;
+}
+.logo-dot { color: var(--amber-light); }
+
+.header-nav {
+  display:flex; gap:.2rem;
+}
+.header-nav button {
+  background:none; border:none; cursor:pointer;
+  font-family:'DM Mono',monospace; font-size:.65rem;
+  font-weight:400; letter-spacing:.08em; text-transform:uppercase;
+  color: rgba(255,255,255,.5); padding:.4rem .7rem; border-radius:4px;
+  transition:all .2s;
+}
+.header-nav button:hover { color:var(--amber-light); background:rgba(255,255,255,.05); }
+.header-nav button.active { color:var(--amber-light); }
+
+/* ── HERO ── */
+.hero {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 4rem 2rem 3.5rem;
+  text-align:center;
+  position:relative; overflow:hidden;
+}
+
+.hero-rings {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:600px; height:600px; pointer-events:none;
+}
+.hero-ring {
+  position:absolute; border-radius:50%;
+  border:1px solid rgba(217,119,6,.15);
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  animation: pulse 4s ease-in-out infinite;
+}
+.hero-ring:nth-child(1) { width:150px; height:150px; }
+.hero-ring:nth-child(2) { width:280px; height:280px; animation-delay:.5s; }
+.hero-ring:nth-child(3) { width:420px; height:420px; animation-delay:1s; }
+.hero-ring:nth-child(4) { width:560px; height:560px; animation-delay:1.5s; }
+
+@keyframes pulse {
+  0%,100% { opacity:.3; } 50% { opacity:.7; }
+}
+
+.hero-eyebrow {
+  font-family:'DM Mono',monospace; font-size:.7rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--amber-light); margin-bottom:1.2rem;
+  position:relative;
+}
+
+.hero h1 {
+  font-family:'DM Serif Display',serif;
+  font-size: clamp(2.5rem,6vw,5rem);
+  line-height:1.05; letter-spacing:-.02em;
+  position:relative;
+}
+
+.hero h1 em { color:var(--amber-light); font-style:italic; }
+
+.hero-sub {
+  font-size:1rem; color:rgba(250,246,239,.6);
+  max-width:520px; margin:1.2rem auto 0;
+  line-height:1.75; font-weight:300;
+  position:relative;
+}
+
+.topic-strip {
+  display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap;
+  margin-top:2rem; position:relative;
+}
+
+.topic-chip {
+  font-family:'DM Mono',monospace; font-size:.65rem;
+  letter-spacing:.06em; text-transform:uppercase;
+  padding:.35rem .85rem; border-radius:99px;
+  cursor:pointer; transition:all .25s; border:1px solid;
+  white-space:nowrap;
+}
+
+.tc-amber { color:var(--amber-light); border-color:rgba(251,191,36,.25); }
+.tc-teal  { color:#2dd4bf; border-color:rgba(45,212,191,.25); }
+.tc-rose  { color:#fb7185; border-color:rgba(251,113,133,.25); }
+.tc-violet{ color:#a78bfa; border-color:rgba(167,139,250,.25); }
+.tc-sage  { color:#86efac; border-color:rgba(134,239,172,.25); }
+.tc-amber:hover,.tc-amber.active { background:rgba(251,191,36,.12); }
+.tc-teal:hover, .tc-teal.active  { background:rgba(45,212,191,.12); }
+.tc-rose:hover, .tc-rose.active  { background:rgba(251,113,133,.12); }
+.tc-violet:hover,.tc-violet.active{ background:rgba(167,139,250,.12); }
+.tc-sage:hover, .tc-sage.active  { background:rgba(134,239,172,.12); }
+
+/* ── LAYOUT ── */
+.layout {
+  max-width:1160px; margin:0 auto;
+  padding:2.5rem 2rem 6rem;
+  display:grid; grid-template-columns:240px 1fr; gap:2rem;
+  align-items:start;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position:sticky; top:74px;
+  background:white; border:1px solid var(--border);
+  border-radius:12px; overflow:hidden;
+  box-shadow:0 4px 24px var(--shadow);
+}
+
+.sidebar-head {
+  background:var(--ink2); color:var(--paper);
+  padding:.9rem 1.2rem;
+  font-family:'DM Serif Display',serif; font-size:.95rem;
+}
+
+.nav-group { padding:.6rem 0; border-bottom:1px solid var(--paper3); }
+.nav-group:last-child { border-bottom:none; }
+
+.nav-group-label {
+  font-family:'DM Mono',monospace; font-size:.58rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); padding:.3rem 1.2rem .2rem;
+}
+
+.nav-btn {
+  display:flex; align-items:center; gap:.6rem;
+  width:100%; padding:.5rem 1.2rem;
+  background:none; border:none; cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:.82rem;
+  font-weight:400; color:var(--ink2); text-align:left;
+  transition:all .18s;
+}
+.nav-btn:hover { background:var(--paper2); color:var(--amber); }
+.nav-btn.active { background:var(--paper3); color:var(--amber); font-weight:500; }
+
+.nav-btn .nb-icon { font-size:.9rem; flex-shrink:0; width:18px; text-align:center; }
+.nav-btn .nb-badge {
+  margin-left:auto; font-family:'DM Mono',monospace;
+  font-size:.55rem; padding:.15rem .45rem; border-radius:99px;
+  letter-spacing:.04em;
+}
+.nb-b { background:#dcfce7; color:#166534; }
+.nb-i { background:#fef9c3; color:#854d0e; }
+.nb-a { background:#fee2e2; color:#991b1b; }
+
+/* ── CONTENT ── */
+.content { min-width:0; }
+
+.section { display:none; animation: fadeUp .35s ease both; }
+.section.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SECTION TITLE ── */
+.sec-title-row {
+  display:flex; align-items:flex-start; gap:1rem;
+  margin-bottom:2rem; padding-bottom:1.5rem;
+  border-bottom:2px solid var(--paper3);
+}
+
+.sec-title-icon {
+  font-size:2.5rem; flex-shrink:0; line-height:1;
+  margin-top:.2rem;
+}
+
+.sec-badge {
+  display:inline-block; font-family:'DM Mono',monospace;
+  font-size:.6rem; letter-spacing:.12em; text-transform:uppercase;
+  padding:.2rem .65rem; border-radius:99px; margin-bottom:.5rem;
+}
+.sb-b { background:#dcfce7; color:#166534; }
+.sb-i { background:#fef9c3; color:#854d0e; }
+.sb-a { background:#fee2e2; color:#991b1b; }
+.sb-q { background:#ede9fe; color:#5b21b6; }
+
+.sec-title {
+  font-family:'DM Serif Display',serif;
+  font-size:2.1rem; line-height:1.15;
+  letter-spacing:-.02em; color:var(--ink);
+}
+.sec-meta {
+  font-family:'DM Mono',monospace; font-size:.68rem;
+  color:var(--muted); margin-top:.3rem;
+}
+
+/* ── CARDS ── */
+.card {
+  background:white; border:1px solid var(--border);
+  border-radius:12px; padding:1.6rem;
+  margin-bottom:1.2rem;
+  box-shadow:0 2px 12px var(--shadow);
+  transition:box-shadow .2s, border-color .2s;
+}
+.card:hover { box-shadow:0 6px 28px var(--shadow); border-color:#b8a07a; }
+
+.card-title {
+  font-family:'DM Serif Display',serif;
+  font-size:1.15rem; color:var(--ink);
+  margin-bottom:.8rem;
+  display:flex; align-items:center; gap:.5rem;
+}
+
+.card-title .ct-icon {
+  width:30px; height:30px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem; flex-shrink:0;
+}
+
+.card p {
+  font-size:.92rem; line-height:1.85; color:#4a3a22;
+  margin-bottom:.7rem; font-weight:300;
+}
+.card p:last-child { margin-bottom:0; }
+.card strong { font-weight:500; color:var(--ink); }
+
+/* ── CODE ── */
+.code-wrap {
+  background:var(--ink); border-radius:10px;
+  margin:1rem 0; overflow:hidden;
+}
+.code-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.6rem 1rem;
+  background:rgba(255,255,255,.05);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.code-lang {
+  font-family:'DM Mono',monospace; font-size:.6rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--amber-light);
+}
+.code-dots { display:flex; gap:.35rem; }
+.code-dots span { width:10px; height:10px; border-radius:50%; }
+.code-dots span:nth-child(1) { background:#ff5f57; }
+.code-dots span:nth-child(2) { background:#febc2e; }
+.code-dots span:nth-child(3) { background:#28c840; }
+
+.code-wrap pre {
+  padding:1.1rem 1.2rem; overflow-x:auto;
+  font-family:'DM Mono',monospace; font-size:.78rem;
+  line-height:1.75; color:#e2d9c8;
+  white-space:pre;
+}
+
+.kw { color:#f472b6; }
+.fn { color:#86efac; }
+.str { color:#fde68a; }
+.cm { color:#6b7280; font-style:italic; }
+.num { color:#fb923c; }
+.cls { color:#93c5fd; }
+
+/* ── FORMULA ── */
+.formula {
+  background:var(--paper3); border:1px solid var(--border);
+  border-left:4px solid var(--amber);
+  border-radius:0 8px 8px 0;
+  padding:.9rem 1.1rem; margin:.8rem 0;
+  font-family:'DM Mono',monospace; font-size:.82rem;
+  color:var(--ink2); line-height:1.6;
+}
+
+/* ── CALLOUTS ── */
+.callout {
+  border-radius:8px; padding:.9rem 1.1rem;
+  margin:.75rem 0; font-size:.87rem;
+  line-height:1.75; font-weight:300;
+  display:flex; gap:.7rem; align-items:flex-start;
+}
+.callout-icon { flex-shrink:0; font-size:1rem; margin-top:.1rem; }
+.cl-info  { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; }
+.cl-tip   { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
+.cl-warn  { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
+.cl-note  { background:#fdf4ff; border:1px solid #e9d5ff; color:#6b21a8; }
+
+/* ── TABLES ── */
+.tbl-wrap { overflow-x:auto; margin:1rem 0; border-radius:8px; border:1px solid var(--border); }
+table { width:100%; border-collapse:collapse; font-size:.83rem; }
+th {
+  background:var(--paper2); font-family:'DM Sans',sans-serif;
+  font-weight:500; font-size:.78rem; padding:.7rem 1rem;
+  text-align:left; color:var(--muted); border-bottom:2px solid var(--border);
+  letter-spacing:.03em;
+}
+td {
+  padding:.65rem 1rem; border-bottom:1px solid var(--paper3);
+  color:#4a3a22; line-height:1.55; font-weight:300;
+}
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:var(--paper2); }
+
+/* ── STEPS ── */
+.steps { display:flex; flex-direction:column; gap:.9rem; margin:.8rem 0; }
+.step { display:flex; gap:.9rem; }
+.step-n {
+  flex-shrink:0; width:32px; height:32px; border-radius:50%;
+  background:var(--amber); color:white;
+  font-family:'DM Serif Display',serif; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 8px rgba(217,119,6,.3);
+}
+.step-body h4 {
+  font-family:'DM Sans',sans-serif; font-weight:500;
+  font-size:.92rem; margin-bottom:.25rem; color:var(--ink);
+}
+.step-body p { font-size:.85rem; color:var(--muted); margin:0!important; line-height:1.65; }
+
+/* ── PIPELINE VIZ ── */
+.pipeline {
+  display:flex; align-items:center; gap:.4rem;
+  flex-wrap:wrap; padding:1.2rem; margin:.8rem 0;
+  background:var(--paper2); border-radius:10px; border:1px solid var(--border);
+}
+.pipe-step {
+  font-family:'DM Mono',monospace; font-size:.7rem;
+  padding:.45rem .9rem; border-radius:6px; font-weight:400;
+  letter-spacing:.04em; text-align:center;
+  flex:1; min-width:90px;
+}
+.pipe-arrow { color:var(--muted); font-size:1.1rem; flex-shrink:0; }
+.ps-amber  { background:rgba(217,119,6,.12); border:1px solid rgba(217,119,6,.3); color:var(--amber); }
+.ps-teal   { background:rgba(13,148,136,.1); border:1px solid rgba(13,148,136,.3); color:var(--teal); }
+.ps-rose   { background:rgba(190,18,60,.1);  border:1px solid rgba(190,18,60,.3);  color:var(--rose); }
+.ps-violet { background:rgba(124,58,237,.1); border:1px solid rgba(124,58,237,.3); color:var(--violet); }
+.ps-sage   { background:rgba(77,124,15,.1);  border:1px solid rgba(77,124,15,.3);  color:var(--sage); }
+.ps-ink    { background:rgba(26,18,8,.07);   border:1px solid var(--border);       color:var(--ink2); }
+
+/* ── TAGS ── */
+.tags { display:flex; flex-wrap:wrap; gap:.35rem; margin:.5rem 0; }
+.tag {
+  font-family:'DM Mono',monospace; font-size:.62rem;
+  padding:.2rem .6rem; border-radius:4px; letter-spacing:.04em;
+  background:var(--paper3); border:1px solid var(--border); color:var(--muted);
+}
+
+/* ── QA ── */
+.qa-category {
+  font-family:'DM Mono',monospace; font-size:.68rem;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); padding:.3rem 0;
+  border-bottom:1px solid var(--border); margin:1.5rem 0 .8rem;
+  display:flex; align-items:center; gap:.6rem;
+}
+.qa-category::before { content:''; flex:1; height:1px; background:var(--border); }
+
+.qa-card {
+  background:white; border:1px solid var(--border);
+  border-radius:10px; margin-bottom:.75rem; overflow:hidden;
+  box-shadow:0 1px 6px var(--shadow); transition:box-shadow .2s;
+}
+.qa-card:hover { box-shadow:0 4px 16px var(--shadow); }
+
+.qa-q {
+  padding:1rem 1.2rem;
+  cursor:pointer; display:flex; justify-content:space-between; align-items:flex-start; gap:.8rem;
+  transition:background .15s;
+}
+.qa-q:hover { background:var(--paper2); }
+
+.qa-q-text {
+  font-family:'DM Sans',sans-serif; font-weight:500;
+  font-size:.9rem; color:var(--ink); line-height:1.45;
+  display:flex; align-items:flex-start; gap:.6rem;
+}
+.qa-num {
+  font-family:'DM Mono',monospace; font-size:.65rem;
+  color:var(--amber); flex-shrink:0; margin-top:.1rem;
+  letter-spacing:.04em;
+}
+
+.qa-diff {
+  font-family:'DM Mono',monospace; font-size:.58rem;
+  padding:.15rem .5rem; border-radius:99px;
+  letter-spacing:.06em; text-transform:uppercase;
+  flex-shrink:0; margin-top:.1rem;
+}
+.qd-easy { background:#dcfce7; color:#166534; }
+.qd-mid  { background:#fef9c3; color:#854d0e; }
+.qd-hard { background:#fee2e2; color:#991b1b; }
+
+.qa-toggle {
+  font-size:1.3rem; color:var(--muted);
+  flex-shrink:0; transition:transform .3s; line-height:1;
+}
+.qa-card.open .qa-toggle { transform:rotate(45deg); color:var(--amber); }
+
+.qa-a {
+  display:none; padding:0 1.2rem 1.1rem;
+  font-size:.87rem; line-height:1.85; color:#5a4225;
+  border-top:1px solid var(--paper3); padding-top:.9rem;
+  font-weight:300;
+}
+.qa-card.open .qa-a { display:block; }
+
+.qa-a code {
+  font-family:'DM Mono',monospace; font-size:.78em;
+  background:var(--paper3); padding:.1em .35em; border-radius:3px;
+  color:var(--amber);
+}
+
+/* ── TWO COLUMN GRID ── */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:.8rem 0; }
+@media(max-width:600px) { .two-col { grid-template-columns:1fr; } }
+
+.mini-card {
+  background:var(--paper2); border:1px solid var(--border);
+  border-radius:8px; padding:1rem;
+}
+.mini-card h4 {
+  font-family:'DM Sans',sans-serif; font-weight:500;
+  font-size:.85rem; margin-bottom:.4rem; color:var(--ink);
+}
+.mini-card p { font-size:.82rem; color:var(--muted); line-height:1.6; margin:0!important; font-weight:300; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:var(--paper2); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:99px; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:760px) {
+  .layout { grid-template-columns:1fr; }
+  .sidebar { position:static; }
+  .header-nav { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">NLP<span class="logo-dot">·</span>Guide</div>
+  <div class="header-nav" id="headerNav"></div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-rings">
+    <div class="hero-ring"></div><div class="hero-ring"></div>
+    <div class="hero-ring"></div><div class="hero-ring"></div>
+  </div>
+  <div class="hero-eyebrow">Natural Language Processing · Complete Reference</div>
+  <h1>Master <em>NLP</em><br>from Ground Up</h1>
+  <p class="hero-sub">Every concept from tokenisation to LLMs — structured, practical, and interview-ready.</p>
+  <div class="topic-strip" id="topicStrip"></div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-head">📚 Topics</div>
+    <div id="sidebarNav"></div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content" id="contentArea"></div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════ */
+const topics = [
+  { id:'intro',      icon:'🌐', label:'NLP Overview',       color:'tc-amber',  level:'b', levelLabel:'Beginner' },
+  { id:'text-prep',  icon:'✂️', label:'Text Preprocessing', color:'tc-amber',  level:'b', levelLabel:'Beginner' },
+  { id:'tokenize',   icon:'🔤', label:'Tokenisation',       color:'tc-amber',  level:'b', levelLabel:'Beginner' },
+  { id:'pos-ner',    icon:'🏷️', label:'POS & NER',          color:'tc-teal',   level:'i', levelLabel:'Intermediate' },
+  { id:'embeddings', icon:'📐', label:'Word Embeddings',    color:'tc-teal',   level:'i', levelLabel:'Intermediate' },
+  { id:'language-models', icon:'🧮', label:'Language Models', color:'tc-teal', level:'i', levelLabel:'Intermediate' },
+  { id:'sentiment',  icon:'💬', label:'Sentiment Analysis', color:'tc-teal',   level:'i', levelLabel:'Intermediate' },
+  { id:'text-class', icon:'📂', label:'Text Classification',color:'tc-rose',   level:'a', levelLabel:'Advanced' },
+  { id:'seq2seq',    icon:'🔁', label:'Seq2Seq & Attention', color:'tc-rose',  level:'a', levelLabel:'Advanced' },
+  { id:'transformers',icon:'⚡', label:'Transformers',      color:'tc-rose',   level:'a', levelLabel:'Advanced' },
+  { id:'llm',        icon:'🤖', label:'LLMs & RLHF',        color:'tc-violet', level:'a', levelLabel:'Advanced' },
+  { id:'rag',        icon:'🔍', label:'RAG & Vector DB',    color:'tc-violet', level:'a', levelLabel:'Advanced' },
+  { id:'interview',  icon:'🎯', label:'Interview Q&A',      color:'tc-sage',   level:'q', levelLabel:'Interview' },
+];
+
+const sections = {
+
+/* ─────────────────────────────── INTRO ─────────────────────────────── */
+intro: `
+<div class="sec-title-row">
+  <div class="sec-title-icon">🌐</div>
+  <div>
+    <span class="sec-badge sb-b">Beginner</span>
+    <div class="sec-title">What is NLP?</div>
+    <div class="sec-meta">Foundation · ~15 min · No prerequisites</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">🌐</span>Natural Language Processing Defined</div>
+  <p>NLP is a subfield of AI that enables computers to understand, interpret, and generate human language. It sits at the intersection of linguistics, computer science, and machine learning.</p>
+  <p>From spam filters to ChatGPT — every system that reads, writes, or understands text is built on NLP foundations.</p>
+  <div class="callout cl-info">
+    <span class="callout-icon">💡</span>
+    <span><strong>Key insight:</strong> Language is ambiguous, context-dependent, and constantly evolving — this is what makes NLP hard and fascinating.</span>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">🗺️</span>The NLP Landscape</div>
+  <p>NLP tasks span a wide spectrum of complexity:</p>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Category</th><th>Tasks</th><th>Difficulty</th></tr>
+      <tr><td>Text Understanding</td><td>Classification, Sentiment, NER, POS</td><td>Beginner–Mid</td></tr>
+      <tr><td>Text Generation</td><td>Summarisation, Translation, QA</td><td>Intermediate</td></tr>
+      <tr><td>Semantic Tasks</td><td>Similarity, Entailment, Coreference</td><td>Intermediate</td></tr>
+      <tr><td>Dialogue</td><td>Chatbots, Intent Detection, Slot Filling</td><td>Advanced</td></tr>
+      <tr><td>Large Language Models</td><td>Few-shot, RLHF, RAG, Agents</td><td>Advanced</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fdf4ff">🛠️</span>Core Python Libraries</div>
+  <div class="tags">
+    <span class="tag">NLTK</span><span class="tag">spaCy</span><span class="tag">HuggingFace Transformers</span>
+    <span class="tag">Gensim</span><span class="tag">scikit-learn</span><span class="tag">TextBlob</span>
+    <span class="tag">fastText</span><span class="tag">LangChain</span><span class="tag">sentence-transformers</span>
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">bash · install stack</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre>pip install nltk spacy transformers datasets
+pip install sentence-transformers langchain
+python -m spacy download en_core_web_sm</pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">📍</span>The Standard NLP Pipeline</div>
+  <div class="pipeline">
+    <div class="pipe-step ps-amber">Raw Text</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-teal">Preprocess</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-rose">Tokenise</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-violet">Vectorise</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-sage">Model</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-ink">Output</div>
+  </div>
+</div>`,
+
+/* ─────────────────────────────── TEXT PREP ─────────────────────────────── */
+'text-prep': `
+<div class="sec-title-row">
+  <div class="sec-title-icon">✂️</div>
+  <div>
+    <span class="sec-badge sb-b">Beginner</span>
+    <div class="sec-title">Text Preprocessing</div>
+    <div class="sec-meta">Cleaning · Normalisation · Noise Removal</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">🧹</span>Why Preprocessing Matters</div>
+  <p>Raw text is messy — HTML tags, punctuation, inconsistent casing, emojis, stopwords. Preprocessing standardises text so models can learn meaningful patterns rather than noise.</p>
+  <p><strong>Rule of thumb:</strong> 80% of NLP work is data cleaning.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">🔡</span>Core Preprocessing Steps</div>
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Lowercasing</h4><p>Convert all text to lowercase to reduce vocabulary size. "Apple" and "apple" become the same token.</p></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Remove Punctuation & Special Characters</h4><p>Strip symbols, HTML entities, URLs, and emojis unless they carry semantic meaning for your task.</p></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Stop Word Removal</h4><p>Remove high-frequency, low-information words (the, is, at, which). Use with caution for tasks where word order matters.</p></div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-body"><h4>Stemming / Lemmatisation</h4><p>Reduce words to root form. "running" → "run". Stemming is faster; lemmatisation is linguistically correct.</p></div></div>
+    <div class="step"><div class="step-n">5</div><div class="step-body"><h4>Normalisation</h4><p>Expand contractions ("don't" → "do not"), handle abbreviations, fix spelling errors.</p></div></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">💻</span>Full Preprocessing Pipeline</div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · NLTK + regex</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">import</span> re, string
+<span class="kw">import</span> nltk
+<span class="kw">from</span> nltk.corpus <span class="kw">import</span> stopwords
+<span class="kw">from</span> nltk.stem <span class="kw">import</span> WordNetLemmatizer, PorterStemmer
+<span class="kw">from</span> nltk.tokenize <span class="kw">import</span> word_tokenize
+
+nltk.<span class="fn">download</span>([<span class="str">'punkt'</span>,<span class="str">'stopwords'</span>,<span class="str">'wordnet'</span>], quiet=<span class="kw">True</span>)
+
+lemmatizer = <span class="cls">WordNetLemmatizer</span>()
+stemmer    = <span class="cls">PorterStemmer</span>()
+stop_words = <span class="fn">set</span>(stopwords.<span class="fn">words</span>(<span class="str">'english'</span>))
+
+<span class="kw">def</span> <span class="fn">preprocess</span>(text, use_lemma=<span class="kw">True</span>):
+    text = text.<span class="fn">lower</span>()                          <span class="cm"># lowercase</span>
+    text = re.<span class="fn">sub</span>(<span class="str">r'http\S+'</span>, <span class="str">''</span>, text)        <span class="cm"># remove URLs</span>
+    text = re.<span class="fn">sub</span>(<span class="str">r'[^a-z\s]'</span>, <span class="str">''</span>, text)       <span class="cm"># keep letters</span>
+    tokens = <span class="fn">word_tokenize</span>(text)
+    tokens = [t <span class="kw">for</span> t <span class="kw">in</span> tokens <span class="kw">if</span> t <span class="kw">not in</span> stop_words]
+    <span class="kw">if</span> use_lemma:
+        tokens = [lemmatizer.<span class="fn">lemmatize</span>(t) <span class="kw">for</span> t <span class="kw">in</span> tokens]
+    <span class="kw">else</span>:
+        tokens = [stemmer.<span class="fn">stem</span>(t) <span class="kw">for</span> t <span class="kw">in</span> tokens]
+    <span class="kw">return</span> <span class="str">' '</span>.<span class="fn">join</span>(tokens)
+
+text = <span class="str">"Running faster than ever! Check out https://example.com"</span>
+<span class="fn">print</span>(<span class="fn">preprocess</span>(text))
+<span class="cm"># → "running fast ever check"</span></pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fdf4ff">⚖️</span>Stemming vs Lemmatisation</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Word</th><th>Stemmed (Porter)</th><th>Lemmatised</th></tr>
+      <tr><td>studies</td><td>studi</td><td>study</td></tr>
+      <tr><td>running</td><td>run</td><td>run</td></tr>
+      <tr><td>better</td><td>better</td><td>good</td></tr>
+      <tr><td>caring</td><td>care</td><td>care</td></tr>
+    </table>
+  </div>
+  <div class="callout cl-warn"><span class="callout-icon">⚠️</span><span>For modern transformer models, skip stemming/lemmatisation entirely — the tokeniser handles sub-word decomposition.</span></div>
+</div>`,
+
+/* ─────────────────────────────── TOKENISE ─────────────────────────────── */
+tokenize: `
+<div class="sec-title-row">
+  <div class="sec-title-icon">🔤</div>
+  <div>
+    <span class="sec-badge sb-b">Beginner</span>
+    <div class="sec-title">Tokenisation</div>
+    <div class="sec-meta">Word · Sub-word · BPE · WordPiece · SentencePiece</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">🔤</span>What is a Token?</div>
+  <p>A token is the atomic unit of text a model processes. Depending on the tokeniser, a token can be a word, sub-word, character, or byte. Models have a fixed vocabulary and process sequences of token IDs, not raw strings.</p>
+  <div class="formula">Text → Token IDs → Embeddings → Model
+"Hello world" → [15496, 995] → [[...], [...]] → forward()</div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">📊</span>Tokenisation Methods Compared</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Method</th><th>Unit</th><th>Vocab Size</th><th>Used By</th></tr>
+      <tr><td>Word</td><td>Whole words</td><td>50K–200K</td><td>Early NLP, Word2Vec</td></tr>
+      <tr><td>Character</td><td>Single chars</td><td>~100</td><td>Character RNNs</td></tr>
+      <tr><td>BPE</td><td>Sub-words</td><td>30K–50K</td><td>GPT-2/3/4, RoBERTa</td></tr>
+      <tr><td>WordPiece</td><td>Sub-words</td><td>30K</td><td>BERT, DistilBERT</td></tr>
+      <tr><td>SentencePiece</td><td>Sub-words</td><td>32K</td><td>T5, LLaMA, Gemma</td></tr>
+      <tr><td>Byte-level BPE</td><td>Bytes+merges</td><td>50K</td><td>GPT-4, Llama-3</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">⚙️</span>BPE Algorithm Step by Step</div>
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Start with characters</h4><p>Initialise vocabulary with all unique characters in corpus + end-of-word symbol.</p></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Count pair frequencies</h4><p>Count all adjacent symbol pairs across the corpus. Find the most frequent.</p></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Merge most frequent pair</h4><p>Combine the top pair into a new token and add to vocabulary.</p></div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-body"><h4>Repeat</h4><p>Iterate until vocabulary reaches target size (typically 30K–50K).</p></div></div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · HuggingFace Tokeniser</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">from</span> transformers <span class="kw">import</span> AutoTokenizer
+
+tokenizer = AutoTokenizer.<span class="fn">from_pretrained</span>(<span class="str">"bert-base-uncased"</span>)
+
+text = <span class="str">"Tokenisation splits text into sub-words."</span>
+tokens = tokenizer.<span class="fn">tokenize</span>(text)
+ids    = tokenizer.<span class="fn">encode</span>(text, return_tensors=<span class="str">"pt"</span>)
+
+<span class="fn">print</span>(tokens)
+<span class="cm"># ['token', '##ization', 'splits', 'text', 'into', 'sub', '-', 'words', '.']</span>
+<span class="fn">print</span>(ids.shape)  <span class="cm"># [1, 11] including [CLS] and [SEP]</span></pre>
+  </div>
+</div>`,
+
+/* ─────────────────────────────── POS & NER ─────────────────────────────── */
+'pos-ner': `
+<div class="sec-title-row">
+  <div class="sec-title-icon">🏷️</div>
+  <div>
+    <span class="sec-badge sb-i">Intermediate</span>
+    <div class="sec-title">POS Tagging & NER</div>
+    <div class="sec-meta">Part-of-Speech · Named Entity Recognition · Dependency Parsing</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">🏷️</span>Part-of-Speech Tagging</div>
+  <p>POS tagging assigns a grammatical category (noun, verb, adjective…) to each token. It's a sequence labelling problem where context determines the label.</p>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · spaCy POS</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">import</span> spacy
+nlp = spacy.<span class="fn">load</span>(<span class="str">"en_core_web_sm"</span>)
+
+doc = nlp(<span class="str">"Apple is looking at buying U.K. startup for $1 billion"</span>)
+<span class="kw">for</span> token <span class="kw">in</span> doc:
+    <span class="fn">print</span>(f<span class="str">"{token.text:15} {token.pos_:6} {token.tag_:6} {token.dep_}"</span>)
+<span class="cm"># Apple          PROPN  NNP    nsubj
+# is             AUX    VBZ    aux
+# looking        VERB   VBG    ROOT
+# buying         VERB   VBG    pcomp
+# U.K.           PROPN  NNP    dobj</span></pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">🔍</span>Named Entity Recognition</div>
+  <p>NER identifies and classifies named entities (persons, organisations, locations, dates, currencies…) in unstructured text.</p>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Entity Type</th><th>Example</th><th>Label</th></tr>
+      <tr><td>Person</td><td>Elon Musk</td><td>PERSON</td></tr>
+      <tr><td>Organisation</td><td>OpenAI</td><td>ORG</td></tr>
+      <tr><td>Location</td><td>San Francisco</td><td>GPE</td></tr>
+      <tr><td>Date</td><td>January 2024</td><td>DATE</td></tr>
+      <tr><td>Money</td><td>$1 billion</td><td>MONEY</td></tr>
+      <tr><td>Product</td><td>iPhone 16</td><td>PRODUCT</td></tr>
+    </table>
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · spaCy NER</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre>doc = nlp(<span class="str">"Google acquired YouTube in 2006 for $1.65 billion."</span>)
+<span class="kw">for</span> ent <span class="kw">in</span> doc.ents:
+    <span class="fn">print</span>(f<span class="str">"{ent.text:20} → {ent.label_}"</span>)
+<span class="cm"># Google               → ORG
+# YouTube              → ORG
+# 2006                 → DATE
+# $1.65 billion        → MONEY</span></pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">🌳</span>Dependency Parsing</div>
+  <p>Dependency parsing identifies grammatical relationships between words — which word is the subject, object, modifier of which other word. Produces a directed tree rooted at the main verb.</p>
+  <div class="callout cl-tip"><span class="callout-icon">✅</span><span>Modern transformer-based NER (e.g. <strong>dslim/bert-base-NER</strong> on HuggingFace) achieves 91–93% F1 on CoNLL-2003 — use this over spaCy for production extraction tasks.</span></div>
+</div>`,
+
+/* ─────────────────────────────── EMBEDDINGS ─────────────────────────────── */
+embeddings: `
+<div class="sec-title-row">
+  <div class="sec-title-icon">📐</div>
+  <div>
+    <span class="sec-badge sb-i">Intermediate</span>
+    <div class="sec-title">Word Embeddings</div>
+    <div class="sec-meta">Word2Vec · GloVe · FastText · Contextual · SBERT</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">📐</span>Why Embeddings?</div>
+  <p>Raw tokens are symbols. Models need numbers. Embeddings map tokens to dense vectors in a continuous space where <em>semantic similarity = geometric proximity</em>.</p>
+  <div class="formula">king − man + woman ≈ queen   (Word2Vec arithmetic)
+cosine_similarity(emb("cat"), emb("dog")) ≈ 0.92</div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">🔵</span>Word2Vec</div>
+  <p>Word2Vec (Mikolov 2013) learns embeddings by training a shallow neural net to predict context from words. Two architectures:</p>
+  <div class="two-col">
+    <div class="mini-card"><h4>CBOW</h4><p>Continuous Bag of Words — predict target word from surrounding context words. Faster, good for frequent words.</p></div>
+    <div class="mini-card"><h4>Skip-gram</h4><p>Predict context words from target word. Slower but better for rare words and small datasets.</p></div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · Gensim Word2Vec</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">from</span> gensim.models <span class="kw">import</span> Word2Vec
+
+sentences = [[<span class="str">"the"</span>,<span class="str">"cat"</span>,<span class="str">"sat"</span>],[<span class="str">"the"</span>,<span class="str">"dog"</span>,<span class="str">"ran"</span>]]
+model = <span class="cls">Word2Vec</span>(sentences, vector_size=<span class="num">100</span>, window=<span class="num">5</span>,
+                  min_count=<span class="num">1</span>, sg=<span class="num">1</span>)  <span class="cm"># sg=1 → skip-gram</span>
+
+<span class="fn">print</span>(model.wv.<span class="fn">most_similar</span>(<span class="str">"cat"</span>, topn=<span class="num">3</span>))
+<span class="fn">print</span>(model.wv.<span class="fn">similarity</span>(<span class="str">"cat"</span>, <span class="str">"dog"</span>))
+<span class="fn">print</span>(model.wv.<span class="fn">most_similar</span>(positive=[<span class="str">"king"</span>,<span class="str">"woman"</span>],
+                              negative=[<span class="str">"man"</span>], topn=<span class="num">1</span>))</pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fdf4ff">🌍</span>GloVe, FastText, and Beyond</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Model</th><th>Key Idea</th><th>Advantage</th></tr>
+      <tr><td>Word2Vec</td><td>Local context window</td><td>Fast, analogy tasks</td></tr>
+      <tr><td>GloVe</td><td>Global co-occurrence matrix</td><td>Better corpus statistics</td></tr>
+      <tr><td>FastText</td><td>Character n-grams inside words</td><td>Handles OOV &amp; morphology</td></tr>
+      <tr><td>ELMo</td><td>BiLSTM contextual embeddings</td><td>Context-dependent vectors</td></tr>
+      <tr><td>BERT</td><td>Transformer contextual</td><td>State-of-the-art representations</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">🔗</span>Sentence Embeddings with SBERT</div>
+  <p>SBERT fine-tunes BERT with a Siamese network for sentence-level semantic similarity. Produces fixed-size sentence vectors suitable for clustering, semantic search, and retrieval.</p>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · sentence-transformers</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">from</span> sentence_transformers <span class="kw">import</span> SentenceTransformer, util
+
+model = <span class="cls">SentenceTransformer</span>(<span class="str">'all-MiniLM-L6-v2'</span>)
+
+sentences = [<span class="str">"The cat sits outside"</span>, <span class="str">"A dog plays in the garden"</span>,
+             <span class="str">"I love pasta"</span>]
+embeddings = model.<span class="fn">encode</span>(sentences, convert_to_tensor=<span class="kw">True</span>)
+scores = util.<span class="fn">cos_sim</span>(embeddings, embeddings)
+<span class="fn">print</span>(scores)
+<span class="cm"># cat/dog ≈ 0.65  |  cat/pasta ≈ 0.08</span></pre>
+  </div>
+</div>`,
+
+/* ─────────────────────────────── LANGUAGE MODELS ─────────────────────────────── */
+'language-models': `
+<div class="sec-title-row">
+  <div class="sec-title-icon">🧮</div>
+  <div>
+    <span class="sec-badge sb-i">Intermediate</span>
+    <div class="sec-title">Language Models</div>
+    <div class="sec-meta">N-gram · RNN · LSTM · Perplexity · Evaluation</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">🧮</span>What is a Language Model?</div>
+  <p>A language model assigns a probability to any sequence of words: P(w₁, w₂, …, wₙ). Using the chain rule:</p>
+  <div class="formula">P(w₁…wₙ) = ∏ᵢ P(wᵢ | w₁…wᵢ₋₁)</div>
+  <p>Language models power autocomplete, speech recognition, machine translation, and form the backbone of all LLMs.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">📊</span>N-gram Language Models</div>
+  <p>N-gram models approximate the full history by using only the last N-1 words (Markov assumption):</p>
+  <div class="formula">P(wᵢ | w₁…wᵢ₋₁) ≈ P(wᵢ | wᵢ₋ₙ₊₁…wᵢ₋₁) = count(wᵢ₋ₙ₊₁…wᵢ) / count(wᵢ₋ₙ₊₁…wᵢ₋₁)</div>
+  <div class="two-col">
+    <div class="mini-card"><h4>Advantages</h4><p>Simple, interpretable, no training. Works well for short contexts.</p></div>
+    <div class="mini-card"><h4>Disadvantages</h4><p>Exponential data sparsity. No long-range dependencies. Needs smoothing (Laplace, Kneser-Ney).</p></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">🔄</span>RNN and LSTM Language Models</div>
+  <p>Recurrent Neural Networks process sequences step-by-step, maintaining a hidden state that summarises past context.</p>
+  <p><strong>LSTM</strong> (Long Short-Term Memory) adds gates — forget, input, output — to selectively retain/forget information over long distances, solving the vanishing gradient problem of vanilla RNNs.</p>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · LSTM Language Model (PyTorch)</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="kw">class</span> <span class="cls">LSTMLanguageModel</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, vocab_size, embed_dim=<span class="num">128</span>, hidden=<span class="num">256</span>, layers=<span class="num">2</span>):
+        <span class="fn">super</span>().__init__()
+        self.embed = nn.<span class="fn">Embedding</span>(vocab_size, embed_dim)
+        self.lstm  = nn.<span class="fn">LSTM</span>(embed_dim, hidden, layers, batch_first=<span class="kw">True</span>)
+        self.fc    = nn.<span class="fn">Linear</span>(hidden, vocab_size)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x, hidden=<span class="kw">None</span>):
+        x = self.<span class="fn">embed</span>(x)
+        out, hidden = self.<span class="fn">lstm</span>(x, hidden)
+        <span class="kw">return</span> self.<span class="fn">fc</span>(out), hidden</pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fdf4ff">📏</span>Perplexity — Evaluating Language Models</div>
+  <p>Perplexity measures how well a probability model predicts a test set. Lower = better.</p>
+  <div class="formula">PP(W) = P(w₁w₂…wₙ)^(-1/N) = exp( -1/N · Σᵢ log P(wᵢ|context) )</div>
+  <p>Intuitively, a perplexity of 100 means the model is as confused as if it had to choose uniformly among 100 words at each step.</p>
+  <div class="callout cl-info"><span class="callout-icon">📌</span><span>GPT-2 achieves ~18 perplexity on Penn Treebank. GPT-4 is estimated ~5. Human upper bound is ~12.</span></div>
+</div>`,
+
+/* ─────────────────────────────── SENTIMENT ─────────────────────────────── */
+sentiment: `
+<div class="sec-title-row">
+  <div class="sec-title-icon">💬</div>
+  <div>
+    <span class="sec-badge sb-i">Intermediate</span>
+    <div class="sec-title">Sentiment Analysis</div>
+    <div class="sec-meta">Opinion Mining · Aspect-Level · VADER · Transformers</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">💬</span>Types of Sentiment Analysis</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Level</th><th>Task</th><th>Example</th></tr>
+      <tr><td>Document</td><td>Overall sentiment of a review</td><td>"Positive" / "Negative"</td></tr>
+      <tr><td>Sentence</td><td>Per-sentence polarity</td><td>Mixed document detection</td></tr>
+      <tr><td>Aspect-based</td><td>Sentiment per aspect</td><td>"battery: neg, camera: pos"</td></tr>
+      <tr><td>Fine-grained</td><td>5-star scale prediction</td><td>3/5 stars from review text</td></tr>
+      <tr><td>Emotion</td><td>Emotion category detection</td><td>joy, anger, fear, surprise</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">⚡</span>Rule-based: VADER</div>
+  <p>VADER (Valence Aware Dictionary and sEntiment Reasoner) uses a lexicon + rules. Works well on social media text without training.</p>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · VADER</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">from</span> vaderSentiment.vaderSentiment <span class="kw">import</span> SentimentIntensityAnalyzer
+
+sia = <span class="cls">SentimentIntensityAnalyzer</span>()
+texts = [
+    <span class="str">"I LOVE this product!!! 😍"</span>,
+    <span class="str">"Not great, but not terrible either."</span>,
+    <span class="str">"This is the WORST experience I've ever had."</span>
+]
+<span class="kw">for</span> t <span class="kw">in</span> texts:
+    scores = sia.<span class="fn">polarity_scores</span>(t)
+    <span class="fn">print</span>(f<span class="str">"{scores['compound']:+.2f} | {t}"</span>)
+<span class="cm"># +0.84 | I LOVE this product!!! 😍
+# -0.01 | Not great, but not terrible...
+# -0.75 | This is the WORST...</span></pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">🤗</span>Transformer-based Sentiment</div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · HuggingFace Pipeline</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+
+<span class="cm"># Zero-shot with general sentiment model</span>
+sa = <span class="fn">pipeline</span>(<span class="str">"sentiment-analysis"</span>,
+              model=<span class="str">"cardiffnlp/twitter-roberta-base-sentiment-latest"</span>)
+
+results = <span class="fn">sa</span>([
+    <span class="str">"The service was absolutely amazing!"</span>,
+    <span class="str">"I waited 2 hours and they got my order wrong."</span>
+])
+<span class="kw">for</span> r <span class="kw">in</span> results:
+    <span class="fn">print</span>(f<span class="str">"{r['label']:10} ({r['score']:.2%})"</span>)
+<span class="cm"># positive   (99.12%)
+# negative   (97.84%)</span></pre>
+  </div>
+  <div class="callout cl-tip"><span class="callout-icon">✅</span><span><strong>For production:</strong> Use <code>cardiffnlp/twitter-roberta-base-sentiment-latest</code> for social media, <code>nlptown/bert-base-multilingual-uncased-sentiment</code> for reviews.</span></div>
+</div>`,
+
+/* ─────────────────────────────── TEXT CLASSIFICATION ─────────────────────────────── */
+'text-class': `
+<div class="sec-title-row">
+  <div class="sec-title-icon">📂</div>
+  <div>
+    <span class="sec-badge sb-a">Advanced</span>
+    <div class="sec-title">Text Classification</div>
+    <div class="sec-meta">TF-IDF · Naive Bayes · Fine-tuned BERT · Multi-label</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">📊</span>TF-IDF + Classical ML</div>
+  <p>TF-IDF (Term Frequency × Inverse Document Frequency) converts text to sparse vectors. Combined with Logistic Regression or SVM, this is a strong baseline.</p>
+  <div class="formula">TF-IDF(t,d) = TF(t,d) × log(N / df(t))
+TF(t,d) = count(t in d) / total_terms(d)</div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · scikit-learn Pipeline</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.feature_extraction.text <span class="kw">import</span> TfidfVectorizer
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> classification_report
+
+pipe = <span class="cls">Pipeline</span>([
+    (<span class="str">'tfidf'</span>, <span class="cls">TfidfVectorizer</span>(max_features=<span class="num">50000</span>, ngram_range=(<span class="num">1</span>,<span class="num">2</span>))),
+    (<span class="str">'clf'</span>,  <span class="cls">LogisticRegression</span>(max_iter=<span class="num">1000</span>, C=<span class="num">5.0</span>))
+])
+pipe.<span class="fn">fit</span>(X_train, y_train)
+<span class="fn">print</span>(<span class="fn">classification_report</span>(y_test, pipe.<span class="fn">predict</span>(X_test)))</pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">🤗</span>Fine-tuning BERT for Classification</div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · BERT Fine-tune</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">from</span> transformers <span class="kw">import</span> (AutoTokenizer,
+    AutoModelForSequenceClassification, TrainingArguments, Trainer)
+<span class="kw">from</span> datasets <span class="kw">import</span> load_dataset
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+dataset  = <span class="fn">load_dataset</span>(<span class="str">"ag_news"</span>)  <span class="cm"># 4-class news topic</span>
+tokenizer = AutoTokenizer.<span class="fn">from_pretrained</span>(<span class="str">"distilbert-base-uncased"</span>)
+
+<span class="kw">def</span> <span class="fn">tokenize</span>(b): <span class="kw">return</span> <span class="fn">tokenizer</span>(b[<span class="str">"text"</span>], truncation=<span class="kw">True</span>, padding=<span class="kw">True</span>)
+dataset = dataset.<span class="fn">map</span>(tokenize, batched=<span class="kw">True</span>)
+
+model = AutoModelForSequenceClassification.<span class="fn">from_pretrained</span>(
+    <span class="str">"distilbert-base-uncased"</span>, num_labels=<span class="num">4</span>)
+
+args = <span class="cls">TrainingArguments</span>(output_dir=<span class="str">"./clf"</span>, num_train_epochs=<span class="num">3</span>,
+    per_device_train_batch_size=<span class="num">32</span>, learning_rate=<span class="num">2e-5</span>, fp16=<span class="kw">True</span>)
+
+<span class="cls">Trainer</span>(model=model, args=args,
+    train_dataset=dataset[<span class="str">"train"</span>],
+    eval_dataset=dataset[<span class="str">"test"</span>]).<span class="fn">train</span>()</pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">🏷️</span>Multi-label Classification</div>
+  <p>When each sample can belong to multiple classes simultaneously (e.g. a news article tagged as both "Technology" and "Business"), use sigmoid instead of softmax with Binary Cross-Entropy loss.</p>
+  <div class="formula">Loss = -1/N Σᵢ [ yᵢ·log(σ(ŷᵢ)) + (1-yᵢ)·log(1-σ(ŷᵢ)) ]
+Threshold: predict label if σ(ŷ) > 0.5</div>
+</div>`,
+
+/* ─────────────────────────────── SEQ2SEQ ─────────────────────────────── */
+seq2seq: `
+<div class="sec-title-row">
+  <div class="sec-title-icon">🔁</div>
+  <div>
+    <span class="sec-badge sb-a">Advanced</span>
+    <div class="sec-title">Seq2Seq & Attention</div>
+    <div class="sec-meta">Encoder-Decoder · Bahdanau Attention · Beam Search</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">🔁</span>Encoder-Decoder Architecture</div>
+  <p>Seq2Seq models map a variable-length input sequence to a variable-length output — ideal for translation, summarisation, and QA. The encoder compresses the source into a context vector; the decoder generates the output step by step.</p>
+  <div class="pipeline">
+    <div class="pipe-step ps-amber">Input Tokens</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-teal">Encoder (LSTM)</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-rose">Context Vector</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-violet">Decoder (LSTM)</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-sage">Output Tokens</div>
+  </div>
+  <div class="callout cl-warn"><span class="callout-icon">⚠️</span><span><strong>Bottleneck problem:</strong> compressing an entire long sentence into one fixed vector loses information. Attention was invented to solve this.</span></div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">🎯</span>Bahdanau Attention</div>
+  <p>Instead of a single context vector, Bahdanau attention (2015) computes a <em>weighted sum of all encoder hidden states</em> for each decoder step. The weights (alignment scores) are learned.</p>
+  <div class="formula">score(sₜ, hᵢ) = vᵀ · tanh(Wₛ·sₜ + Wₕ·hᵢ)
+αᵢ = softmax(score(sₜ, hᵢ))
+cₜ = Σᵢ αᵢ · hᵢ</div>
+  <p>Where sₜ is the decoder state at step t, hᵢ are encoder states, and cₜ is the context for decoding token t.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">🔦</span>Beam Search Decoding</div>
+  <p>Greedy decoding picks the highest-probability token at each step — fast but suboptimal. Beam search maintains the top-B hypotheses at each step, balancing quality and compute.</p>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Strategy</th><th>Beam Width</th><th>Quality</th><th>Speed</th></tr>
+      <tr><td>Greedy</td><td>1</td><td>Low</td><td>Fastest</td></tr>
+      <tr><td>Beam Search</td><td>4–10</td><td>High</td><td>Slow ×B</td></tr>
+      <tr><td>Sampling (top-p)</td><td>—</td><td>Diverse</td><td>Fast</td></tr>
+      <tr><td>Contrastive Search</td><td>—</td><td>Best diversity+quality</td><td>Medium</td></tr>
+    </table>
+  </div>
+</div>`,
+
+/* ─────────────────────────────── TRANSFORMERS ─────────────────────────────── */
+transformers: `
+<div class="sec-title-row">
+  <div class="sec-title-icon">⚡</div>
+  <div>
+    <span class="sec-badge sb-a">Advanced</span>
+    <div class="sec-title">Transformers in NLP</div>
+    <div class="sec-meta">Self-Attention · BERT · T5 · Architecture Deep Dive</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">⚡</span>"Attention Is All You Need" (2017)</div>
+  <p>The seminal paper by Vaswani et al. replaced recurrence with self-attention entirely. The Transformer processes <em>all positions in parallel</em>, making it far more trainable on modern hardware.</p>
+  <div class="two-col">
+    <div class="mini-card"><h4>Why Transformers Win</h4><p>Parallelisable training. No sequential bottleneck. Captures any-distance dependencies in one layer.</p></div>
+    <div class="mini-card"><h4>Key Components</h4><p>Multi-head self-attention, positional encoding, feed-forward layers, residual connections, layer norm.</p></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">🔢</span>Scaled Dot-Product Attention</div>
+  <div class="formula">Attention(Q, K, V) = softmax(QKᵀ / √dₖ) · V
+MultiHead = Concat(head₁…headₕ) · Wᴼ</div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · Attention from Scratch</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">import</span> torch, math
+
+<span class="kw">def</span> <span class="fn">scaled_dot_product_attention</span>(Q, K, V, mask=<span class="kw">None</span>):
+    d_k = Q.size(-<span class="num">1</span>)
+    scores = torch.<span class="fn">matmul</span>(Q, K.<span class="fn">transpose</span>(-<span class="num">2</span>, -<span class="num">1</span>)) / math.<span class="fn">sqrt</span>(d_k)
+    <span class="kw">if</span> mask <span class="kw">is not None</span>:
+        scores = scores.<span class="fn">masked_fill</span>(mask == <span class="num">0</span>, <span class="num">-1e9</span>)
+    weights = torch.nn.functional.<span class="fn">softmax</span>(scores, dim=-<span class="num">1</span>)
+    <span class="kw">return</span> torch.<span class="fn">matmul</span>(weights, V), weights</pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">🗃️</span>BERT vs GPT vs T5</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Model</th><th>Architecture</th><th>Objective</th><th>Best For</th></tr>
+      <tr><td>BERT</td><td>Encoder</td><td>Masked LM + NSP</td><td>Classification, NER, QA</td></tr>
+      <tr><td>GPT-2/3</td><td>Decoder</td><td>Causal LM</td><td>Generation, completion</td></tr>
+      <tr><td>T5</td><td>Enc-Dec</td><td>Span corruption</td><td>Seq2seq, all tasks unified</td></tr>
+      <tr><td>RoBERTa</td><td>Encoder</td><td>Masked LM (no NSP)</td><td>Classification, STS</td></tr>
+      <tr><td>DeBERTa</td><td>Encoder</td><td>MLM + disentangled</td><td>NLI, GLUE tasks</td></tr>
+    </table>
+  </div>
+</div>`,
+
+/* ─────────────────────────────── LLM ─────────────────────────────── */
+llm: `
+<div class="sec-title-row">
+  <div class="sec-title-icon">🤖</div>
+  <div>
+    <span class="sec-badge sb-a">Advanced</span>
+    <div class="sec-title">LLMs & RLHF</div>
+    <div class="sec-meta">Pre-training · SFT · RLHF · DPO · Prompt Engineering · Agents</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">🤖</span>LLM Training Pipeline</div>
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Pre-training</h4><p>Next-token prediction on trillions of tokens from the web, books, code. Learns world knowledge and language structure. Most expensive phase.</p></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Supervised Fine-Tuning (SFT)</h4><p>Fine-tune on high-quality (prompt, response) pairs written by humans. Teaches the model to follow instructions.</p></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Reward Modelling</h4><p>Train a separate model to predict human preference between two responses. Produces a scalar reward signal.</p></div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-body"><h4>RLHF / DPO</h4><p>Optimise the LLM policy to maximise reward while staying close to SFT model (KL constraint). DPO skips the reward model entirely.</p></div></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">🎨</span>Prompt Engineering Techniques</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Technique</th><th>Description</th><th>When to Use</th></tr>
+      <tr><td>Zero-shot</td><td>Just a task description</td><td>Simple, well-known tasks</td></tr>
+      <tr><td>Few-shot</td><td>2–5 examples in prompt</td><td>Complex output format</td></tr>
+      <tr><td>Chain-of-Thought</td><td>"Think step by step"</td><td>Reasoning, maths</td></tr>
+      <tr><td>ReAct</td><td>Reason + Act + Observe loop</td><td>Agent tasks with tools</td></tr>
+      <tr><td>Self-consistency</td><td>Sample multiple, vote</td><td>Factual accuracy</td></tr>
+      <tr><td>RAG</td><td>Retrieve then generate</td><td>Knowledge-intensive QA</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">⚡</span>Running LLMs Locally</div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · LLaMA via HuggingFace</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">from</span> transformers <span class="kw">import</span> AutoModelForCausalLM, AutoTokenizer, pipeline
+<span class="kw">import</span> torch
+
+model_id = <span class="str">"meta-llama/Llama-3.2-3B-Instruct"</span>
+
+pipe = <span class="fn">pipeline</span>(
+    <span class="str">"text-generation"</span>, model=model_id,
+    model_kwargs={<span class="str">"torch_dtype"</span>: torch.bfloat16},
+    device_map=<span class="str">"auto"</span>
+)
+
+messages = [
+    {<span class="str">"role"</span>: <span class="str">"system"</span>, <span class="str">"content"</span>: <span class="str">"You are an NLP expert."</span>},
+    {<span class="str">"role"</span>: <span class="str">"user"</span>,   <span class="str">"content"</span>: <span class="str">"Explain attention in simple terms."</span>},
+]
+
+out = <span class="fn">pipe</span>(messages, max_new_tokens=<span class="num">256</span>, temperature=<span class="num">0.7</span>)
+<span class="fn">print</span>(out[<span class="num">0</span>][<span class="str">"generated_text"</span>][-<span class="num">1</span>][<span class="str">"content"</span>])</pre>
+  </div>
+</div>`,
+
+/* ─────────────────────────────── RAG ─────────────────────────────── */
+rag: `
+<div class="sec-title-row">
+  <div class="sec-title-icon">🔍</div>
+  <div>
+    <span class="sec-badge sb-a">Advanced</span>
+    <div class="sec-title">RAG & Vector Databases</div>
+    <div class="sec-meta">Retrieval-Augmented Generation · Embeddings · FAISS · ChromaDB</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#fef9c3">🔍</span>What is RAG?</div>
+  <p>RAG combines a retriever (finds relevant documents) with a generator (produces answers conditioned on those documents). It grounds LLM outputs in up-to-date, verifiable source material.</p>
+  <div class="pipeline">
+    <div class="pipe-step ps-amber">Query</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-teal">Embed Query</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-rose">Vector Search</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-violet">Top-K Chunks</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-sage">LLM + Context</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step ps-ink">Answer</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#f0fdf4">🗄️</span>Vector Databases</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>DB</th><th>Type</th><th>Scale</th><th>Best For</th></tr>
+      <tr><td>FAISS</td><td>Library</td><td>Millions</td><td>Local, research</td></tr>
+      <tr><td>ChromaDB</td><td>Embedded DB</td><td>Millions</td><td>Prototyping, local apps</td></tr>
+      <tr><td>Pinecone</td><td>Managed cloud</td><td>Billions</td><td>Production SaaS</td></tr>
+      <tr><td>Weaviate</td><td>Open-source</td><td>Billions</td><td>Hybrid search (text+vector)</td></tr>
+      <tr><td>Qdrant</td><td>Open-source</td><td>Billions</td><td>Self-hosted production</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ct-icon" style="background:#eff6ff">💻</span>Build a RAG Pipeline</div>
+  <div class="code-wrap">
+    <div class="code-header"><span class="code-lang">Python · ChromaDB + SBERT + LLM</span><div class="code-dots"><span></span><span></span><span></span></div></div>
+    <pre><span class="kw">import</span> chromadb
+<span class="kw">from</span> sentence_transformers <span class="kw">import</span> SentenceTransformer
+<span class="kw">from</span> transformers <span class="kw">import</span> pipeline <span class="kw">as</span> hf_pipeline
+
+<span class="cm"># 1. Embed and store documents</span>
+embedder = <span class="cls">SentenceTransformer</span>(<span class="str">'all-MiniLM-L6-v2'</span>)
+client   = chromadb.<span class="cls">Client</span>()
+coll     = client.<span class="fn">get_or_create_collection</span>(<span class="str">"nlp_docs"</span>)
+
+docs = [<span class="str">"NLP stands for Natural Language Processing."</span>,
+        <span class="str">"BERT is a bidirectional transformer model."</span>,
+        <span class="str">"RAG retrieves relevant documents before generating."</span>]
+
+coll.<span class="fn">add</span>(documents=docs, ids=[<span class="str">"d1"</span>,<span class="str">"d2"</span>,<span class="str">"d3"</span>],
+    embeddings=embedder.<span class="fn">encode</span>(docs).<span class="fn">tolist</span>())
+
+<span class="cm"># 2. Retrieve and generate</span>
+query = <span class="str">"What does RAG stand for?"</span>
+results = coll.<span class="fn">query</span>(query_embeddings=[embedder.<span class="fn">encode</span>(query).<span class="fn">tolist</span>()], n_results=<span class="num">2</span>)
+
+context = <span class="str">"\n"</span>.<span class="fn">join</span>(results[<span class="str">'documents'</span>][<span class="num">0</span>])
+prompt  = f<span class="str">"Context:\n{context}\n\nQuestion: {query}\nAnswer:"</span>
+
+gen = <span class="fn">hf_pipeline</span>(<span class="str">"text2text-generation"</span>, model=<span class="str">"google/flan-t5-base"</span>)
+<span class="fn">print</span>(<span class="fn">gen</span>(prompt)[<span class="num">0</span>][<span class="str">"generated_text"</span>])</pre>
+  </div>
+</div>`,
+
+/* ─────────────────────────────── INTERVIEW ─────────────────────────────── */
+interview: `
+<div class="sec-title-row">
+  <div class="sec-title-icon">🎯</div>
+  <div>
+    <span class="sec-badge sb-q">Interview Prep</span>
+    <div class="sec-title">Interview Q&amp;A</div>
+    <div class="sec-meta">35 questions · Beginner → Advanced · NLP / ML Engineer roles</div>
+  </div>
+</div>
+
+<div class="qa-category">Beginner</div>
+
+${qa("Q01","What is NLP and what are its main challenges?","easy",`NLP enables machines to understand and generate human language. Main challenges include: <strong>ambiguity</strong> (bank = financial institution or river bank?), <strong>context-dependence</strong> (pronouns, sarcasm), <strong>language diversity</strong> (5000+ languages, dialects), <strong>data sparsity</strong> (rare words and phrases), and <strong>world knowledge</strong> (understanding requires knowing the world, not just language patterns).`)}
+${qa("Q02","What is the difference between stemming and lemmatisation?","easy",`Both reduce words to their base form. <strong>Stemming</strong> uses heuristic rules to chop off affixes — fast but may produce non-words ("studi" from "studies"). <strong>Lemmatisation</strong> uses vocabulary and morphological analysis to return the dictionary form ("study", "better"→"good"). Use lemmatisation for downstream tasks; skip both for transformer models where the tokeniser handles morphology.`)}
+${qa("Q03","What is TF-IDF and when do you use it?","easy",`TF-IDF = Term Frequency × Inverse Document Frequency. TF counts how often a term appears in a document; IDF downweights terms common across all documents. The product identifies terms that are important to a specific document but rare elsewhere. Use it as a feature for text classification baselines or as a BM25-style retrieval signal. It's replaced by dense embeddings in modern systems.`)}
+${qa("Q04","What are stopwords? Should you always remove them?","easy",`Stopwords are high-frequency, low-semantic-value words (the, is, a, an, of). Removing them reduces noise and vector dimensionality for bag-of-words models. However, for tasks like sentiment ("not good" → removing "not" reverses sentiment), question answering, or machine translation, stopwords carry meaning and should be kept. For transformer models, don't remove them — the model handles context automatically.`)}
+${qa("Q05","What is the difference between precision, recall, and F1?","easy",`<strong>Precision</strong> = TP/(TP+FP): of all predicted positives, how many were correct? <strong>Recall</strong> = TP/(TP+FN): of all actual positives, how many did we catch? <strong>F1</strong> = 2·(P·R)/(P+R): harmonic mean balancing both. Use F1 when class imbalance is present. Use recall when false negatives are costly (e.g., disease detection). Use precision when false positives are costly (e.g., spam filter).`)}
+
+<div class="qa-category">Intermediate</div>
+
+${qa("Q06","Explain Word2Vec's skip-gram objective.","mid",`Skip-gram trains a shallow neural network to predict surrounding context words given a centre word. For each (centre, context) pair within a window, the model maximises the probability of the context word: P(context | centre) = softmax(Wₒᵤₜ · ecentre). The embedding matrix Wᵢₙ is the learned representation. In practice, negative sampling approximates the softmax: for each positive pair, sample k negative words and push them apart.`)}
+${qa("Q07","What is the attention mechanism in Bahdanau (2015)?","mid",`Bahdanau attention solved the encoder bottleneck by computing a context vector for each decoder step as a weighted sum of all encoder hidden states. Alignment scores: score(sₜ, hᵢ) = vᵀ·tanh(Ws·sₜ + Wh·hᵢ). Weights αᵢ = softmax(scores). Context cₜ = Σᵢ αᵢhᵢ. This lets the decoder focus on the relevant source positions when generating each output token, greatly improving translation quality especially for long sentences.`)}
+${qa("Q08","What is the vanishing gradient problem in RNNs?","mid",`When backpropagating through time in RNNs, gradients are multiplied by the weight matrix at each step. If the largest eigenvalue of W is <1, gradients shrink exponentially — the model can't learn long-range dependencies. LSTM gates mitigate this: the cell state provides an additive (not multiplicative) gradient highway. Transformers solved it entirely with residual connections and attention that provides direct gradient paths between any two positions.`)}
+${qa("Q09","What are the key differences between BERT and GPT?","mid",`<strong>Architecture:</strong> BERT = encoder (bidirectional); GPT = decoder (causal/left-to-right). <strong>Pre-training:</strong> BERT does Masked LM (predict masked tokens); GPT does next-token prediction. <strong>Context:</strong> BERT sees full sentence at once; GPT only sees past tokens. <strong>Use cases:</strong> BERT excels at understanding tasks (classification, NER, QA); GPT at generation tasks. <strong>Fine-tuning paradigm:</strong> BERT adds a task head; GPT uses prompt/instruction tuning.`)}
+${qa("Q10","What is perplexity and how does it relate to cross-entropy?","mid",`Perplexity = exp(cross-entropy loss) = exp(-1/N Σ log P(wᵢ|context)). It measures how surprised the model is by a test sequence. Perplexity of K means the model is equivalent to choosing uniformly among K options at each step. Cross-entropy in nats directly equals log-perplexity. Perplexity is only comparable between models with the same vocabulary and tokenisation.`)}
+${qa("Q11","What is Named Entity Recognition and what are common approaches?","mid",`NER classifies spans of text into categories (PERSON, ORG, LOC, DATE…). Approaches: (1) Rule-based: gazetteers + regex — fast, no data needed, brittle. (2) CRF over hand-crafted features — good for structured domains. (3) BiLSTM-CRF — learns sequence features, state-of-the-art pre-transformers. (4) Fine-tuned BERT — current standard (91–93% F1 on CoNLL-2003). Labels use IOB2 format: B-ORG (Beginning), I-ORG (Inside), O (Outside).`)}
+${qa("Q12","How does BPE tokenisation work?","mid",`Byte-Pair Encoding iteratively merges the most frequent adjacent symbol pair. Start with characters + end-of-word marker. Count all bigrams. Merge the most frequent (e.g., "t"+"h" → "th"). Repeat until vocabulary reaches target size. This produces sub-word units — common words become single tokens; rare words decompose. Advantages: fixed vocabulary, handles OOV, language-agnostic, no unknown tokens.`)}
+
+<div class="qa-category">Advanced</div>
+
+${qa("Q13","Explain multi-head attention and why multiple heads are used.","hard",`Multi-head attention runs h parallel attention functions with different projections: MultiHead = Concat(head₁…headₕ)·Wᴼ where headᵢ = Attention(Q·Wᵢᵠ, K·Wᵢᴷ, V·Wᵢᵛ). Different heads learn to attend to different aspects simultaneously — one head may track syntactic dependencies, another coreference, another semantic similarity. Single-head attention with the same dimensionality is less expressive because it averages these signals. h=8 heads with d/h=64 dimensions each outperforms 1 head at d=512 on MT benchmarks.`)}
+${qa("Q14","What is the difference between RLHF and DPO?","hard",`<strong>RLHF</strong> trains a separate reward model from human preference data, then optimises the LLM via PPO to maximise reward while constraining KL-divergence from the reference. Requires 4 models in memory simultaneously, PPO is notoriously unstable. <strong>DPO</strong> (Rafailov 2023) proves that the RLHF objective has a closed form: the optimal policy directly implies a reward. It trains on (chosen, rejected) pairs with a binary cross-entropy loss, no reward model needed, more stable. DPO trades off some final performance for far greater training simplicity.`)}
+${qa("Q15","How does LoRA reduce the number of trainable parameters?","hard",`LoRA (Hu 2021) freezes the pre-trained weight matrix W₀ ∈ ℝ^(d×k) and injects a low-rank update: W = W₀ + BA where B ∈ ℝ^(d×r) and A ∈ ℝ^(r×k) with rank r ≪ min(d,k). B is zero-initialised so the adapter starts as an identity at step 0. Only B and A are trained — for d=k=4096 and r=16, parameters reduce from 16M to 131K (99.2% reduction). Applied to Q and V projections in attention, it achieves near-full fine-tuning performance on most tasks.`)}
+${qa("Q16","What is the KV-Cache and why is it important for inference?","hard",`During autoregressive generation, every new token must attend to all previous tokens. Without caching, you'd recompute K and V for all past tokens every step (O(n²) FLOPs total). The KV-Cache stores K,V tensors for each generated token. At each new step, you only compute K,V for the new token and append to the cache. This reduces incremental generation cost to O(n). Trade-off: memory scales as O(n·layers·heads·d_head). A 7B model at batch=1, seq=8K uses ~2 GB of KV cache in fp16.`)}
+${qa("Q17","Explain RAG and how it improves factual accuracy.","hard",`RAG (Lewis 2020) decomposes generation into Retrieve + Generate. Given a query, a retriever fetches relevant document chunks from a corpus (dense retrieval with FAISS or sparse with BM25). The generator receives [query + retrieved chunks] as context and produces an answer grounded in them. Benefits: (1) eliminates hallucinations for knowledge-intensive queries; (2) easily updated — just update the document store; (3) provides citations; (4) cheaper than retraining. Limitations: retrieval quality is a bottleneck; long contexts increase inference cost.`)}
+${qa("Q18","What evaluation metrics do you use for different NLP tasks?","hard",`<strong>Classification:</strong> Accuracy, F1 (macro/micro/weighted), ROC-AUC. <strong>NER:</strong> Entity-level F1 (exact span match). <strong>Machine Translation:</strong> BLEU (n-gram precision), COMET (neural), chrF. <strong>Summarisation:</strong> ROUGE-1/2/L (recall-based n-gram overlap), BERTScore (semantic similarity). <strong>Language Generation:</strong> Perplexity, human evaluation. <strong>Semantic Similarity:</strong> Spearman/Pearson correlation on STS benchmarks. <strong>QA:</strong> Exact Match (EM), F1 token overlap (SQuAD-style).`)}
+${qa("Q19","How do you handle class imbalance in text classification?","hard",`Strategies: (1) <strong>Oversampling minority</strong> — SMOTE for text is tricky; use back-translation or paraphrase augmentation. (2) <strong>Undersampling majority</strong> — loses information. (3) <strong>Class weights</strong> — weight loss by inverse class frequency in CrossEntropyLoss. (4) <strong>Focal loss</strong> — down-weight easy examples, focus on hard ones. (5) <strong>Threshold tuning</strong> — move decision boundary on validation set to optimise F1. (6) <strong>Data augmentation</strong> with LLM paraphrasing. For extreme imbalance (&gt;100:1), anomaly detection framing often works better than classification.`)}
+${qa("Q20","What is the difference between extractive and abstractive summarisation?","hard",`<strong>Extractive summarisation</strong> selects and concatenates sentences from the source document. Approach: rank sentences by TF-IDF score, centrality (TextRank), or a BERT classifier. Always produces grammatically correct output. <strong>Abstractive summarisation</strong> generates new text that may rephrase, compress, and merge source content. Requires sequence generation (T5, BART, PEGASUS). Better for conciseness and coherence but can hallucinate facts. PEGASUS, pre-trained with gap-sentence generation, achieves state-of-the-art ROUGE on CNN/DailyMail.`)}
+`
+};
+
+/* ─── helper: QA card ─── */
+function qa(num, q, diff, a) {
+  const cls = diff==='easy'?'qd-easy':diff==='mid'?'qd-mid':'qd-hard';
+  return `<div class="qa-card" onclick="toggleQA(this)">
+    <div class="qa-q">
+      <div class="qa-q-text"><span class="qa-num">${num}</span>${q}<span class="qa-diff ${cls}">${diff}</span></div>
+      <div class="qa-toggle">+</div>
+    </div>
+    <div class="qa-a">${a}</div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════ */
+function renderAll() {
+  const strip = document.getElementById('topicStrip');
+  const sidebarNav = document.getElementById('sidebarNav');
+  const content = document.getElementById('contentArea');
+  const headerNav = document.getElementById('headerNav');
+
+  // Group topics for sidebar
+  const groups = {
+    'Beginner': topics.filter(t=>t.level==='b'),
+    'Intermediate': topics.filter(t=>t.level==='i'),
+    'Advanced': topics.filter(t=>t.level==='a'),
+    'Interview': topics.filter(t=>t.level==='q'),
+  };
+
+  // Topic strip
+  topics.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = `topic-chip ${t.color}`;
+    btn.textContent = t.icon + ' ' + t.label;
+    btn.onclick = () => showSection(t.id);
+    strip.appendChild(btn);
+  });
+
+  // Sidebar
+  Object.entries(groups).forEach(([groupName, items]) => {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'nav-group';
+    const labelEl = document.createElement('div');
+    labelEl.className = 'nav-group-label';
+    labelEl.textContent = groupName;
+    groupEl.appendChild(labelEl);
+    const badgeClass = groupName==='Beginner'?'nb-b':groupName==='Intermediate'?'nb-i':'nb-a';
+    items.forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'nav-btn';
+      btn.dataset.id = t.id;
+      btn.innerHTML = `<span class="nb-icon">${t.icon}</span>${t.label}<span class="nb-badge ${badgeClass}">${groupName.slice(0,3)}</span>`;
+      btn.onclick = () => showSection(t.id);
+      groupEl.appendChild(btn);
+    });
+    sidebarNav.appendChild(groupEl);
+  });
+
+  // Header nav (first 6)
+  topics.slice(0,6).forEach(t => {
+    const btn = document.createElement('button');
+    btn.dataset.id = t.id;
+    btn.textContent = t.icon + ' ' + t.label;
+    btn.onclick = () => showSection(t.id);
+    headerNav.appendChild(btn);
+  });
+
+  // Content sections
+  topics.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'section';
+    div.id = 'sec-' + t.id;
+    div.innerHTML = sections[t.id] || `<h2>${t.label}</h2><p>Coming soon.</p>`;
+    content.appendChild(div);
+    // re-attach onclick for qa inside
+    div.querySelectorAll('.qa-card').forEach(card => {
+      card.onclick = () => toggleQA(card);
+    });
+  });
+
+  showSection('intro');
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#headerNav button').forEach(b => b.classList.remove('active'));
+  const sec = document.getElementById('sec-' + id);
+  if (sec) sec.classList.add('active');
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(b => b.classList.add('active'));
+  window.scrollTo({top: document.querySelector('.layout').offsetTop - 70, behavior:'smooth'});
+}
+
+function toggleQA(card) {
+  const wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.qa-card.open').forEach(c => c.classList.remove('open'));
+  if (!wasOpen) card.classList.add('open');
+}
+
+renderAll();
+</script>
+</body>
+</html>

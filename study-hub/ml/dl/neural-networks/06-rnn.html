@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.06 — Sequential | NN Guide</title>
+<link rel="stylesheet" href="shared.css">
+<style>:root{--neon:#ff3d71}</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="topnav-logo">NN<span>.GUIDE</span></a>
+  <div class="topnav-links"><a href="01-math.html">01 Math</a><a href="02-fundamentals.html">02 Fundamentals</a><a href="03-python.html">03 Python</a><a href="04-workflow.html">04 Workflow</a><a href="05-cnn.html">05 CNN</a><a href="06-rnn.html" class="active">06 RNN</a><a href="07-nlp.html">07 NLP</a><a href="08-transformers.html">08 Transformers</a><a href="09-advanced.html">09 Advanced</a><a href="10-specializations.html">10 Specs</a><a href="11-projects.html">11 Projects</a></div>
+</nav>
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow" style="width:500px;height:500px;background:rgba(0,0,0,.5);top:-180px;right:-120px;"></div>
+  <div class="chapter-num">Chapter 06 — Sequential</div>
+  <h1><span style="color:#ff3d71">RECURRENT NEURAL</span><br>NETWORKS</h1>
+  <p class="hero-sub">RNN, LSTM, GRU, bidirectional networks, sequence modelling, and time-series — mastering temporal data.</p>
+  <div class="hero-meta"><div class="hero-stat"><div class="hero-stat-val" style="color:#ff3d71">3</div><div class="hero-stat-label">Architectures</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#ff3d71">8</div><div class="hero-stat-label">Code Examples</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#ff3d71">8</div><div class="hero-stat-label">Interview Q&A</div></div></div>
+</div>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">Contents</div>
+    <a class="sb-link active" onclick="show('rnn-basics')"><span class="sb-icon">🔁</span>RNN Basics</a>
+<a class="sb-link" onclick="show('lstm')"><span class="sb-icon">🧠</span>LSTM</a>
+<a class="sb-link" onclick="show('lstm')"><span class="sb-icon">🔀</span>GRU</a>
+<a class="sb-link" onclick="show('interview')"><span class="sb-icon">🎯</span>Interview Q&A</a>
+
+    <div class="sb-chapters">
+      <div class="sb-ch-label">Navigate</div>
+      <a class="sb-ch-link" href="05-cnn.html">← 05 · CNN</a><a class="sb-ch-link" href="07-nlp.html">→ 07 · NLP</a>
+    </div>
+  </aside>
+  <div class="content">
+    <div class="section active" id="s-rnn-basics"><div class="sec-head"><span class="sec-tag tag-i">Intermediate</span><h2 class="sec-head h2">RNN FUNDAMENTALS</h2><div class="sec-meta">Sequences, hidden states, and temporal dependencies</div></div><div class="card"><div class="card-title"><span class="icon" style="background:rgba(255,61,113,.1)">🔹</span>Why RNNs?</div><p>Standard feed-forward networks assume inputs are independent. Text, audio, time-series have <em>temporal dependencies</em> — what happened before matters. RNNs maintain a hidden state hₜ that summarises past information.</p><div class="formula">hₜ = tanh(Wₓₕ·xₜ + Wₕₕ·hₜ₋₁ + bₕ)
+yₜ = Wₕᵧ·hₜ + bᵧ
+Same weights at every step → shared parameters across time</div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · Vanilla RNN</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+rnn = nn.<span class="cls">RNN</span>(input_size=<span class="num">10</span>, hidden_size=<span class="num">64</span>,
+             num_layers=<span class="num">2</span>, batch_first=<span class="kw">True</span>)
+
+<span class="cm"># x: (batch, seq_len, input_size)</span>
+x = torch.<span class="fn">randn</span>(<span class="num">32</span>, <span class="num">20</span>, <span class="num">10</span>)
+out, h_n = <span class="fn">rnn</span>(x)  <span class="cm"># out: (32,20,64), h_n: (2,32,64)</span></pre></div></div><div class="section" id="s-lstm"><div class="sec-head"><span class="sec-tag tag-i">Intermediate</span><h2 class="sec-head h2">LSTM</h2><div class="sec-meta">Long Short-Term Memory — solving vanishing gradients in RNNs</div></div><div class="card"><div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">🔹</span>LSTM Gates</div><p>LSTM adds three gates that control information flow:</p><div class="formula">fₜ = σ(Wf·[hₜ₋₁,xₜ] + bf)         ← Forget gate: what to erase
+iₜ = σ(Wi·[hₜ₋₁,xₜ] + bi)         ← Input gate: what to write
+g̃ₜ = tanh(Wg·[hₜ₋₁,xₜ] + bg)      ← Candidate cell values
+cₜ = fₜ⊙cₜ₋₁ + iₜ⊙g̃ₜ              ← Cell state update
+oₜ = σ(Wo·[hₜ₋₁,xₜ] + bo)         ← Output gate
+hₜ = oₜ⊙tanh(cₜ)                   ← Hidden state</div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · LSTM for Sequence Classification</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">class</span> <span class="cls">LSTMClassifier</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, vocab_size, embed_dim, hidden, n_classes):
+        <span class="fn">super</span>().__init__()
+        self.embed = nn.<span class="cls">Embedding</span>(vocab_size, embed_dim, padding_idx=<span class="num">0</span>)
+        self.lstm  = nn.<span class="cls">LSTM</span>(embed_dim, hidden, batch_first=<span class="kw">True</span>,
+                              bidirectional=<span class="kw">True</span>, dropout=<span class="num">0.3</span>)
+        self.fc    = nn.<span class="cls">Linear</span>(hidden*<span class="num">2</span>, n_classes)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        x = self.<span class="fn">embed</span>(x)          <span class="cm"># (B, T, E)</span>
+        out, _ = self.<span class="fn">lstm</span>(x)      <span class="cm"># (B, T, 2H) bidirectional</span>
+        pooled = out.<span class="fn">mean</span>(dim=<span class="num">1</span>)   <span class="cm"># global average pool over time</span>
+        <span class="kw">return</span> self.<span class="fn">fc</span>(pooled)</pre></div></div><div class="section" id="s-interview"><div class="sec-head"><span class="sec-tag tag-q">Interview</span><h2 class="sec-head h2">INTERVIEW Q&A</h2><div class="sec-meta">RNN & LSTM · 8 Questions</div></div><div class="qa-level">Intermediate</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q01</span><span class="qa-text">What is the vanishing gradient problem in RNNs?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a">In vanilla RNNs, gradients are backpropagated through time: ∂L/∂h₁ = ∂L/∂hₜ · ∏ᵢ₌₂ᵗ (∂hᵢ/∂hᵢ₋₁). Each term involves Wₕₕ · tanh'(zᵢ). Since max(tanh') = 1 and weights are typically <1, this product shrinks exponentially — gradients in early timesteps → 0. The network can't learn long-range dependencies. LSTM solves this with the cell state cₜ: the gradient flows through cₜ via additive update (cₜ = fₜ⊙cₜ₋₁ + ...) without being multiplied by weights repeatedly. The forget gate gradient is ∂cₜ/∂cₜ₋₁ = fₜ, which is close to 1 when the gate is open.</div></div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q02</span><span class="qa-text">What is the difference between LSTM and GRU?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a"><strong>GRU (Gated Recurrent Unit)</strong> simplifies LSTM from 4 gates to 2: Reset gate (rₜ = σ(Wr·[hₜ₋₁,xₜ])) and Update gate (zₜ = σ(Wz·[hₜ₋₁,xₜ])). Hidden state: hₜ = (1-zₜ)⊙hₜ₋₁ + zₜ⊙tanh(Wh·[rₜ⊙hₜ₋₁,xₜ]). GRU merges cell and hidden state. GRU: 25% fewer parameters, faster training, similar performance on most tasks. LSTM: slightly better on very long sequences, separate memory cell is more expressive. Practical choice: GRU for quick experiments, LSTM for best results on sequential tasks, Transformer for long contexts.</div></div><div class="qa-level">Advanced</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q03</span><span class="qa-text">When would you choose an RNN over a Transformer?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Despite Transformers dominating NLP, RNNs still win in specific scenarios: (1) <strong>Very long sequences</strong> with limited compute — RNN is O(n) in memory, Transformer is O(n²); (2) <strong>Online/streaming inference</strong> — RNNs process one token at a time with constant compute; Transformers need the full sequence; (3) <strong>Tiny models</strong> — an LSTM with 1K parameters can do useful time-series work; the smallest transformers are >1M; (4) <strong>Real-time audio/sensor processing</strong> — causal, constant-latency. Modern alternatives: State Space Models (Mamba) combine RNN's O(n) inference with Transformer-like training parallelism.</div></div></div>
+  </div>
+</div>
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+function toggleQA(el) {
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.qa-item.open').forEach(e => e.classList.remove('open'));
+  if (!open) el.classList.add('open');
+}
+</script>
+</body>
+</html>

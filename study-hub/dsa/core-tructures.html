@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Mastery — Part 2: Core Structures</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,700;1,400&family=Clash+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --surface: #ede8dd;
+    --card: #fff;
+    --border: #d8d0c0;
+    --accent1: #c0392b;
+    --accent2: #16a085;
+    --accent3: #8e44ad;
+    --accent4: #d35400;
+    --text: #1a1a2e;
+    --muted: #6b6358;
+    --code-bg: #1e1e2e;
+    --code-text: #cdd6f4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Fraunces', serif;
+    overflow-x: hidden;
+  }
+
+  /* TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='%23000' fill-opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--text);
+    color: #fff;
+    padding: 70px 48px 56px;
+    position: relative; overflow: hidden;
+  }
+  header::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0; height: 6px;
+    background: repeating-linear-gradient(90deg, var(--accent1) 0, var(--accent1) 20px, var(--accent2) 20px, var(--accent2) 40px, var(--accent3) 40px, var(--accent3) 60px, var(--accent4) 60px, var(--accent4) 80px);
+  }
+  .header-inner { max-width: 1100px; margin: 0 auto; }
+  .part-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 4px;
+    color: rgba(255,255,255,0.45); margin-bottom: 20px;
+  }
+  h1 {
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 900; line-height: 0.9;
+    letter-spacing: -3px;
+  }
+  h1 em { color: var(--accent1); font-style: normal; }
+  .header-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; color: rgba(255,255,255,0.5);
+    margin-top: 20px; line-height: 2;
+  }
+  .topic-nav {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 32px;
+  }
+  .nav-chip {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    padding: 7px 18px; border-radius: 4px;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .nav-chip:hover { background: var(--accent1); border-color: var(--accent1); color: #fff; }
+
+  /* MAIN */
+  main { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+
+  /* TOPIC SECTION */
+  .topic-section { margin-bottom: 90px; }
+
+  .topic-header {
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 0; margin-bottom: 36px; align-items: stretch;
+  }
+  .topic-num-block {
+    background: var(--text); color: #fff;
+    padding: 16px 24px; writing-mode: vertical-rl;
+    text-orientation: mixed; transform: rotate(180deg);
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 3px; color: rgba(255,255,255,0.5);
+  }
+  .topic-title-block {
+    border-top: 3px solid var(--text);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 28px;
+  }
+  .topic-title { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; line-height: 1.1; }
+  .topic-subtitle { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 6px; letter-spacing: 1px; }
+
+  /* CARDS */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; margin-bottom: 28px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 4px; padding: 26px;
+    transition: all 0.25s; box-shadow: 2px 2px 0 var(--border);
+  }
+  .card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--border); }
+  .card-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; padding: 3px 10px;
+    background: var(--surface); border-radius: 2px; margin-bottom: 12px;
+    color: var(--muted);
+  }
+  .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+  .card p { color: var(--muted); font-size: 13.5px; line-height: 1.8; font-family: 'DM Mono', monospace; }
+  .card.accent-r { border-left: 4px solid var(--accent1); }
+  .card.accent-g { border-left: 4px solid var(--accent2); }
+  .card.accent-p { border-left: 4px solid var(--accent3); }
+  .card.accent-o { border-left: 4px solid var(--accent4); }
+  .wide { grid-column: 1 / -1; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg); border-radius: 8px;
+    overflow: hidden; margin: 24px 0;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+  }
+  .code-header {
+    background: #181825; padding: 12px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .code-header span { font-family: 'DM Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.35); }
+  .code-dots { display: flex; gap: 7px; }
+  .code-dots i { width: 11px; height: 11px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+  pre {
+    padding: 26px 24px; overflow-x: auto;
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    line-height: 1.85; color: var(--code-text);
+  }
+  .kw { color: #cba6f7; } .fn { color: #a6e3a1; } .str { color: #a6e3a1; }
+  .str2 { color: #f9e2af; } .cm { color: #585b70; font-style: italic; }
+  .num { color: #fab387; } .op { color: #89dceb; } .var { color: #cdd6f4; }
+  .cls { color: #f38ba8; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 24px 0; border-radius: 6px; border: 1px solid var(--border); box-shadow: 3px 3px 0 var(--border); }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  th { background: var(--text); color: rgba(255,255,255,0.7); padding: 13px 18px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; text-align: left; }
+  td { padding: 12px 18px; border-top: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 13px; }
+  tr:hover td { background: var(--surface); }
+  .good { color: var(--accent2); font-weight: 700; }
+  .ok { color: var(--accent4); font-weight: 700; }
+  .bad { color: var(--accent1); font-weight: 700; }
+
+  /* CALLOUT */
+  .callout {
+    border-radius: 4px; padding: 18px 22px; margin: 20px 0;
+    display: flex; gap: 14px;
+    font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.7;
+  }
+  .callout-icon { font-size: 20px; flex-shrink: 0; }
+  .callout.info { background: rgba(22,160,133,0.08); border-left: 4px solid var(--accent2); }
+  .callout.warn { background: rgba(192,57,43,0.07); border-left: 4px solid var(--accent1); }
+  .callout.tip { background: rgba(211,84,0,0.07); border-left: 4px solid var(--accent4); }
+
+  /* LIST */
+  .dsa-list { list-style: none; margin: 12px 0; }
+  .dsa-list li {
+    padding: 9px 0 9px 20px; position: relative;
+    border-bottom: 1px solid var(--border); font-size: 13.5px;
+    font-family: 'DM Mono', monospace; line-height: 1.7; color: var(--text);
+  }
+  .dsa-list li:last-child { border-bottom: none; }
+  .dsa-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent1); font-size: 11px; top: 11px; }
+
+  /* DIVIDER */
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  /* COMPLEXITY GRID */
+  .ops-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin: 20px 0; }
+  .op-cell { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 14px; text-align: center; }
+  .op-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .op-val { font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 700; }
+
+  /* RESPONSIVE */
+  @media(max-width: 600px) {
+    header { padding: 44px 20px 40px; }
+    .topic-title { font-size: 1.6rem; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .topic-num-block { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="part-label">// DSA MASTERY SERIES — PART 2 OF 3</div>
+    <h1>Core<br><em>Structures</em></h1>
+    <p class="header-desc">
+      Topics 07–12 &nbsp;/&nbsp; Sorting · Hashing · Stack · Queue · Linked List · Trees
+    </p>
+    <div class="topic-nav">
+      <a href="#t7" class="nav-chip">07 Sorting</a>
+      <a href="#t8" class="nav-chip">08 Hashing</a>
+      <a href="#t9" class="nav-chip">09 Stack</a>
+      <a href="#t10" class="nav-chip">10 Queue</a>
+      <a href="#t11" class="nav-chip">11 Linked List</a>
+      <a href="#t12" class="nav-chip">12 Trees</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ TOPIC 7: Sorting ============ -->
+<section class="topic-section" id="t7">
+  <div class="topic-header">
+    <div class="topic-num-block">TOPIC 07</div>
+    <div class="topic-title-block">
+      <h2 class="topic-title">Sorting Algorithms</h2>
+      <p class="topic-subtitle">COMPARISON · NON-COMPARISON · IN-PLACE · STABLE</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable</th><th>Notes</th></tr>
+      <tr><td>Bubble Sort</td><td class="good">O(n)</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="good">O(1)</td><td>✅</td><td>Simple, rarely used</td></tr>
+      <tr><td>Selection Sort</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="good">O(1)</td><td>❌</td><td>Minimum swaps</td></tr>
+      <tr><td>Insertion Sort</td><td class="good">O(n)</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="good">O(1)</td><td>✅</td><td>Best for nearly sorted</td></tr>
+      <tr><td>Merge Sort</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="ok">O(n)</td><td>✅</td><td>Guaranteed performance</td></tr>
+      <tr><td>Quick Sort</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="bad">O(n²)</td><td class="good">O(log n)</td><td>❌</td><td>Best avg, cache-friendly</td></tr>
+      <tr><td>Heap Sort</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="good">O(1)</td><td>❌</td><td>In-place, not cache friendly</td></tr>
+      <tr><td>Counting Sort</td><td class="good">O(n+k)</td><td class="good">O(n+k)</td><td class="good">O(n+k)</td><td class="ok">O(k)</td><td>✅</td><td>Small integer range only</td></tr>
+      <tr><td>Radix Sort</td><td class="good">O(nk)</td><td class="good">O(nk)</td><td class="good">O(nk)</td><td class="ok">O(n+k)</td><td>✅</td><td>Integers / fixed-length strings</td></tr>
+      <tr><td>Tim Sort</td><td class="good">O(n)</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="ok">O(n)</td><td>✅</td><td>Python's built-in sort</td></tr>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>sorting_algorithms.py</span>
+    </div>
+    <pre><span class="cm"># === QUICK SORT — Average O(n log n), In-place ===</span>
+<span class="kw">def</span> <span class="fn">quick_sort</span>(<span class="var">arr</span>, <span class="var">lo</span>=<span class="num">0</span>, <span class="var">hi</span>=<span class="kw">None</span>):
+    <span class="kw">if</span> <span class="var">hi</span> <span class="kw">is</span> <span class="kw">None</span>: <span class="var">hi</span> = <span class="fn">len</span>(<span class="var">arr</span>) - <span class="num">1</span>
+    <span class="kw">if</span> <span class="var">lo</span> >= <span class="var">hi</span>: <span class="kw">return</span>
+    <span class="var">p</span> = <span class="fn">partition</span>(<span class="var">arr</span>, <span class="var">lo</span>, <span class="var">hi</span>)
+    <span class="fn">quick_sort</span>(<span class="var">arr</span>, <span class="var">lo</span>, <span class="var">p</span>-<span class="num">1</span>)
+    <span class="fn">quick_sort</span>(<span class="var">arr</span>, <span class="var">p</span>+<span class="num">1</span>, <span class="var">hi</span>)
+
+<span class="kw">def</span> <span class="fn">partition</span>(<span class="var">arr</span>, <span class="var">lo</span>, <span class="var">hi</span>):
+    <span class="var">pivot</span> = <span class="var">arr</span>[<span class="var">hi</span>]; <span class="var">i</span> = <span class="var">lo</span> - <span class="num">1</span>
+    <span class="kw">for</span> <span class="var">j</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">lo</span>, <span class="var">hi</span>):
+        <span class="kw">if</span> <span class="var">arr</span>[<span class="var">j</span>] <= <span class="var">pivot</span>:
+            <span class="var">i</span> += <span class="num">1</span>
+            <span class="var">arr</span>[<span class="var">i</span>], <span class="var">arr</span>[<span class="var">j</span>] = <span class="var">arr</span>[<span class="var">j</span>], <span class="var">arr</span>[<span class="var">i</span>]
+    <span class="var">arr</span>[<span class="var">i</span>+<span class="num">1</span>], <span class="var">arr</span>[<span class="var">hi</span>] = <span class="var">arr</span>[<span class="var">hi</span>], <span class="var">arr</span>[<span class="var">i</span>+<span class="num">1</span>]
+    <span class="kw">return</span> <span class="var">i</span>+<span class="num">1</span>
+
+<span class="cm"># === COUNTING SORT — O(n+k) for integers ===</span>
+<span class="kw">def</span> <span class="fn">counting_sort</span>(<span class="var">arr</span>):
+    <span class="kw">if</span> <span class="kw">not</span> <span class="var">arr</span>: <span class="kw">return</span> []
+    <span class="var">mn</span>, <span class="var">mx</span> = <span class="fn">min</span>(<span class="var">arr</span>), <span class="fn">max</span>(<span class="var">arr</span>)
+    <span class="var">count</span> = [<span class="num">0</span>] * (<span class="var">mx</span> - <span class="var">mn</span> + <span class="num">1</span>)
+    <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="var">arr</span>: <span class="var">count</span>[<span class="var">x</span>-<span class="var">mn</span>] += <span class="num">1</span>
+    <span class="kw">return</span> [<span class="var">x</span>+<span class="var">mn</span> <span class="kw">for</span> <span class="var">x</span>, <span class="var">c</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">count</span>) <span class="kw">for</span> <span class="var">_</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">c</span>)]
+
+<span class="cm"># === PYTHON SORT — Custom key ===</span>
+<span class="var">people</span> = [(<span class="str2">'Alice'</span>, <span class="num">30</span>), (<span class="str2">'Bob'</span>, <span class="num">25</span>), (<span class="str2">'Charlie'</span>, <span class="num">35</span>)]
+<span class="var">people</span>.sort(<span class="var">key</span>=<span class="kw">lambda</span> <span class="var">x</span>: <span class="var">x</span>[<span class="num">1</span>])      <span class="cm"># Sort by age</span>
+<span class="var">people</span>.sort(<span class="var">key</span>=<span class="kw">lambda</span> <span class="var">x</span>: -<span class="var">x</span>[<span class="num">1</span>])     <span class="cm"># Descending by age</span>
+<span class="fn">sorted</span>(<span class="var">words</span>, <span class="var">key</span>=<span class="fn">len</span>)               <span class="cm"># Sort by string length</span></pre>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card accent-r">
+      <div class="card-tag">TRICK</div>
+      <h3>Dutch National Flag</h3>
+      <p>3-way partition for arrays with 3 distinct values (0,1,2). Three pointers: lo, mid, hi. O(n) time, O(1) space. Classic interview problem.</p>
+    </div>
+    <div class="card accent-g">
+      <div class="card-tag">TRICK</div>
+      <h3>Merge Intervals</h3>
+      <p>Sort by start time, then greedily merge overlapping intervals. O(n log n). Also used in: insert interval, meeting rooms, employee schedules.</p>
+    </div>
+    <div class="card accent-o">
+      <div class="card-tag">TRICK</div>
+      <h3>Kth Largest Element</h3>
+      <p>QuickSelect (avg O(n)), Min-Heap of size k (O(n log k)), or built-in sort. QuickSelect is optimal for single-query kth order statistic.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOPIC 8: Hashing ============ -->
+<section class="topic-section" id="t8">
+  <div class="topic-header">
+    <div class="topic-num-block">TOPIC 08</div>
+    <div class="topic-title-block">
+      <h2 class="topic-title">Hashing</h2>
+      <p class="topic-subtitle">HASH MAPS · HASH SETS · COLLISION HANDLING</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">ℹ️</div>
+    <div>A hash function maps keys to array indices. The goal: distribute keys uniformly. Python's dict and set are hash tables with O(1) average get/set/delete. Worst case O(n) due to collisions is extremely rare in practice.</div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card accent-r">
+      <div class="card-tag">STRUCTURE</div>
+      <h3>Hash Map (dict)</h3>
+      <p>Key-value pairs. O(1) average insert, delete, lookup. Handles arbitrary hashable keys. Unordered in Python < 3.7, insertion-ordered in 3.7+.</p>
+    </div>
+    <div class="card accent-g">
+      <div class="card-tag">STRUCTURE</div>
+      <h3>Hash Set (set)</h3>
+      <p>Unique elements. O(1) average add, remove, membership test. Best for deduplication, visited tracking in BFS/DFS, finding complements.</p>
+    </div>
+    <div class="card accent-p">
+      <div class="card-tag">TECHNIQUE</div>
+      <h3>Chaining (Separate)</h3>
+      <p>Each bucket holds a linked list of colliding elements. Simple to implement. Load factor λ = n/m. Performance degrades as λ grows.</p>
+    </div>
+    <div class="card accent-o">
+      <div class="card-tag">TECHNIQUE</div>
+      <h3>Open Addressing</h3>
+      <p>Linear probing, quadratic probing, double hashing. All elements stored in the table itself. Better cache performance than chaining.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>hashing_patterns.py</span>
+    </div>
+    <pre><span class="cm"># === TWO SUM — Classic hash map usage ===</span>
+<span class="kw">def</span> <span class="fn">two_sum</span>(<span class="var">nums</span>, <span class="var">target</span>):
+    <span class="var">seen</span> = {}
+    <span class="kw">for</span> <span class="var">i</span>, <span class="var">n</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">nums</span>):
+        <span class="var">diff</span> = <span class="var">target</span> - <span class="var">n</span>
+        <span class="kw">if</span> <span class="var">diff</span> <span class="kw">in</span> <span class="var">seen</span>: <span class="kw">return</span> [<span class="var">seen</span>[<span class="var">diff</span>], <span class="var">i</span>]
+        <span class="var">seen</span>[<span class="var">n</span>] = <span class="var">i</span>
+    <span class="kw">return</span> []
+
+<span class="cm"># === SUBARRAY SUM EQUALS K — Prefix sum + hash map ===</span>
+<span class="kw">def</span> <span class="fn">subarray_sum</span>(<span class="var">nums</span>, <span class="var">k</span>):
+    <span class="var">prefix</span> = {<span class="num">0</span>: <span class="num">1</span>}; <span class="var">total</span> = <span class="var">count</span> = <span class="num">0</span>
+    <span class="kw">for</span> <span class="var">n</span> <span class="kw">in</span> <span class="var">nums</span>:
+        <span class="var">total</span> += <span class="var">n</span>
+        <span class="var">count</span> += <span class="var">prefix</span>.get(<span class="var">total</span> - <span class="var">k</span>, <span class="num">0</span>)
+        <span class="var">prefix</span>[<span class="var">total</span>] = <span class="var">prefix</span>.get(<span class="var">total</span>, <span class="num">0</span>) + <span class="num">1</span>
+    <span class="kw">return</span> <span class="var">count</span>
+
+<span class="cm"># === LRU CACHE — Hash Map + Doubly Linked List ===</span>
+<span class="kw">from</span> collections <span class="kw">import</span> OrderedDict
+<span class="kw">class</span> <span class="cls">LRUCache</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="var">self</span>, <span class="var">cap</span>):
+        <span class="var">self</span>.cap = <span class="var">cap</span>
+        <span class="var">self</span>.cache = OrderedDict()
+
+    <span class="kw">def</span> <span class="fn">get</span>(<span class="var">self</span>, <span class="var">key</span>):
+        <span class="kw">if</span> <span class="var">key</span> <span class="kw">not in</span> <span class="var">self</span>.cache: <span class="kw">return</span> -<span class="num">1</span>
+        <span class="var">self</span>.cache.move_to_end(<span class="var">key</span>)  <span class="cm"># mark as recently used</span>
+        <span class="kw">return</span> <span class="var">self</span>.cache[<span class="var">key</span>]
+
+    <span class="kw">def</span> <span class="fn">put</span>(<span class="var">self</span>, <span class="var">key</span>, <span class="var">val</span>):
+        <span class="kw">if</span> <span class="var">key</span> <span class="kw">in</span> <span class="var">self</span>.cache: <span class="var">self</span>.cache.move_to_end(<span class="var">key</span>)
+        <span class="var">self</span>.cache[<span class="var">key</span>] = <span class="var">val</span>
+        <span class="kw">if</span> <span class="fn">len</span>(<span class="var">self</span>.cache) > <span class="var">self</span>.cap: <span class="var">self</span>.cache.popitem(<span class="var">last</span>=<span class="kw">False</span>)
+
+<span class="cm"># === ROLLING HASH — Rabin-Karp substring search ===</span>
+<span class="kw">def</span> <span class="fn">rabin_karp</span>(<span class="var">text</span>, <span class="var">pattern</span>):
+    <span class="var">n</span>, <span class="var">m</span> = <span class="fn">len</span>(<span class="var">text</span>), <span class="fn">len</span>(<span class="var">pattern</span>)
+    <span class="var">BASE</span>, <span class="var">MOD</span> = <span class="num">31</span>, <span class="num">10</span>**<span class="num">9</span>+<span class="num">7</span>
+    <span class="var">ph</span> = <span class="fn">sum</span>(<span class="fn">ord</span>(<span class="var">c</span>)*<span class="var">BASE</span>**<span class="var">i</span> <span class="kw">for</span> <span class="var">i</span>,<span class="var">c</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">pattern</span>)) % <span class="var">MOD</span>
+    <span class="var">wh</span> = <span class="fn">sum</span>(<span class="fn">ord</span>(<span class="var">c</span>)*<span class="var">BASE</span>**<span class="var">i</span> <span class="kw">for</span> <span class="var">i</span>,<span class="var">c</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">text</span>[:<span class="var">m</span>])) % <span class="var">MOD</span>
+    <span class="var">results</span> = [<span class="num">0</span>] <span class="kw">if</span> <span class="var">ph</span>==<span class="var">wh</span> <span class="kw">else</span> []
+    <span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="var">n</span>-<span class="var">m</span>+<span class="num">1</span>):
+        <span class="var">wh</span> = (<span class="var">wh</span> - <span class="fn">ord</span>(<span class="var">text</span>[<span class="var">i</span>-<span class="num">1</span>])) * <span class="fn">pow</span>(<span class="var">BASE</span>,<span class="var">MOD</span>-<span class="num">2</span>,<span class="var">MOD</span>) % <span class="var">MOD</span>
+        <span class="kw">if</span> <span class="var">wh</span> == <span class="var">ph</span>: <span class="var">results</span>.append(<span class="var">i</span>)
+    <span class="kw">return</span> <span class="var">results</span></pre>
+  </div>
+</section>
+
+<!-- ============ TOPIC 9: Stack ============ -->
+<section class="topic-section" id="t9">
+  <div class="topic-header">
+    <div class="topic-num-block">TOPIC 09</div>
+    <div class="topic-title-block">
+      <h2 class="topic-title">Stack</h2>
+      <p class="topic-subtitle">LIFO · PUSH · POP · PEEK · MONOTONIC</p>
+    </div>
+  </div>
+
+  <div class="ops-grid">
+    <div class="op-cell"><div class="op-label">PUSH</div><div class="op-val good">O(1)</div></div>
+    <div class="op-cell"><div class="op-label">POP</div><div class="op-val good">O(1)</div></div>
+    <div class="op-cell"><div class="op-label">PEEK/TOP</div><div class="op-val good">O(1)</div></div>
+    <div class="op-cell"><div class="op-label">SEARCH</div><div class="op-val bad">O(n)</div></div>
+    <div class="op-cell"><div class="op-label">SPACE</div><div class="op-val ok">O(n)</div></div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card accent-r">
+      <div class="card-tag">APPLICATION</div>
+      <h3>Expression Evaluation</h3>
+      <p>Infix → Postfix conversion (Shunting-yard). Evaluate postfix expressions. Validate parentheses matching. Calculator implementations.</p>
+    </div>
+    <div class="card accent-g">
+      <div class="card-tag">APPLICATION</div>
+      <h3>Monotonic Stack</h3>
+      <p>Maintain increasing or decreasing order. Solves: Next Greater Element, Largest Rectangle in Histogram, Trapping Rain Water in O(n).</p>
+    </div>
+    <div class="card accent-p">
+      <div class="card-tag">APPLICATION</div>
+      <h3>Undo / History</h3>
+      <p>Browser back navigation, text editor undo, function call stack management. DFS traversal (iterative implementation uses explicit stack).</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>stack_patterns.py</span>
+    </div>
+    <pre><span class="cm"># Python stack = list (append/pop from end)</span>
+<span class="var">stack</span> = []
+<span class="var">stack</span>.append(<span class="num">1</span>)       <span class="cm"># push</span>
+<span class="var">top</span> = <span class="var">stack</span>[-<span class="num">1</span>]      <span class="cm"># peek</span>
+<span class="var">val</span> = <span class="var">stack</span>.pop()    <span class="cm"># pop</span>
+
+<span class="cm"># === VALID PARENTHESES ===</span>
+<span class="kw">def</span> <span class="fn">is_valid</span>(<span class="var">s</span>):
+    <span class="var">stack</span> = []; <span class="var">pairs</span> = {<span class="str2">')'</span>:<span class="str2">'('</span>, <span class="str2">'}'</span>:<span class="str2">'{'</span>, <span class="str2">']'</span>:<span class="str2">'['</span>}
+    <span class="kw">for</span> <span class="var">c</span> <span class="kw">in</span> <span class="var">s</span>:
+        <span class="kw">if</span> <span class="var">c</span> <span class="kw">in</span> <span class="str2">'([{'</span>: <span class="var">stack</span>.append(<span class="var">c</span>)
+        <span class="kw">elif</span> <span class="kw">not</span> <span class="var">stack</span> <span class="kw">or</span> <span class="var">stack</span>[-<span class="num">1</span>] != <span class="var">pairs</span>[<span class="var">c</span>]: <span class="kw">return</span> <span class="kw">False</span>
+        <span class="kw">else</span>: <span class="var">stack</span>.pop()
+    <span class="kw">return</span> <span class="kw">not</span> <span class="var">stack</span>
+
+<span class="cm"># === NEXT GREATER ELEMENT — Monotonic Stack ===</span>
+<span class="kw">def</span> <span class="fn">next_greater</span>(<span class="var">nums</span>):
+    <span class="var">res</span> = [-<span class="num">1</span>] * <span class="fn">len</span>(<span class="var">nums</span>)
+    <span class="var">stack</span> = []           <span class="cm"># stores indices, decreasing stack</span>
+    <span class="kw">for</span> <span class="var">i</span>, <span class="var">n</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">nums</span>):
+        <span class="kw">while</span> <span class="var">stack</span> <span class="kw">and</span> <span class="var">nums</span>[<span class="var">stack</span>[-<span class="num">1</span>]] < <span class="var">n</span>:
+            <span class="var">res</span>[<span class="var">stack</span>.pop()] = <span class="var">n</span>
+        <span class="var">stack</span>.append(<span class="var">i</span>)
+    <span class="kw">return</span> <span class="var">res</span>
+
+<span class="cm"># === LARGEST RECTANGLE IN HISTOGRAM ===</span>
+<span class="kw">def</span> <span class="fn">largest_rect</span>(<span class="var">heights</span>):
+    <span class="var">stack</span> = [-<span class="num">1</span>]; <span class="var">max_area</span> = <span class="num">0</span>
+    <span class="var">heights</span>.append(<span class="num">0</span>)   <span class="cm"># sentinel</span>
+    <span class="kw">for</span> <span class="var">i</span>, <span class="var">h</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">heights</span>):
+        <span class="kw">while</span> <span class="var">stack</span>[-<span class="num">1</span>] != -<span class="num">1</span> <span class="kw">and</span> <span class="var">heights</span>[<span class="var">stack</span>[-<span class="num">1</span>]] >= <span class="var">h</span>:
+            <span class="var">height</span> = <span class="var">heights</span>[<span class="var">stack</span>.pop()]
+            <span class="var">width</span> = <span class="var">i</span> - <span class="var">stack</span>[-<span class="num">1</span>] - <span class="num">1</span>
+            <span class="var">max_area</span> = <span class="fn">max</span>(<span class="var">max_area</span>, <span class="var">height</span> * <span class="var">width</span>)
+        <span class="var">stack</span>.append(<span class="var">i</span>)
+    <span class="kw">return</span> <span class="var">max_area</span>
+
+<span class="cm"># === MIN STACK — O(1) getMin ===</span>
+<span class="kw">class</span> <span class="cls">MinStack</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="var">self</span>): <span class="var">self</span>.s = []; <span class="var">self</span>.mins = []
+    <span class="kw">def</span> <span class="fn">push</span>(<span class="var">self</span>, <span class="var">v</span>):
+        <span class="var">self</span>.s.append(<span class="var">v</span>)
+        <span class="var">self</span>.mins.append(<span class="fn">min</span>(<span class="var">v</span>, <span class="var">self</span>.mins[-<span class="num">1</span>] <span class="kw">if</span> <span class="var">self</span>.mins <span class="kw">else</span> <span class="var">v</span>))
+    <span class="kw">def</span> <span class="fn">pop</span>(<span class="var">self</span>): <span class="var">self</span>.s.pop(); <span class="var">self</span>.mins.pop()
+    <span class="kw">def</span> <span class="fn">get_min</span>(<span class="var">self</span>): <span class="kw">return</span> <span class="var">self</span>.mins[-<span class="num">1</span>]</pre>
+  </div>
+</section>
+
+<!-- ============ TOPIC 10: Queue ============ -->
+<section class="topic-section" id="t10">
+  <div class="topic-header">
+    <div class="topic-num-block">TOPIC 10</div>
+    <div class="topic-title-block">
+      <h2 class="topic-title">Queue</h2>
+      <p class="topic-subtitle">FIFO · DEQUE · CIRCULAR · PRIORITY QUEUE</p>
+    </div>
+  </div>
+
+  <div class="ops-grid">
+    <div class="op-cell"><div class="op-label">ENQUEUE</div><div class="op-val good">O(1)</div></div>
+    <div class="op-cell"><div class="op-label">DEQUEUE</div><div class="op-val good">O(1)</div></div>
+    <div class="op-cell"><div class="op-label">FRONT</div><div class="op-val good">O(1)</div></div>
+    <div class="op-cell"><div class="op-label">PRIORITY Q</div><div class="op-val ok">O(log n)</div></div>
+    <div class="op-cell"><div class="op-label">SPACE</div><div class="op-val ok">O(n)</div></div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card accent-r">
+      <div class="card-tag">TYPE</div>
+      <h3>Simple Queue</h3>
+      <p>Use collections.deque for O(1) enqueue/dequeue. Never use list.pop(0) — it's O(n). Primary use: BFS traversal of graphs and trees.</p>
+    </div>
+    <div class="card accent-g">
+      <div class="card-tag">TYPE</div>
+      <h3>Deque (Double-Ended)</h3>
+      <p>Push/pop from both ends in O(1). Used in sliding window maximum, palindrome check, and implementing both stack and queue.</p>
+    </div>
+    <div class="card accent-p">
+      <div class="card-tag">TYPE</div>
+      <h3>Priority Queue (Heap)</h3>
+      <p>heapq module — min-heap by default. For max-heap: negate values. Dijkstra's, task scheduling, K closest points, merge K sorted lists.</p>
+    </div>
+    <div class="card accent-o">
+      <div class="card-tag">TYPE</div>
+      <h3>Circular Queue</h3>
+      <p>Fixed-size ring buffer using array + two pointers. O(1) operations. Used in OS scheduling, I/O buffers, streaming data pipelines.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>queue_patterns.py</span>
+    </div>
+    <pre><span class="kw">from</span> collections <span class="kw">import</span> deque
+<span class="kw">import</span> heapq
+
+<span class="cm"># === BFS — Shortest path in unweighted graph ===</span>
+<span class="kw">def</span> <span class="fn">bfs</span>(<span class="var">graph</span>, <span class="var">start</span>):
+    <span class="var">dist</span> = {<span class="var">start</span>: <span class="num">0</span>}; <span class="var">q</span> = deque([<span class="var">start</span>])
+    <span class="kw">while</span> <span class="var">q</span>:
+        <span class="var">node</span> = <span class="var">q</span>.popleft()
+        <span class="kw">for</span> <span class="var">nei</span> <span class="kw">in</span> <span class="var">graph</span>[<span class="var">node</span>]:
+            <span class="kw">if</span> <span class="var">nei</span> <span class="kw">not in</span> <span class="var">dist</span>:
+                <span class="var">dist</span>[<span class="var">nei</span>] = <span class="var">dist</span>[<span class="var">node</span>] + <span class="num">1</span>
+                <span class="var">q</span>.append(<span class="var">nei</span>)
+    <span class="kw">return</span> <span class="var">dist</span>
+
+<span class="cm"># === SLIDING WINDOW MAXIMUM — Monotonic Deque ===</span>
+<span class="kw">def</span> <span class="fn">max_sliding_window</span>(<span class="var">nums</span>, <span class="var">k</span>):
+    <span class="var">dq</span> = deque(); <span class="var">res</span> = []
+    <span class="kw">for</span> <span class="var">i</span>, <span class="var">n</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="var">nums</span>):
+        <span class="kw">while</span> <span class="var">dq</span> <span class="kw">and</span> <span class="var">nums</span>[<span class="var">dq</span>[-<span class="num">1</span>]] < <span class="var">n</span>: <span class="var">dq</span>.pop()
+        <span class="var">dq</span>.append(<span class="var">i</span>)
+        <span class="kw">if</span> <span class="var">dq</span>[<span class="num">0</span>] == <span class="var">i</span>-<span class="var">k</span>: <span class="var">dq</span>.popleft()   <span class="cm"># outside window</span>
+        <span class="kw">if</span> <span class="var">i</span> >= <span class="var">k</span>-<span class="num">1</span>: <span class="var">res</span>.append(<span class="var">nums</span>[<span class="var">dq</span>[<span class="num">0</span>]])
+    <span class="kw">return</span> <span class="var">res</span>
+
+<span class="cm"># === K CLOSEST POINTS — Priority Queue ===</span>
+<span class="kw">def</span> <span class="fn">k_closest</span>(<span class="var">points</span>, <span class="var">k</span>):
+    <span class="var">heap</span> = []
+    <span class="kw">for</span> <span class="var">x</span>, <span class="var">y</span> <span class="kw">in</span> <span class="var">points</span>:
+        heapq.heappush(<span class="var">heap</span>, (<span class="var">x</span>**<span class="num">2</span>+<span class="var">y</span>**<span class="num">2</span>, <span class="var">x</span>, <span class="var">y</span>))
+    <span class="kw">return</span> [[<span class="var">x</span>, <span class="var">y</span>] <span class="kw">for</span> _, <span class="var">x</span>, <span class="var">y</span> <span class="kw">in</span> heapq.nsmallest(<span class="var">k</span>, <span class="var">heap</span>)]</pre>
+  </div>
+</section>
+
+<!-- ============ TOPIC 11: Linked List ============ -->
+<section class="topic-section" id="t11">
+  <div class="topic-header">
+    <div class="topic-num-block">TOPIC 11</div>
+    <div class="topic-title-block">
+      <h2 class="topic-title">Linked List</h2>
+      <p class="topic-subtitle">SINGLY · DOUBLY · CIRCULAR · FAST-SLOW POINTERS</p>
+    </div>
+  </div>
+
+  <div class="ops-grid">
+    <div class="op-cell"><div class="op-label">ACCESS</div><div class="op-val bad">O(n)</div></div>
+    <div class="op-cell"><div class="op-label">SEARCH</div><div class="op-val bad">O(n)</div></div>
+    <div class="op-cell"><div class="op-label">INSERT HEAD</div><div class="op-val good">O(1)</div></div>
+    <div class="op-cell"><div class="op-label">INSERT TAIL</div><div class="op-val ok">O(1)*</div></div>
+    <div class="op-cell"><div class="op-label">DELETE</div><div class="op-val good">O(1)**</div></div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div>* O(1) if tail pointer maintained. ** O(1) if node reference given, O(n) if searching by value. Linked lists are used as building blocks for stacks, queues, hash chains, and adjacency lists.</div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>linked_list.py</span>
+    </div>
+    <pre><span class="kw">class</span> <span class="cls">ListNode</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="var">self</span>, <span class="var">val</span>=<span class="num">0</span>, <span class="var">next</span>=<span class="kw">None</span>):
+        <span class="var">self</span>.val = <span class="var">val</span>; <span class="var">self</span>.next = <span class="var">next</span>
+
+<span class="cm"># === REVERSE LINKED LIST — Iterative ===</span>
+<span class="kw">def</span> <span class="fn">reverse_list</span>(<span class="var">head</span>):
+    <span class="var">prev</span>, <span class="var">curr</span> = <span class="kw">None</span>, <span class="var">head</span>
+    <span class="kw">while</span> <span class="var">curr</span>:
+        <span class="var">nxt</span> = <span class="var">curr</span>.next
+        <span class="var">curr</span>.next = <span class="var">prev</span>
+        <span class="var">prev</span>, <span class="var">curr</span> = <span class="var">curr</span>, <span class="var">nxt</span>
+    <span class="kw">return</span> <span class="var">prev</span>
+
+<span class="cm"># === DETECT CYCLE — Floyd's Algorithm ===</span>
+<span class="kw">def</span> <span class="fn">has_cycle</span>(<span class="var">head</span>):
+    <span class="var">slow</span> = <span class="var">fast</span> = <span class="var">head</span>
+    <span class="kw">while</span> <span class="var">fast</span> <span class="kw">and</span> <span class="var">fast</span>.next:
+        <span class="var">slow</span> = <span class="var">slow</span>.next
+        <span class="var">fast</span> = <span class="var">fast</span>.next.next
+        <span class="kw">if</span> <span class="var">slow</span> == <span class="var">fast</span>: <span class="kw">return</span> <span class="kw">True</span>
+    <span class="kw">return</span> <span class="kw">False</span>
+
+<span class="cm"># === FIND MIDDLE — Fast/Slow Pointer ===</span>
+<span class="kw">def</span> <span class="fn">find_middle</span>(<span class="var">head</span>):
+    <span class="var">slow</span> = <span class="var">fast</span> = <span class="var">head</span>
+    <span class="kw">while</span> <span class="var">fast</span> <span class="kw">and</span> <span class="var">fast</span>.next:
+        <span class="var">slow</span> = <span class="var">slow</span>.next
+        <span class="var">fast</span> = <span class="var">fast</span>.next.next
+    <span class="kw">return</span> <span class="var">slow</span>
+
+<span class="cm"># === MERGE TWO SORTED LISTS ===</span>
+<span class="kw">def</span> <span class="fn">merge_lists</span>(<span class="var">l1</span>, <span class="var">l2</span>):
+    <span class="var">dummy</span> = <span class="cls">ListNode</span>(); <span class="var">cur</span> = <span class="var">dummy</span>
+    <span class="kw">while</span> <span class="var">l1</span> <span class="kw">and</span> <span class="var">l2</span>:
+        <span class="kw">if</span> <span class="var">l1</span>.val <= <span class="var">l2</span>.val: <span class="var">cur</span>.next = <span class="var">l1</span>; <span class="var">l1</span> = <span class="var">l1</span>.next
+        <span class="kw">else</span>: <span class="var">cur</span>.next = <span class="var">l2</span>; <span class="var">l2</span> = <span class="var">l2</span>.next
+        <span class="var">cur</span> = <span class="var">cur</span>.next
+    <span class="var">cur</span>.next = <span class="var">l1</span> <span class="kw">or</span> <span class="var">l2</span>
+    <span class="kw">return</span> <span class="var">dummy</span>.next
+
+<span class="cm"># === Nth FROM END — Two pointers ===</span>
+<span class="kw">def</span> <span class="fn">remove_nth_from_end</span>(<span class="var">head</span>, <span class="var">n</span>):
+    <span class="var">dummy</span> = <span class="cls">ListNode</span>(<span class="num">0</span>, <span class="var">head</span>)
+    <span class="var">l</span>, <span class="var">r</span> = <span class="var">dummy</span>, <span class="var">head</span>
+    <span class="kw">for</span> <span class="var">_</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="var">n</span>): <span class="var">r</span> = <span class="var">r</span>.next
+    <span class="kw">while</span> <span class="var">r</span>: <span class="var">l</span> = <span class="var">l</span>.next; <span class="var">r</span> = <span class="var">r</span>.next
+    <span class="var">l</span>.next = <span class="var">l</span>.next.next
+    <span class="kw">return</span> <span class="var">dummy</span>.next</pre>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card wide accent-g">
+      <h3>Linked List Interview Techniques</h3>
+      <ul class="dsa-list">
+        <li><strong>Dummy head node:</strong> simplifies edge cases when head might be modified (delete node, merge lists)</li>
+        <li><strong>Fast/Slow pointers:</strong> find middle, detect cycle, find cycle start (Floyd's algorithm)</li>
+        <li><strong>Reverse in groups:</strong> reverse k nodes at a time — iterate, reverse, connect three sections</li>
+        <li><strong>Two-pass technique:</strong> first pass counts length, second pass finds position — O(n) with O(1) space</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOPIC 12: Trees ============ -->
+<section class="topic-section" id="t12">
+  <div class="topic-header">
+    <div class="topic-num-block">TOPIC 12</div>
+    <div class="topic-title-block">
+      <h2 class="topic-title">Trees</h2>
+      <p class="topic-subtitle">BST · AVL · SEGMENT TREE · TRIE · TRAVERSALS</p>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card accent-r">
+      <div class="card-tag">TYPE</div>
+      <h3>Binary Tree</h3>
+      <p>Each node has 0–2 children. Height h = O(log n) for balanced, O(n) worst case. All BST/AVL trees are binary trees.</p>
+    </div>
+    <div class="card accent-g">
+      <div class="card-tag">TYPE</div>
+      <h3>Binary Search Tree</h3>
+      <p>left &lt; root &lt; right for every node. O(log n) search/insert/delete on average. O(n) worst case (skewed). Self-balancing variants fix this.</p>
+    </div>
+    <div class="card accent-p">
+      <div class="card-tag">TYPE</div>
+      <h3>AVL / Red-Black Tree</h3>
+      <p>Self-balancing BSTs. AVL: strict balance (height diff ≤ 1). Red-Black: relaxed rules, fewer rotations. Both guarantee O(log n) operations.</p>
+    </div>
+    <div class="card accent-o">
+      <div class="card-tag">TYPE</div>
+      <h3>Trie (Prefix Tree)</h3>
+      <p>Each node represents a character. O(L) insert/search where L = word length. Used for autocomplete, spell check, IP routing, word games.</p>
+    </div>
+    <div class="card accent-r">
+      <div class="card-tag">TYPE</div>
+      <h3>Segment Tree</h3>
+      <p>Range queries (sum, min, max) and point/range updates in O(log n). Build in O(n). Uses 4n nodes array. Essential for competitive programming.</p>
+    </div>
+    <div class="card accent-g">
+      <div class="card-tag">TYPE</div>
+      <h3>Fenwick Tree (BIT)</h3>
+      <p>Prefix sums and updates in O(log n). More space-efficient than segment tree. Uses binary indexing trick. Limited to associative/invertible ops.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></div>
+      <span>tree_algorithms.py</span>
+    </div>
+    <pre><span class="kw">class</span> <span class="cls">TreeNode</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="var">self</span>, <span class="var">val</span>=<span class="num">0</span>, <span class="var">left</span>=<span class="kw">None</span>, <span class="var">right</span>=<span class="kw">None</span>):
+        <span class="var">self</span>.val = <span class="var">val</span>; <span class="var">self</span>.left = <span class="var">left</span>; <span class="var">self</span>.right = <span class="var">right</span>
+
+<span class="cm"># === TREE TRAVERSALS ===</span>
+<span class="kw">def</span> <span class="fn">inorder</span>(<span class="var">root</span>):    <span class="cm"># Left → Root → Right (sorted for BST)</span>
+    <span class="kw">return</span> <span class="fn">inorder</span>(<span class="var">root</span>.left) + [<span class="var">root</span>.val] + <span class="fn">inorder</span>(<span class="var">root</span>.right) <span class="kw">if</span> <span class="var">root</span> <span class="kw">else</span> []
+
+<span class="kw">def</span> <span class="fn">level_order</span>(<span class="var">root</span>): <span class="cm"># BFS level by level</span>
+    <span class="kw">if</span> <span class="kw">not</span> <span class="var">root</span>: <span class="kw">return</span> []
+    <span class="var">q</span>, <span class="var">res</span> = deque([<span class="var">root</span>]), []
+    <span class="kw">while</span> <span class="var">q</span>:
+        <span class="var">level</span> = []
+        <span class="kw">for</span> <span class="var">_</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(<span class="var">q</span>)):
+            <span class="var">node</span> = <span class="var">q</span>.popleft()
+            <span class="var">level</span>.append(<span class="var">node</span>.val)
+            <span class="kw">if</span> <span class="var">node</span>.left: <span class="var">q</span>.append(<span class="var">node</span>.left)
+            <span class="kw">if</span> <span class="var">node</span>.right: <span class="var">q</span>.append(<span class="var">node</span>.right)
+        <span class="var">res</span>.append(<span class="var">level</span>)
+    <span class="kw">return</span> <span class="var">res</span>
+
+<span class="cm"># === MAX DEPTH / HEIGHT ===</span>
+<span class="kw">def</span> <span class="fn">max_depth</span>(<span class="var">root</span>):
+    <span class="kw">if</span> <span class="kw">not</span> <span class="var">root</span>: <span class="kw">return</span> <span class="num">0</span>
+    <span class="kw">return</span> <span class="num">1</span> + <span class="fn">max</span>(<span class="fn">max_depth</span>(<span class="var">root</span>.left), <span class="fn">max_depth</span>(<span class="var">root</span>.right))
+
+<span class="cm"># === LOWEST COMMON ANCESTOR ===</span>
+<span class="kw">def</span> <span class="fn">lca</span>(<span class="var">root</span>, <span class="var">p</span>, <span class="var">q</span>):
+    <span class="kw">if</span> <span class="kw">not</span> <span class="var">root</span> <span class="kw">or</span> <span class="var">root</span> <span class="kw">in</span> (<span class="var">p</span>, <span class="var">q</span>): <span class="kw">return</span> <span class="var">root</span>
+    <span class="var">L</span> = <span class="fn">lca</span>(<span class="var">root</span>.left, <span class="var">p</span>, <span class="var">q</span>); <span class="var">R</span> = <span class="fn">lca</span>(<span class="var">root</span>.right, <span class="var">p</span>, <span class="var">q</span>)
+    <span class="kw">return</span> <span class="var">root</span> <span class="kw">if</span> <span class="var">L</span> <span class="kw">and</span> <span class="var">R</span> <span class="kw">else</span> <span class="var">L</span> <span class="kw">or</span> <span class="var">R</span>
+
+<span class="cm"># === TRIE IMPLEMENTATION ===</span>
+<span class="kw">class</span> <span class="cls">Trie</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="var">self</span>):
+        <span class="var">self</span>.root = {}
+
+    <span class="kw">def</span> <span class="fn">insert</span>(<span class="var">self</span>, <span class="var">word</span>):
+        <span class="var">node</span> = <span class="var">self</span>.root
+        <span class="kw">for</span> <span class="var">c</span> <span class="kw">in</span> <span class="var">word</span>:
+            <span class="kw">if</span> <span class="var">c</span> <span class="kw">not in</span> <span class="var">node</span>: <span class="var">node</span>[<span class="var">c</span>] = {}
+            <span class="var">node</span> = <span class="var">node</span>[<span class="var">c</span>]
+        <span class="var">node</span>[<span class="str2">'#'</span>] = <span class="kw">True</span>    <span class="cm"># end of word marker</span>
+
+    <span class="kw">def</span> <span class="fn">search</span>(<span class="var">self</span>, <span class="var">word</span>):
+        <span class="var">node</span> = <span class="var">self</span>.root
+        <span class="kw">for</span> <span class="var">c</span> <span class="kw">in</span> <span class="var">word</span>:
+            <span class="kw">if</span> <span class="var">c</span> <span class="kw">not in</span> <span class="var">node</span>: <span class="kw">return</span> <span class="kw">False</span>
+            <span class="var">node</span> = <span class="var">node</span>[<span class="var">c</span>]
+        <span class="kw">return</span> <span class="str2">'#'</span> <span class="kw">in</span> <span class="var">node</span></pre>
+  </div>
+
+  <div class="callout tip">
+    <div class="callout-icon">🎯</div>
+    <div><strong>Tree Problem Template:</strong> Most tree problems follow one of: (1) return a value up the recursion (height, sum), (2) pass a value down (path sum, target), or (3) combine left & right results at root (diameter, LCA). Identify which pattern before coding.</div>
+  </div>
+</section>
+
+</main>
+
+<footer style="background:var(--text);color:rgba(255,255,255,0.4);text-align:center;padding:36px 24px;font-family:'DM Mono',monospace;font-size:12px;">
+  DSA Mastery Series — Part 2 of 3 &nbsp;·&nbsp; Topics 7–12: Core Structures &nbsp;·&nbsp;
+  <span style="color:var(--accent1);">Continue to Part 3 → Heap, Graphs, DP, Greedy, Backtracking, Advanced DSA</span>
+</footer>
+
+</body>
+</html>

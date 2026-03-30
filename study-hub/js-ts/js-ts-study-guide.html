@@ -1,0 +1,2631 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS & TS Complete Roadmap — Expert Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ============================================================
+   CSS VARIABLES & THEME
+   ============================================================ */
+:root {
+  --accent: #f7c948;
+  --accent2: #ff6b6b;
+  --accent3: #4ecdc4;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --sidebar-width: 280px;
+  --header-height: 64px;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="dark"] {
+  --bg: #0d0f14;
+  --bg2: #12151c;
+  --bg3: #181c27;
+  --bg4: #1e2332;
+  --border: rgba(255,255,255,0.07);
+  --text: #e8eaf0;
+  --text2: #8b90a0;
+  --text3: #545869;
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.09);
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --code-bg: #0a0c10;
+  --code-border: rgba(247,201,72,0.15);
+}
+[data-theme="light"] {
+  --bg: #f4f5f8;
+  --bg2: #ffffff;
+  --bg3: #eef0f5;
+  --bg4: #e4e7ef;
+  --border: rgba(0,0,0,0.08);
+  --text: #1a1d2e;
+  --text2: #5a5f7a;
+  --text3: #9499b0;
+  --glass: rgba(255,255,255,0.7);
+  --glass-border: rgba(0,0,0,0.1);
+  --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --code-bg: #1a1d2e;
+  --code-border: rgba(247,201,72,0.3);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+a { color: var(--accent); text-decoration: none; }
+ul { list-style: none; }
+img { max-width: 100%; }
+
+/* ============================================================
+   SCROLL PROGRESS
+   ============================================================ */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  z-index: 9999;
+  transition: width 0.1s;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  position: fixed;
+  top: 3px; left: 0; right: 0;
+  height: var(--header-height);
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px 0 0;
+  z-index: 1000;
+  gap: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  min-width: var(--sidebar-width);
+  border-right: 1px solid var(--border);
+  height: 100%;
+}
+.logo-badge {
+  background: linear-gradient(135deg, #f7c948, #ff9f43);
+  color: #000;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.header-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 16px;
+  gap: 10px;
+  max-width: 480px;
+}
+.header-search input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  width: 100%;
+}
+.header-search input::placeholder { color: var(--text3); }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+.btn-icon {
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-size: 0.95rem;
+}
+.btn-icon:hover { background: var(--bg4); color: var(--accent); border-color: var(--accent); }
+.hamburger { display: none; }
+.progress-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text2);
+  white-space: nowrap;
+}
+.progress-badge .pct { color: var(--accent); font-family: var(--font-display); }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.layout {
+  display: flex;
+  padding-top: calc(var(--header-height) + 3px);
+  min-height: 100vh;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  height: calc(100vh - var(--header-height) - 3px);
+  position: sticky;
+  top: calc(var(--header-height) + 3px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: width var(--transition), min-width var(--transition);
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg4) transparent;
+}
+.sidebar.collapsed { width: 0; min-width: 0; }
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+
+.sidebar-inner { padding: 16px 0 40px; min-width: var(--sidebar-width); }
+.sidebar-section { margin-bottom: 4px; }
+.sidebar-group-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 12px 20px 6px;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  color: var(--text2);
+  font-size: 0.855rem;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all var(--transition);
+  user-select: none;
+}
+.sidebar-item:hover { color: var(--text); background: var(--bg3); }
+.sidebar-item.active {
+  color: var(--accent);
+  background: var(--glass);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+.sidebar-item .icon { width: 16px; font-size: 0.8rem; opacity: 0.7; }
+.sidebar-item.active .icon { opacity: 1; }
+.sidebar-item .check {
+  margin-left: auto;
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.55rem;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.sidebar-item .check.done { background: var(--accent3); border-color: var(--accent3); color: #000; }
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 20px; }
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main {
+  flex: 1;
+  padding: 40px 48px 80px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.section { display: none; animation: fadeIn 0.4s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+.hero {
+  position: relative;
+  padding: 60px 0 48px;
+  overflow: hidden;
+}
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
+}
+.hero-glow {
+  position: absolute;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(247,201,72,0.08) 0%, transparent 70%);
+  top: -100px; left: -100px;
+  pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.hero h1 span { color: var(--accent); }
+.hero p {
+  font-size: 1.05rem;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 580px;
+  margin-bottom: 36px;
+}
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+.hero-stat { text-align: center; }
+.hero-stat .num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent);
+  display: block;
+}
+.hero-stat .lbl { font-size: 0.78rem; color: var(--text3); }
+
+/* Quick nav cards */
+.quick-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+.quick-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.quick-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(247,201,72,0.1);
+}
+.quick-card .qc-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.quick-card h3 { font-size: 0.9rem; font-weight: 700; font-family: var(--font-display); }
+.quick-card p { font-size: 0.78rem; color: var(--text3); line-height: 1.5; }
+
+/* ============================================================
+   SECTION HEADER
+   ============================================================ */
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.section-header-left { flex: 1; }
+.section-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.section-desc { color: var(--text2); font-size: 0.92rem; margin-top: 8px; line-height: 1.6; }
+.btn-complete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.btn-complete:hover { border-color: var(--accent3); color: var(--accent3); }
+.btn-complete.done { background: var(--accent3); border-color: var(--accent3); color: #000; }
+
+/* ============================================================
+   TOPIC CARDS & ACCORDION
+   ============================================================ */
+.topic-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+.topic-card:hover { border-color: var(--glass-border); }
+.topic-card.open { border-color: var(--accent); }
+.topic-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  cursor: pointer;
+  user-select: none;
+}
+.topic-card-header h3 {
+  font-family: var(--font-display);
+  font-size: 0.97rem;
+  font-weight: 700;
+  flex: 1;
+}
+.topic-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.tag-js { background: rgba(247,201,72,0.12); color: var(--accent); }
+.tag-ts { background: rgba(78,196,188,0.12); color: var(--accent3); }
+.tag-adv { background: rgba(255,107,107,0.12); color: var(--accent2); }
+.topic-chevron {
+  color: var(--text3);
+  transition: transform var(--transition);
+  font-size: 0.8rem;
+}
+.topic-card.open .topic-chevron { transform: rotate(180deg); color: var(--accent); }
+.topic-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.topic-card.open .topic-body { max-height: 2000px; }
+.topic-inner { padding: 0 22px 22px; }
+.topic-inner p { color: var(--text2); font-size: 0.9rem; line-height: 1.7; margin-bottom: 14px; }
+.topic-inner ul { padding-left: 0; display: flex; flex-direction: column; gap: 6px; }
+.topic-inner li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text2);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.topic-inner li::before {
+  content: '▸';
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   CODE BLOCKS
+   ============================================================ */
+.code-block {
+  position: relative;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius);
+  margin: 16px 0;
+  overflow: hidden;
+}
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--code-border);
+}
+.code-lang {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.code-dots { display: flex; gap: 6px; }
+.code-dots span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.code-dots span:nth-child(1) { background: #ff5f57; }
+.code-dots span:nth-child(2) { background: #febc2e; }
+.code-dots span:nth-child(3) { background: #28c840; }
+.btn-copy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: var(--text3);
+  font-size: 0.7rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-copy:hover { color: var(--accent); border-color: var(--accent); }
+.btn-copy.copied { color: var(--accent3); border-color: var(--accent3); }
+pre {
+  padding: 20px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: #abb2bf;
+}
+/* Syntax highlighting colors */
+.kw { color: #c678dd; } /* keyword */
+.fn { color: #61afef; } /* function */
+.str { color: #98c379; } /* string */
+.num { color: #d19a66; } /* number */
+.cmt { color: #5c6370; font-style: italic; } /* comment */
+.var { color: #e06c75; } /* variable */
+.typ { color: #e5c07b; } /* type */
+.pun { color: #abb2bf; } /* punctuation */
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs { margin: 20px 0; }
+.tab-list {
+  display: flex;
+  gap: 4px;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  margin-bottom: 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+.tab-btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text3);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.tab-btn.active { background: var(--bg2); color: var(--text); box-shadow: var(--shadow); }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ============================================================
+   CALLOUT BOXES
+   ============================================================ */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin: 16px 0;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  border: 1px solid;
+}
+.callout-icon { font-size: 1rem; margin-top: 2px; flex-shrink: 0; }
+.callout.info { background: rgba(78,196,188,0.07); border-color: rgba(78,196,188,0.25); color: var(--text2); }
+.callout.info .callout-icon { color: var(--accent3); }
+.callout.warn { background: rgba(247,201,72,0.07); border-color: rgba(247,201,72,0.25); color: var(--text2); }
+.callout.warn .callout-icon { color: var(--accent); }
+.callout.danger { background: rgba(255,107,107,0.07); border-color: rgba(255,107,107,0.25); color: var(--text2); }
+.callout.danger .callout-icon { color: var(--accent2); }
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+.quiz-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 24px;
+}
+.quiz-block h4 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.quiz-block h4 i { color: var(--accent); }
+.quiz-q { font-size: 0.9rem; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-size: 0.86rem;
+  transition: all var(--transition);
+  background: transparent;
+  color: var(--text2);
+  text-align: left;
+  font-family: var(--font-body);
+}
+.quiz-opt:hover { border-color: var(--accent); color: var(--text); background: rgba(247,201,72,0.05); }
+.quiz-opt.correct { border-color: var(--accent3); background: rgba(78,196,188,0.1); color: var(--accent3); }
+.quiz-opt.wrong { border-color: var(--accent2); background: rgba(255,107,107,0.08); color: var(--accent2); }
+.quiz-result { margin-top: 12px; font-size: 0.85rem; font-weight: 600; min-height: 20px; }
+.quiz-result.ok { color: var(--accent3); }
+.quiz-result.fail { color: var(--accent2); }
+
+/* ============================================================
+   ROADMAP TIMELINE
+   ============================================================ */
+.roadmap {
+  position: relative;
+  padding: 16px 0;
+}
+.roadmap-track {
+  position: absolute;
+  left: 24px;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--accent3), var(--accent2));
+}
+.roadmap-item {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 28px;
+  padding-left: 60px;
+  position: relative;
+}
+.roadmap-dot {
+  position: absolute;
+  left: 16px;
+  top: 4px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.5rem;
+  color: var(--accent);
+  transition: all var(--transition);
+}
+.roadmap-dot.done { background: var(--accent3); border-color: var(--accent3); color: #000; }
+.roadmap-content {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  flex: 1;
+}
+.roadmap-content h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+.roadmap-content p { font-size: 0.8rem; color: var(--text3); }
+.roadmap-level {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  float: right;
+}
+.lvl-beginner { background: rgba(78,196,188,0.12); color: var(--accent3); }
+.lvl-intermediate { background: rgba(247,201,72,0.12); color: var(--accent); }
+.lvl-advanced { background: rgba(255,107,107,0.12); color: var(--accent2); }
+
+/* ============================================================
+   PROGRESS DASHBOARD
+   ============================================================ */
+.progress-dashboard {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 32px;
+}
+.progress-dashboard h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.progress-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.progress-item { }
+.progress-item-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+.progress-item-label .pct-label { color: var(--accent); font-weight: 700; }
+.progress-bar {
+  height: 5px;
+  background: var(--bg4);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent3));
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ============================================================
+   EVENT LOOP VISUAL
+   ============================================================ */
+.event-loop-viz {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin: 16px 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.elv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.elv-box {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  min-height: 100px;
+}
+.elv-box-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.elv-item {
+  background: var(--bg3);
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+  font-size: 0.72rem;
+  color: var(--text2);
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn { from { opacity:0; transform: translateX(-8px); } to { opacity:1; transform: translateX(0); } }
+.elv-btn {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 20px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+.elv-btn:hover { opacity: 0.85; }
+
+/* ============================================================
+   CONCEPT HIGHLIGHTS
+   ============================================================ */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+.concept-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+}
+.concept-card h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.concept-card p { font-size: 0.8rem; color: var(--text3); line-height: 1.6; }
+
+/* ============================================================
+   BACK TO TOP
+   ============================================================ */
+#back-top {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  width: 44px; height: 44px;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(247,201,72,0.4);
+  transition: all var(--transition);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  z-index: 900;
+}
+#back-top.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+#back-top:hover { transform: translateY(-3px) scale(1.05); }
+
+/* ============================================================
+   SEARCH OVERLAY
+   ============================================================ */
+.search-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0; right: 0;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  z-index: 2000;
+  overflow: hidden;
+  display: none;
+}
+.search-results.open { display: block; }
+.search-result-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  transition: background var(--transition);
+  border-bottom: 1px solid var(--border);
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: var(--bg3); }
+.search-result-item .sr-icon { color: var(--accent); font-size: 0.8rem; width: 16px; }
+.search-result-item .sr-title { font-weight: 600; }
+.search-result-item .sr-cat { font-size: 0.72rem; color: var(--text3); margin-left: auto; }
+.header-search { position: relative; }
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mb-16 { margin-bottom: 16px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+h2.sub { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin: 28px 0 12px; }
+.text-accent { color: var(--accent); }
+.text-accent3 { color: var(--accent3); }
+.text-accent2 { color: var(--accent2); }
+.divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .main { padding: 24px 24px 60px; }
+  .header-logo { min-width: auto; padding: 0 16px; }
+}
+@media (max-width: 768px) {
+  .hamburger { display: flex; }
+  .sidebar {
+    position: fixed;
+    top: calc(var(--header-height) + 3px);
+    left: 0;
+    z-index: 900;
+    width: var(--sidebar-width) !important;
+    min-width: var(--sidebar-width) !important;
+    transform: translateX(-100%);
+    transition: transform var(--transition);
+    height: calc(100vh - var(--header-height) - 3px);
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .header-logo span.logo-text { display: none; }
+  .header-search { display: none; }
+  .progress-badge { display: none; }
+  .elv-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+  .main { padding: 16px 16px 60px; }
+  .hero h1 { font-size: 1.8rem; }
+  .quick-cards { grid-template-columns: 1fr 1fr; }
+}
+
+/* Animation on scroll */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Mobile overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 850;
+}
+.sidebar-overlay.visible { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Scroll Progress -->
+<div id="scroll-progress"></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-logo">
+    <span class="logo-badge">JS/TS</span>
+    <span class="logo-text" style="font-size:0.95rem;">Roadmap</span>
+  </div>
+  <button class="btn-icon hamburger" id="hamburger" title="Menu"><i class="fa fa-bars"></i></button>
+  <div class="header-search" id="header-search-wrap">
+    <i class="fa fa-search" style="color:var(--text3);font-size:0.85rem;"></i>
+    <input type="text" id="search-input" placeholder="Search topics..." autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+  </div>
+  <div class="header-actions">
+    <div class="progress-badge" id="global-progress-badge">
+      <i class="fa fa-chart-pie" style="color:var(--accent3)"></i>
+      <span class="pct" id="global-pct">0%</span> completed
+    </div>
+    <button class="btn-icon" id="theme-toggle" title="Toggle theme"><i class="fa fa-moon"></i></button>
+    <button class="btn-icon" id="collapse-sidebar" title="Toggle sidebar"><i class="fa fa-sidebar"></i><i class="fa fa-columns"></i></button>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-inner">
+
+      <div class="sidebar-group-label">Overview</div>
+      <div class="sidebar-item active" data-section="home" onclick="navigate('home')">
+        <i class="fa fa-house icon"></i> Home & Roadmap
+        <span class="check" id="check-home"></span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group-label">JavaScript</div>
+      <div class="sidebar-item" data-section="js-basics" onclick="navigate('js-basics')">
+        <i class="fa fa-code icon"></i> JS Basics
+        <span class="check" id="check-js-basics"></span>
+      </div>
+      <div class="sidebar-item" data-section="core-js" onclick="navigate('core-js')">
+        <i class="fa fa-layer-group icon"></i> Core JavaScript
+        <span class="check" id="check-core-js"></span>
+      </div>
+      <div class="sidebar-item" data-section="async-js" onclick="navigate('async-js')">
+        <i class="fa fa-rotate icon"></i> Async JavaScript
+        <span class="check" id="check-async-js"></span>
+      </div>
+      <div class="sidebar-item" data-section="dom-browser" onclick="navigate('dom-browser')">
+        <i class="fa fa-window-maximize icon"></i> DOM & Browser
+        <span class="check" id="check-dom-browser"></span>
+      </div>
+      <div class="sidebar-item" data-section="advanced-js" onclick="navigate('advanced-js')">
+        <i class="fa fa-rocket icon"></i> Advanced JS
+        <span class="check" id="check-advanced-js"></span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group-label">TypeScript</div>
+      <div class="sidebar-item" data-section="ts-basics" onclick="navigate('ts-basics')">
+        <i class="fa fa-t icon"></i> TS Basics
+        <span class="check" id="check-ts-basics"></span>
+      </div>
+      <div class="sidebar-item" data-section="ts-intermediate" onclick="navigate('ts-intermediate')">
+        <i class="fa fa-diagram-project icon"></i> Intermediate TS
+        <span class="check" id="check-ts-intermediate"></span>
+      </div>
+      <div class="sidebar-item" data-section="ts-advanced" onclick="navigate('ts-advanced')">
+        <i class="fa fa-fire icon"></i> Advanced TS
+        <span class="check" id="check-ts-advanced"></span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group-label">Ecosystem</div>
+      <div class="sidebar-item" data-section="frameworks" onclick="navigate('frameworks')">
+        <i class="fa fa-puzzle-piece icon"></i> Framework Integration
+        <span class="check" id="check-frameworks"></span>
+      </div>
+      <div class="sidebar-item" data-section="testing" onclick="navigate('testing')">
+        <i class="fa fa-vial icon"></i> Testing
+        <span class="check" id="check-testing"></span>
+      </div>
+      <div class="sidebar-item" data-section="expert" onclick="navigate('expert')">
+        <i class="fa fa-crown icon"></i> Expert Level
+        <span class="check" id="check-expert"></span>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main" id="main-content">
+
+    <!-- ===== HOME ===== -->
+    <section class="section active" id="section-home">
+      <div class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+          <div class="hero-eyebrow"><i class="fa fa-bolt"></i> COMPLETE LEARNING PATH — 2024</div>
+          <h1>JavaScript &amp; <span>TypeScript</span><br>Complete Roadmap</h1>
+          <p>Master the most in-demand web languages from zero to expert. Structured, practical, and built for developers who want to build real things.</p>
+          <div class="hero-stats">
+            <div class="hero-stat"><span class="num">12</span><span class="lbl">Modules</span></div>
+            <div class="hero-stat"><span class="num">80+</span><span class="lbl">Topics</span></div>
+            <div class="hero-stat"><span class="num">40+</span><span class="lbl">Code Examples</span></div>
+            <div class="hero-stat"><span class="num">12</span><span class="lbl">Mini Quizzes</span></div>
+          </div>
+          <div class="quick-cards">
+            <div class="quick-card" onclick="navigate('js-basics')">
+              <div class="qc-icon" style="background:rgba(247,201,72,0.12);color:var(--accent)"><i class="fa fa-play"></i></div>
+              <h3>JS Basics</h3>
+              <p>Variables, loops, functions — the foundation.</p>
+            </div>
+            <div class="quick-card" onclick="navigate('async-js')">
+              <div class="qc-icon" style="background:rgba(78,196,188,0.12);color:var(--accent3)"><i class="fa fa-rotate"></i></div>
+              <h3>Async JS</h3>
+              <p>Promises, Async/Await, Event Loop.</p>
+            </div>
+            <div class="quick-card" onclick="navigate('ts-basics')">
+              <div class="qc-icon" style="background:rgba(100,150,255,0.12);color:#6496ff"><i class="fa fa-t"></i></div>
+              <h3>TypeScript</h3>
+              <p>Types, interfaces, generics and more.</p>
+            </div>
+            <div class="quick-card" onclick="navigate('expert')">
+              <div class="qc-icon" style="background:rgba(255,107,107,0.12);color:var(--accent2)"><i class="fa fa-crown"></i></div>
+              <h3>Expert Level</h3>
+              <p>V8 engine, memory, performance.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <h2 class="sub"><i class="fa fa-map text-accent" style="margin-right:8px"></i>Learning Roadmap</h2>
+      <div class="roadmap">
+        <div class="roadmap-track"></div>
+        <div class="roadmap-item reveal">
+          <div class="roadmap-dot" id="rd-home"><i class="fa fa-check"></i></div>
+          <div class="roadmap-content">
+            <span class="roadmap-level lvl-beginner">Beginner</span>
+            <h4>JavaScript Basics</h4>
+            <p>Variables, data types, conditions, loops, functions</p>
+          </div>
+        </div>
+        <div class="roadmap-item reveal">
+          <div class="roadmap-dot" id="rd-core"><i class="fa fa-check"></i></div>
+          <div class="roadmap-content">
+            <span class="roadmap-level lvl-beginner">Beginner</span>
+            <h4>Core JavaScript</h4>
+            <p>Scope, closures, prototypes, arrays &amp; objects</p>
+          </div>
+        </div>
+        <div class="roadmap-item reveal">
+          <div class="roadmap-dot" id="rd-async"><i class="fa fa-check"></i></div>
+          <div class="roadmap-content">
+            <span class="roadmap-level lvl-intermediate">Intermediate</span>
+            <h4>Async JavaScript</h4>
+            <p>Callbacks, Promises, Async/Await, Fetch API</p>
+          </div>
+        </div>
+        <div class="roadmap-item reveal">
+          <div class="roadmap-dot"><i class="fa fa-check"></i></div>
+          <div class="roadmap-content">
+            <span class="roadmap-level lvl-intermediate">Intermediate</span>
+            <h4>DOM &amp; Browser APIs</h4>
+            <p>DOM manipulation, events, localStorage</p>
+          </div>
+        </div>
+        <div class="roadmap-item reveal">
+          <div class="roadmap-dot"><i class="fa fa-check"></i></div>
+          <div class="roadmap-content">
+            <span class="roadmap-level lvl-intermediate">Intermediate</span>
+            <h4>TypeScript</h4>
+            <p>Types, interfaces, generics, utility types</p>
+          </div>
+        </div>
+        <div class="roadmap-item reveal">
+          <div class="roadmap-dot"><i class="fa fa-check"></i></div>
+          <div class="roadmap-content">
+            <span class="roadmap-level lvl-advanced">Advanced</span>
+            <h4>Advanced JS + TS</h4>
+            <p>Execution context, memory, advanced patterns</p>
+          </div>
+        </div>
+        <div class="roadmap-item reveal">
+          <div class="roadmap-dot"><i class="fa fa-check"></i></div>
+          <div class="roadmap-content">
+            <span class="roadmap-level lvl-advanced">Advanced</span>
+            <h4>Expert Level</h4>
+            <p>V8 internals, performance, system design</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="progress-dashboard">
+        <h3><i class="fa fa-chart-bar" style="color:var(--accent)"></i> Your Progress</h3>
+        <div class="progress-grid" id="progress-grid">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== JS BASICS ===== -->
+    <section class="section" id="section-js-basics">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-code"></i> Module 2</div>
+          <div class="section-title">JavaScript Basics</div>
+          <div class="section-desc">The essential building blocks every JS developer must know cold.</div>
+        </div>
+        <button class="btn-complete" id="complete-js-basics" onclick="toggleComplete('js-basics')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <!-- Variables -->
+      <div class="topic-card" id="tc-vars">
+        <div class="topic-card-header" onclick="toggleCard('tc-vars')">
+          <i class="fa fa-box" style="color:var(--accent);font-size:0.9rem"></i>
+          <h3>Variables &amp; Data Types</h3>
+          <span class="topic-tag tag-js">JS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <p>JavaScript has three ways to declare variables: <code style="color:var(--accent)">var</code>, <code style="color:var(--accent)">let</code>, and <code style="color:var(--accent)">const</code>. Modern JS strongly prefers <code style="color:var(--accent)">let</code> and <code style="color:var(--accent)">const</code>.</p>
+            <ul>
+              <li><strong>var</strong> — function-scoped, hoisted, avoid in modern code</li>
+              <li><strong>let</strong> — block-scoped, reassignable, preferred for mutable values</li>
+              <li><strong>const</strong> — block-scoped, cannot be reassigned (but object properties can mutate)</li>
+            </ul>
+            <div class="code-block mt-16">
+              <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-lang">JavaScript</span>
+                <button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button>
+              </div>
+<pre><span class="cmt">// Primitive types</span>
+<span class="kw">const</span> <span class="var">name</span>    = <span class="str">"Alice"</span>;         <span class="cmt">// string</span>
+<span class="kw">const</span> <span class="var">age</span>     = <span class="num">30</span>;             <span class="cmt">// number</span>
+<span class="kw">const</span> <span class="var">active</span>  = <span class="kw">true</span>;           <span class="cmt">// boolean</span>
+<span class="kw">const</span> <span class="var">nothing</span> = <span class="kw">null</span>;           <span class="cmt">// null</span>
+<span class="kw">let</span>   <span class="var">undef</span>;                    <span class="cmt">// undefined</span>
+<span class="kw">const</span> <span class="var">id</span>      = <span class="typ">Symbol</span>(<span class="str">"id"</span>);   <span class="cmt">// symbol</span>
+<span class="kw">const</span> <span class="var">big</span>     = <span class="num">9007199254740991n</span>; <span class="cmt">// BigInt</span>
+
+<span class="cmt">// Reference types</span>
+<span class="kw">const</span> <span class="var">arr</span>     = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>];
+<span class="kw">const</span> <span class="var">obj</span>     = { <span class="var">x</span>: <span class="num">10</span>, <span class="var">y</span>: <span class="num">20</span> };
+<span class="kw">const</span> <span class="var">fn</span>      = () => <span class="str">"hello"</span>;
+
+<span class="cmt">// Type checking</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> <span class="var">name</span>);   <span class="cmt">// "string"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">typeof</span> <span class="var">arr</span>);    <span class="cmt">// "object"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="typ">Array</span>.<span class="fn">isArray</span>(<span class="var">arr</span>)); <span class="cmt">// true</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conditions & Loops -->
+      <div class="topic-card" id="tc-loops">
+        <div class="topic-card-header" onclick="toggleCard('tc-loops')">
+          <i class="fa fa-arrows-rotate" style="color:var(--accent3);font-size:0.9rem"></i>
+          <h3>Conditions &amp; Loops</h3>
+          <span class="topic-tag tag-js">JS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <p>Control flow directs execution. JavaScript offers <code style="color:var(--accent)">if/else</code>, <code style="color:var(--accent)">switch</code>, ternary operator, and multiple loop types.</p>
+            <div class="tabs">
+              <div class="tab-list">
+                <button class="tab-btn active" onclick="switchTab(this,'tab-if')">if/else</button>
+                <button class="tab-btn" onclick="switchTab(this,'tab-loops')">Loops</button>
+                <button class="tab-btn" onclick="switchTab(this,'tab-fizz')">FizzBuzz</button>
+                <button class="tab-btn" onclick="switchTab(this,'tab-evenodd')">Even/Odd</button>
+              </div>
+              <div class="tab-pane active" id="tab-if">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">const</span> <span class="var">score</span> = <span class="num">85</span>;
+
+<span class="kw">if</span> (<span class="var">score</span> >= <span class="num">90</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"A grade"</span>);
+} <span class="kw">else if</span> (<span class="var">score</span> >= <span class="num">75</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"B grade"</span>); <span class="cmt">// ← runs</span>
+} <span class="kw">else</span> {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Below B"</span>);
+}
+
+<span class="cmt">// Ternary</span>
+<span class="kw">const</span> <span class="var">pass</span> = <span class="var">score</span> >= <span class="num">60</span> ? <span class="str">"Pass"</span> : <span class="str">"Fail"</span>;
+
+<span class="cmt">// Nullish coalescing</span>
+<span class="kw">const</span> <span class="var">user</span> = <span class="kw">null</span>;
+<span class="kw">const</span> <span class="var">display</span> = <span class="var">user</span> ?? <span class="str">"Guest"</span>; <span class="cmt">// "Guest"</span></pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-loops">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// for</span>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> < <span class="num">5</span>; <span class="var">i</span>++) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">i</span>);
+}
+
+<span class="cmt">// while</span>
+<span class="kw">let</span> <span class="var">n</span> = <span class="num">0</span>;
+<span class="kw">while</span> (<span class="var">n</span> < <span class="num">3</span>) { <span class="var">n</span>++; }
+
+<span class="cmt">// for...of (arrays)</span>
+<span class="kw">const</span> <span class="var">fruits</span> = [<span class="str">"apple"</span>, <span class="str">"banana"</span>];
+<span class="kw">for</span> (<span class="kw">const</span> <span class="var">fruit</span> <span class="kw">of</span> <span class="var">fruits</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">fruit</span>);
+}
+
+<span class="cmt">// for...in (objects)</span>
+<span class="kw">const</span> <span class="var">obj</span> = { <span class="var">a</span>: <span class="num">1</span>, <span class="var">b</span>: <span class="num">2</span> };
+<span class="kw">for</span> (<span class="kw">const</span> <span class="var">key</span> <span class="kw">in</span> <span class="var">obj</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">key</span>, <span class="var">obj</span>[<span class="var">key</span>]);
+}</pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-fizz">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">FizzBuzz</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> = <span class="num">1</span>; <span class="var">i</span> <= <span class="num">20</span>; <span class="var">i</span>++) {
+  <span class="kw">if</span> (<span class="var">i</span> % <span class="num">15</span> === <span class="num">0</span>)      <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"FizzBuzz"</span>);
+  <span class="kw">else if</span> (<span class="var">i</span> % <span class="num">3</span> === <span class="num">0</span>) <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Fizz"</span>);
+  <span class="kw">else if</span> (<span class="var">i</span> % <span class="num">5</span> === <span class="num">0</span>) <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Buzz"</span>);
+  <span class="kw">else</span>                   <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">i</span>);
+}
+<span class="cmt">// Output: 1,2,Fizz,4,Buzz,Fizz,7,...,FizzBuzz,...</span></pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-evenodd">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">Even / Odd</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">function</span> <span class="fn">checkNumber</span>(<span class="var">n</span>) {
+  <span class="kw">if</span> (typeof <span class="var">n</span> !== <span class="str">"number"</span>) <span class="kw">return</span> <span class="str">"Not a number"</span>;
+  <span class="kw">return</span> <span class="var">n</span> % <span class="num">2</span> === <span class="num">0</span> ? <span class="str">`${n} is Even`</span> : <span class="str">`${n} is Odd`</span>;
+}
+
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">checkNumber</span>(<span class="num">4</span>));  <span class="cmt">// "4 is Even"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">checkNumber</span>(<span class="num">7</span>));  <span class="cmt">// "7 is Odd"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">checkNumber</span>(<span class="num">-2</span>)); <span class="cmt">// "-2 is Even"</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Functions -->
+      <div class="topic-card" id="tc-functions">
+        <div class="topic-card-header" onclick="toggleCard('tc-functions')">
+          <i class="fa fa-function" style="color:var(--accent2);font-size:0.9rem"></i>
+          <h3>Functions</h3>
+          <span class="topic-tag tag-js">JS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <p>Functions are first-class citizens in JavaScript — they can be assigned to variables, passed as arguments, and returned from other functions.</p>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// 1. Function Declaration (hoisted)</span>
+<span class="kw">function</span> <span class="fn">greet</span>(<span class="var">name</span>) {
+  <span class="kw">return</span> <span class="str">`Hello, ${<span class="var">name</span>}!`</span>;
+}
+
+<span class="cmt">// 2. Function Expression</span>
+<span class="kw">const</span> <span class="fn">add</span> = <span class="kw">function</span>(<span class="var">a</span>, <span class="var">b</span>) {
+  <span class="kw">return</span> <span class="var">a</span> + <span class="var">b</span>;
+};
+
+<span class="cmt">// 3. Arrow Function (concise)</span>
+<span class="kw">const</span> <span class="fn">multiply</span> = (<span class="var">a</span>, <span class="var">b</span>) => <span class="var">a</span> * <span class="var">b</span>;
+
+<span class="cmt">// Default params, rest params</span>
+<span class="kw">const</span> <span class="fn">power</span> = (<span class="var">base</span>, <span class="var">exp</span> = <span class="num">2</span>) => <span class="var">base</span> ** <span class="var">exp</span>;
+<span class="kw">const</span> <span class="fn">sum</span>   = (...<span class="var">nums</span>) => <span class="var">nums</span>.<span class="fn">reduce</span>((<span class="var">a</span>, <span class="var">b</span>) => <span class="var">a</span> + <span class="var">b</span>, <span class="num">0</span>);
+
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">power</span>(<span class="num">3</span>));      <span class="cmt">// 9</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">sum</span>(<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>)); <span class="cmt">// 10</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-block reveal">
+        <h4><i class="fa fa-brain"></i> Quick Quiz — JS Basics</h4>
+        <p class="quiz-q">What does <code style="color:var(--accent)">typeof null</code> return in JavaScript?</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">"null"</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">"object"</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">"undefined"</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">"boolean"</button>
+        </div>
+        <div class="quiz-result" id="qr1"></div>
+      </div>
+    </section>
+
+    <!-- ===== CORE JS ===== -->
+    <section class="section" id="section-core-js">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-layer-group"></i> Module 3</div>
+          <div class="section-title">Core JavaScript</div>
+          <div class="section-desc">Deep concepts that separate intermediate from advanced developers.</div>
+        </div>
+        <button class="btn-complete" id="complete-core-js" onclick="toggleComplete('core-js')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h4><i class="fa fa-box-open" style="color:var(--accent)"></i> Scope</h4>
+          <p>Determines where variables are accessible. Block, function, and global scopes each have different visibility rules.</p>
+        </div>
+        <div class="concept-card">
+          <h4><i class="fa fa-arrow-up" style="color:var(--accent2)"></i> Hoisting</h4>
+          <p>Variable and function declarations are moved to the top of their scope at compile time. <code>var</code> is initialized to <code>undefined</code>; <code>let</code>/<code>const</code> enter a temporal dead zone.</p>
+        </div>
+        <div class="concept-card">
+          <h4><i class="fa fa-lock" style="color:var(--accent3)"></i> Closures</h4>
+          <p>A function that "closes over" variables from its outer scope, retaining access even after the outer function has returned.</p>
+        </div>
+        <div class="concept-card">
+          <h4><i class="fa fa-link" style="color:#a29bfe"></i> Prototypes</h4>
+          <p>Every JS object has a prototype chain. Inheritance is prototypal — methods are looked up the chain at runtime.</p>
+        </div>
+      </div>
+
+      <div class="topic-card" id="tc-closures">
+        <div class="topic-card-header" onclick="toggleCard('tc-closures')">
+          <i class="fa fa-lock" style="color:var(--accent3);font-size:0.9rem"></i>
+          <h3>Closures — Deep Dive</h3>
+          <span class="topic-tag tag-js">JS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <p>A closure is created every time a function is defined inside another function. The inner function retains a live reference to the outer function's variables.</p>
+            <div class="callout info"><i class="fa fa-lightbulb callout-icon"></i><div>Use case: Data encapsulation (module pattern), factory functions, memoization, and partial application.</div></div>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// Counter factory — classic closure example</span>
+<span class="kw">function</span> <span class="fn">makeCounter</span>(<span class="var">start</span> = <span class="num">0</span>) {
+  <span class="kw">let</span> <span class="var">count</span> = <span class="var">start</span>; <span class="cmt">// private variable</span>
+  <span class="kw">return</span> {
+    <span class="fn">increment</span>: () => ++<span class="var">count</span>,
+    <span class="fn">decrement</span>: () => --<span class="var">count</span>,
+    <span class="fn">value</span>:     () => <span class="var">count</span>,
+    <span class="fn">reset</span>:     () => { <span class="var">count</span> = <span class="var">start</span>; }
+  };
+}
+
+<span class="kw">const</span> <span class="var">c</span> = <span class="fn">makeCounter</span>(<span class="num">10</span>);
+<span class="var">c</span>.<span class="fn">increment</span>(); <span class="cmt">// 11</span>
+<span class="var">c</span>.<span class="fn">increment</span>(); <span class="cmt">// 12</span>
+<span class="var">c</span>.<span class="fn">decrement</span>(); <span class="cmt">// 11</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="var">c</span>.<span class="fn">value</span>()); <span class="cmt">// 11</span>
+
+<span class="cmt">// Memoization with closure</span>
+<span class="kw">function</span> <span class="fn">memoize</span>(<span class="var">fn</span>) {
+  <span class="kw">const</span> <span class="var">cache</span> = <span class="kw">new</span> <span class="typ">Map</span>();
+  <span class="kw">return</span> (<span class="var">...args</span>) => {
+    <span class="kw">const</span> <span class="var">key</span> = <span class="typ">JSON</span>.<span class="fn">stringify</span>(<span class="var">args</span>);
+    <span class="kw">if</span> (<span class="var">cache</span>.<span class="fn">has</span>(<span class="var">key</span>)) <span class="kw">return</span> <span class="var">cache</span>.<span class="fn">get</span>(<span class="var">key</span>);
+    <span class="kw">const</span> <span class="var">result</span> = <span class="var">fn</span>(...<span class="var">args</span>);
+    <span class="var">cache</span>.<span class="fn">set</span>(<span class="var">key</span>, <span class="var">result</span>);
+    <span class="kw">return</span> <span class="var">result</span>;
+  };
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-card" id="tc-array-methods">
+        <div class="topic-card-header" onclick="toggleCard('tc-array-methods')">
+          <i class="fa fa-list" style="color:var(--accent);font-size:0.9rem"></i>
+          <h3>Arrays &amp; Higher-Order Functions</h3>
+          <span class="topic-tag tag-js">JS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">const</span> <span class="var">orders</span> = [
+  { <span class="var">id</span>: <span class="num">1</span>, <span class="var">product</span>: <span class="str">"Laptop"</span>,  <span class="var">price</span>: <span class="num">1200</span>, <span class="var">qty</span>: <span class="num">2</span> },
+  { <span class="var">id</span>: <span class="num">2</span>, <span class="var">product</span>: <span class="str">"Mouse"</span>,   <span class="var">price</span>: <span class="num">25</span>,   <span class="var">qty</span>: <span class="num">5</span> },
+  { <span class="var">id</span>: <span class="num">3</span>, <span class="var">product</span>: <span class="str">"Monitor"</span>, <span class="var">price</span>: <span class="num">350</span>,  <span class="var">qty</span>: <span class="num">1</span> }
+];
+
+<span class="cmt">// map — transform every element</span>
+<span class="kw">const</span> <span class="var">totals</span> = <span class="var">orders</span>.<span class="fn">map</span>(<span class="var">o</span> => ({
+  ...<span class="var">o</span>, <span class="var">total</span>: <span class="var">o</span>.<span class="var">price</span> * <span class="var">o</span>.<span class="var">qty</span>
+}));
+
+<span class="cmt">// filter — keep matching elements</span>
+<span class="kw">const</span> <span class="var">bigOrders</span> = <span class="var">orders</span>.<span class="fn">filter</span>(<span class="var">o</span> => <span class="var">o</span>.<span class="var">price</span> > <span class="num">100</span>);
+
+<span class="cmt">// reduce — aggregate into single value</span>
+<span class="kw">const</span> <span class="var">revenue</span> = <span class="var">orders</span>.<span class="fn">reduce</span>(
+  (<span class="var">acc</span>, <span class="var">o</span>) => <span class="var">acc</span> + <span class="var">o</span>.<span class="var">price</span> * <span class="var">o</span>.<span class="var">qty</span>, <span class="num">0</span>
+); <span class="cmt">// 2925</span>
+
+<span class="cmt">// Chaining</span>
+<span class="kw">const</span> <span class="var">result</span> = <span class="var">orders</span>
+  .<span class="fn">filter</span>(<span class="var">o</span> => <span class="var">o</span>.<span class="var">qty</span> >= <span class="num">2</span>)
+  .<span class="fn">map</span>(<span class="var">o</span> => <span class="var">o</span>.<span class="var">product</span>);
+<span class="cmt">// ["Laptop", "Mouse"]</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-block reveal">
+        <h4><i class="fa fa-brain"></i> Quick Quiz — Core JS</h4>
+        <p class="quiz-q">What is the output of <code style="color:var(--accent)">[1,2,3].reduce((a,b) => a*b, 1)</code>?</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">6 (because sum)</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">6 (because product)</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">3</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">undefined</button>
+        </div>
+        <div class="quiz-result"></div>
+      </div>
+    </section>
+
+    <!-- ===== ASYNC JS ===== -->
+    <section class="section" id="section-async-js">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-rotate"></i> Module 4</div>
+          <div class="section-title">Asynchronous JavaScript</div>
+          <div class="section-desc">Handle time-based operations, network requests, and non-blocking code patterns.</div>
+        </div>
+        <button class="btn-complete" id="complete-async-js" onclick="toggleComplete('async-js')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="topic-card" id="tc-promises">
+        <div class="topic-card-header" onclick="toggleCard('tc-promises')">
+          <i class="fa fa-circle-check" style="color:var(--accent3);font-size:0.9rem"></i>
+          <h3>Callbacks → Promises → Async/Await</h3>
+          <span class="topic-tag tag-js">JS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="tabs">
+              <div class="tab-list">
+                <button class="tab-btn active" onclick="switchTab(this,'tab-cb')">Callbacks</button>
+                <button class="tab-btn" onclick="switchTab(this,'tab-promise')">Promises</button>
+                <button class="tab-btn" onclick="switchTab(this,'tab-async')">Async/Await</button>
+                <button class="tab-btn" onclick="switchTab(this,'tab-fetch')">Fetch API</button>
+              </div>
+              <div class="tab-pane active" id="tab-cb">
+                <div class="callout warn"><i class="fa fa-triangle-exclamation callout-icon"></i><div>Callbacks can lead to "Callback Hell" — deeply nested code that's hard to read and debug.</div></div>
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// Simple callback pattern</span>
+<span class="kw">function</span> <span class="fn">fetchUser</span>(<span class="var">id</span>, <span class="var">callback</span>) {
+  <span class="fn">setTimeout</span>(() => {
+    <span class="kw">const</span> <span class="var">user</span> = { <span class="var">id</span>, <span class="var">name</span>: <span class="str">"Alice"</span> };
+    <span class="fn">callback</span>(<span class="kw">null</span>, <span class="var">user</span>); <span class="cmt">// (error, data)</span>
+  }, <span class="num">1000</span>);
+}
+
+<span class="fn">fetchUser</span>(<span class="num">1</span>, (<span class="var">err</span>, <span class="var">user</span>) => {
+  <span class="kw">if</span> (<span class="var">err</span>) { <span class="fn">console</span>.<span class="fn">error</span>(<span class="var">err</span>); <span class="kw">return</span>; }
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">user</span>);
+});</pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-promise">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">function</span> <span class="fn">fetchUser</span>(<span class="var">id</span>) {
+  <span class="kw">return new</span> <span class="typ">Promise</span>((<span class="var">resolve</span>, <span class="var">reject</span>) => {
+    <span class="fn">setTimeout</span>(() => {
+      <span class="kw">if</span> (<span class="var">id</span> > <span class="num">0</span>) <span class="fn">resolve</span>({ <span class="var">id</span>, <span class="var">name</span>: <span class="str">"Alice"</span> });
+      <span class="kw">else</span> <span class="fn">reject</span>(<span class="kw">new</span> <span class="typ">Error</span>(<span class="str">"Invalid ID"</span>));
+    }, <span class="num">1000</span>);
+  });
+}
+
+<span class="fn">fetchUser</span>(<span class="num">1</span>)
+  .<span class="fn">then</span>(<span class="var">user</span>  => <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">user</span>))
+  .<span class="fn">catch</span>(<span class="var">err</span>  => <span class="fn">console</span>.<span class="fn">error</span>(<span class="var">err</span>))
+  .<span class="fn">finally</span>(() => <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Done"</span>));
+
+<span class="cmt">// Parallel with Promise.all</span>
+<span class="kw">const</span> [<span class="var">u1</span>, <span class="var">u2</span>] = <span class="kw">await</span> <span class="typ">Promise</span>.<span class="fn">all</span>([
+  <span class="fn">fetchUser</span>(<span class="num">1</span>), <span class="fn">fetchUser</span>(<span class="num">2</span>)
+]);</pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-async">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// async/await — synchronous-looking async code</span>
+<span class="kw">async function</span> <span class="fn">loadUserProfile</span>(<span class="var">userId</span>) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">user</span>  = <span class="kw">await</span> <span class="fn">fetchUser</span>(<span class="var">userId</span>);
+    <span class="kw">const</span> <span class="var">posts</span> = <span class="kw">await</span> <span class="fn">fetchPosts</span>(<span class="var">user</span>.<span class="var">id</span>);
+    <span class="kw">return</span> { ...<span class="var">user</span>, <span class="var">posts</span> };
+  } <span class="kw">catch</span> (<span class="var">err</span>) {
+    <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">"Failed:"</span>, <span class="var">err</span>.<span class="var">message</span>);
+    <span class="kw">throw</span> <span class="var">err</span>;
+  }
+}
+
+<span class="cmt">// Top-level await (ES2022, modules)</span>
+<span class="kw">const</span> <span class="var">profile</span> = <span class="kw">await</span> <span class="fn">loadUserProfile</span>(<span class="num">1</span>);</pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-fetch">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript — Fetch API</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">async function</span> <span class="fn">getUsers</span>() {
+  <span class="kw">const</span> <span class="var">res</span>   = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"https://jsonplaceholder.typicode.com/users"</span>);
+  <span class="kw">if</span> (!<span class="var">res</span>.<span class="var">ok</span>) <span class="kw">throw new</span> <span class="typ">Error</span>(<span class="str">`HTTP error: ${<span class="var">res</span>.<span class="var">status</span>}`</span>);
+  <span class="kw">const</span> <span class="var">data</span>  = <span class="kw">await</span> <span class="var">res</span>.<span class="fn">json</span>();
+  <span class="kw">return</span> <span class="var">data</span>.<span class="fn">map</span>(({ <span class="var">id</span>, <span class="var">name</span>, <span class="var">email</span> }) => ({ <span class="var">id</span>, <span class="var">name</span>, <span class="var">email</span> }));
+}
+
+<span class="cmt">// POST request with JSON body</span>
+<span class="kw">async function</span> <span class="fn">createPost</span>(<span class="var">data</span>) {
+  <span class="kw">const</span> <span class="var">res</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"https://jsonplaceholder.typicode.com/posts"</span>, {
+    <span class="var">method</span>:  <span class="str">"POST"</span>,
+    <span class="var">headers</span>: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
+    <span class="var">body</span>:    <span class="typ">JSON</span>.<span class="fn">stringify</span>(<span class="var">data</span>)
+  });
+  <span class="kw">return</span> <span class="var">res</span>.<span class="fn">json</span>();
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Loop -->
+      <div class="topic-card open" id="tc-eventloop">
+        <div class="topic-card-header" onclick="toggleCard('tc-eventloop')">
+          <i class="fa fa-circle-nodes" style="color:var(--accent);font-size:0.9rem"></i>
+          <h3>Event Loop — Visual Explainer</h3>
+          <span class="topic-tag tag-js">JS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <p>The Event Loop is JavaScript's mechanism for executing code, handling events, and executing queued callbacks — enabling non-blocking I/O despite being single-threaded.</p>
+            <div class="event-loop-viz">
+              <div class="elv-grid">
+                <div class="elv-box">
+                  <div class="elv-box-title">📦 Call Stack</div>
+                  <div id="elv-stack"></div>
+                </div>
+                <div class="elv-box">
+                  <div class="elv-box-title">⚡ Web APIs</div>
+                  <div id="elv-webapi"></div>
+                </div>
+                <div class="elv-box">
+                  <div class="elv-box-title">📋 Callback Queue</div>
+                  <div id="elv-queue"></div>
+                </div>
+              </div>
+              <button class="elv-btn" onclick="runEventLoopDemo()">▶ Run Demo</button>
+              <div id="elv-log" style="margin-top:12px;font-size:0.75rem;color:var(--text3);min-height:20px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-block reveal">
+        <h4><i class="fa fa-brain"></i> Quick Quiz — Async</h4>
+        <p class="quiz-q">What is logged? <code style="color:var(--accent)">console.log(1); setTimeout(()=>console.log(2),0); console.log(3);</code></p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">1, 2, 3</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">1, 3, 2</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">2, 1, 3</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">3, 1, 2</button>
+        </div>
+        <div class="quiz-result"></div>
+      </div>
+    </section>
+
+    <!-- ===== DOM & BROWSER ===== -->
+    <section class="section" id="section-dom-browser">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-window-maximize"></i> Module 5</div>
+          <div class="section-title">DOM &amp; Browser</div>
+          <div class="section-desc">Interact with web pages, handle user events, and use browser storage APIs.</div>
+        </div>
+        <button class="btn-complete" id="complete-dom-browser" onclick="toggleComplete('dom-browser')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="topic-card" id="tc-dom">
+        <div class="topic-card-header" onclick="toggleCard('tc-dom')">
+          <i class="fa fa-sitemap" style="color:var(--accent);font-size:0.9rem"></i>
+          <h3>DOM Manipulation &amp; Events</h3>
+          <span class="topic-tag tag-js">JS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// Selecting elements</span>
+<span class="kw">const</span> <span class="var">btn</span>   = <span class="var">document</span>.<span class="fn">querySelector</span>(<span class="str">"#my-btn"</span>);
+<span class="kw">const</span> <span class="var">items</span> = <span class="var">document</span>.<span class="fn">querySelectorAll</span>(<span class="str">".item"</span>);
+
+<span class="cmt">// Creating &amp; appending</span>
+<span class="kw">const</span> <span class="var">li</span> = <span class="var">document</span>.<span class="fn">createElement</span>(<span class="str">"li"</span>);
+<span class="var">li</span>.<span class="var">textContent</span> = <span class="str">"New Item"</span>;
+<span class="var">li</span>.<span class="var">className</span>   = <span class="str">"item highlight"</span>;
+<span class="var">document</span>.<span class="fn">querySelector</span>(<span class="str">"ul"</span>).<span class="fn">appendChild</span>(<span class="var">li</span>);
+
+<span class="cmt">// Event delegation (efficient pattern)</span>
+<span class="var">document</span>.<span class="fn">querySelector</span>(<span class="str">"#todo-list"</span>)
+  .<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (<span class="var">e</span>) => {
+    <span class="kw">if</span> (<span class="var">e</span>.<span class="var">target</span>.<span class="fn">matches</span>(<span class="str">".delete-btn"</span>)) {
+      <span class="var">e</span>.<span class="var">target</span>.<span class="var">closest</span>(<span class="str">"li"</span>).<span class="fn">remove</span>();
+    }
+  });
+
+<span class="cmt">// Local storage</span>
+<span class="var">localStorage</span>.<span class="fn">setItem</span>(<span class="str">"user"</span>, <span class="typ">JSON</span>.<span class="fn">stringify</span>({ <span class="var">name</span>: <span class="str">"Alice"</span> }));
+<span class="kw">const</span> <span class="var">user</span> = <span class="typ">JSON</span>.<span class="fn">parse</span>(<span class="var">localStorage</span>.<span class="fn">getItem</span>(<span class="str">"user"</span>));</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-card" id="tc-todo">
+        <div class="topic-card-header" onclick="toggleCard('tc-todo')">
+          <i class="fa fa-list-check" style="color:var(--accent2);font-size:0.9rem"></i>
+          <h3>Example: Todo App UI Logic</h3>
+          <span class="topic-tag tag-js">JS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">class</span> <span class="typ">TodoApp</span> {
+  <span class="kw">constructor</span>() {
+    <span class="kw">this</span>.<span class="var">todos</span> = <span class="typ">JSON</span>.<span class="fn">parse</span>(<span class="var">localStorage</span>.<span class="fn">getItem</span>(<span class="str">"todos"</span>)) || [];
+    <span class="kw">this</span>.<span class="var">input</span> = <span class="var">document</span>.<span class="fn">querySelector</span>(<span class="str">"#todo-input"</span>);
+    <span class="kw">this</span>.<span class="var">list</span>  = <span class="var">document</span>.<span class="fn">querySelector</span>(<span class="str">"#todo-list"</span>);
+    <span class="kw">this</span>.<span class="fn">init</span>();
+  }
+
+  <span class="fn">init</span>() {
+    <span class="var">document</span>.<span class="fn">querySelector</span>(<span class="str">"#add-btn"</span>)
+      .<span class="fn">addEventListener</span>(<span class="str">"click"</span>, () => <span class="kw">this</span>.<span class="fn">add</span>());
+    <span class="kw">this</span>.<span class="fn">render</span>();
+  }
+
+  <span class="fn">add</span>() {
+    <span class="kw">const</span> <span class="var">text</span> = <span class="kw">this</span>.<span class="var">input</span>.<span class="var">value</span>.<span class="fn">trim</span>();
+    <span class="kw">if</span> (!<span class="var">text</span>) <span class="kw">return</span>;
+    <span class="kw">this</span>.<span class="var">todos</span>.<span class="fn">push</span>({ <span class="var">id</span>: <span class="typ">Date</span>.<span class="fn">now</span>(), <span class="var">text</span>, <span class="var">done</span>: <span class="kw">false</span> });
+    <span class="kw">this</span>.<span class="fn">save</span>();
+    <span class="kw">this</span>.<span class="fn">render</span>();
+    <span class="kw">this</span>.<span class="var">input</span>.<span class="var">value</span> = <span class="str">""</span>;
+  }
+
+  <span class="fn">toggle</span>(<span class="var">id</span>) {
+    <span class="kw">this</span>.<span class="var">todos</span> = <span class="kw">this</span>.<span class="var">todos</span>.<span class="fn">map</span>(<span class="var">t</span> =>
+      <span class="var">t</span>.<span class="var">id</span> === <span class="var">id</span> ? { ...<span class="var">t</span>, <span class="var">done</span>: !<span class="var">t</span>.<span class="var">done</span> } : <span class="var">t</span>
+    );
+    <span class="kw">this</span>.<span class="fn">save</span>();
+    <span class="kw">this</span>.<span class="fn">render</span>();
+  }
+
+  <span class="fn">save</span>() {
+    <span class="var">localStorage</span>.<span class="fn">setItem</span>(<span class="str">"todos"</span>, <span class="typ">JSON</span>.<span class="fn">stringify</span>(<span class="kw">this</span>.<span class="var">todos</span>));
+  }
+
+  <span class="fn">render</span>() {
+    <span class="kw">this</span>.<span class="var">list</span>.<span class="var">innerHTML</span> = <span class="kw">this</span>.<span class="var">todos</span>
+      .<span class="fn">map</span>(({ <span class="var">id</span>, <span class="var">text</span>, <span class="var">done</span> }) => <span class="str">`
+        &lt;li class="${<span class="var">done</span> ? <span class="str">'done'</span> : <span class="str">''</span>}"&gt;
+          &lt;span onclick="app.toggle(${<span class="var">id</span>})"&gt;${<span class="var">text</span>}&lt;/span&gt;
+        &lt;/li&gt;`</span>)
+      .<span class="fn">join</span>(<span class="str">""</span>);
+  }
+}
+<span class="kw">const</span> <span class="var">app</span> = <span class="kw">new</span> <span class="typ">TodoApp</span>();</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-block reveal">
+        <h4><i class="fa fa-brain"></i> Quick Quiz — DOM</h4>
+        <p class="quiz-q">Which method returns only the FIRST matching element?</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">querySelectorAll</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">querySelector</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">getElementsByClassName</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">getElementById</button>
+        </div>
+        <div class="quiz-result"></div>
+      </div>
+    </section>
+
+    <!-- ===== ADVANCED JS ===== -->
+    <section class="section" id="section-advanced-js">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-rocket"></i> Module 6</div>
+          <div class="section-title">Advanced JavaScript</div>
+          <div class="section-desc">Execution internals, performance patterns, and modern ES6+ features.</div>
+        </div>
+        <button class="btn-complete" id="complete-advanced-js" onclick="toggleComplete('advanced-js')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="topic-card" id="tc-execctx">
+        <div class="topic-card-header" onclick="toggleCard('tc-execctx')">
+          <i class="fa fa-microchip" style="color:var(--accent);font-size:0.9rem"></i>
+          <h3>Execution Context &amp; Call Stack</h3>
+          <span class="topic-tag tag-adv">Advanced</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <p>Every time JavaScript executes code, it creates an Execution Context with: a Variable Environment, a Scope Chain, and a <code style="color:var(--accent)">this</code> binding. The Global Execution Context is always at the bottom of the Call Stack.</p>
+            <div class="callout info"><i class="fa fa-info-circle callout-icon"></i><div><strong>Two phases:</strong> Creation Phase (memory allocation, hoisting) → Execution Phase (code runs line by line).</div></div>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// Debounce — delay execution until user stops</span>
+<span class="kw">function</span> <span class="fn">debounce</span>(<span class="var">fn</span>, <span class="var">delay</span> = <span class="num">300</span>) {
+  <span class="kw">let</span> <span class="var">timer</span>;
+  <span class="kw">return</span> (...<span class="var">args</span>) => {
+    <span class="fn">clearTimeout</span>(<span class="var">timer</span>);
+    <span class="var">timer</span> = <span class="fn">setTimeout</span>(() => <span class="var">fn</span>(...<span class="var">args</span>), <span class="var">delay</span>);
+  };
+}
+
+<span class="cmt">// Throttle — limit to once per interval</span>
+<span class="kw">function</span> <span class="fn">throttle</span>(<span class="var">fn</span>, <span class="var">limit</span> = <span class="num">300</span>) {
+  <span class="kw">let</span> <span class="var">lastCall</span> = <span class="num">0</span>;
+  <span class="kw">return</span> (...<span class="var">args</span>) => {
+    <span class="kw">const</span> <span class="var">now</span> = <span class="typ">Date</span>.<span class="fn">now</span>();
+    <span class="kw">if</span> (<span class="var">now</span> - <span class="var">lastCall</span> >= <span class="var">limit</span>) {
+      <span class="var">lastCall</span> = <span class="var">now</span>;
+      <span class="kw">return</span> <span class="var">fn</span>(...<span class="var">args</span>);
+    }
+  };
+}
+
+<span class="cmt">// ES6+ features</span>
+<span class="kw">const</span> { <span class="var">name</span>, <span class="var">age</span> = <span class="num">25</span> } = <span class="var">user</span>;       <span class="cmt">// destructuring</span>
+<span class="kw">const</span> <span class="var">merged</span> = { ...<span class="var">obj1</span>, ...<span class="var">obj2</span> };    <span class="cmt">// spread</span>
+<span class="kw">const</span> <span class="var">val</span> = <span class="var">obj</span>?.<span class="var">user</span>?.<span class="var">address</span>?.<span class="var">city</span>; <span class="cmt">// optional chaining</span>
+<span class="kw">const</span> <span class="var">safe</span> = <span class="var">val</span> ?? <span class="str">"Unknown"</span>;           <span class="cmt">// nullish coalescing</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-block reveal">
+        <h4><i class="fa fa-brain"></i> Quick Quiz — Advanced JS</h4>
+        <p class="quiz-q">Debouncing is best used for:</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">Limiting scroll events to N/sec</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">Search input that waits until the user stops typing</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">Caching function results</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">Running code after a set delay once</button>
+        </div>
+        <div class="quiz-result"></div>
+      </div>
+    </section>
+
+    <!-- ===== TS BASICS ===== -->
+    <section class="section" id="section-ts-basics">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-t"></i> Module 7</div>
+          <div class="section-title">TypeScript Basics</div>
+          <div class="section-desc">Add static types to JavaScript for safer, more maintainable code.</div>
+        </div>
+        <button class="btn-complete" id="complete-ts-basics" onclick="toggleComplete('ts-basics')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="callout info mt-16"><i class="fa fa-info-circle callout-icon"></i><div><strong>What is TypeScript?</strong> TypeScript is a strongly typed superset of JavaScript developed by Microsoft. It compiles to plain JavaScript and adds optional static typing, making large codebases safer and easier to refactor.</div></div>
+
+      <div class="topic-card" id="tc-basic-types">
+        <div class="topic-card-header" onclick="toggleCard('tc-basic-types')">
+          <i class="fa fa-tag" style="color:var(--accent3);font-size:0.9rem"></i>
+          <h3>Basic Types &amp; Typed Functions</h3>
+          <span class="topic-tag tag-ts">TS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">TypeScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// Basic types</span>
+<span class="kw">let</span> <span class="var">name</span>:    <span class="typ">string</span>  = <span class="str">"Alice"</span>;
+<span class="kw">let</span> <span class="var">age</span>:     <span class="typ">number</span>  = <span class="num">30</span>;
+<span class="kw">let</span> <span class="var">active</span>:  <span class="typ">boolean</span> = <span class="kw">true</span>;
+<span class="kw">let</span> <span class="var">scores</span>:  <span class="typ">number</span>[] = [<span class="num">90</span>, <span class="num">85</span>, <span class="num">92</span>];
+<span class="kw">let</span> <span class="var">pair</span>:    [<span class="typ">string</span>, <span class="typ">number</span>] = [<span class="str">"age"</span>, <span class="num">25</span>]; <span class="cmt">// tuple</span>
+
+<span class="cmt">// Typed function</span>
+<span class="kw">function</span> <span class="fn">add</span>(<span class="var">a</span>: <span class="typ">number</span>, <span class="var">b</span>: <span class="typ">number</span>): <span class="typ">number</span> {
+  <span class="kw">return</span> <span class="var">a</span> + <span class="var">b</span>;
+}
+
+<span class="cmt">// Optional &amp; default params</span>
+<span class="kw">function</span> <span class="fn">greet</span>(<span class="var">name</span>: <span class="typ">string</span>, <span class="var">title</span>?: <span class="typ">string</span>): <span class="typ">string</span> {
+  <span class="kw">return</span> <span class="str">`Hello, ${<span class="var">title</span> ?? <span class="str">""</span>} ${<span class="var">name</span>}`</span>.<span class="fn">trim</span>();
+}
+
+<span class="cmt">// Union types</span>
+<span class="kw">let</span> <span class="var">id</span>: <span class="typ">string</span> | <span class="typ">number</span> = <span class="num">1</span>;
+<span class="var">id</span> = <span class="str">"abc"</span>; <span class="cmt">// valid</span>
+
+<span class="cmt">// Literal types</span>
+<span class="kw">type</span> <span class="typ">Direction</span> = <span class="str">"north"</span> | <span class="str">"south"</span> | <span class="str">"east"</span> | <span class="str">"west"</span>;
+<span class="kw">let</span> <span class="var">dir</span>: <span class="typ">Direction</span> = <span class="str">"north"</span>;
+
+<span class="cmt">// Enum</span>
+<span class="kw">enum</span> <span class="typ">Status</span> { Active = <span class="str">"ACTIVE"</span>, Inactive = <span class="str">"INACTIVE"</span> }
+<span class="kw">const</span> <span class="var">s</span>: <span class="typ">Status</span> = <span class="typ">Status</span>.<span class="var">Active</span>;</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-block reveal">
+        <h4><i class="fa fa-brain"></i> Quick Quiz — TS Basics</h4>
+        <p class="quiz-q">What TypeScript type represents "a value that could be string OR number"?</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">any</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">string | number</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">string &amp; number</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">unknown</button>
+        </div>
+        <div class="quiz-result"></div>
+      </div>
+    </section>
+
+    <!-- ===== TS INTERMEDIATE ===== -->
+    <section class="section" id="section-ts-intermediate">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-diagram-project"></i> Module 8</div>
+          <div class="section-title">Intermediate TypeScript</div>
+          <div class="section-desc">Interfaces, generics, and advanced type composition.</div>
+        </div>
+        <button class="btn-complete" id="complete-ts-intermediate" onclick="toggleComplete('ts-intermediate')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="topic-card" id="tc-interfaces">
+        <div class="topic-card-header" onclick="toggleCard('tc-interfaces')">
+          <i class="fa fa-shapes" style="color:var(--accent3);font-size:0.9rem"></i>
+          <h3>Interfaces &amp; Type Aliases</h3>
+          <span class="topic-tag tag-ts">TS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">TypeScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// Interface — extendable, preferred for object shapes</span>
+<span class="kw">interface</span> <span class="typ">User</span> {
+  <span class="kw">readonly</span> <span class="var">id</span>:   <span class="typ">number</span>;
+  <span class="var">name</span>:           <span class="typ">string</span>;
+  <span class="var">email</span>?:         <span class="typ">string</span>; <span class="cmt">// optional</span>
+}
+<span class="kw">interface</span> <span class="typ">AdminUser</span> <span class="kw">extends</span> <span class="typ">User</span> {
+  <span class="var">role</span>: <span class="str">"admin"</span> | <span class="str">"superadmin"</span>;
+}
+
+<span class="cmt">// Type alias — flexible, use for unions/primitives</span>
+<span class="kw">type</span> <span class="typ">Point</span>  = { <span class="var">x</span>: <span class="typ">number</span>; <span class="var">y</span>: <span class="typ">number</span> };
+<span class="kw">type</span> <span class="typ">ID</span>     = <span class="typ">string</span> | <span class="typ">number</span>;
+<span class="kw">type</span> <span class="typ">Tuple</span>  = [<span class="typ">string</span>, <span class="typ">number</span>, <span class="typ">boolean</span>];
+
+<span class="cmt">// Intersection type</span>
+<span class="kw">type</span> <span class="typ">Employee</span> = <span class="typ">User</span> & { <span class="var">department</span>: <span class="typ">string</span> };
+
+<span class="cmt">// Generics — reusable typed functions</span>
+<span class="kw">function</span> <span class="fn">identity</span>&lt;<span class="typ">T</span>&gt;(<span class="var">value</span>: <span class="typ">T</span>): <span class="typ">T</span> { <span class="kw">return</span> <span class="var">value</span>; }
+
+<span class="kw">interface</span> <span class="typ">ApiResponse</span>&lt;<span class="typ">T</span>&gt; {
+  <span class="var">data</span>:    <span class="typ">T</span>;
+  <span class="var">status</span>:  <span class="typ">number</span>;
+  <span class="var">message</span>: <span class="typ">string</span>;
+}
+
+<span class="kw">type</span> <span class="typ">UserResponse</span>  = <span class="typ">ApiResponse</span>&lt;<span class="typ">User</span>&gt;;
+<span class="kw">type</span> <span class="typ">UsersResponse</span> = <span class="typ">ApiResponse</span>&lt;<span class="typ">User</span>[]&gt;;</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-block reveal">
+        <h4><i class="fa fa-brain"></i> Quick Quiz — Intermediate TS</h4>
+        <p class="quiz-q">What does <code style="color:var(--accent)">type A = B &amp; C</code> create?</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">A type that is either B or C</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">A type that has ALL properties of both B and C</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">A generic type</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">A conditional type</button>
+        </div>
+        <div class="quiz-result"></div>
+      </div>
+    </section>
+
+    <!-- ===== TS ADVANCED ===== -->
+    <section class="section" id="section-ts-advanced">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-fire"></i> Module 9</div>
+          <div class="section-title">Advanced TypeScript</div>
+          <div class="section-desc">Utility types, conditional types, mapped types, and type narrowing.</div>
+        </div>
+        <button class="btn-complete" id="complete-ts-advanced" onclick="toggleComplete('ts-advanced')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="topic-card" id="tc-utility">
+        <div class="topic-card-header" onclick="toggleCard('tc-utility')">
+          <i class="fa fa-wrench" style="color:var(--accent);font-size:0.9rem"></i>
+          <h3>Utility Types &amp; Conditional Types</h3>
+          <span class="topic-tag tag-adv">Advanced</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">TypeScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">interface</span> <span class="typ">User</span> { <span class="var">id</span>: <span class="typ">number</span>; <span class="var">name</span>: <span class="typ">string</span>; <span class="var">email</span>: <span class="typ">string</span>; <span class="var">age</span>: <span class="typ">number</span>; }
+
+<span class="cmt">// Built-in utility types</span>
+<span class="kw">type</span> <span class="typ">PartialUser</span>  = <span class="typ">Partial</span>&lt;<span class="typ">User</span>&gt;;     <span class="cmt">// all props optional</span>
+<span class="kw">type</span> <span class="typ">RequiredUser</span> = <span class="typ">Required</span>&lt;<span class="typ">User</span>&gt;;    <span class="cmt">// all props required</span>
+<span class="kw">type</span> <span class="typ">ReadonlyUser</span> = <span class="typ">Readonly</span>&lt;<span class="typ">User</span>&gt;;    <span class="cmt">// all props readonly</span>
+<span class="kw">type</span> <span class="typ">UserPreview</span>  = <span class="typ">Pick</span>&lt;<span class="typ">User</span>, <span class="str">"id"</span> | <span class="str">"name"</span>&gt;;
+<span class="kw">type</span> <span class="typ">PublicUser</span>   = <span class="typ">Omit</span>&lt;<span class="typ">User</span>, <span class="str">"email"</span>&gt;;
+
+<span class="cmt">// Conditional types</span>
+<span class="kw">type</span> <span class="typ">IsArray</span>&lt;<span class="typ">T</span>&gt; = <span class="typ">T</span> <span class="kw">extends</span> <span class="kw">any</span>[] ? <span class="kw">true</span> : <span class="kw">false</span>;
+<span class="kw">type</span> <span class="typ">A</span> = <span class="typ">IsArray</span>&lt;<span class="typ">string</span>[]&gt;; <span class="cmt">// true</span>
+<span class="kw">type</span> <span class="typ">B</span> = <span class="typ">IsArray</span>&lt;<span class="typ">string</span>&gt;;   <span class="cmt">// false</span>
+
+<span class="cmt">// Mapped types</span>
+<span class="kw">type</span> <span class="typ">Nullable</span>&lt;<span class="typ">T</span>&gt; = { [<span class="var">K</span> <span class="kw">in</span> <span class="kw">keyof</span> <span class="typ">T</span>]: <span class="typ">T</span>[<span class="var">K</span>] | <span class="kw">null</span> };
+<span class="kw">type</span> <span class="typ">NullableUser</span> = <span class="typ">Nullable</span>&lt;<span class="typ">User</span>&gt;;
+
+<span class="cmt">// Type narrowing</span>
+<span class="kw">function</span> <span class="fn">processId</span>(<span class="var">id</span>: <span class="typ">string</span> | <span class="typ">number</span>) {
+  <span class="kw">if</span> (<span class="kw">typeof</span> <span class="var">id</span> === <span class="str">"string"</span>) {
+    <span class="kw">return</span> <span class="var">id</span>.<span class="fn">toUpperCase</span>(); <span class="cmt">// narrowed to string</span>
+  }
+  <span class="kw">return</span> <span class="var">id</span>.<span class="fn">toFixed</span>(<span class="num">2</span>); <span class="cmt">// narrowed to number</span>
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-block reveal">
+        <h4><i class="fa fa-brain"></i> Quick Quiz — Advanced TS</h4>
+        <p class="quiz-q">Which utility type makes ALL properties of a type optional?</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">Pick&lt;T&gt;</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">Omit&lt;T&gt;</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">Partial&lt;T&gt;</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">Required&lt;T&gt;</button>
+        </div>
+        <div class="quiz-result"></div>
+      </div>
+    </section>
+
+    <!-- ===== FRAMEWORKS ===== -->
+    <section class="section" id="section-frameworks">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-puzzle-piece"></i> Module 10</div>
+          <div class="section-title">Framework Integration</div>
+          <div class="section-desc">Using TypeScript with React and Node.js in real-world projects.</div>
+        </div>
+        <button class="btn-complete" id="complete-frameworks" onclick="toggleComplete('frameworks')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="topic-card" id="tc-react-ts">
+        <div class="topic-card-header" onclick="toggleCard('tc-react-ts')">
+          <i class="fa fa-atom" style="color:#61dafb;font-size:0.9rem"></i>
+          <h3>React with TypeScript</h3>
+          <span class="topic-tag tag-ts">TS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">React + TypeScript</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">import</span> <span class="typ">React</span>, { <span class="typ">useState</span>, <span class="typ">FC</span> } <span class="kw">from</span> <span class="str">"react"</span>;
+
+<span class="cmt">// Typed props with interface</span>
+<span class="kw">interface</span> <span class="typ">ButtonProps</span> {
+  <span class="var">label</span>:    <span class="typ">string</span>;
+  <span class="var">variant</span>?: <span class="str">"primary"</span> | <span class="str">"secondary"</span>;
+  <span class="fn">onClick</span>:  () => <span class="typ">void</span>;
+  <span class="var">disabled</span>?: <span class="typ">boolean</span>;
+}
+
+<span class="kw">const</span> <span class="typ">Button</span>: <span class="typ">FC</span>&lt;<span class="typ">ButtonProps</span>&gt; = ({
+  <span class="var">label</span>, <span class="var">variant</span> = <span class="str">"primary"</span>, <span class="fn">onClick</span>, <span class="var">disabled</span>
+}) => (
+  &lt;<span class="var">button</span>
+    <span class="var">className</span>={<span class="str">`btn btn-${<span class="var">variant</span>}`</span>}
+    <span class="fn">onClick</span>={<span class="fn">onClick</span>}
+    <span class="var">disabled</span>={<span class="var">disabled</span>}
+  &gt;{<span class="var">label</span>}&lt;/<span class="var">button</span>&gt;
+);
+
+<span class="cmt">// useState with type inference</span>
+<span class="kw">const</span> [<span class="var">count</span>, <span class="fn">setCount</span>] = <span class="fn">useState</span>&lt;<span class="typ">number</span>&gt;(<span class="num">0</span>);
+<span class="kw">const</span> [<span class="var">user</span>,  <span class="fn">setUser</span>]  = <span class="fn">useState</span>&lt;<span class="typ">User</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+
+<span class="cmt">// Typed event handler</span>
+<span class="kw">const</span> <span class="fn">handleChange</span> = (<span class="var">e</span>: <span class="typ">React.ChangeEvent</span>&lt;<span class="typ">HTMLInputElement</span>&gt;) => {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="var">e</span>.<span class="var">target</span>.<span class="var">value</span>);
+};</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-card" id="tc-node-ts">
+        <div class="topic-card-header" onclick="toggleCard('tc-node-ts')">
+          <i class="fa fa-server" style="color:#68a063;font-size:0.9rem"></i>
+          <h3>Node.js with TypeScript</h3>
+          <span class="topic-tag tag-ts">TS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">Node.js + TypeScript (Express)</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="kw">import</span> <span class="var">express</span>, { <span class="typ">Request</span>, <span class="typ">Response</span>, <span class="typ">NextFunction</span> } <span class="kw">from</span> <span class="str">"express"</span>;
+
+<span class="kw">interface</span> <span class="typ">CreateUserBody</span> {
+  <span class="var">name</span>:  <span class="typ">string</span>;
+  <span class="var">email</span>: <span class="typ">string</span>;
+}
+
+<span class="kw">type</span> <span class="typ">TypedRequest</span>&lt;<span class="typ">T</span>&gt; = <span class="typ">Request</span>&lt;{}, {}, <span class="typ">T</span>&gt;;
+
+<span class="kw">const</span> <span class="var">app</span> = <span class="fn">express</span>();
+
+<span class="var">app</span>.<span class="fn">post</span>(<span class="str">"/users"</span>, (
+  <span class="var">req</span>: <span class="typ">TypedRequest</span>&lt;<span class="typ">CreateUserBody</span>&gt;,
+  <span class="var">res</span>: <span class="typ">Response</span>
+) => {
+  <span class="kw">const</span> { <span class="var">name</span>, <span class="var">email</span> } = <span class="var">req</span>.<span class="var">body</span>;
+  <span class="cmt">// name and email are fully typed</span>
+  <span class="var">res</span>.<span class="fn">json</span>({ <span class="var">id</span>: <span class="typ">Date</span>.<span class="fn">now</span>(), <span class="var">name</span>, <span class="var">email</span> });
+});</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TESTING ===== -->
+    <section class="section" id="section-testing">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-vial"></i> Module 11</div>
+          <div class="section-title">Testing</div>
+          <div class="section-desc">Unit testing, integration testing, and test-driven development with Jest.</div>
+        </div>
+        <button class="btn-complete" id="complete-testing" onclick="toggleComplete('testing')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="topic-card" id="tc-jest">
+        <div class="topic-card-header" onclick="toggleCard('tc-jest')">
+          <i class="fa fa-flask" style="color:var(--accent2);font-size:0.9rem"></i>
+          <h3>Jest Testing Fundamentals</h3>
+          <span class="topic-tag tag-js">JS/TS</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript — Jest Tests</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// math.js</span>
+<span class="kw">export const</span> <span class="fn">add</span>      = (<span class="var">a</span>, <span class="var">b</span>) => <span class="var">a</span> + <span class="var">b</span>;
+<span class="kw">export const</span> <span class="fn">multiply</span> = (<span class="var">a</span>, <span class="var">b</span>) => <span class="var">a</span> * <span class="var">b</span>;
+<span class="kw">export const</span> <span class="fn">divide</span>   = (<span class="var">a</span>, <span class="var">b</span>) => {
+  <span class="kw">if</span> (<span class="var">b</span> === <span class="num">0</span>) <span class="kw">throw new</span> <span class="typ">Error</span>(<span class="str">"Division by zero"</span>);
+  <span class="kw">return</span> <span class="var">a</span> / <span class="var">b</span>;
+};
+
+<span class="cmt">// math.test.js</span>
+<span class="kw">import</span> { <span class="fn">add</span>, <span class="fn">multiply</span>, <span class="fn">divide</span> } <span class="kw">from</span> <span class="str">"./math"</span>;
+
+<span class="fn">describe</span>(<span class="str">"Math utilities"</span>, () => {
+
+  <span class="fn">test</span>(<span class="str">"add returns correct sum"</span>, () => {
+    <span class="fn">expect</span>(<span class="fn">add</span>(<span class="num">2</span>, <span class="num">3</span>)).<span class="fn">toBe</span>(<span class="num">5</span>);
+    <span class="fn">expect</span>(<span class="fn">add</span>(<span class="num">-1</span>, <span class="num">1</span>)).<span class="fn">toBe</span>(<span class="num">0</span>);
+  });
+
+  <span class="fn">test</span>(<span class="str">"multiply returns correct product"</span>, () => {
+    <span class="fn">expect</span>(<span class="fn">multiply</span>(<span class="num">3</span>, <span class="num">4</span>)).<span class="fn">toBe</span>(<span class="num">12</span>);
+  });
+
+  <span class="fn">test</span>(<span class="str">"divide throws on division by zero"</span>, () => {
+    <span class="fn">expect</span>(() => <span class="fn">divide</span>(<span class="num">5</span>, <span class="num">0</span>))
+      .<span class="fn">toThrow</span>(<span class="str">"Division by zero"</span>);
+  });
+
+  <span class="fn">test</span>(<span class="str">"async data fetch"</span>, <span class="kw">async</span> () => {
+    <span class="kw">const</span> <span class="var">data</span> = <span class="kw">await</span> <span class="fn">fetchMockData</span>();
+    <span class="fn">expect</span>(<span class="var">data</span>).<span class="fn">toMatchObject</span>({ <span class="var">id</span>: <span class="fn">expect</span>.<span class="fn">any</span>(<span class="typ">Number</span>) });
+  });
+});</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EXPERT ===== -->
+    <section class="section" id="section-expert">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-eyebrow"><i class="fa fa-crown"></i> Module 12</div>
+          <div class="section-title">Expert Level</div>
+          <div class="section-desc">V8 internals, performance optimization, memory management, and advanced patterns.</div>
+        </div>
+        <button class="btn-complete" id="complete-expert" onclick="toggleComplete('expert')"><i class="fa fa-check"></i> Mark Complete</button>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h4><i class="fa fa-gear" style="color:var(--accent)"></i> V8 Engine</h4>
+          <p>Google's JS engine: parses → AST → Ignition bytecode → TurboFan JIT compilation → optimized machine code.</p>
+        </div>
+        <div class="concept-card">
+          <h4><i class="fa fa-memory" style="color:var(--accent2)"></i> Memory Management</h4>
+          <p>JS uses automatic garbage collection (mark-and-sweep). Avoid memory leaks: clear timers, remove listeners, avoid accidental globals.</p>
+        </div>
+        <div class="concept-card">
+          <h4><i class="fa fa-gauge-high" style="color:var(--accent3)"></i> Performance</h4>
+          <p>Avoid layout thrashing, use <code>requestAnimationFrame</code>, virtualize long lists, lazy-load assets, code-split bundles.</p>
+        </div>
+        <div class="concept-card">
+          <h4><i class="fa fa-diagram-project" style="color:#a29bfe"></i> Design Patterns</h4>
+          <p>Observer, Factory, Singleton, Strategy, Module — structural patterns for scalable TypeScript applications.</p>
+        </div>
+      </div>
+
+      <div class="topic-card" id="tc-perf">
+        <div class="topic-card-header" onclick="toggleCard('tc-perf')">
+          <i class="fa fa-gauge-high" style="color:var(--accent3);font-size:0.9rem"></i>
+          <h3>Performance Optimization Patterns</h3>
+          <span class="topic-tag tag-adv">Expert</span>
+          <i class="fa fa-chevron-down topic-chevron"></i>
+        </div>
+        <div class="topic-body">
+          <div class="topic-inner">
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">JavaScript — Performance</span><button class="btn-copy" onclick="copyCode(this)"><i class="fa fa-copy"></i> Copy</button></div>
+<pre><span class="cmt">// Virtual scrolling (render only visible items)</span>
+<span class="kw">function</span> <span class="fn">getVisibleItems</span>(<span class="var">items</span>, <span class="var">scrollTop</span>, <span class="var">viewportHeight</span>, <span class="var">itemHeight</span>) {
+  <span class="kw">const</span> <span class="var">start</span> = <span class="typ">Math</span>.<span class="fn">floor</span>(<span class="var">scrollTop</span> / <span class="var">itemHeight</span>);
+  <span class="kw">const</span> <span class="var">end</span>   = <span class="typ">Math</span>.<span class="fn">ceil</span>((<span class="var">scrollTop</span> + <span class="var">viewportHeight</span>) / <span class="var">itemHeight</span>);
+  <span class="kw">return</span> <span class="var">items</span>.<span class="fn">slice</span>(<span class="var">start</span>, <span class="var">end</span> + <span class="num">1</span>);
+}
+
+<span class="cmt">// Memory leak — common patterns to avoid</span>
+<span class="cmt">// ❌ Forgotten event listener</span>
+<span class="var">window</span>.<span class="fn">addEventListener</span>(<span class="str">"resize"</span>, <span class="var">myHeavyHandler</span>); <span class="cmt">// never removed</span>
+
+<span class="cmt">// ✅ Proper cleanup</span>
+<span class="kw">function</span> <span class="fn">setup</span>() {
+  <span class="kw">const</span> <span class="var">handler</span> = () => { <span class="cmt">/* ... */</span> };
+  <span class="var">window</span>.<span class="fn">addEventListener</span>(<span class="str">"resize"</span>, <span class="var">handler</span>);
+  <span class="kw">return</span> () => <span class="var">window</span>.<span class="fn">removeEventListener</span>(<span class="str">"resize"</span>, <span class="var">handler</span>);
+}
+<span class="kw">const</span> <span class="var">cleanup</span> = <span class="fn">setup</span>();
+<span class="cmt">// later: cleanup()</span>
+
+<span class="cmt">// Web Worker for CPU-intensive tasks (off main thread)</span>
+<span class="kw">const</span> <span class="var">worker</span> = <span class="kw">new</span> <span class="typ">Worker</span>(<span class="str">"heavy-task.js"</span>);
+<span class="var">worker</span>.<span class="fn">postMessage</span>({ <span class="var">data</span>: <span class="var">largeArray</span> });
+<span class="var">worker</span>.<span class="fn">onmessage</span> = (<span class="var">e</span>) => <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Result:"</span>, <span class="var">e</span>.<span class="var">data</span>);</pre>
+            </div>
+            <div class="callout warn mt-16"><i class="fa fa-triangle-exclamation callout-icon"></i><div><strong>Rule of thumb:</strong> Measure before optimizing. Use Chrome DevTools Performance tab and Memory profiler to identify actual bottlenecks.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-block reveal">
+        <h4><i class="fa fa-brain"></i> Quick Quiz — Expert</h4>
+        <p class="quiz-q">Which phase does V8's TurboFan perform?</p>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">Parsing source to AST</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">Generating bytecode</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, true)">JIT compiling hot code to machine code</button>
+          <button class="quiz-opt" onclick="answerQuiz(this, false)">Garbage collection</button>
+        </div>
+        <div class="quiz-result"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Back to Top -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <i class="fa fa-arrow-up"></i>
+</button>
+
+<script>
+/* ============================================================
+   SEARCH DATA
+   ============================================================ */
+const searchData = [
+  { title: "Variables & Data Types", section: "js-basics",       icon: "fa-box",       cat: "JS Basics" },
+  { title: "Conditions & Loops",     section: "js-basics",       icon: "fa-arrows-rotate", cat: "JS Basics" },
+  { title: "Functions",              section: "js-basics",       icon: "fa-code",      cat: "JS Basics" },
+  { title: "Closures",               section: "core-js",         icon: "fa-lock",      cat: "Core JS" },
+  { title: "Scope & Hoisting",       section: "core-js",         icon: "fa-arrow-up",  cat: "Core JS" },
+  { title: "Arrays & HOF",           section: "core-js",         icon: "fa-list",      cat: "Core JS" },
+  { title: "Promises",               section: "async-js",        icon: "fa-circle-check", cat: "Async JS" },
+  { title: "Async/Await",            section: "async-js",        icon: "fa-rotate",    cat: "Async JS" },
+  { title: "Event Loop",             section: "async-js",        icon: "fa-circle-nodes", cat: "Async JS" },
+  { title: "Fetch API",              section: "async-js",        icon: "fa-cloud",     cat: "Async JS" },
+  { title: "DOM Manipulation",       section: "dom-browser",     icon: "fa-sitemap",   cat: "DOM" },
+  { title: "Event Handling",         section: "dom-browser",     icon: "fa-bolt",      cat: "DOM" },
+  { title: "Local Storage",          section: "dom-browser",     icon: "fa-database",  cat: "DOM" },
+  { title: "Todo App Example",       section: "dom-browser",     icon: "fa-list-check", cat: "DOM" },
+  { title: "Debounce & Throttle",    section: "advanced-js",     icon: "fa-gauge",     cat: "Advanced JS" },
+  { title: "Execution Context",      section: "advanced-js",     icon: "fa-microchip", cat: "Advanced JS" },
+  { title: "TypeScript Types",       section: "ts-basics",       icon: "fa-tag",       cat: "TS Basics" },
+  { title: "Interfaces",             section: "ts-intermediate", icon: "fa-shapes",    cat: "Intermediate TS" },
+  { title: "Generics",               section: "ts-intermediate", icon: "fa-code-branch", cat: "Intermediate TS" },
+  { title: "Utility Types",          section: "ts-advanced",     icon: "fa-wrench",    cat: "Advanced TS" },
+  { title: "Conditional Types",      section: "ts-advanced",     icon: "fa-code-compare", cat: "Advanced TS" },
+  { title: "React + TypeScript",     section: "frameworks",      icon: "fa-atom",      cat: "Frameworks" },
+  { title: "Node.js + TypeScript",   section: "frameworks",      icon: "fa-server",    cat: "Frameworks" },
+  { title: "Jest Testing",           section: "testing",         icon: "fa-flask",     cat: "Testing" },
+  { title: "V8 Engine",              section: "expert",          icon: "fa-gear",      cat: "Expert" },
+  { title: "Performance",            section: "expert",          icon: "fa-gauge-high", cat: "Expert" },
+  { title: "Memory Leaks",           section: "expert",          icon: "fa-memory",    cat: "Expert" },
+];
+
+/* ============================================================
+   PROGRESS STATE
+   ============================================================ */
+const sections = [
+  "home","js-basics","core-js","async-js","dom-browser",
+  "advanced-js","ts-basics","ts-intermediate","ts-advanced",
+  "frameworks","testing","expert"
+];
+const progressLabels = {
+  "home":            "Home",
+  "js-basics":       "JS Basics",
+  "core-js":         "Core JS",
+  "async-js":        "Async JS",
+  "dom-browser":     "DOM & Browser",
+  "advanced-js":     "Advanced JS",
+  "ts-basics":       "TS Basics",
+  "ts-intermediate": "Intermediate TS",
+  "ts-advanced":     "Advanced TS",
+  "frameworks":      "Frameworks",
+  "testing":         "Testing",
+  "expert":          "Expert"
+};
+let completed = {};
+
+function loadProgress() {
+  try { completed = JSON.parse(localStorage.getItem("jsts_progress") || "{}"); } catch { completed = {}; }
+}
+function saveProgress() {
+  localStorage.setItem("jsts_progress", JSON.stringify(completed));
+}
+function toggleComplete(id) {
+  completed[id] = !completed[id];
+  saveProgress();
+  updateUI();
+}
+function updateUI() {
+  // Sidebar checks
+  sections.forEach(id => {
+    const el = document.getElementById("check-" + id);
+    if (el) {
+      if (completed[id]) { el.classList.add("done"); el.innerHTML = "✓"; }
+      else { el.classList.remove("done"); el.innerHTML = ""; }
+    }
+    // Complete buttons
+    const btn = document.getElementById("complete-" + id);
+    if (btn) {
+      if (completed[id]) { btn.classList.add("done"); btn.innerHTML = '<i class="fa fa-check"></i> Completed!'; }
+      else { btn.classList.remove("done"); btn.innerHTML = '<i class="fa fa-check"></i> Mark Complete'; }
+    }
+  });
+  // Global %
+  const count = sections.filter(id => completed[id]).length;
+  const pct = Math.round(count / sections.length * 100);
+  const pctEl = document.getElementById("global-pct");
+  if (pctEl) pctEl.textContent = pct + "%";
+  // Progress dashboard
+  renderProgressDashboard();
+}
+function renderProgressDashboard() {
+  const grid = document.getElementById("progress-grid");
+  if (!grid) return;
+  grid.innerHTML = sections.map(id => `
+    <div class="progress-item">
+      <div class="progress-item-label">
+        <span>${progressLabels[id]}</span>
+        <span class="pct-label">${completed[id] ? '100%' : '0%'}</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${completed[id] ? '100%' : '0%'}"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+let currentSection = "home";
+function navigate(id) {
+  // Hide all
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".sidebar-item").forEach(s => s.classList.remove("active"));
+  // Show target
+  const sec = document.getElementById("section-" + id);
+  if (sec) sec.classList.add("active");
+  const nav = document.querySelector(`.sidebar-item[data-section="${id}"]`);
+  if (nav) nav.classList.add("active");
+  currentSection = id;
+  // Scroll to top
+  document.getElementById("main-content").scrollTop = 0;
+  window.scrollTo(0, 0);
+  // Close mobile sidebar
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+  sidebar.classList.remove("mobile-open");
+  overlay.classList.remove("visible");
+  // Trigger reveals
+  setTimeout(triggerReveal, 100);
+}
+
+/* ============================================================
+   ACCORDION
+   ============================================================ */
+function toggleCard(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  card.classList.toggle("open");
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+function switchTab(btn, paneId) {
+  const tabList = btn.closest(".tab-list");
+  const tabs = btn.closest(".tabs");
+  tabList.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  tabs.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+  const pane = document.getElementById(paneId);
+  if (pane) pane.classList.add("active");
+}
+
+/* ============================================================
+   COPY CODE
+   ============================================================ */
+function copyCode(btn) {
+  const pre = btn.closest(".code-block").querySelector("pre");
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add("copied");
+    btn.innerHTML = '<i class="fa fa-check"></i> Copied!';
+    setTimeout(() => {
+      btn.classList.remove("copied");
+      btn.innerHTML = '<i class="fa fa-copy"></i> Copy';
+    }, 2000);
+  });
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function answerQuiz(btn, correct) {
+  const opts = btn.closest(".quiz-options");
+  const result = opts.nextElementSibling;
+  // Disable all
+  opts.querySelectorAll(".quiz-opt").forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add("correct");
+    if (result) { result.textContent = "✓ Correct! Great job."; result.className = "quiz-result ok"; }
+  } else {
+    btn.classList.add("wrong");
+    // Highlight correct
+    const buttons = opts.querySelectorAll(".quiz-opt");
+    buttons.forEach(b => { if (b.onclick.toString().includes("true")) b.classList.add("correct"); });
+    if (result) { result.textContent = "✗ Not quite — the correct answer is highlighted."; result.className = "quiz-result fail"; }
+  }
+}
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function initTheme() {
+  const saved = localStorage.getItem("jsts_theme") || "dark";
+  document.documentElement.setAttribute("data-theme", saved);
+  updateThemeIcon(saved);
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme");
+  const next = current === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("jsts_theme", next);
+  updateThemeIcon(next);
+}
+function updateThemeIcon(theme) {
+  const btn = document.getElementById("theme-toggle");
+  if (btn) btn.innerHTML = theme === "dark" ? '<i class="fa fa-sun"></i>' : '<i class="fa fa-moon"></i>';
+}
+document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+
+/* ============================================================
+   SIDEBAR COLLAPSE
+   ============================================================ */
+document.getElementById("collapse-sidebar").addEventListener("click", () => {
+  document.getElementById("sidebar").classList.toggle("collapsed");
+});
+document.getElementById("hamburger").addEventListener("click", () => {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+  sidebar.classList.toggle("mobile-open");
+  overlay.classList.toggle("visible");
+});
+document.getElementById("sidebar-overlay").addEventListener("click", () => {
+  document.getElementById("sidebar").classList.remove("mobile-open");
+  document.getElementById("sidebar-overlay").classList.remove("visible");
+});
+
+/* ============================================================
+   SCROLL PROGRESS & BACK TO TOP
+   ============================================================ */
+window.addEventListener("scroll", () => {
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+  document.getElementById("scroll-progress").style.width = pct + "%";
+  const backTop = document.getElementById("back-top");
+  if (window.scrollY > 400) backTop.classList.add("visible");
+  else backTop.classList.remove("visible");
+});
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+function triggerReveal() {
+  document.querySelectorAll(".reveal:not(.visible)").forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 60) el.classList.add("visible");
+  });
+}
+window.addEventListener("scroll", triggerReveal);
+window.addEventListener("resize", triggerReveal);
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+const searchInput = document.getElementById("search-input");
+const searchResults = document.getElementById("search-results");
+
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (!q) { searchResults.classList.remove("open"); return; }
+  const hits = searchData.filter(item =>
+    item.title.toLowerCase().includes(q) || item.cat.toLowerCase().includes(q)
+  ).slice(0, 6);
+  if (!hits.length) { searchResults.classList.remove("open"); return; }
+  searchResults.innerHTML = hits.map(h => `
+    <div class="search-result-item" onclick="navigate('${h.section}'); searchInput.value=''; searchResults.classList.remove('open');">
+      <i class="fa ${h.icon} sr-icon"></i>
+      <span class="sr-title">${h.title}</span>
+      <span class="sr-cat">${h.cat}</span>
+    </div>
+  `).join('');
+  searchResults.classList.add("open");
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("#header-search-wrap")) searchResults.classList.remove("open");
+});
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { searchResults.classList.remove("open"); searchInput.value = ''; }
+});
+
+/* ============================================================
+   EVENT LOOP DEMO
+   ============================================================ */
+let elvRunning = false;
+function runEventLoopDemo() {
+  if (elvRunning) return;
+  elvRunning = true;
+  const stack = document.getElementById("elv-stack");
+  const webapi = document.getElementById("elv-webapi");
+  const queue = document.getElementById("elv-queue");
+  const log = document.getElementById("elv-log");
+  stack.innerHTML = webapi.innerHTML = queue.innerHTML = '';
+  log.textContent = '';
+
+  const steps = [
+    { delay: 0,    fn: () => { addItem(stack, "console.log(1)"); log.textContent = '→ Executes: logs "1"'; } },
+    { delay: 600,  fn: () => { removeItem(stack); addItem(webapi, "setTimeout(cb, 0)"); log.textContent = '→ setTimeout sent to Web API'; } },
+    { delay: 1300, fn: () => { addItem(stack, "console.log(3)"); log.textContent = '→ Executes: logs "3"'; } },
+    { delay: 1900, fn: () => { removeItem(stack); removeItem(webapi); addItem(queue, "cb → console.log(2)"); log.textContent = '→ Timer done, callback queued'; } },
+    { delay: 2600, fn: () => { addItem(stack, "cb()"); removeItem(queue); log.textContent = '→ Event loop picks up callback'; } },
+    { delay: 3300, fn: () => { removeItem(stack); log.textContent = '✓ Output order: 1, 3, 2'; elvRunning = false; } },
+  ];
+  steps.forEach(({ delay, fn }) => setTimeout(fn, delay));
+}
+function addItem(container, text) {
+  const div = document.createElement("div");
+  div.className = "elv-item";
+  div.textContent = text;
+  container.appendChild(div);
+}
+function removeItem(container) {
+  if (container.lastChild) container.removeChild(container.lastChild);
+}
+
+/* ============================================================
+   KEYBOARD SHORTCUTS
+   ============================================================ */
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+    e.preventDefault();
+    document.getElementById("search-input").focus();
+  }
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+initTheme();
+loadProgress();
+updateUI();
+setTimeout(triggerReveal, 300);
+</script>
+</body>
+</html>

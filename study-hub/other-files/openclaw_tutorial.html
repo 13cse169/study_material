@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw — Complete UI Tutorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0d;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1e2330;
+    --accent: #ff5f1f;
+    --accent2: #ff9a3c;
+    --teal: #00d4b8;
+    --blue: #4f8ef7;
+    --purple: #a78bfa;
+    --text: #e8ecf4;
+    --muted: #6b7599;
+    --code-bg: #0d1117;
+    --green: #22c55e;
+    --red: #ef4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+
+  .logo-badge span { font-size: 18px; }
+
+  .sidebar-subtitle {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-section {
+    padding: 16px 12px 8px;
+  }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--muted);
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(255,95,31,0.12); color: var(--accent); }
+  .nav-item .level-badge {
+    margin-left: auto;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .level-badge.beginner { background: rgba(34,197,94,0.15); color: var(--green); }
+  .level-badge.intermediate { background: rgba(79,142,247,0.15); color: var(--blue); }
+  .level-badge.advanced { background: rgba(167,139,250,0.15); color: var(--purple); }
+  .level-badge.interview { background: rgba(255,95,31,0.15); color: var(--accent); }
+
+  /* MAIN */
+  .main {
+    margin-left: 260px;
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 80px 64px 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,95,31,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    background: rgba(0,212,184,0.1);
+    border: 1px solid rgba(0,212,184,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  .hero-tag::before { content: '●'; font-size: 8px; }
+
+  .hero h1 {
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 .highlight {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-num {
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 0 64px 80px;
+  }
+
+  /* SECTION */
+  .section {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .section-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .icon-green { background: rgba(34,197,94,0.12); }
+  .icon-blue { background: rgba(79,142,247,0.12); }
+  .icon-purple { background: rgba(167,139,250,0.12); }
+  .icon-orange { background: rgba(255,95,31,0.12); }
+
+  .section-title-block h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .section-title-block p {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .code-title::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .copy-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: rgba(255,95,31,0.1);
+    border: 1px solid rgba(255,95,31,0.2);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { background: rgba(255,95,31,0.2); }
+
+  pre {
+    padding: 20px 24px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #cdd9f5;
+  }
+
+  .kw { color: #ff79c6; }
+  .fn { color: #50fa7b; }
+  .str { color: #f1fa8c; }
+  .cm { color: #6272a4; font-style: italic; }
+  .num { color: #bd93f9; }
+  .tag { color: #ff5555; }
+  .attr { color: #8be9fd; }
+  .val { color: #f1fa8c; }
+  .op { color: #ff79c6; }
+  .cls { color: #50fa7b; }
+  .var { color: #8be9fd; }
+
+  /* THEORY BOX */
+  .theory-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  .theory-box h4 {
+    font-size: 13px;
+    color: var(--teal);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .theory-box p, .theory-box li {
+    font-size: 13.5px;
+    color: #9aa5c4;
+    line-height: 1.8;
+  }
+
+  .theory-box ul { padding-left: 20px; }
+  .theory-box li { margin-bottom: 6px; }
+
+  /* DEMO AREA */
+  .demo-area {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+
+  .demo-label {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .demo-label::before {
+    content: '▶';
+    color: var(--green);
+    font-size: 8px;
+  }
+
+  /* OPENCLAW DEMO COMPONENTS */
+  .oc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    margin: 4px;
+  }
+
+  .oc-btn-primary { background: var(--accent); color: white; }
+  .oc-btn-primary:hover { background: #e5541a; transform: translateY(-1px); }
+  .oc-btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+  .oc-btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .oc-btn-ghost { background: transparent; border: 1px solid transparent; color: var(--muted); }
+  .oc-btn-ghost:hover { background: var(--surface); color: var(--text); }
+
+  .oc-input {
+    width: 100%;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin: 4px 0;
+  }
+
+  .oc-input:focus { border-color: var(--accent); }
+
+  .oc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 8px 0;
+  }
+
+  .oc-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 3px;
+  }
+
+  .badge-success { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .badge-error { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-info { background: rgba(79,142,247,0.15); color: var(--blue); border: 1px solid rgba(79,142,247,0.3); }
+  .badge-warn { background: rgba(255,154,60,0.15); color: var(--accent2); border: 1px solid rgba(255,154,60,0.3); }
+
+  .oc-alert {
+    padding: 14px 18px;
+    border-radius: 10px;
+    border-left: 3px solid;
+    margin: 8px 0;
+    font-size: 13px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .alert-success { background: rgba(34,197,94,0.08); border-color: var(--green); color: #86efac; }
+  .alert-error { background: rgba(239,68,68,0.08); border-color: var(--red); color: #fca5a5; }
+  .alert-info { background: rgba(79,142,247,0.08); border-color: var(--blue); color: #93c5fd; }
+
+  .oc-nav {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+
+  .oc-nav-item {
+    padding: 10px 18px;
+    font-size: 13px;
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+
+  .oc-nav-item:last-child { border-right: none; }
+  .oc-nav-item:hover { background: var(--surface2); color: var(--text); }
+  .oc-nav-item.active { background: var(--accent); color: white; }
+
+  .oc-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .oc-modal-overlay.open { display: flex; }
+
+  .oc-modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 440px;
+    width: 90%;
+    animation: modalIn 0.2s ease;
+  }
+
+  @keyframes modalIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .oc-modal h3 { font-size: 20px; margin-bottom: 12px; }
+  .oc-modal p { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  .oc-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+  .oc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 8px 0;
+  }
+
+  .oc-table th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .oc-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .oc-table tr:hover td { background: rgba(255,95,31,0.04); }
+
+  .oc-progress {
+    width: 100%;
+    background: var(--surface2);
+    border-radius: 100px;
+    height: 8px;
+    margin: 8px 0;
+    overflow: hidden;
+  }
+
+  .oc-progress-bar {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.6s ease;
+  }
+
+  .oc-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 13px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    animation: slideIn 0.3s ease;
+  }
+
+  .oc-toast.show { display: flex; }
+  @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .oc-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .oc-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-width: 180px;
+    overflow: hidden;
+    z-index: 50;
+    animation: fadeDown 0.15s ease;
+  }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .oc-dropdown.open .oc-dropdown-menu { display: block; }
+  .oc-dropdown-item { padding: 10px 16px; font-size: 13px; cursor: pointer; color: var(--muted); transition: all 0.15s; }
+  .oc-dropdown-item:hover { background: var(--surface2); color: var(--text); }
+
+  .oc-tabs { margin: 8px 0; }
+  .oc-tab-list { display: flex; border-bottom: 1px solid var(--border); }
+  .oc-tab { padding: 10px 18px; font-size: 13px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.2s; margin-bottom: -1px; }
+  .oc-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .oc-tab-content { padding: 16px 0; font-size: 13px; color: var(--muted); }
+
+  .oc-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    margin: 4px 0;
+  }
+
+  .oc-toggle-track {
+    width: 44px; height: 24px;
+    background: var(--border);
+    border-radius: 100px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .oc-toggle-thumb {
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px; left: 3px;
+    transition: left 0.2s;
+  }
+
+  .oc-toggle input { display: none; }
+  .oc-toggle input:checked + .oc-toggle-track { background: var(--accent); }
+  .oc-toggle input:checked ~ .oc-toggle-track .oc-toggle-thumb,
+  .oc-toggle input:checked + .oc-toggle-track .oc-toggle-thumb { left: 23px; }
+
+  .oc-skeleton {
+    background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+    margin: 4px 0;
+  }
+
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* INTERVIEW SECTION */
+  .qa-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 16px 0;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .qa-item:hover { border-color: var(--accent); }
+
+  .qa-question {
+    padding: 18px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .qa-num {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .qa-q-text {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .qa-toggle { color: var(--muted); font-size: 12px; transition: transform 0.2s; }
+  .qa-item.open .qa-toggle { transform: rotate(180deg); color: var(--accent); }
+
+  .qa-answer {
+    display: none;
+    padding: 0 20px 20px 62px;
+    font-size: 13.5px;
+    color: #8a96b8;
+    line-height: 1.8;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+
+  .qa-item.open .qa-answer { display: block; }
+
+  .qa-answer code {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--teal);
+  }
+
+  .qa-answer ul { padding-left: 20px; margin: 10px 0; }
+  .qa-answer li { margin-bottom: 6px; }
+
+  /* PROGRESS TRACKER */
+  .progress-bar-global {
+    position: fixed;
+    top: 0; left: 260px; right: 0;
+    height: 3px;
+    background: var(--border);
+    z-index: 200;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* LEVEL BANNER */
+  .level-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .banner-beginner { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); color: var(--green); }
+  .banner-intermediate { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.2); color: var(--blue); }
+  .banner-advanced { background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.2); color: var(--purple); }
+  .banner-interview { background: rgba(255,95,31,0.08); border: 1px solid rgba(255,95,31,0.2); color: var(--accent); }
+
+  .tag-inline {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--teal);
+    margin: 2px;
+  }
+
+  hr.section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  .flex-demo { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero, .content { padding-left: 24px; padding-right: 24px; }
+    .progress-bar-global { left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar-global"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- Toast -->
+<div class="oc-toast" id="toast">✓ Copied to clipboard!</div>
+
+<!-- Modal -->
+<div class="oc-modal-overlay" id="modal">
+  <div class="oc-modal">
+    <h3>Confirm Action</h3>
+    <p>This is an OpenClaw modal component. It blocks the background and focuses the user's attention on a specific action.</p>
+    <div class="oc-modal-actions">
+      <button class="oc-btn oc-btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="oc-btn oc-btn-primary" onclick="closeModal()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge"><span>🦞</span> OpenClaw</div>
+    <div class="sidebar-subtitle">// complete UI guide</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Beginner</div>
+    <a class="nav-item" href="#intro">🚀 Introduction <span class="level-badge beginner">intro</span></a>
+    <a class="nav-item" href="#structure">📐 Structure <span class="level-badge beginner">01</span></a>
+    <a class="nav-item" href="#buttons">🔘 Buttons <span class="level-badge beginner">02</span></a>
+    <a class="nav-item" href="#inputs">📝 Inputs <span class="level-badge beginner">03</span></a>
+    <a class="nav-item" href="#badges">🏷️ Badges <span class="level-badge beginner">04</span></a>
+    <a class="nav-item" href="#alerts">⚠️ Alerts <span class="level-badge beginner">05</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Intermediate</div>
+    <a class="nav-item" href="#nav">🧭 Navigation <span class="level-badge intermediate">06</span></a>
+    <a class="nav-item" href="#modals">🪟 Modals <span class="level-badge intermediate">07</span></a>
+    <a class="nav-item" href="#tables">📊 Tables <span class="level-badge intermediate">08</span></a>
+    <a class="nav-item" href="#dropdowns">📂 Dropdowns <span class="level-badge intermediate">09</span></a>
+    <a class="nav-item" href="#tabs">📑 Tabs <span class="level-badge intermediate">10</span></a>
+    <a class="nav-item" href="#toggles">🔄 Toggles <span class="level-badge intermediate">11</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Advanced</div>
+    <a class="nav-item" href="#progress">📈 Progress <span class="level-badge advanced">12</span></a>
+    <a class="nav-item" href="#skeleton">💀 Skeleton <span class="level-badge advanced">13</span></a>
+    <a class="nav-item" href="#toast">🔔 Toasts <span class="level-badge advanced">14</span></a>
+    <a class="nav-item" href="#forms">📋 Forms <span class="level-badge advanced">15</span></a>
+    <a class="nav-item" href="#theming">🎨 Theming <span class="level-badge advanced">16</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Interview</div>
+    <a class="nav-item" href="#interview">💼 Q & A <span class="level-badge interview">25 Qs</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero" id="intro">
+    <div class="hero-tag">Step-by-step UI Guide</div>
+    <h1>Master <span class="highlight">OpenClaw</span><br>HTML UI</h1>
+    <p>A comprehensive guide from beginner to advanced level — covering components, theory, live examples, and interview questions to crack your next frontend role.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">16</span><span class="stat-label">// components</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">// skill levels</span></div>
+      <div class="stat"><span class="stat-num">25</span><span class="stat-label">// interview Qs</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ====== BEGINNER ====== -->
+
+    <!-- STRUCTURE -->
+    <div class="section" id="structure">
+      <div class="section-header">
+        <div class="section-icon icon-green">📐</div>
+        <div class="section-title-block">
+          <h2>HTML Structure</h2>
+          <p>// beginner level · lesson 01</p>
+        </div>
+      </div>
+
+      <div class="level-banner banner-beginner">🟢 BEGINNER — Start here if you're new to HTML UI development</div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>OpenClaw UI is built on semantic HTML5 with CSS variables for theming. Every OpenClaw project follows a consistent DOM structure:</p>
+        <ul>
+          <li><strong>Layout wrapper</strong> — root container with CSS variables defined on <code>:root</code></li>
+          <li><strong>Sidebar</strong> — navigation rail, position fixed</li>
+          <li><strong>Main content</strong> — offset by sidebar width with <code>margin-left</code></li>
+          <li><strong>Sections</strong> — logically grouped content blocks</li>
+        </ul>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">boilerplate.html</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="val">"en"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="val">"UTF-8"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span>OpenClaw App<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;style&gt;</span>
+    <span class="cls">:root</span> {
+      <span class="attr">--bg</span>: <span class="num">#0a0b0d</span>;
+      <span class="attr">--accent</span>: <span class="num">#ff5f1f</span>;
+      <span class="attr">--text</span>: <span class="num">#e8ecf4</span>;
+      <span class="attr">--surface</span>: <span class="num">#111318</span>;
+      <span class="attr">--border</span>: <span class="num">#1e2330</span>;
+    }
+    <span class="cls">body</span> {
+      <span class="attr">background</span>: <span class="fn">var</span>(<span class="attr">--bg</span>);
+      <span class="attr">color</span>: <span class="fn">var</span>(<span class="attr">--text</span>);
+      <span class="attr">font-family</span>: <span class="str">'Syne'</span>, sans-serif;
+    }
+  <span class="tag">&lt;/style&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+
+  <span class="tag">&lt;aside</span> <span class="attr">class</span>=<span class="val">"sidebar"</span><span class="tag">&gt;</span><span class="cm">&lt;!-- navigation --&gt;</span><span class="tag">&lt;/aside&gt;</span>
+  <span class="tag">&lt;main</span> <span class="attr">class</span>=<span class="val">"main"</span><span class="tag">&gt;</span><span class="cm">&lt;!-- content --&gt;</span><span class="tag">&lt;/main&gt;</span>
+
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="section" id="buttons">
+      <div class="section-header">
+        <div class="section-icon icon-green">🔘</div>
+        <div class="section-title-block">
+          <h2>Button Components</h2>
+          <p>// beginner level · lesson 02</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>OpenClaw buttons have 3 variants — <strong>primary</strong> (solid fill), <strong>secondary</strong> (outlined), and <strong>ghost</strong> (text-only). Each uses CSS custom properties for colors and <code>transition</code> for smooth hover states.</p>
+        <ul>
+          <li>Use <strong>primary</strong> for main CTAs — one per screen</li>
+          <li>Use <strong>secondary</strong> for alternate actions</li>
+          <li>Use <strong>ghost</strong> for inline/subtle actions</li>
+        </ul>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <div class="flex-demo">
+          <button class="oc-btn oc-btn-primary">Primary Button</button>
+          <button class="oc-btn oc-btn-secondary">Secondary</button>
+          <button class="oc-btn oc-btn-ghost">Ghost</button>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">button.html + css</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="cm">/* CSS */</span>
+<span class="cls">.oc-btn</span> {
+  <span class="attr">padding</span>: <span class="num">10px 20px</span>;
+  <span class="attr">border-radius</span>: <span class="num">8px</span>;
+  <span class="attr">border</span>: none;
+  <span class="attr">cursor</span>: pointer;
+  <span class="attr">font-weight</span>: <span class="num">600</span>;
+  <span class="attr">transition</span>: all <span class="num">0.2s</span>;
+}
+
+<span class="cls">.oc-btn-primary</span> {
+  <span class="attr">background</span>: <span class="fn">var</span>(<span class="attr">--accent</span>);
+  <span class="attr">color</span>: white;
+}
+
+<span class="cls">.oc-btn-primary:hover</span> {
+  <span class="attr">transform</span>: <span class="fn">translateY</span>(<span class="num">-1px</span>);
+  <span class="attr">opacity</span>: <span class="num">0.9</span>;
+}
+
+<span class="cm">&lt;!-- HTML --&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="val">"oc-btn oc-btn-primary"</span><span class="tag">&gt;</span>
+  Click Me
+<span class="tag">&lt;/button&gt;</span>
+
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="val">"oc-btn oc-btn-secondary"</span><span class="tag">&gt;</span>
+  Cancel
+<span class="tag">&lt;/button&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- INPUTS -->
+    <div class="section" id="inputs">
+      <div class="section-header">
+        <div class="section-icon icon-green">📝</div>
+        <div class="section-title-block">
+          <h2>Input Fields</h2>
+          <p>// beginner level · lesson 03</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Form inputs in OpenClaw use dark backgrounds with subtle borders. On focus, the border transitions to the accent color — providing clear visual feedback. Always pair inputs with a visible <code>&lt;label&gt;</code> for accessibility.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <input class="oc-input" type="text" placeholder="Enter your username...">
+        <input class="oc-input" type="email" placeholder="email@example.com">
+        <input class="oc-input" type="password" placeholder="Password">
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">input.html</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="cls">.oc-input</span> {
+  <span class="attr">width</span>: <span class="num">100%</span>;
+  <span class="attr">background</span>: <span class="num">#0d1117</span>;
+  <span class="attr">border</span>: <span class="num">1px</span> solid <span class="fn">var</span>(<span class="attr">--border</span>);
+  <span class="attr">border-radius</span>: <span class="num">8px</span>;
+  <span class="attr">padding</span>: <span class="num">10px 14px</span>;
+  <span class="attr">color</span>: <span class="fn">var</span>(<span class="attr">--text</span>);
+  <span class="attr">outline</span>: none;
+  <span class="attr">transition</span>: border-color <span class="num">0.2s</span>;
+}
+
+<span class="cls">.oc-input:focus</span> {
+  <span class="attr">border-color</span>: <span class="fn">var</span>(<span class="attr">--accent</span>);
+}
+
+<span class="tag">&lt;label&gt;</span>Username<span class="tag">&lt;/label&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">class</span>=<span class="val">"oc-input"</span>
+       <span class="attr">type</span>=<span class="val">"text"</span>
+       <span class="attr">placeholder</span>=<span class="val">"Enter username"</span><span class="tag">&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- BADGES -->
+    <div class="section" id="badges">
+      <div class="section-header">
+        <div class="section-icon icon-green">🏷️</div>
+        <div class="section-title-block">
+          <h2>Badges & Tags</h2>
+          <p>// beginner level · lesson 04</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Badges convey status at a glance. OpenClaw uses semantic color coding: <strong>green</strong> = success, <strong>red</strong> = error, <strong>blue</strong> = info, <strong>amber</strong> = warning. Always use translucent backgrounds (e.g. <code>rgba(34,197,94,0.15)</code>) so badges don't overpower the UI.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <div class="flex-demo">
+          <span class="oc-badge badge-success">● Active</span>
+          <span class="oc-badge badge-error">● Failed</span>
+          <span class="oc-badge badge-info">● Pending</span>
+          <span class="oc-badge badge-warn">● Warning</span>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">badge.html</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="val">"badge badge-success"</span><span class="tag">&gt;</span>Active<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="val">"badge badge-error"</span><span class="tag">&gt;</span>Failed<span class="tag">&lt;/span&gt;</span>
+
+<span class="cls">.badge</span> {
+  <span class="attr">padding</span>: <span class="num">3px 10px</span>;
+  <span class="attr">border-radius</span>: <span class="num">20px</span>;
+  <span class="attr">font-size</span>: <span class="num">11px</span>;
+}
+<span class="cls">.badge-success</span> {
+  <span class="attr">background</span>: <span class="fn">rgba</span>(<span class="num">34,197,94,0.15</span>);
+  <span class="attr">color</span>: <span class="num">#22c55e</span>;
+  <span class="attr">border</span>: <span class="num">1px</span> solid <span class="fn">rgba</span>(<span class="num">34,197,94,0.3</span>);
+}</pre>
+      </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="section" id="alerts">
+      <div class="section-header">
+        <div class="section-icon icon-green">⚠️</div>
+        <div class="section-title-block">
+          <h2>Alert Components</h2>
+          <p>// beginner level · lesson 05</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Alerts provide inline feedback. The left colored border creates a strong visual signal, while translucent backgrounds keep the alert non-intrusive. Always include an icon emoji or SVG for quick visual recognition.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <div class="oc-alert alert-success">✅ Deployment was successful! Your app is live.</div>
+        <div class="oc-alert alert-error">❌ Build failed. Check your configuration and try again.</div>
+        <div class="oc-alert alert-info">ℹ️ A new update is available. Refresh to see changes.</div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">alert.html</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="cls">.oc-alert</span> {
+  <span class="attr">padding</span>: <span class="num">14px 18px</span>;
+  <span class="attr">border-radius</span>: <span class="num">10px</span>;
+  <span class="attr">border-left</span>: <span class="num">3px</span> solid;
+}
+<span class="cls">.alert-success</span> {
+  <span class="attr">background</span>: <span class="fn">rgba</span>(<span class="num">34,197,94,0.08</span>);
+  <span class="attr">border-color</span>: <span class="num">#22c55e</span>;
+  <span class="attr">color</span>: <span class="num">#86efac</span>;
+}
+
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"oc-alert alert-success"</span><span class="tag">&gt;</span>
+  ✅ Operation successful!
+<span class="tag">&lt;/div&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- ====== INTERMEDIATE ====== -->
+
+    <!-- NAV -->
+    <div class="section" id="nav">
+      <div class="section-header">
+        <div class="section-icon icon-blue">🧭</div>
+        <div class="section-title-block">
+          <h2>Navigation Bar</h2>
+          <p>// intermediate level · lesson 06</p>
+        </div>
+      </div>
+
+      <div class="level-banner banner-intermediate">🔵 INTERMEDIATE — Components with state and user interaction</div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Navigation bars manage the <strong>active state</strong> — the currently selected page. In OpenClaw, the active item gets the accent background. JavaScript handles swapping the <code>.active</code> class on click. Consider accessibility: use <code>aria-current="page"</code> on the active link.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <div class="oc-nav" id="demoNav">
+          <div class="oc-nav-item active" onclick="setNav(this)">Dashboard</div>
+          <div class="oc-nav-item" onclick="setNav(this)">Projects</div>
+          <div class="oc-nav-item" onclick="setNav(this)">Analytics</div>
+          <div class="oc-nav-item" onclick="setNav(this)">Settings</div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">navbar.html + js</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="tag">&lt;nav</span> <span class="attr">class</span>=<span class="val">"oc-nav"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"nav-item active"</span>
+       <span class="attr">onclick</span>=<span class="val">"setNav(this)"</span><span class="tag">&gt;</span>Dashboard<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"nav-item"</span>
+       <span class="attr">onclick</span>=<span class="val">"setNav(this)"</span><span class="tag">&gt;</span>Projects<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/nav&gt;</span>
+
+<span class="tag">&lt;script&gt;</span>
+<span class="kw">function</span> <span class="fn">setNav</span>(<span class="var">el</span>) {
+  <span class="cm">// Remove active from all siblings</span>
+  <span class="var">el</span>.parentElement
+    .querySelectorAll(<span class="str">'.nav-item'</span>)
+    .forEach(<span class="var">n</span> <span class="op">=&gt;</span> <span class="var">n</span>.classList.remove(<span class="str">'active'</span>));
+  <span class="cm">// Set on clicked item</span>
+  <span class="var">el</span>.classList.add(<span class="str">'active'</span>);
+}
+<span class="tag">&lt;/script&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- MODALS -->
+    <div class="section" id="modals">
+      <div class="section-header">
+        <div class="section-icon icon-blue">🪟</div>
+        <div class="section-title-block">
+          <h2>Modal Dialogs</h2>
+          <p>// intermediate level · lesson 07</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Modals are dialogs that overlay content. Key concepts:</p>
+        <ul>
+          <li><strong>Overlay</strong> — semi-transparent backdrop using fixed positioning</li>
+          <li><strong>Trap focus</strong> — keyboard navigation should stay inside the modal</li>
+          <li><strong>Close on overlay click</strong> — dismissing by clicking outside is expected UX</li>
+          <li><strong>Animation</strong> — use <code>scale + opacity</code> keyframe for smooth entry</li>
+        </ul>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <button class="oc-btn oc-btn-primary" onclick="document.getElementById('modal').classList.add('open')">Open Modal</button>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">modal.html + js</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"overlay"</span> <span class="attr">id</span>=<span class="val">"modal"</span>
+     <span class="attr">onclick</span>=<span class="val">"closeModal(event)"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"modal-box"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;h3&gt;</span>Confirm?<span class="tag">&lt;/h3&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Are you sure?<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attr">onclick</span>=<span class="val">"closeModal()"</span><span class="tag">&gt;</span>Close<span class="tag">&lt;/button&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="tag">&lt;script&gt;</span>
+<span class="kw">function</span> <span class="fn">closeModal</span>(<span class="var">e</span>) {
+  <span class="cm">// Close if clicking overlay itself</span>
+  <span class="kw">if</span> (!<span class="var">e</span> || <span class="var">e</span>.target.classList.contains(<span class="str">'overlay'</span>)) {
+    document.getElementById(<span class="str">'modal'</span>)
+      .classList.remove(<span class="str">'open'</span>);
+  }
+}
+<span class="tag">&lt;/script&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- TABLES -->
+    <div class="section" id="tables">
+      <div class="section-header">
+        <div class="section-icon icon-blue">📊</div>
+        <div class="section-title-block">
+          <h2>Data Tables</h2>
+          <p>// intermediate level · lesson 08</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Tables display structured relational data. OpenClaw tables use <code>border-collapse: collapse</code> to merge borders, header rows styled differently from data rows, and subtle hover states using <code>rgba</code> tints. Always use <code>&lt;thead&gt;</code> and <code>&lt;tbody&gt;</code> for semantic HTML.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <table class="oc-table">
+          <thead>
+            <tr><th>Name</th><th>Role</th><th>Status</th><th>Score</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Alice Chen</td><td>Frontend Dev</td><td><span class="oc-badge badge-success">Active</span></td><td>98</td></tr>
+            <tr><td>Bob Tran</td><td>Backend Dev</td><td><span class="oc-badge badge-info">Pending</span></td><td>85</td></tr>
+            <tr><td>Clara Kim</td><td>Designer</td><td><span class="oc-badge badge-success">Active</span></td><td>92</td></tr>
+            <tr><td>Dan Patel</td><td>DevOps</td><td><span class="oc-badge badge-error">Inactive</span></td><td>67</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">table.html</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="tag">&lt;table</span> <span class="attr">class</span>=<span class="val">"oc-table"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;thead&gt;</span>
+    <span class="tag">&lt;tr&gt;</span>
+      <span class="tag">&lt;th&gt;</span>Name<span class="tag">&lt;/th&gt;</span>
+      <span class="tag">&lt;th&gt;</span>Status<span class="tag">&lt;/th&gt;</span>
+    <span class="tag">&lt;/tr&gt;</span>
+  <span class="tag">&lt;/thead&gt;</span>
+  <span class="tag">&lt;tbody&gt;</span>
+    <span class="tag">&lt;tr&gt;</span>
+      <span class="tag">&lt;td&gt;</span>Alice<span class="tag">&lt;/td&gt;</span>
+      <span class="tag">&lt;td&gt;&lt;span</span> <span class="attr">class</span>=<span class="val">"badge-success"</span><span class="tag">&gt;</span>Active<span class="tag">&lt;/span&gt;&lt;/td&gt;</span>
+    <span class="tag">&lt;/tr&gt;</span>
+  <span class="tag">&lt;/tbody&gt;</span>
+<span class="tag">&lt;/table&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- DROPDOWNS -->
+    <div class="section" id="dropdowns">
+      <div class="section-header">
+        <div class="section-icon icon-blue">📂</div>
+        <div class="section-title-block">
+          <h2>Dropdown Menus</h2>
+          <p>// intermediate level · lesson 09</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Dropdowns are contextual menus that appear on trigger. Use <code>position: absolute</code> on the menu and <code>position: relative</code> on the parent. Toggle a class with JS. Close on outside click using <code>document.addEventListener('click', ...)</code>.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <div class="oc-dropdown" id="dd1">
+          <button class="oc-btn oc-btn-secondary" onclick="toggleDD('dd1')">Options ▾</button>
+          <div class="oc-dropdown-menu">
+            <div class="oc-dropdown-item">Edit Profile</div>
+            <div class="oc-dropdown-item">Settings</div>
+            <div class="oc-dropdown-item">Help Center</div>
+            <div class="oc-dropdown-item">Sign Out</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">dropdown.js</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="kw">function</span> <span class="fn">toggleDD</span>(<span class="var">id</span>) {
+  <span class="kw">const</span> <span class="var">el</span> = document.<span class="fn">getElementById</span>(<span class="var">id</span>);
+  <span class="var">el</span>.classList.toggle(<span class="str">'open'</span>);
+}
+
+<span class="cm">// Close when clicking outside</span>
+document.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, <span class="var">e</span> <span class="op">=&gt;</span> {
+  <span class="kw">if</span> (!<span class="var">e</span>.target.closest(<span class="str">'.oc-dropdown'</span>)) {
+    document.<span class="fn">querySelectorAll</span>(<span class="str">'.oc-dropdown'</span>)
+      .forEach(<span class="var">d</span> <span class="op">=&gt;</span> <span class="var">d</span>.classList.remove(<span class="str">'open'</span>));
+  }
+});</pre>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="section" id="tabs">
+      <div class="section-header">
+        <div class="section-icon icon-blue">📑</div>
+        <div class="section-title-block">
+          <h2>Tabbed Content</h2>
+          <p>// intermediate level · lesson 10</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Tabs allow switching between content panels without a page reload. The tab list uses an underline indicator (not a box) on the active tab. Match tab labels to panel IDs with <code>data-*</code> attributes for clean JS targeting. Use <code>aria-selected</code> for accessibility.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <div class="oc-tabs" id="tabDemo">
+          <div class="oc-tab-list">
+            <div class="oc-tab active" data-tab="t1" onclick="switchTab(this, 'tabDemo')">Overview</div>
+            <div class="oc-tab" data-tab="t2" onclick="switchTab(this, 'tabDemo')">Details</div>
+            <div class="oc-tab" data-tab="t3" onclick="switchTab(this, 'tabDemo')">History</div>
+          </div>
+          <div class="oc-tab-content" id="t1">📊 Overview content: Key metrics and summaries for the selected project are shown here.</div>
+          <div class="oc-tab-content" id="t2" style="display:none">🔍 Details content: In-depth specifications, configurations, and technical notes live here.</div>
+          <div class="oc-tab-content" id="t3" style="display:none">🕐 History content: Audit log of all actions and changes made to this resource.</div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">tabs.js</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="kw">function</span> <span class="fn">switchTab</span>(<span class="var">el</span>, <span class="var">containerId</span>) {
+  <span class="kw">const</span> <span class="var">parent</span> = document.<span class="fn">getElementById</span>(<span class="var">containerId</span>);
+  
+  <span class="cm">// Remove active from all tabs</span>
+  <span class="var">parent</span>.<span class="fn">querySelectorAll</span>(<span class="str">'.oc-tab'</span>)
+    .forEach(<span class="var">t</span> <span class="op">=&gt;</span> <span class="var">t</span>.classList.remove(<span class="str">'active'</span>));
+  <span class="var">el</span>.classList.add(<span class="str">'active'</span>);
+  
+  <span class="cm">// Hide all panels, show the target</span>
+  <span class="var">parent</span>.<span class="fn">querySelectorAll</span>(<span class="str">'.oc-tab-content'</span>)
+    .forEach(<span class="var">c</span> <span class="op">=&gt;</span> <span class="var">c</span>.style.display = <span class="str">'none'</span>);
+  document.<span class="fn">getElementById</span>(<span class="var">el</span>.dataset.tab)
+    .style.display = <span class="str">'block'</span>;
+}</pre>
+      </div>
+    </div>
+
+    <!-- TOGGLES -->
+    <div class="section" id="toggles">
+      <div class="section-header">
+        <div class="section-icon icon-blue">🔄</div>
+        <div class="section-title-block">
+          <h2>Toggle Switches</h2>
+          <p>// intermediate level · lesson 11</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Toggles are styled checkboxes. The actual <code>&lt;input type="checkbox"&gt;</code> is hidden (<code>display:none</code>), and a styled track + thumb are built purely in CSS using the <code>:checked</code> pseudo-class selector combined with the adjacent sibling combinator (<code>+</code>).</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <label class="oc-toggle">
+          <input type="checkbox" checked>
+          <div class="oc-toggle-track"><div class="oc-toggle-thumb"></div></div>
+          <span style="font-size:13px; color: var(--muted)">Notifications enabled</span>
+        </label>
+        <br>
+        <label class="oc-toggle">
+          <input type="checkbox">
+          <div class="oc-toggle-track"><div class="oc-toggle-thumb"></div></div>
+          <span style="font-size:13px; color: var(--muted)">Dark mode</span>
+        </label>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">toggle.css</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="tag">&lt;label</span> <span class="attr">class</span>=<span class="val">"toggle"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="val">"checkbox"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"track"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"thumb"</span><span class="tag">&gt;&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+  Enable Feature
+<span class="tag">&lt;/label&gt;</span>
+
+<span class="cls">input</span> { <span class="attr">display</span>: none; }
+
+<span class="cm">/* checked state via CSS selector */</span>
+<span class="cls">input:checked + .track</span> {
+  <span class="attr">background</span>: <span class="fn">var</span>(<span class="attr">--accent</span>);
+}
+<span class="cls">input:checked + .track .thumb</span> {
+  <span class="attr">left</span>: <span class="num">22px</span>; <span class="cm">/* slide right */</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- ====== ADVANCED ====== -->
+
+    <!-- PROGRESS -->
+    <div class="section" id="progress">
+      <div class="section-header">
+        <div class="section-icon icon-purple">📈</div>
+        <div class="section-title-block">
+          <h2>Progress Indicators</h2>
+          <p>// advanced level · lesson 12</p>
+        </div>
+      </div>
+
+      <div class="level-banner banner-advanced">🟣 ADVANCED — Animation, state management, and dynamic rendering</div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Progress bars communicate system status. Advanced implementations use <strong>CSS transitions</strong> (not JS animation loops) for smooth width changes. Use <code>ARIA</code> attributes (<code>role="progressbar"</code>, <code>aria-valuenow</code>) for screen readers. Animated gradient fills add visual polish.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <p style="font-size:12px; color:var(--muted); margin-bottom:8px; font-family: 'JetBrains Mono', monospace;">Build progress — 72%</p>
+        <div class="oc-progress"><div class="oc-progress-bar" id="prog1" style="width:72%"></div></div>
+        <p style="font-size:12px; color:var(--muted); margin:12px 0 8px; font-family: 'JetBrains Mono', monospace;">Test coverage — 45%</p>
+        <div class="oc-progress"><div class="oc-progress-bar" id="prog2" style="width:45%"></div></div>
+        <br>
+        <button class="oc-btn oc-btn-secondary" onclick="animateBars()">Animate</button>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">progress.js</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="cm">/* CSS transition does the smooth work */</span>
+<span class="cls">.progress-bar</span> {
+  <span class="attr">transition</span>: width <span class="num">0.6s</span> ease;
+  <span class="attr">background</span>: <span class="fn">linear-gradient</span>(90deg,
+    <span class="fn">var</span>(<span class="attr">--accent</span>), <span class="fn">var</span>(<span class="attr">--accent2</span>));
+}
+
+<span class="cm">/* JS updates only the data */</span>
+<span class="kw">function</span> <span class="fn">setProgress</span>(<span class="var">id</span>, <span class="var">pct</span>) {
+  document
+    .<span class="fn">getElementById</span>(<span class="var">id</span>)
+    .style.width = <span class="var">pct</span> + <span class="str">'%'</span>;
+}
+
+<span class="cm">// Update via fetch or state</span>
+<span class="fn">setProgress</span>(<span class="str">'prog1'</span>, <span class="num">100</span>);</pre>
+      </div>
+    </div>
+
+    <!-- SKELETON -->
+    <div class="section" id="skeleton">
+      <div class="section-header">
+        <div class="section-icon icon-purple">💀</div>
+        <div class="section-title-block">
+          <h2>Skeleton Loaders</h2>
+          <p>// advanced level · lesson 13</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Skeleton screens replace spinners for content-heavy pages. They mirror the shape of real content, reducing perceived loading time. The shimmer effect is achieved with an animated <code>background-position</code> on a gradient — no JS required. Replace skeletons with real content once the data resolves.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO — Loading state</div>
+        <div class="oc-card">
+          <div class="oc-skeleton" style="width:60%; height:18px; margin-bottom:12px;"></div>
+          <div class="oc-skeleton" style="width:100%; height:12px; margin-bottom:8px;"></div>
+          <div class="oc-skeleton" style="width:85%; height:12px; margin-bottom:8px;"></div>
+          <div class="oc-skeleton" style="width:40%; height:12px;"></div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">skeleton.css</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="cls">.skeleton</span> {
+  <span class="attr">background</span>: <span class="fn">linear-gradient</span>(90deg,
+    <span class="num">#111318</span> 25%,
+    <span class="num">#181c24</span> 50%,
+    <span class="num">#111318</span> 75%
+  );
+  <span class="attr">background-size</span>: <span class="num">200% 100%</span>;
+  <span class="attr">animation</span>: shimmer <span class="num">1.5s</span> infinite;
+  <span class="attr">border-radius</span>: <span class="num">6px</span>;
+}
+
+<span class="kw">@keyframes</span> shimmer {
+  <span class="num">0%</span>   { <span class="attr">background-position</span>: <span class="num">200% 0</span>; }
+  <span class="num">100%</span> { <span class="attr">background-position</span>: <span class="num">-200% 0</span>; }
+}</pre>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="section" id="toast">
+      <div class="section-header">
+        <div class="section-icon icon-purple">🔔</div>
+        <div class="section-title-block">
+          <h2>Toast Notifications</h2>
+          <p>// advanced level · lesson 14</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Toasts are non-blocking temporary notifications. Key advanced patterns:</p>
+        <ul>
+          <li><strong>Auto-dismiss</strong> — use <code>setTimeout</code> to hide after 3 seconds</li>
+          <li><strong>Queue management</strong> — prevent overlap with a notification queue array</li>
+          <li><strong>Fixed positioning</strong> — always render in a corner, outside the document flow</li>
+          <li><strong>Slide-in animation</strong> — <code>translateY</code> + <code>opacity</code> for smooth entrance</li>
+        </ul>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <div class="flex-demo">
+          <button class="oc-btn oc-btn-primary" onclick="showToast('✅ Changes saved!', 'success')">Success Toast</button>
+          <button class="oc-btn oc-btn-secondary" onclick="showToast('❌ Error occurred.', 'error')">Error Toast</button>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">toast.js</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="kw">function</span> <span class="fn">showToast</span>(<span class="var">message</span>, <span class="var">type</span> = <span class="str">'success'</span>) {
+  <span class="kw">const</span> <span class="var">toast</span> = document
+    .<span class="fn">getElementById</span>(<span class="str">'toast'</span>);
+  
+  <span class="var">toast</span>.textContent = <span class="var">message</span>;
+  <span class="var">toast</span>.className = <span class="str">'oc-toast show '</span> + <span class="var">type</span>;
+  
+  <span class="cm">// Auto-dismiss after 3 seconds</span>
+  <span class="fn">setTimeout</span>(() <span class="op">=&gt;</span> {
+    <span class="var">toast</span>.classList.remove(<span class="str">'show'</span>);
+  }, <span class="num">3000</span>);
+}</pre>
+      </div>
+    </div>
+
+    <!-- FORMS -->
+    <div class="section" id="forms">
+      <div class="section-header">
+        <div class="section-icon icon-purple">📋</div>
+        <div class="section-title-block">
+          <h2>Form Validation</h2>
+          <p>// advanced level · lesson 15</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>Advanced form validation combines <strong>real-time feedback</strong> (on blur or input events) with <strong>submit-time validation</strong>. OpenClaw pattern: validate on <code>blur</code> event, show inline error messages below each field, prevent submit if <code>isValid === false</code>. Consider regex for email/phone validation.</p>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-label">LIVE DEMO</div>
+        <input class="oc-input" id="emailInput" type="email" placeholder="Email address" oninput="validateEmail(this)">
+        <div id="emailError" style="font-size:12px; color:var(--red); margin-top:4px; display:none; font-family:'JetBrains Mono',monospace;">⚠ Enter a valid email address</div>
+        <br>
+        <button class="oc-btn oc-btn-primary" onclick="submitForm()">Submit Form</button>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">validation.js</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="kw">function</span> <span class="fn">validateEmail</span>(<span class="var">input</span>) {
+  <span class="kw">const</span> <span class="var">re</span> = <span class="num">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
+  <span class="kw">const</span> <span class="var">valid</span> = <span class="var">re</span>.<span class="fn">test</span>(<span class="var">input</span>.value);
+  <span class="kw">const</span> <span class="var">err</span> = document
+    .<span class="fn">getElementById</span>(<span class="str">'emailError'</span>);
+
+  <span class="kw">if</span> (!<span class="var">valid</span> && <span class="var">input</span>.value) {
+    <span class="var">input</span>.style.borderColor = <span class="str">'#ef4444'</span>;
+    <span class="var">err</span>.style.display = <span class="str">'block'</span>;
+  } <span class="kw">else</span> {
+    <span class="var">input</span>.style.borderColor = <span class="str">'#22c55e'</span>;
+    <span class="var">err</span>.style.display = <span class="str">'none'</span>;
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- THEMING -->
+    <div class="section" id="theming">
+      <div class="section-header">
+        <div class="section-icon icon-purple">🎨</div>
+        <div class="section-title-block">
+          <h2>Dynamic Theming</h2>
+          <p>// advanced level · lesson 16</p>
+        </div>
+      </div>
+
+      <div class="theory-box">
+        <h4>📖 THEORY</h4>
+        <p>OpenClaw's theme system uses <strong>CSS Custom Properties</strong> on the <code>:root</code> element. Switching themes is as simple as overriding these variables. Store the user's preference in <code>localStorage</code> and apply on page load. For dark/light, add a <code>data-theme</code> attribute on <code>&lt;html&gt;</code> and use attribute selectors in CSS.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">theming.css + js</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="cm">/* Define themes with attribute selectors */</span>
+<span class="cls">:root</span> { <span class="attr">--bg</span>: <span class="num">#0a0b0d</span>; <span class="attr">--text</span>: <span class="num">#e8ecf4</span>; }
+<span class="cls">[data-theme="light"]</span> {
+  <span class="attr">--bg</span>: <span class="num">#ffffff</span>;
+  <span class="attr">--text</span>: <span class="num">#111318</span>;
+  <span class="attr">--surface</span>: <span class="num">#f4f6fa</span>;
+  <span class="attr">--border</span>: <span class="num">#dde1f0</span>;
+}
+
+<span class="cm">// JS theme switcher</span>
+<span class="kw">function</span> <span class="fn">setTheme</span>(<span class="var">theme</span>) {
+  document.documentElement
+    .setAttribute(<span class="str">'data-theme'</span>, <span class="var">theme</span>);
+  localStorage.<span class="fn">setItem</span>(<span class="str">'theme'</span>, <span class="var">theme</span>);
+}
+
+<span class="cm">// On load — restore preference</span>
+<span class="kw">const</span> <span class="var">saved</span> = localStorage.<span class="fn">getItem</span>(<span class="str">'theme'</span>);
+<span class="kw">if</span> (<span class="var">saved</span>) <span class="fn">setTheme</span>(<span class="var">saved</span>);</pre>
+      </div>
+    </div>
+
+    <!-- ====== INTERVIEW Q&A ====== -->
+    <div class="section" id="interview">
+      <div class="section-header">
+        <div class="section-icon icon-orange">💼</div>
+        <div class="section-title-block">
+          <h2>Interview Questions</h2>
+          <p>// 25 questions · beginner to advanced</p>
+        </div>
+      </div>
+
+      <div class="level-banner banner-interview">🔶 INTERVIEW PREP — Common questions asked in frontend UI developer roles</div>
+
+      <!-- Q1-5 Beginner -->
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">1</div>
+          <div class="qa-q-text">What is the difference between <code>id</code> and <code>class</code> in HTML?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <code>id</code> is unique — only one element per page can have a given id. It's used for JS targeting (<code>getElementById</code>) and anchor links. <code>class</code> can be shared across multiple elements and is used for styling groups. IDs have higher CSS specificity than classes.
+          <ul>
+            <li>Use <code>id</code> for unique elements: modals, sections</li>
+            <li>Use <code>class</code> for reusable component styles</li>
+            <li>In CSS: <code>#id</code> specificity = 100, <code>.class</code> = 10</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">2</div>
+          <div class="qa-q-text">What are CSS Custom Properties (variables) and why use them?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          CSS variables (declared with <code>--name: value</code> on <code>:root</code>) store reusable values. They are:
+          <ul>
+            <li><strong>Dynamic</strong> — can be changed at runtime with JavaScript</li>
+            <li><strong>Cascading</strong> — can be overridden in child scopes</li>
+            <li><strong>Theming</strong> — change one variable to retheme the entire UI</li>
+          </ul>
+          Example: <code>color: var(--accent);</code> — if you change <code>--accent</code> once, all elements update automatically.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">3</div>
+          <div class="qa-q-text">What is the Box Model in CSS?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Every HTML element is a rectangular box with four layers — from inside out: <strong>content → padding → border → margin</strong>.
+          <ul>
+            <li><code>content</code>: actual text/image area</li>
+            <li><code>padding</code>: inner spacing between content and border</li>
+            <li><code>border</code>: visible frame around the element</li>
+            <li><code>margin</code>: outer spacing from other elements</li>
+          </ul>
+          Use <code>box-sizing: border-box</code> (recommended) so that padding and border are included inside the declared <code>width</code>.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">4</div>
+          <div class="qa-q-text">What is semantic HTML and why does it matter?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Semantic HTML uses elements that convey meaning — <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;footer&gt;</code> vs generic <code>&lt;div&gt;</code>. Benefits:
+          <ul>
+            <li><strong>Accessibility</strong>: screen readers navigate by landmarks</li>
+            <li><strong>SEO</strong>: search engines understand page structure</li>
+            <li><strong>Maintainability</strong>: code is self-documenting</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">5</div>
+          <div class="qa-q-text">Explain the difference between <code>display: block</code>, <code>inline</code>, and <code>inline-block</code>.</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <ul>
+            <li><code>block</code>: takes full width, starts on new line. Examples: <code>div, p, h1</code></li>
+            <li><code>inline</code>: takes only content width, flows with text. Cannot set width/height. Examples: <code>span, a, strong</code></li>
+            <li><code>inline-block</code>: flows with text BUT allows width/height. Best of both worlds. Used for buttons.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">6</div>
+          <div class="qa-q-text">What is CSS Flexbox and when would you use it?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Flexbox is a 1-dimensional layout model for arranging items in a row or column. Use it for:
+          <ul>
+            <li>Navigation bars and button groups</li>
+            <li>Centering elements vertically and horizontally</li>
+            <li>Evenly distributing items with <code>justify-content: space-between</code></li>
+            <li>Responsive card rows that wrap with <code>flex-wrap: wrap</code></li>
+          </ul>
+          Key properties: <code>display:flex</code>, <code>flex-direction</code>, <code>justify-content</code>, <code>align-items</code>, <code>gap</code>.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">7</div>
+          <div class="qa-q-text">What is CSS specificity and how is it calculated?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Specificity determines which CSS rule wins when multiple rules target the same element:
+          <ul>
+            <li>Inline styles: 1000</li>
+            <li>IDs (<code>#id</code>): 100</li>
+            <li>Classes, attributes, pseudo-classes (<code>.class</code>, <code>[attr]</code>, <code>:hover</code>): 10</li>
+            <li>Elements and pseudo-elements (<code>div</code>, <code>::before</code>): 1</li>
+          </ul>
+          <code>!important</code> overrides all, but should be avoided. Higher specificity = winning rule.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">8</div>
+          <div class="qa-q-text">What is event bubbling and how do you stop it?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Event bubbling means when an event fires on a child element, it propagates up to all parent elements. Example: clicking a button inside a modal also "clicks" the modal overlay.
+          Stop it with <code>event.stopPropagation()</code> on the child's handler. Use <code>event.target</code> to check which element was actually clicked and conditionally respond.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">9</div>
+          <div class="qa-q-text">What is the difference between <code>null</code> and <code>undefined</code> in JavaScript?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <ul>
+            <li><code>undefined</code>: a variable declared but not yet assigned a value. Default for function params not passed.</li>
+            <li><code>null</code>: intentionally empty/no value. Must be explicitly assigned.</li>
+            <li><code>typeof null === 'object'</code> — this is a JavaScript bug retained for backwards compatibility.</li>
+            <li>Use strict equality: <code>null === null</code> is true, but <code>null == undefined</code> is also true (loose).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">10</div>
+          <div class="qa-q-text">How does <code>position: fixed</code> differ from <code>position: absolute</code>?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <ul>
+            <li><code>fixed</code>: positioned relative to the <strong>viewport</strong>. Stays in place when the page scrolls. Used for headers, sidebars, modals.</li>
+            <li><code>absolute</code>: positioned relative to the nearest <strong>positioned ancestor</strong> (with <code>position: relative/absolute/fixed</code>). Scrolls with the page if no fixed ancestor.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">11</div>
+          <div class="qa-q-text">What is a CSS media query? Write one for mobile.</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Media queries apply CSS rules conditionally based on device properties (viewport width, orientation, resolution). Mobile-first approach:
+          <br><br>
+          <code>@media (max-width: 768px) { .sidebar { display: none; } }</code>
+          <br><br>
+          Common breakpoints: 480px (mobile), 768px (tablet), 1024px (desktop). Use <code>min-width</code> for mobile-first, <code>max-width</code> for desktop-first.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">12</div>
+          <div class="qa-q-text">What is localStorage vs sessionStorage vs cookies?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <ul>
+            <li><code>localStorage</code>: persists across sessions, no expiry, ~5MB, same-origin only</li>
+            <li><code>sessionStorage</code>: cleared when tab is closed, per-tab, ~5MB</li>
+            <li><code>cookies</code>: sent with every HTTP request, can set expiry, smaller (~4KB), can be HttpOnly (not accessible to JS)</li>
+          </ul>
+          Use localStorage for theme/preferences. Use cookies for auth tokens (with HttpOnly + Secure flags).
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">13</div>
+          <div class="qa-q-text">What is the difference between <code>==</code> and <code>===</code> in JavaScript?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <code>==</code> performs type coercion before comparison. <code>===</code> checks both value AND type (strict equality).
+          <ul>
+            <li><code>0 == false</code> → true (coercion converts false to 0)</li>
+            <li><code>0 === false</code> → false (different types: number vs boolean)</li>
+            <li><code>"5" == 5</code> → true | <code>"5" === 5</code> → false</li>
+          </ul>
+          Always prefer <code>===</code> to avoid unexpected coercion bugs.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">14</div>
+          <div class="qa-q-text">What is event delegation and why is it useful?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Event delegation attaches ONE event listener to a parent element instead of many listeners on each child. It leverages event bubbling — clicks on children bubble up to the parent listener.
+          <br><br>
+          Use <code>event.target</code> inside the handler to identify which child was clicked. This is much more efficient for dynamic lists where children are added/removed at runtime.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">15</div>
+          <div class="qa-q-text">How do you implement a CSS-only toggle (no JavaScript)?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Use a hidden <code>&lt;input type="checkbox"&gt;</code> with a paired <code>&lt;label&gt;</code>. Clicking the label toggles the checkbox state. CSS responds via the <code>:checked</code> pseudo-class:
+          <br><br>
+          <code>input:checked + .track { background: var(--accent); }</code>
+          <br><br>
+          The sibling combinator <code>+</code> selects the element immediately after the checked input. No JS required for visual toggling.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">16</div>
+          <div class="qa-q-text">What is the difference between <code>async/await</code> and Promises?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Both handle asynchronous operations. <code>async/await</code> is syntactic sugar built on top of Promises, making async code look synchronous:
+          <ul>
+            <li>Promise: <code>fetch(url).then(r => r.json()).then(data => ...)</code></li>
+            <li>async/await: <code>const data = await fetch(url).then(r => r.json())</code></li>
+          </ul>
+          Use <code>try/catch</code> with async/await for error handling instead of <code>.catch()</code>.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">17</div>
+          <div class="qa-q-text">What is CSS Grid vs Flexbox — when to use each?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <ul>
+            <li><strong>Flexbox</strong>: 1D layout (row OR column). Best for navigation bars, button groups, centering one item.</li>
+            <li><strong>CSS Grid</strong>: 2D layout (rows AND columns simultaneously). Best for full-page layouts, dashboards, card grids.</li>
+          </ul>
+          Rule of thumb: if you need columns AND rows at the same time → Grid. If you're just arranging items in one direction → Flexbox. They can (and should) be combined.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">18</div>
+          <div class="qa-q-text">What is debouncing and throttling? Give UI examples.</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Both limit how often a function is called:
+          <ul>
+            <li><strong>Debounce</strong>: waits until a pause in calls. Fires AFTER the last call. Use for search input — only query API when user stops typing for 300ms.</li>
+            <li><strong>Throttle</strong>: fires at most once per time window, regardless of how often called. Use for scroll events, window resize — cap at 60fps.</li>
+          </ul>
+          Example: <code>const search = debounce(queryAPI, 300);</code> — called on every keystroke, but queryAPI only runs 300ms after the last keystroke.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">19</div>
+          <div class="qa-q-text">How do you make a website accessible (a11y)?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Key accessibility practices:
+          <ul>
+            <li>Use semantic HTML landmarks (<code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;header&gt;</code>)</li>
+            <li>All images need <code>alt</code> text</li>
+            <li>Forms need associated <code>&lt;label&gt;</code> elements</li>
+            <li>Interactive elements must be keyboard focusable (visible <code>:focus</code> ring)</li>
+            <li>Color contrast: WCAG AA requires 4.5:1 ratio for normal text</li>
+            <li>Use <code>aria-*</code> attributes for dynamic components (modals, tabs)</li>
+            <li>Never use <code>outline: none</code> without a custom focus style</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">20</div>
+          <div class="qa-q-text">What is the Critical Rendering Path?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          The sequence of steps the browser takes to render a page:
+          <ul>
+            <li>1. Parse HTML → build DOM</li>
+            <li>2. Parse CSS → build CSSOM</li>
+            <li>3. Combine DOM + CSSOM → Render Tree</li>
+            <li>4. Layout (calculate element positions/sizes)</li>
+            <li>5. Paint (draw pixels to screen)</li>
+            <li>6. Composite (layer ordering)</li>
+          </ul>
+          Optimize by: inlining critical CSS, deferring non-critical JS, using <code>font-display: swap</code>, and minimizing layout-triggering properties.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">21</div>
+          <div class="qa-q-text">What is a CSS animation? Explain <code>@keyframes</code>.</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <code>@keyframes</code> defines animation steps. Attach with <code>animation</code> property:
+          <br><br>
+          <code>@keyframes shimmer { 0% { opacity: 0; } 100% { opacity: 1; } }</code>
+          <br>
+          <code>.el { animation: shimmer 1s ease infinite; }</code>
+          <br><br>
+          Properties: <code>animation-duration</code>, <code>animation-timing-function</code> (ease/linear), <code>animation-delay</code>, <code>animation-iteration-count</code>, <code>animation-fill-mode</code> (forwards = stay at end state).
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">22</div>
+          <div class="qa-q-text">How do you implement dark/light mode in CSS?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Two approaches:
+          <ul>
+            <li><strong>CSS media query</strong>: <code>@media (prefers-color-scheme: dark) { ... }</code> — respects OS setting</li>
+            <li><strong>Data attribute</strong>: <code>[data-theme="dark"] { --bg: #000; }</code> — user-controlled via JS toggle</li>
+          </ul>
+          Best practice: define all colors as CSS variables on <code>:root</code>, then override the variables in the dark theme block. Never hardcode color values in component styles.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">23</div>
+          <div class="qa-q-text">What is <code>z-index</code> and what is a stacking context?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <code>z-index</code> controls the stack order of positioned elements — higher value = on top. But it only works on elements with <code>position</code> other than <code>static</code>.
+          <br><br>
+          A <strong>stacking context</strong> is an isolated z-index scope. Created by: <code>position + z-index</code>, <code>opacity &lt; 1</code>, <code>transform</code>, <code>filter</code>. Elements inside a stacking context cannot escape it — a z-index of 9999 inside a context with z-index 1 cannot appear above a context with z-index 2.
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">24</div>
+          <div class="qa-q-text">What are Web Performance metrics (LCP, CLS, FID/INP)?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Google's Core Web Vitals:
+          <ul>
+            <li><strong>LCP (Largest Contentful Paint)</strong>: time for largest visible element to load. Target: &lt;2.5s. Optimize: preload hero images, use CDN.</li>
+            <li><strong>CLS (Cumulative Layout Shift)</strong>: measures unexpected layout shifts. Target: &lt;0.1. Avoid: images without dimensions, injected content above text.</li>
+            <li><strong>INP (Interaction to Next Paint)</strong>: measures responsiveness to user input. Target: &lt;200ms. Optimize: reduce JS blocking, use <code>requestAnimationFrame</code>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question">
+          <div class="qa-num">25</div>
+          <div class="qa-q-text">How would you build a reusable component system in vanilla HTML/CSS/JS?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          Key principles for a component system:
+          <ul>
+            <li><strong>CSS naming convention</strong>: BEM (<code>.block__element--modifier</code>) or a prefix system like <code>oc-*</code> to namespace components</li>
+            <li><strong>CSS variables</strong>: define tokens on <code>:root</code> for colors, spacing, typography</li>
+            <li><strong>JS factory functions</strong>: <code>function createButton(label, variant) { ... return element; }</code></li>
+            <li><strong>Web Components</strong>: use <code>customElements.define('oc-button', ...)</code> for native browser components with shadow DOM encapsulation</li>
+            <li><strong>Template literals</strong>: generate HTML strings and insert with <code>innerHTML</code> for simple cases</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+    <!-- end interview section -->
+
+  </div><!-- end .content -->
+</main>
+
+<script>
+// NAV ACTIVE
+function setNav(el) {
+  el.parentElement.querySelectorAll('.oc-nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// TABS
+function switchTab(el, containerId) {
+  const parent = document.getElementById(containerId);
+  parent.querySelectorAll('.oc-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  parent.querySelectorAll('.oc-tab-content').forEach(c => c.style.display = 'none');
+  document.getElementById(el.dataset.tab).style.display = 'block';
+}
+
+// MODAL
+function closeModal(e) {
+  if (!e || e.target.classList.contains('oc-modal-overlay')) {
+    document.getElementById('modal').classList.remove('open');
+  }
+}
+document.getElementById('modal').addEventListener('click', closeModal);
+
+// DROPDOWN
+function toggleDD(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.oc-dropdown')) {
+    document.querySelectorAll('.oc-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+
+// TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// PROGRESS ANIMATE
+function animateBars() {
+  document.getElementById('prog1').style.width = '0%';
+  document.getElementById('prog2').style.width = '0%';
+  setTimeout(() => {
+    document.getElementById('prog1').style.width = '72%';
+    document.getElementById('prog2').style.width = '45%';
+  }, 100);
+}
+
+// EMAIL VALIDATE
+function validateEmail(input) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const valid = re.test(input.value);
+  const err = document.getElementById('emailError');
+  if (!valid && input.value) {
+    input.style.borderColor = '#ef4444';
+    err.style.display = 'block';
+  } else {
+    input.style.borderColor = input.value ? '#22c55e' : '';
+    err.style.display = 'none';
+  }
+}
+
+function submitForm() {
+  const input = document.getElementById('emailInput');
+  if (!input.value) {
+    showToast('⚠ Please enter your email');
+    return;
+  }
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!re.test(input.value)) {
+    showToast('❌ Invalid email address');
+    return;
+  }
+  showToast('✅ Form submitted!');
+}
+
+// COPY CODE
+function copyCode(btn) {
+  const code = btn.closest('.code-block').querySelector('pre').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 2000);
+  });
+}
+
+// Q&A TOGGLE
+function toggleQA(item) {
+  item.classList.toggle('open');
+}
+
+// SCROLL PROGRESS
+window.addEventListener('scroll', () => {
+  const el = document.documentElement;
+  const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+
+// SIDEBAR ACTIVE ON SCROLL
+const sections = document.querySelectorAll('.section, .hero');
+const navItems = document.querySelectorAll('.nav-item');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navItems.forEach(n => {
+        n.classList.remove('active');
+        if (n.getAttribute('href') === '#' + id) n.classList.add('active');
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.02 — NN Fundamentals | NN Guide</title>
+<link rel="stylesheet" href="shared.css">
+<style>:root{--neon:#00b8ff}</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="topnav-logo">NN<span>.GUIDE</span></a>
+  <div class="topnav-links">
+    <a href="01-math.html">01 Math</a><a href="02-fundamentals.html" class="active">02 Fundamentals</a><a href="03-python.html">03 Python</a><a href="04-workflow.html">04 Workflow</a><a href="05-cnn.html">05 CNN</a><a href="06-rnn.html">06 RNN</a><a href="07-nlp.html">07 NLP</a><a href="08-transformers.html">08 Transformers</a><a href="09-advanced.html">09 Advanced</a><a href="10-specializations.html">10 Specs</a><a href="11-projects.html">11 Projects</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow" style="width:500px;height:500px;background:rgba(0,184,255,1);top:-180px;right:-120px;"></div>
+  <div class="chapter-num" style="--neon:#00b8ff">Chapter 02 — Core</div>
+  <h1><span style="color:#00b8ff">NEURAL NETWORK</span><br>FUNDAMENTALS</h1>
+  <p class="hero-sub">Perceptrons, activation functions, forward pass, backpropagation, loss functions — the complete picture of how neural networks learn.</p>
+  <div class="hero-meta">
+    <div class="hero-stat"><div class="hero-stat-val" style="color:#00b8ff">6</div><div class="hero-stat-label">Core Topics</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" style="color:#00b8ff">12</div><div class="hero-stat-label">Interview Q&A</div></div>
+  </div>
+</div>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">Contents</div>
+    <a class="sb-link active" onclick="show('perceptron')"><span class="sb-icon">⚡</span>Perceptron</a>
+    <a class="sb-link" onclick="show('activations')"><span class="sb-icon">🔥</span>Activations</a>
+    <a class="sb-link" onclick="show('forward')"><span class="sb-icon">➡️</span>Forward Pass</a>
+    <a class="sb-link" onclick="show('backprop')"><span class="sb-icon">🔙</span>Backpropagation</a>
+    <a class="sb-link" onclick="show('loss')"><span class="sb-icon">📉</span>Loss Functions</a>
+    <a class="sb-link" onclick="show('optimizers')"><span class="sb-icon">⚙️</span>Optimizers</a>
+    <a class="sb-link" onclick="show('interview')"><span class="sb-icon">🎯</span>Interview Q&A</a>
+    <div class="sb-chapters">
+      <div class="sb-ch-label">Navigate</div>
+      <a class="sb-ch-link" href="01-math.html">← 01 · Math Foundation</a>
+      <a class="sb-ch-link" href="03-python.html">→ 03 · Build with Python</a>
+    </div>
+  </aside>
+
+  <div class="content">
+
+    <!-- PERCEPTRON -->
+    <div class="section active" id="s-perceptron">
+      <div class="sec-head">
+        <span class="sec-tag tag-b">Beginner</span>
+        <h2 class="sec-head h2">THE PERCEPTRON</h2>
+        <div class="sec-meta">The atomic unit of every neural network</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">⚡</span>Single Neuron</div>
+        <p>A neuron computes a weighted sum of its inputs, adds a bias, then applies an activation function:</p>
+        <div class="formula">z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b = Wᵀx + b
+a = σ(z)  ← activation function applied to pre-activation z</div>
+        <p><strong>Weights W</strong> — learned parameters that scale each input's importance<br>
+        <strong>Bias b</strong> — learned offset, allows the neuron to activate even when inputs are zero<br>
+        <strong>Activation σ</strong> — introduces non-linearity (without it, deep networks = 1 linear layer)</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,255,157,.1)">🧠</span>From Neuron to Network</div>
+        <p>Stack neurons in <em>layers</em>. Each layer transforms the previous layer's output:</p>
+        <div class="pipe">
+          <div class="pipe-box pb-g">Input Layer<br><small>x ∈ ℝⁿ</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-box pb-b">Hidden Layer 1<br><small>a¹=σ(W¹x+b¹)</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-box pb-b">Hidden Layer 2<br><small>a²=σ(W²a¹+b²)</small></div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-box pb-r">Output Layer<br><small>ŷ=softmax(Wᴸaᴸ⁻¹)</small></div>
+        </div>
+        <div class="callout cl-blue"><span class="callout-icon">💡</span><span><strong>Universal Approximation Theorem:</strong> A neural network with one hidden layer and enough neurons can approximate any continuous function to arbitrary precision. Width + depth → expressive power.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(255,214,10,.1)">🔢</span>Parameter Count</div>
+        <div class="code-box">
+          <div class="code-top"><span class="code-label">Computing Parameters</span><div class="code-dots"><i></i><i></i><i></i></div></div>
+          <pre><span class="cm"># Network: 784 → 256 → 128 → 10</span>
+layer1_params = <span class="num">784</span> * <span class="num">256</span> + <span class="num">256</span>   <span class="cm"># weights + bias = 200,960</span>
+layer2_params = <span class="num">256</span> * <span class="num">128</span> + <span class="num">128</span>   <span class="cm"># = 32,896</span>
+layer3_params = <span class="num">128</span> * <span class="num">10</span>  + <span class="num">10</span>    <span class="cm"># = 1,290</span>
+total = layer1_params + layer2_params + layer3_params
+<span class="fn">print</span>(f<span class="str">"Total: {total:,} parameters"</span>)  <span class="cm"># 235,146</span>
+
+<span class="cm"># PyTorch one-liner</span>
+<span class="kw">from</span> torchinfo <span class="kw">import</span> summary
+<span class="fn">summary</span>(model, input_size=(<span class="num">1</span>, <span class="num">784</span>))</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVATIONS -->
+    <div class="section" id="s-activations">
+      <div class="sec-head">
+        <span class="sec-tag tag-b">Beginner</span>
+        <h2 class="sec-head h2">ACTIVATION FUNCTIONS</h2>
+        <div class="sec-meta">The source of non-linearity in neural networks</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">📊</span>Why Activation Functions?</div>
+        <p>Without non-linear activations, stacking linear layers = one big linear layer: W₃(W₂(W₁x)) = Wx. You'd lose all representational power of depth. Activations break this linearity.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,255,157,.1)">⚡</span>Activation Functions Compared</div>
+        <div class="tbl"><table>
+          <tr><th>Name</th><th>Formula</th><th>Range</th><th>Use Case</th><th>Problem</th></tr>
+          <tr><td>Sigmoid</td><td>1/(1+e⁻ˣ)</td><td>(0,1)</td><td>Binary output</td><td>Vanishing grad, not zero-centered</td></tr>
+          <tr><td>Tanh</td><td>(eˣ-e⁻ˣ)/(eˣ+e⁻ˣ)</td><td>(-1,1)</td><td>RNNs, normalised data</td><td>Vanishing grad</td></tr>
+          <tr><td>ReLU</td><td>max(0,x)</td><td>[0,∞)</td><td>Default for hidden layers</td><td>Dying ReLU</td></tr>
+          <tr><td>Leaky ReLU</td><td>max(0.01x,x)</td><td>(-∞,∞)</td><td>Fixes dying ReLU</td><td>α is a hyperparameter</td></tr>
+          <tr><td>GELU</td><td>x·Φ(x)</td><td>≈(-0.17,∞)</td><td>Transformers (BERT,GPT)</td><td>Computationally heavier</td></tr>
+          <tr><td>Softmax</td><td>eˣⁱ/Σeˣʲ</td><td>(0,1)→sums to 1</td><td>Multi-class output</td><td>Only for output layer</td></tr>
+          <tr><td>SwiGLU</td><td>x·σ(x)⊗W₃x</td><td>—</td><td>LLaMA, Mistral FFN</td><td>More parameters</td></tr>
+        </table></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(255,61,113,.1)">💀</span>Dying ReLU Problem & Solutions</div>
+        <p>If a ReLU neuron's input is always negative, its output is always 0, gradient is always 0, weights never update — the neuron is "dead". Typically affects 10–40% of neurons in naively initialised networks.</p>
+        <div class="code-box">
+          <div class="code-top"><span class="code-label">PyTorch · Activation Functions</span><div class="code-dots"><i></i><i></i><i></i></div></div>
+          <pre><span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="cm"># Standard choices</span>
+relu     = nn.<span class="cls">ReLU</span>()          <span class="cm"># Fast, default</span>
+leaky    = nn.<span class="cls">LeakyReLU</span>(<span class="num">0.01</span>) <span class="cm"># Fixes dying ReLU</span>
+gelu     = nn.<span class="cls">GELU</span>()          <span class="cm"># Transformers</span>
+elu      = nn.<span class="cls">ELU</span>()           <span class="cm"># Smooth, negative saturation</span>
+
+<span class="cm"># Simple MLP with GELU</span>
+model = nn.<span class="cls">Sequential</span>(
+    nn.<span class="cls">Linear</span>(<span class="num">784</span>, <span class="num">256</span>), nn.<span class="cls">GELU</span>(),
+    nn.<span class="cls">Linear</span>(<span class="num">256</span>, <span class="num">128</span>), nn.<span class="cls">GELU</span>(),
+    nn.<span class="cls">Linear</span>(<span class="num">128</span>, <span class="num">10</span>)
+)</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORWARD PASS -->
+    <div class="section" id="s-forward">
+      <div class="sec-head">
+        <span class="sec-tag tag-b">Beginner</span>
+        <h2 class="sec-head h2">FORWARD PASS</h2>
+        <div class="sec-meta">Data flows through the network: input → prediction</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">➡️</span>Step-by-Step Forward Pass</div>
+        <div class="steps">
+          <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Input</h4><p>Flatten/normalise input x. For MNIST: 28×28 image → 784-dim vector, scaled to [0,1].</p></div></div>
+          <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Linear Transform Layer 1</h4><p>z¹ = W¹x + b¹ → pre-activation</p></div></div>
+          <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Activation</h4><p>a¹ = ReLU(z¹) → kills negatives</p></div></div>
+          <div class="step"><div class="step-n">4</div><div class="step-body"><h4>Repeat for L layers</h4><p>zˡ = Wˡaˡ⁻¹ + bˡ, aˡ = σ(zˡ)</p></div></div>
+          <div class="step"><div class="step-n">5</div><div class="step-body"><h4>Output</h4><p>ŷ = softmax(Wᴸaᴸ⁻¹ + bᴸ) → class probabilities summing to 1</p></div></div>
+        </div>
+        <div class="code-box">
+          <div class="code-top"><span class="code-label">NumPy Forward Pass from Scratch</span><div class="code-dots"><i></i><i></i><i></i></div></div>
+          <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">relu</span>(z): <span class="kw">return</span> np.<span class="fn">maximum</span>(<span class="num">0</span>, z)
+<span class="kw">def</span> <span class="fn">softmax</span>(z):
+    e = np.<span class="fn">exp</span>(z - z.<span class="fn">max</span>(<span class="num">-1</span>, keepdims=<span class="kw">True</span>))  <span class="cm"># numerically stable</span>
+    <span class="kw">return</span> e / e.<span class="fn">sum</span>(<span class="num">-1</span>, keepdims=<span class="kw">True</span>)
+
+<span class="kw">def</span> <span class="fn">forward</span>(x, params):
+    W1,b1,W2,b2,W3,b3 = params
+    a1 = <span class="fn">relu</span>(x  @ W1 + b1)
+    a2 = <span class="fn">relu</span>(a1 @ W2 + b2)
+    out = <span class="fn">softmax</span>(a2 @ W3 + b3)
+    <span class="kw">return</span> out  <span class="cm"># shape: (batch, 10)</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACKPROP -->
+    <div class="section" id="s-backprop">
+      <div class="sec-head">
+        <span class="sec-tag tag-i">Intermediate</span>
+        <h2 class="sec-head h2">BACKPROPAGATION</h2>
+        <div class="sec-meta">How neural networks learn from their mistakes</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">🔙</span>The Algorithm</div>
+        <div class="steps">
+          <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Forward Pass</h4><p>Compute and cache all intermediate activations a¹, a², ..., aᴸ and pre-activations z¹...zᴸ.</p></div></div>
+          <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Compute Loss</h4><p>L = CrossEntropy(ŷ, y). Scalar value measuring prediction error.</p></div></div>
+          <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Output Gradient</h4><p>δᴸ = ∂L/∂zᴸ = ŷ - y (for softmax + cross-entropy — conveniently simple!)</p></div></div>
+          <div class="step"><div class="step-n">4</div><div class="step-body"><h4>Backpropagate</h4><p>For each layer l from L-1 to 1: δˡ = ((Wˡ⁺¹)ᵀ δˡ⁺¹) ⊙ σ'(zˡ)</p></div></div>
+          <div class="step"><div class="step-n">5</div><div class="step-body"><h4>Compute Gradients</h4><p>∂L/∂Wˡ = δˡ · (aˡ⁻¹)ᵀ, ∂L/∂bˡ = δˡ</p></div></div>
+          <div class="step"><div class="step-n">6</div><div class="step-body"><h4>Update Parameters</h4><p>W ← W - η · ∂L/∂W for each layer</p></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,255,157,.1)">💻</span>Backprop from Scratch (NumPy)</div>
+        <div class="code-box">
+          <div class="code-top"><span class="code-label">2-Layer Backprop</span><div class="code-dots"><i></i><i></i><i></i></div></div>
+          <pre><span class="kw">def</span> <span class="fn">backward</span>(x, y, params, cache):
+    W1,b1,W2,b2 = params
+    a1, z1, a2, z2 = cache
+    m = x.shape[<span class="num">0</span>]  <span class="cm"># batch size</span>
+
+    <span class="cm"># Output layer delta (softmax + cross-entropy)</span>
+    delta2 = a2 - y                        <span class="cm"># (m, 10)</span>
+
+    <span class="cm"># Gradients for layer 2</span>
+    dW2 = a1.T @ delta2 / m
+    db2 = delta2.<span class="fn">mean</span>(<span class="num">0</span>)
+
+    <span class="cm"># Backprop through ReLU</span>
+    delta1 = (delta2 @ W2.T) * (z1 > <span class="num">0</span>)   <span class="cm"># ReLU gradient</span>
+
+    <span class="cm"># Gradients for layer 1</span>
+    dW1 = x.T @ delta1 / m
+    db1 = delta1.<span class="fn">mean</span>(<span class="num">0</span>)
+
+    <span class="kw">return</span> dW1, db1, dW2, db2</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOSS FUNCTIONS -->
+    <div class="section" id="s-loss">
+      <div class="sec-head">
+        <span class="sec-tag tag-b">Beginner</span>
+        <h2 class="sec-head h2">LOSS FUNCTIONS</h2>
+        <div class="sec-meta">Measuring how wrong the network is</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">📉</span>Loss Function Cheatsheet</div>
+        <div class="tbl"><table>
+          <tr><th>Task</th><th>Loss</th><th>Formula</th><th>PyTorch</th></tr>
+          <tr><td>Binary Classification</td><td>Binary Cross-Entropy</td><td>-[y·log(ŷ)+(1-y)·log(1-ŷ)]</td><td>nn.BCEWithLogitsLoss()</td></tr>
+          <tr><td>Multi-class</td><td>Cross-Entropy</td><td>-Σ yᵢ·log(ŷᵢ)</td><td>nn.CrossEntropyLoss()</td></tr>
+          <tr><td>Regression</td><td>MSE</td><td>Σ(y-ŷ)²/n</td><td>nn.MSELoss()</td></tr>
+          <tr><td>Regression (robust)</td><td>Huber / Smooth L1</td><td>L1 if |y-ŷ|&gt;δ, else L2</td><td>nn.HuberLoss()</td></tr>
+          <tr><td>Ranking</td><td>Contrastive</td><td>max(0,margin-d(anchor,neg)+d(anchor,pos))</td><td>nn.TripletMarginLoss()</td></tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- OPTIMIZERS -->
+    <div class="section" id="s-optimizers">
+      <div class="sec-head">
+        <span class="sec-tag tag-i">Intermediate</span>
+        <h2 class="sec-head h2">OPTIMIZERS</h2>
+        <div class="sec-meta">SGD · Momentum · Adam · AdamW · Learning Rate Schedules</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">⚙️</span>Optimizer Comparison</div>
+        <div class="tbl"><table>
+          <tr><th>Optimizer</th><th>Update Rule</th><th>Best For</th></tr>
+          <tr><td>SGD</td><td>θ -= η·g</td><td>CV training with schedule</td></tr>
+          <tr><td>SGD + Momentum</td><td>v=βv+g; θ-=η·v</td><td>Convex + large batch</td></tr>
+          <tr><td>Adam</td><td>Adaptive lr per param</td><td>NLP, general default</td></tr>
+          <tr><td>AdamW</td><td>Adam + decoupled L2</td><td>Transformers (best practice)</td></tr>
+          <tr><td>Lion</td><td>Sign-based update</td><td>Large models, memory efficient</td></tr>
+        </table></div>
+        <div class="code-box">
+          <div class="code-top"><span class="code-label">PyTorch · Optimizers</span><div class="code-dots"><i></i><i></i><i></i></div></div>
+          <pre><span class="kw">import</span> torch.optim <span class="kw">as</span> optim
+
+<span class="cm"># AdamW — best default for most models</span>
+optimizer = optim.<span class="cls">AdamW</span>(model.parameters(),
+    lr=<span class="num">3e-4</span>, weight_decay=<span class="num">0.01</span>)
+
+<span class="cm"># Learning rate schedule — cosine annealing</span>
+scheduler = optim.lr_scheduler.<span class="cls">CosineAnnealingLR</span>(
+    optimizer, T_max=<span class="num">100</span>)
+
+<span class="cm"># Training step</span>
+optimizer.<span class="fn">zero_grad</span>()
+loss.<span class="fn">backward</span>()
+torch.nn.utils.<span class="fn">clip_grad_norm_</span>(model.parameters(), <span class="num">1.0</span>)
+optimizer.<span class="fn">step</span>()
+scheduler.<span class="fn">step</span>()</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERVIEW -->
+    <div class="section" id="s-interview">
+      <div class="sec-head">
+        <span class="sec-tag tag-q">Interview</span>
+        <h2 class="sec-head h2">INTERVIEW Q&amp;A</h2>
+        <div class="sec-meta">NN Fundamentals · 12 Questions</div>
+      </div>
+
+      <div class="qa-level">Beginner</div>
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q01</span><span class="qa-text">What is an activation function and why do we need it?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-easy">easy</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">An activation function introduces non-linearity into the network. Without it, stacking linear layers gives: W₃(W₂(W₁x)) = (W₃W₂W₁)x — just one linear transformation, no matter how deep the network. Non-linearity allows the network to learn complex, non-linear decision boundaries. <strong>ReLU</strong> is the default for hidden layers — fast, simple, doesn't saturate for positive values. <strong>Sigmoid/Tanh</strong> used for gates (LSTM) and output layers (binary classification). <strong>Softmax</strong> for multi-class output — converts logits to probability distribution.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q02</span><span class="qa-text">What is the difference between batch, stochastic, and mini-batch gradient descent?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-easy">easy</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a"><strong>Batch GD:</strong> Compute gradient over all training samples. Accurate but slow (one update per epoch). Memory intensive — may not fit dataset in RAM. <strong>Stochastic GD (SGD):</strong> One sample per update. Very noisy gradients, many updates per epoch. The noise can help escape local minima but convergence is erratic. <strong>Mini-batch GD:</strong> Standard in practice. Batches of 32–512. Benefits: (1) vectorisation makes it GPU-efficient; (2) batch noise provides regularisation; (3) frequent updates for fast convergence. Batch size is a hyperparameter — larger batches = smoother gradients but less regularisation.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q03</span><span class="qa-text">Explain overfitting and how to prevent it.</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-easy">easy</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">Overfitting occurs when a model learns the training data too well — including noise — and fails to generalise to unseen data (high train accuracy, low val accuracy). Prevention: <strong>Dropout</strong> — randomly zero out activations during training (p=0.1–0.5), forcing the network to learn redundant representations. <strong>L2 regularisation</strong> — penalises large weights. <strong>Data augmentation</strong> — artificially expand training set. <strong>Early stopping</strong> — stop when validation loss stops improving. <strong>Batch normalisation</strong> — acts as implicit regulariser. <strong>Reduce model capacity</strong> — fewer parameters. Best practice: start with simpler model, add capacity only when underfitting.</div>
+      </div>
+
+      <div class="qa-level">Intermediate</div>
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q04</span><span class="qa-text">How does Adam optimizer work? Why is it better than SGD?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">Adam (Adaptive Moment Estimation) maintains two moving averages per parameter: m = β₁m + (1-β₁)g (first moment, like momentum) and v = β₂v + (1-β₂)g² (second moment, variance of gradients). Bias-corrected: m̂ = m/(1-β₁ᵗ), v̂ = v/(1-β₂ᵗ). Update: θ -= η · m̂/(√v̂ + ε). The adaptive learning rate means: parameters with consistently large gradients get smaller updates; rare/small gradients get larger updates. This is especially beneficial for sparse features in NLP. β₁=0.9, β₂=0.999, ε=1e-8 are almost always kept as defaults. However, for vision tasks with proper tuning, SGD+momentum often outperforms Adam.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q05</span><span class="qa-text">What is dropout and how does it work at inference?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">During training, dropout randomly sets activations to 0 with probability p, and scales remaining ones by 1/(1-p) (inverted dropout) so expected value stays the same. This prevents co-adaptation — neurons can't rely on specific other neurons always being present. Effect: trains an ensemble of 2^n different network architectures. At inference, dropout is turned off (model.eval() in PyTorch) and all neurons participate — equivalent to averaging the ensemble. The key implementation detail: PyTorch's nn.Dropout handles the 1/(1-p) scaling during training, so inference needs no adjustment.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q06</span><span class="qa-text">Why is weight initialisation important?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">If weights are all zeros: all neurons compute identical outputs and receive identical gradients — symmetry breaking never happens, the network never learns. If weights are too large: activations saturate (sigmoid→1, ReLU very large), gradients vanish or explode. If too small: activations shrink layer by layer, gradients vanish. Proper initialisation (He for ReLU, Xavier for sigmoid/tanh) keeps the variance of activations and gradients approximately constant across layers, allowing training to begin from a stable regime. Modern networks also rely on BatchNorm/LayerNorm to maintain this stability as training progresses.</div>
+      </div>
+
+      <div class="qa-level">Advanced</div>
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q07</span><span class="qa-text">Explain the exploding gradient problem and gradient clipping.</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">In deep networks (especially RNNs), gradients can grow exponentially through backprop — if weight matrices have eigenvalues >1, repeated multiplication explodes them. Symptoms: loss becomes NaN, parameters become Inf. <strong>Gradient clipping</strong> rescales the global gradient norm if it exceeds a threshold: if ||g|| > max_norm, g = g · (max_norm / ||g||). PyTorch: <code>torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)</code>. This clips the magnitude but preserves direction. Applied after loss.backward() but before optimizer.step(). Common thresholds: 1.0 for transformers, 5.0 for RNNs.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q08</span><span class="qa-text">What is the difference between model.train() and model.eval() in PyTorch?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a"><code>model.train()</code> enables training behaviour: Dropout randomly zeros activations; BatchNorm uses batch statistics (μ, σ from current batch) and updates running stats. <code>model.eval()</code> disables training behaviour: Dropout becomes identity; BatchNorm uses running mean/var accumulated during training (more stable, deterministic). Always use <code>model.eval()</code> with <code>torch.no_grad()</code> during validation/inference — <code>no_grad()</code> skips gradient tracking, saving memory and computation (~50% faster). Forgetting to switch modes is a common bug causing train/eval accuracy discrepancies.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+function toggleQA(el) {
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.qa-item.open').forEach(e => e.classList.remove('open'));
+  if (!open) el.classList.add('open');
+}
+</script>
+</body>
+</html>

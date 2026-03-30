@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Node.js Roadmap — From Beginner to Expert</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ===== CSS VARIABLES & RESET ===== */
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1422;
+  --bg3: #151c2e;
+  --surface: rgba(255,255,255,0.04);
+  --surface2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #e8ecf4;
+  --text2: #8b95b0;
+  --text3: #5a6480;
+  --accent: #3ecf8e;
+  --accent2: #6c63ff;
+  --accent3: #ff6b6b;
+  --accent4: #ffd166;
+  --glow: rgba(62,207,142,0.15);
+  --glow2: rgba(108,99,255,0.15);
+  --sidebar-w: 280px;
+  --radius: 12px;
+  --radius2: 8px;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] {
+  --bg: #f0f2f8;
+  --bg2: #e8ebf4;
+  --bg3: #ffffff;
+  --surface: rgba(0,0,0,0.03);
+  --surface2: rgba(0,0,0,0.06);
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1a1e2e;
+  --text2: #4a5270;
+  --text3: #8a93b0;
+  --glow: rgba(62,207,142,0.1);
+  --glow2: rgba(108,99,255,0.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  transition:background var(--transition),color var(--transition);
+}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+
+/* ===== LAYOUT ===== */
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;bottom:0;
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  z-index:100;
+  transition:transform var(--transition),background var(--transition);
+}
+.main{
+  margin-left:var(--sidebar-w);
+  flex:1;
+  min-height:100vh;
+  transition:margin var(--transition);
+}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,14,26,0.85);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:12px 28px;
+  display:flex;align-items:center;gap:12px;
+  transition:background var(--transition);
+}
+[data-theme="light"] .topbar{background:rgba(240,242,248,0.85)}
+.content{padding:40px 40px 80px;}
+
+/* ===== SIDEBAR ===== */
+.sidebar-logo{
+  padding:24px 20px 16px;
+  border-bottom:1px solid var(--border);
+}
+.logo-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  padding:6px 14px;border-radius:99px;
+  font-family:var(--font-head);font-weight:800;font-size:13px;
+  color:#fff;letter-spacing:.5px;
+}
+.logo-badge i{font-size:14px}
+.sidebar-progress{
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+}
+.progress-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.progress-bar-wrap{
+  background:var(--surface2);border-radius:99px;height:6px;overflow:hidden;
+}
+.progress-bar-fill{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width 0.6s ease;
+  width:0%;
+}
+.progress-text{font-size:12px;color:var(--accent);margin-top:5px;font-family:var(--font-code)}
+
+.sidebar-search{padding:12px 16px;border-bottom:1px solid var(--border)}
+.search-input-wrap{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius2);
+  padding:8px 12px;
+  transition:border-color var(--transition);
+}
+.search-input-wrap:focus-within{border-color:var(--accent)}
+.search-input-wrap i{color:var(--text3);font-size:13px}
+.search-input-wrap input{
+  background:none;border:none;outline:none;
+  color:var(--text);font-size:13px;font-family:var(--font-body);width:100%;
+}
+.search-input-wrap input::placeholder{color:var(--text3)}
+
+.sidebar-nav{flex:1;padding:8px 0}
+.nav-group{margin-bottom:4px}
+.nav-group-label{
+  padding:10px 20px 4px;
+  font-size:10px;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--text3);font-weight:600;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 20px;
+  cursor:pointer;
+  border-radius:0;
+  color:var(--text2);
+  font-size:13.5px;
+  transition:all var(--transition);
+  position:relative;
+  text-decoration:none;
+}
+.nav-item:hover{color:var(--text);background:var(--surface)}
+.nav-item.active{
+  color:var(--accent);background:var(--glow);
+}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--accent);border-radius:0 3px 3px 0;
+}
+.nav-item i{width:16px;font-size:13px;text-align:center}
+.nav-item .check{
+  margin-left:auto;width:16px;height:16px;
+  border-radius:50%;border:1.5px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;transition:all var(--transition);flex-shrink:0;
+}
+.nav-item .check.done{background:var(--accent);border-color:var(--accent);color:#fff}
+.nav-item.hidden{display:none}
+
+/* ===== TOPBAR ===== */
+.hamburger{
+  display:none;background:none;border:none;color:var(--text);
+  cursor:pointer;font-size:18px;padding:4px;
+}
+.topbar-search{
+  flex:1;max-width:380px;
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius2);
+  padding:7px 14px;
+}
+.topbar-search input{
+  background:none;border:none;outline:none;color:var(--text);
+  font-size:13px;font-family:var(--font-body);width:100%;
+}
+.topbar-search input::placeholder{color:var(--text3)}
+.topbar-search i{color:var(--text3);font-size:13px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-toggle{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;
+  padding:7px 10px;border-radius:var(--radius2);
+  font-size:14px;transition:all var(--transition);
+}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.badge-expert{
+  background:linear-gradient(135deg,var(--accent2),var(--accent3));
+  color:#fff;font-size:11px;font-weight:600;
+  padding:4px 10px;border-radius:99px;
+  font-family:var(--font-head);
+}
+
+/* ===== HERO SECTION ===== */
+.hero{
+  position:relative;overflow:hidden;
+  padding:60px 0 50px;
+  margin-bottom:40px;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 50%, var(--glow) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 80% 30%, var(--glow2) 0%, transparent 60%);
+  pointer-events:none;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);
+  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);
+  opacity:0.4;
+}
+.hero-content{position:relative;z-index:1}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--border2);
+  padding:6px 14px;border-radius:99px;
+  font-size:12px;color:var(--accent);font-weight:600;
+  letter-spacing:.5px;margin-bottom:20px;
+  animation:fadeSlideUp 0.6s ease both;
+}
+.hero-title{
+  font-family:var(--font-head);font-size:clamp(2rem,5vw,3.4rem);
+  font-weight:800;line-height:1.1;
+  margin-bottom:18px;
+  animation:fadeSlideUp 0.6s 0.1s ease both;
+}
+.hero-title span{
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-desc{
+  font-size:16px;color:var(--text2);line-height:1.7;
+  max-width:600px;margin-bottom:30px;
+  animation:fadeSlideUp 0.6s 0.2s ease both;
+}
+.hero-stats{
+  display:flex;flex-wrap:wrap;gap:20px;
+  animation:fadeSlideUp 0.6s 0.3s ease both;
+}
+.hero-stat{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 20px;
+  display:flex;align-items:center;gap:12px;
+  min-width:130px;
+}
+.hero-stat i{font-size:18px;color:var(--accent)}
+.hero-stat-val{font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--text)}
+.hero-stat-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.node-logo-float{
+  position:absolute;right:-20px;top:50%;transform:translateY(-50%);
+  font-size:140px;opacity:0.04;
+  animation:float 6s ease-in-out infinite;
+  color:var(--accent);
+  pointer-events:none;
+}
+
+/* ===== SECTIONS ===== */
+.section{
+  margin-bottom:32px;
+  border-radius:var(--radius);
+  background:var(--bg3);
+  border:1px solid var(--border);
+  overflow:hidden;
+  transition:border-color var(--transition);
+}
+.section:hover{border-color:var(--border2)}
+.section-header{
+  padding:20px 24px;
+  display:flex;align-items:center;gap:14px;
+  cursor:pointer;
+  user-select:none;
+  transition:background var(--transition);
+}
+.section-header:hover{background:var(--surface)}
+.section-icon{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.section-title-wrap{flex:1}
+.section-title{
+  font-family:var(--font-head);font-size:16px;font-weight:700;
+  color:var(--text);margin-bottom:3px;
+}
+.section-subtitle{font-size:12px;color:var(--text3)}
+.section-controls{display:flex;align-items:center;gap:10px;margin-left:auto}
+.mark-done-btn{
+  background:none;border:1.5px solid var(--border2);
+  color:var(--text3);font-size:11px;
+  padding:5px 12px;border-radius:99px;cursor:pointer;
+  font-family:var(--font-body);font-weight:500;
+  transition:all var(--transition);white-space:nowrap;
+  display:flex;align-items:center;gap:5px;
+}
+.mark-done-btn:hover{border-color:var(--accent);color:var(--accent)}
+.mark-done-btn.done{
+  background:var(--accent);border-color:var(--accent);color:#0a0e1a;
+}
+.chevron{
+  color:var(--text3);font-size:13px;
+  transition:transform var(--transition);
+}
+.section.open .chevron{transform:rotate(180deg)}
+.section-body{
+  border-top:1px solid var(--border);
+  display:none;
+  animation:fadeIn 0.3s ease;
+}
+.section.open .section-body{display:block}
+.section-content{padding:24px}
+
+/* ===== CONTENT TYPOGRAPHY ===== */
+.section-content h3{
+  font-family:var(--font-head);font-size:18px;font-weight:700;
+  margin:24px 0 12px;color:var(--text);
+}
+.section-content h3:first-child{margin-top:0}
+.section-content h4{
+  font-family:var(--font-head);font-size:14px;font-weight:700;
+  margin:20px 0 8px;color:var(--accent);
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.section-content p{
+  font-size:14.5px;color:var(--text2);line-height:1.8;
+  margin-bottom:14px;
+}
+.section-content ul,.section-content ol{
+  padding-left:20px;margin-bottom:14px;
+}
+.section-content li{
+  font-size:14.5px;color:var(--text2);line-height:1.8;margin-bottom:4px;
+}
+.section-content li strong{color:var(--text);font-weight:600}
+.highlight-box{
+  background:var(--glow);border:1px solid rgba(62,207,142,0.25);
+  border-left:3px solid var(--accent);
+  border-radius:var(--radius2);
+  padding:14px 16px;margin:16px 0;
+}
+.highlight-box p{margin:0;color:var(--text);font-size:14px}
+.info-box{
+  background:var(--glow2);border:1px solid rgba(108,99,255,0.25);
+  border-left:3px solid var(--accent2);
+  border-radius:var(--radius2);
+  padding:14px 16px;margin:16px 0;
+}
+.info-box p{margin:0;color:var(--text);font-size:14px}
+.warn-box{
+  background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);
+  border-left:3px solid var(--accent3);
+  border-radius:var(--radius2);
+  padding:14px 16px;margin:16px 0;
+}
+.warn-box p{margin:0;color:var(--text);font-size:14px}
+
+/* ===== CODE BLOCKS ===== */
+.code-block{
+  margin:16px 0;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  overflow:hidden;
+}
+.code-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+}
+.code-lang{
+  font-size:11px;font-weight:600;color:var(--accent);
+  font-family:var(--font-code);text-transform:uppercase;letter-spacing:1px;
+  display:flex;align-items:center;gap:6px;
+}
+.code-dots{display:flex;gap:5px}
+.code-dot{width:10px;height:10px;border-radius:50%}
+.code-dot:nth-child(1){background:#ff5f57}
+.code-dot:nth-child(2){background:#ffbd2e}
+.code-dot:nth-child(3){background:#28ca42}
+.copy-btn{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text3);cursor:pointer;padding:5px 12px;
+  border-radius:var(--radius2);font-size:11px;font-family:var(--font-body);
+  font-weight:500;transition:all var(--transition);
+  display:flex;align-items:center;gap:5px;
+}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.copy-btn.copied{background:var(--accent);border-color:var(--accent);color:#0a0e1a}
+pre{
+  background:var(--bg2);padding:20px;overflow-x:auto;
+  margin:0;
+}
+code{
+  font-family:var(--font-code);font-size:13px;line-height:1.7;
+  color:var(--text);
+}
+/* Syntax tokens */
+.kw{color:#c792ea}
+.fn{color:#82aaff}
+.str{color:#c3e88d}
+.num{color:#f78c6c}
+.cmt{color:#546e7a;font-style:italic}
+.cls{color:#ffcb6b}
+.op{color:#89ddff}
+.prop{color:#f07178}
+
+/* ===== TABS ===== */
+.tabs{margin:16px 0}
+.tab-nav{
+  display:flex;gap:0;
+  border-bottom:1px solid var(--border);
+  margin-bottom:0;overflow-x:auto;
+}
+.tab-btn{
+  padding:10px 18px;font-size:13px;font-weight:500;
+  color:var(--text3);cursor:pointer;border:none;
+  background:none;border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:all var(--transition);
+  white-space:nowrap;font-family:var(--font-body);
+}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-pane{display:none;padding-top:4px}
+.tab-pane.active{display:block}
+
+/* ===== QUIZ ===== */
+.quiz-section{
+  margin-top:24px;
+  border-top:1px dashed var(--border2);
+  padding-top:24px;
+}
+.quiz-title{
+  font-family:var(--font-head);font-size:14px;font-weight:700;
+  color:var(--accent4);margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+.quiz-q{margin-bottom:20px}
+.quiz-question{font-size:14px;color:var(--text);font-weight:500;margin-bottom:10px}
+.quiz-options{display:flex;flex-direction:column;gap:7px}
+.quiz-option{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:10px 14px;
+  cursor:pointer;transition:all var(--transition);
+  font-size:13.5px;color:var(--text2);
+}
+.quiz-option:hover{border-color:var(--border2);background:var(--surface2);color:var(--text)}
+.quiz-option.correct{background:rgba(62,207,142,0.1);border-color:var(--accent);color:var(--accent)}
+.quiz-option.wrong{background:rgba(255,107,107,0.1);border-color:var(--accent3);color:var(--accent3)}
+.quiz-option span{
+  width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;transition:all var(--transition);
+}
+.quiz-option.correct span{background:var(--accent);border-color:var(--accent);color:#0a0e1a}
+.quiz-option.wrong span{background:var(--accent3);border-color:var(--accent3);color:#fff}
+.quiz-result{
+  margin-top:10px;font-size:13px;padding:8px 12px;border-radius:var(--radius2);
+  display:none;font-weight:500;
+}
+.quiz-result.correct{background:rgba(62,207,142,0.1);color:var(--accent);display:block}
+.quiz-result.wrong{background:rgba(255,107,107,0.1);color:var(--accent3);display:block}
+
+/* ===== CONCEPT CARDS ===== */
+.concept-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px;margin:16px 0;
+}
+.concept-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;
+  transition:all var(--transition);
+}
+.concept-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.concept-card i{font-size:20px;margin-bottom:10px;display:block}
+.concept-card h5{font-family:var(--font-head);font-size:13px;font-weight:700;margin-bottom:5px;color:var(--text)}
+.concept-card p{font-size:12px;color:var(--text3);margin:0;line-height:1.6}
+
+/* ===== EVENT LOOP VIZ ===== */
+.event-loop-viz{
+  margin:16px 0;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:24px;text-align:center;overflow:hidden;
+}
+.el-title{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--text3);margin-bottom:20px;text-transform:uppercase;letter-spacing:1px}
+.el-diagram{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;gap:8px}
+.el-box{
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:14px 18px;min-width:110px;
+  position:relative;
+}
+.el-box.active{border-color:var(--accent);background:var(--glow)}
+.el-box-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.el-box-name{font-family:var(--font-code);font-size:12px;font-weight:600;color:var(--text)}
+.el-arrow{color:var(--accent);font-size:14px;margin:0 2px}
+.el-queue{margin-top:16px}
+.el-queue-items{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.el-queue-item{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:6px 12px;
+  font-family:var(--font-code);font-size:11px;color:var(--text2);
+  animation:pulse 2s ease infinite;
+}
+.el-queue-item:nth-child(2){animation-delay:.3s}
+.el-queue-item:nth-child(3){animation-delay:.6s}
+
+/* ===== ROADMAP TIMELINE ===== */
+.timeline{position:relative;padding-left:30px;margin:16px 0}
+.timeline::before{
+  content:'';position:absolute;left:10px;top:0;bottom:0;
+  width:2px;background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3));
+  border-radius:2px;
+}
+.timeline-item{
+  position:relative;margin-bottom:24px;
+}
+.timeline-item::before{
+  content:'';position:absolute;left:-24px;top:6px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--accent);border:2px solid var(--bg3);
+}
+.timeline-item h5{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.timeline-item p{font-size:13px;color:var(--text3);margin:0;line-height:1.6}
+
+/* ===== COMPARISON TABLE ===== */
+.compare-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
+.compare-table th{
+  background:var(--surface2);padding:12px 16px;text-align:left;
+  font-family:var(--font-head);font-size:12px;font-weight:700;
+  color:var(--text3);text-transform:uppercase;letter-spacing:.5px;
+  border-bottom:1px solid var(--border2);
+}
+.compare-table td{
+  padding:11px 16px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;
+}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:var(--surface)}
+.tag{
+  display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;
+}
+.tag-green{background:rgba(62,207,142,0.15);color:var(--accent)}
+.tag-blue{background:rgba(108,99,255,0.15);color:var(--accent2)}
+.tag-red{background:rgba(255,107,107,0.15);color:var(--accent3)}
+.tag-yellow{background:rgba(255,209,102,0.15);color:var(--accent4)}
+
+/* ===== MOBILE OVERLAY ===== */
+.overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);
+  z-index:99;backdrop-filter:blur(4px);
+}
+.overlay.visible{display:block}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeSlideUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}to{opacity:1}
+}
+@keyframes float{
+  0%,100%{transform:translateY(-50%) rotate(0deg)}
+  50%{transform:translateY(-54%) rotate(3deg)}
+}
+@keyframes pulse{
+  0%,100%{border-color:var(--border)}
+  50%{border-color:var(--accent2)}
+}
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .content{padding:24px 20px 60px}
+  .hero-stat{min-width:100px}
+  .node-logo-float{display:none}
+  .topbar-search{display:none}
+}
+@media(max-width:560px){
+  .hero{padding:30px 0 30px}
+  .hero-stats{gap:10px}
+  .concept-grid{grid-template-columns:1fr 1fr}
+  .el-diagram{flex-direction:column}
+  .el-arrow{transform:rotate(90deg)}
+}
+
+/* ===== SECTION COLOR THEMES ===== */
+.icon-green{background:rgba(62,207,142,0.12);color:var(--accent)}
+.icon-purple{background:rgba(108,99,255,0.12);color:var(--accent2)}
+.icon-red{background:rgba(255,107,107,0.12);color:var(--accent3)}
+.icon-yellow{background:rgba(255,209,102,0.12);color:var(--accent4)}
+.icon-teal{background:rgba(0,206,209,0.12);color:#00ced1}
+.icon-pink{background:rgba(255,121,198,0.12);color:#ff79c6}
+.icon-orange{background:rgba(255,165,0,0.12);color:#ffa500}
+.icon-sky{background:rgba(56,189,248,0.12);color:#38bdf8}
+.icon-rose{background:rgba(251,113,133,0.12);color:#fb7185}
+.icon-lime{background:rgba(163,230,53,0.12);color:#a3e635}
+.icon-indigo{background:rgba(129,140,248,0.12);color:#818cf8}
+.icon-amber{background:rgba(251,191,36,0.12);color:#fbbf24}
+
+/* ===== SCROLL-TO-TOP ===== */
+.scroll-top{
+  position:fixed;bottom:28px;right:28px;
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border:none;cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:all var(--transition);
+  box-shadow:0 4px 20px var(--glow);z-index:200;
+}
+.scroll-top.visible{opacity:1;pointer-events:all}
+.scroll-top:hover{transform:translateY(-2px);box-shadow:0 6px 30px var(--glow)}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge"><i class="fab fa-node-js"></i> Node.js Roadmap</div>
+  </div>
+  <div class="sidebar-progress">
+    <div class="progress-label">Overall Progress</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="overallProgress"></div></div>
+    <div class="progress-text" id="progressText">0 / 12 sections</div>
+  </div>
+  <div class="sidebar-search">
+    <div class="search-input-wrap">
+      <i class="fas fa-search"></i>
+      <input type="text" id="sidebarSearch" placeholder="Search topics…" oninput="filterNav(this.value)">
+    </div>
+  </div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="nav-group-label">Getting Started</div>
+    <a class="nav-item active" data-section="home" onclick="scrollToSection('home')"><i class="fas fa-home"></i> Home<span class="check" id="check-home"></span></a>
+    <a class="nav-item" data-section="beginner" onclick="scrollToSection('beginner')"><i class="fas fa-seedling"></i> Beginner<span class="check" id="check-beginner"></span></a>
+    <a class="nav-item" data-section="javascript" onclick="scrollToSection('javascript')"><i class="fab fa-js"></i> JS Fundamentals<span class="check" id="check-javascript"></span></a>
+    <div class="nav-group-label">Backend</div>
+    <a class="nav-item" data-section="backend" onclick="scrollToSection('backend')"><i class="fas fa-server"></i> Backend Dev<span class="check" id="check-backend"></span></a>
+    <a class="nav-item" data-section="database" onclick="scrollToSection('database')"><i class="fas fa-database"></i> Database<span class="check" id="check-database"></span></a>
+    <a class="nav-item" data-section="auth" onclick="scrollToSection('auth')"><i class="fas fa-shield-halved"></i> Auth & Security<span class="check" id="check-auth"></span></a>
+    <div class="nav-group-label">Advanced</div>
+    <a class="nav-item" data-section="advanced" onclick="scrollToSection('advanced')"><i class="fas fa-microchip"></i> Advanced Node.js<span class="check" id="check-advanced"></span></a>
+    <a class="nav-item" data-section="api" onclick="scrollToSection('api')"><i class="fas fa-plug"></i> API Design<span class="check" id="check-api"></span></a>
+    <a class="nav-item" data-section="testing" onclick="scrollToSection('testing')"><i class="fas fa-flask"></i> Testing<span class="check" id="check-testing"></span></a>
+    <div class="nav-group-label">Production</div>
+    <a class="nav-item" data-section="devops" onclick="scrollToSection('devops')"><i class="fas fa-cloud"></i> Deployment & DevOps<span class="check" id="check-devops"></span></a>
+    <a class="nav-item" data-section="realtime" onclick="scrollToSection('realtime')"><i class="fas fa-bolt"></i> Real-Time Systems<span class="check" id="check-realtime"></span></a>
+    <a class="nav-item" data-section="expert" onclick="scrollToSection('expert')"><i class="fas fa-trophy"></i> Expert Level<span class="check" id="check-expert"></span></a>
+  </nav>
+</aside>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="hamburger" id="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="topbar-search">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search sections…" oninput="filterNav(this.value)">
+    </div>
+    <div class="topbar-right">
+      <span class="badge-expert">v2025</span>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <i class="fas fa-moon" id="themeIcon"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== HOME SECTION ===== -->
+    <div id="home">
+      <div class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+          <div class="hero-eyebrow"><i class="fas fa-circle-play"></i> Complete Learning Path · 2025 Edition</div>
+          <h1 class="hero-title">Complete<br><span>Node.js Roadmap</span></h1>
+          <p class="hero-desc">Your definitive guide to mastering Node.js — from writing your first HTTP server to building scalable microservices and real-time applications. Structured, practical, and built for developers who mean business.</p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <i class="fas fa-layer-group"></i>
+              <div><div class="hero-stat-val">12</div><div class="hero-stat-lbl">Sections</div></div>
+            </div>
+            <div class="hero-stat">
+              <i class="fas fa-code"></i>
+              <div><div class="hero-stat-val">40+</div><div class="hero-stat-lbl">Code Examples</div></div>
+            </div>
+            <div class="hero-stat">
+              <i class="fas fa-circle-question"></i>
+              <div><div class="hero-stat-val">24</div><div class="hero-stat-lbl">Quizzes</div></div>
+            </div>
+            <div class="hero-stat">
+              <i class="fas fa-clock"></i>
+              <div><div class="hero-stat-val">~20h</div><div class="hero-stat-lbl">Study Time</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="node-logo-float"><i class="fab fa-node-js"></i></div>
+      </div>
+    </div>
+
+    <!-- ===== BEGINNER ===== -->
+    <div id="beginner">
+      <div class="section open">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-green"><i class="fas fa-seedling"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">Beginner — Node.js Fundamentals</div>
+            <div class="section-subtitle">Start here if you're new to Node.js</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'beginner')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>What is Node.js?</h3>
+            <p>Node.js is a <strong>JavaScript runtime</strong> built on Chrome's V8 engine that allows you to run JavaScript on the server side. It uses an event-driven, non-blocking I/O model that makes it lightweight and efficient — perfect for data-intensive real-time applications.</p>
+
+            <div class="concept-grid">
+              <div class="concept-card">
+                <i class="fas fa-bolt" style="color:var(--accent4)"></i>
+                <h5>Fast Execution</h5>
+                <p>Powered by V8 engine which compiles JS to native code</p>
+              </div>
+              <div class="concept-card">
+                <i class="fas fa-arrows-spin" style="color:var(--accent)"></i>
+                <h5>Non-Blocking</h5>
+                <p>Async I/O means Node never waits idle</p>
+              </div>
+              <div class="concept-card">
+                <i class="fas fa-puzzle-piece" style="color:var(--accent2)"></i>
+                <h5>npm Ecosystem</h5>
+                <p>1.8M+ packages available via npm</p>
+              </div>
+              <div class="concept-card">
+                <i class="fas fa-share-nodes" style="color:var(--accent3)"></i>
+                <h5>Single-threaded</h5>
+                <p>One thread handles many concurrent connections</p>
+              </div>
+            </div>
+
+            <h3>Event-Driven Architecture</h3>
+            <p>Node.js uses an <strong>event loop</strong> to handle asynchronous operations. When an operation completes (like reading a file or receiving a network request), it emits an event and a callback is triggered.</p>
+
+            <div class="event-loop-viz">
+              <div class="el-title">Node.js Event Loop Flow</div>
+              <div class="el-diagram">
+                <div class="el-box active">
+                  <div class="el-box-label">Entry</div>
+                  <div class="el-box-name">Call Stack</div>
+                </div>
+                <div class="el-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="el-box">
+                  <div class="el-box-label">Async</div>
+                  <div class="el-box-name">Node APIs</div>
+                </div>
+                <div class="el-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="el-box">
+                  <div class="el-box-label">Queue</div>
+                  <div class="el-box-name">Callback Queue</div>
+                </div>
+                <div class="el-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="el-box active">
+                  <div class="el-box-label">Loop</div>
+                  <div class="el-box-name">Event Loop</div>
+                </div>
+              </div>
+              <div class="el-queue">
+                <div class="el-box-label" style="color:var(--text3);font-size:11px">Pending Tasks</div>
+                <div class="el-queue-items">
+                  <div class="el-queue-item">setTimeout()</div>
+                  <div class="el-queue-item">fs.readFile()</div>
+                  <div class="el-queue-item">http.get()</div>
+                </div>
+              </div>
+            </div>
+
+            <h3>Non-Blocking I/O</h3>
+            <p>Traditional servers block execution while waiting for I/O. Node.js delegates these operations to the OS and continues executing other code.</p>
+            <div class="tabs">
+              <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab(this,'blocking')">❌ Blocking (Traditional)</button>
+                <button class="tab-btn" onclick="switchTab(this,'nonblocking')">✅ Non-Blocking (Node.js)</button>
+              </div>
+              <div class="tab-pane active" id="blocking">
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div>
+                    <div class="code-lang"><i class="fas fa-times-circle" style="color:var(--accent3)"></i> blocking.js</div>
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                  </div>
+                  <pre><code><span class="cmt">// Blocking: waits for each operation to finish</span>
+<span class="kw">const</span> data1 = readFile(<span class="str">'file1.txt'</span>); <span class="cmt">// Waits...</span>
+<span class="kw">const</span> data2 = readFile(<span class="str">'file2.txt'</span>); <span class="cmt">// Waits...</span>
+console.<span class="fn">log</span>(data1, data2);        <span class="cmt">// Only runs after both</span>
+<span class="cmt">// Total time = time1 + time2</span></code></pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="nonblocking">
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div>
+                    <div class="code-lang"><i class="fas fa-check-circle" style="color:var(--accent)"></i> non-blocking.js</div>
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                  </div>
+                  <pre><code><span class="cmt">// Non-Blocking: both start simultaneously</span>
+<span class="cls">Promise</span>.<span class="fn">all</span>([
+  fs.<span class="fn">readFile</span>(<span class="str">'file1.txt'</span>),
+  fs.<span class="fn">readFile</span>(<span class="str">'file2.txt'</span>)
+]).<span class="fn">then</span>(([data1, data2]) => {
+  console.<span class="fn">log</span>(data1, data2);
+});
+<span class="cmt">// Total time ≈ max(time1, time2) 🚀</span></code></pre>
+                </div>
+              </div>
+            </div>
+
+            <h3>Core Modules</h3>
+            <div class="tabs">
+              <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab(this,'fs-mod')">fs</button>
+                <button class="tab-btn" onclick="switchTab(this,'http-mod')">http</button>
+                <button class="tab-btn" onclick="switchTab(this,'path-mod')">path</button>
+                <button class="tab-btn" onclick="switchTab(this,'os-mod')">os</button>
+              </div>
+              <div class="tab-pane active" id="fs-mod">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">File System</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+                  <pre><code><span class="kw">const</span> fs = <span class="fn">require</span>(<span class="str">'fs'</span>);
+
+<span class="cmt">// Read file (async)</span>
+fs.<span class="fn">readFile</span>(<span class="str">'hello.txt'</span>, <span class="str">'utf8'</span>, (err, data) => {
+  <span class="kw">if</span> (err) <span class="kw">throw</span> err;
+  console.<span class="fn">log</span>(data);
+});
+
+<span class="cmt">// Write file (async)</span>
+fs.<span class="fn">writeFile</span>(<span class="str">'output.txt'</span>, <span class="str">'Hello World!'</span>, (err) => {
+  <span class="kw">if</span> (!err) console.<span class="fn">log</span>(<span class="str">'File written!'</span>);
+});
+
+<span class="cmt">// Using promises (fs/promises)</span>
+<span class="kw">const</span> { readFile, writeFile } = <span class="fn">require</span>(<span class="str">'fs/promises'</span>);
+<span class="kw">const</span> content = <span class="kw">await</span> <span class="fn">readFile</span>(<span class="str">'hello.txt'</span>, <span class="str">'utf8'</span>);</code></pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="http-mod">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">HTTP Server</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+                  <pre><code><span class="kw">const</span> http = <span class="fn">require</span>(<span class="str">'http'</span>);
+
+<span class="kw">const</span> server = http.<span class="fn">createServer</span>((req, res) => {
+  res.<span class="fn">writeHead</span>(<span class="num">200</span>, { <span class="str">'Content-Type'</span>: <span class="str">'text/json'</span> });
+
+  <span class="kw">if</span> (req.url === <span class="str">'/api'</span>) {
+    res.<span class="fn">end</span>(<span class="cls">JSON</span>.<span class="fn">stringify</span>({ message: <span class="str">'Hello World!'</span> }));
+  } <span class="kw">else</span> {
+    res.<span class="fn">writeHead</span>(<span class="num">404</span>);
+    res.<span class="fn">end</span>(<span class="str">'Not Found'</span>);
+  }
+});
+
+server.<span class="fn">listen</span>(<span class="num">3000</span>, () => {
+  console.<span class="fn">log</span>(<span class="str">'Server running on port 3000 🚀'</span>);
+});</code></pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="path-mod">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Path</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+                  <pre><code><span class="kw">const</span> path = <span class="fn">require</span>(<span class="str">'path'</span>);
+
+<span class="cmt">// Join path segments</span>
+path.<span class="fn">join</span>(__dirname, <span class="str">'public'</span>, <span class="str">'index.html'</span>);
+<span class="cmt">// → /app/public/index.html</span>
+
+<span class="cmt">// Get file extension</span>
+path.<span class="fn">extname</span>(<span class="str">'photo.jpg'</span>); <span class="cmt">// → '.jpg'</span>
+
+<span class="cmt">// Get filename without directory</span>
+path.<span class="fn">basename</span>(<span class="str">'/users/app/server.js'</span>); <span class="cmt">// → 'server.js'</span>
+
+<span class="cmt">// Resolve absolute path</span>
+path.<span class="fn">resolve</span>(<span class="str">'src'</span>, <span class="str">'index.js'</span>);
+<span class="cmt">// → /current/working/dir/src/index.js</span></code></pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="os-mod">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">OS</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+                  <pre><code><span class="kw">const</span> os = <span class="fn">require</span>(<span class="str">'os'</span>);
+
+console.<span class="fn">log</span>(os.<span class="fn">platform</span>());   <span class="cmt">// 'linux', 'darwin', 'win32'</span>
+console.<span class="fn">log</span>(os.<span class="fn">cpus</span>().<span class="prop">length</span>); <span class="cmt">// Number of CPU cores</span>
+console.<span class="fn">log</span>(os.<span class="fn">freemem</span>());    <span class="cmt">// Free memory in bytes</span>
+console.<span class="fn">log</span>(os.<span class="fn">totalmem</span>());   <span class="cmt">// Total memory in bytes</span>
+console.<span class="fn">log</span>(os.<span class="fn">homedir</span>());    <span class="cmt">// '/home/username'</span>
+console.<span class="fn">log</span>(os.<span class="fn">hostname</span>());   <span class="cmt">// Machine hostname</span>
+console.<span class="fn">log</span>(os.<span class="fn">uptime</span>());     <span class="cmt">// System uptime in seconds</span></code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- QUIZ -->
+            <div class="quiz-section">
+              <div class="quiz-title"><i class="fas fa-circle-question"></i> Quick Quiz — Beginner</div>
+              <div class="quiz-q">
+                <div class="quiz-question">1. What JavaScript engine does Node.js use?</div>
+                <div class="quiz-options">
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>A</span> SpiderMonkey</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,true)"><span>B</span> V8</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>C</span> Chakra</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>D</span> Hermes</div>
+                </div>
+                <div class="quiz-result" id="qr1"></div>
+              </div>
+              <div class="quiz-q">
+                <div class="quiz-question">2. Which of these is a built-in Node.js core module?</div>
+                <div class="quiz-options">
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>A</span> express</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>B</span> lodash</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,true)"><span>C</span> fs</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>D</span> axios</div>
+                </div>
+                <div class="quiz-result" id="qr2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT FUNDAMENTALS ===== -->
+    <div id="javascript">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-yellow"><i class="fab fa-js"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">JavaScript Fundamentals</div>
+            <div class="section-subtitle">Closures, Promises, Event Loop, ES6+</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'javascript')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>Closures</h3>
+            <p>A closure is a function that retains access to its outer (lexical) scope even after the outer function has returned. They are fundamental to Node.js module patterns and callbacks.</p>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Closures</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="kw">function</span> <span class="fn">createCounter</span>() {
+  <span class="kw">let</span> count = <span class="num">0</span>; <span class="cmt">// Private variable!</span>
+  <span class="kw">return</span> {
+    increment: () => ++count,
+    decrement: () => --count,
+    getCount:  () => count
+  };
+}
+
+<span class="kw">const</span> counter = <span class="fn">createCounter</span>();
+counter.<span class="fn">increment</span>(); <span class="cmt">// 1</span>
+counter.<span class="fn">increment</span>(); <span class="cmt">// 2</span>
+counter.<span class="fn">getCount</span>();  <span class="cmt">// 2 — 'count' is private</span></code></pre>
+            </div>
+
+            <h3>Promises vs Async/Await</h3>
+            <div class="tabs">
+              <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab(this,'promise-cb')">Callbacks</button>
+                <button class="tab-btn" onclick="switchTab(this,'promise-p')">Promises</button>
+                <button class="tab-btn" onclick="switchTab(this,'promise-aw')">Async/Await</button>
+              </div>
+              <div class="tab-pane active" id="promise-cb">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Callback Hell 😱</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+                  <pre><code><span class="fn">getUser</span>(userId, (err, user) => {
+  <span class="kw">if</span> (err) <span class="kw">return</span> console.<span class="fn">log</span>(err);
+  <span class="fn">getOrders</span>(user.id, (err, orders) => {
+    <span class="kw">if</span> (err) <span class="kw">return</span> console.<span class="fn">log</span>(err);
+    <span class="fn">getDetails</span>(orders[<span class="num">0</span>].id, (err, detail) => {
+      <span class="kw">if</span> (err) <span class="kw">return</span> console.<span class="fn">log</span>(err);
+      console.<span class="fn">log</span>(detail); <span class="cmt">// Pyramid of doom!</span>
+    });
+  });
+});</code></pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="promise-p">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Promises ⛓️</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+                  <pre><code><span class="fn">getUser</span>(userId)
+  .<span class="fn">then</span>(user => <span class="fn">getOrders</span>(user.id))
+  .<span class="fn">then</span>(orders => <span class="fn">getDetails</span>(orders[<span class="num">0</span>].id))
+  .<span class="fn">then</span>(detail => console.<span class="fn">log</span>(detail))
+  .<span class="fn">catch</span>(err => console.<span class="fn">log</span>(err));
+<span class="cmt">// Much cleaner, but still chained</span>
+
+<span class="cmt">// Parallel execution:</span>
+<span class="cls">Promise</span>.<span class="fn">all</span>([fetch1(), fetch2(), fetch3()])
+  .<span class="fn">then</span>(([r1, r2, r3]) => console.<span class="fn">log</span>(r1, r2, r3));</code></pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="promise-aw">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Async/Await ✨</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+                  <pre><code><span class="kw">async function</span> <span class="fn">loadUserOrder</span>(userId) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> user    = <span class="kw">await</span> <span class="fn">getUser</span>(userId);
+    <span class="kw">const</span> orders  = <span class="kw">await</span> <span class="fn">getOrders</span>(user.id);
+    <span class="kw">const</span> detail  = <span class="kw">await</span> <span class="fn">getDetails</span>(orders[<span class="num">0</span>].id);
+    <span class="kw">return</span> detail; <span class="cmt">// Reads like synchronous code!</span>
+  } <span class="kw">catch</span> (err) {
+    console.<span class="fn">error</span>(<span class="str">'Error:'</span>, err);
+  }
+}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <h3>ES6+ Features Used in Node.js</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Modern JavaScript</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="cmt">// Destructuring</span>
+<span class="kw">const</span> { name, age, ...rest } = user;
+<span class="kw">const</span> [first, second, ...others] = array;
+
+<span class="cmt">// Spread operator</span>
+<span class="kw">const</span> merged = { ...defaults, ...userConfig };
+
+<span class="cmt">// Optional chaining</span>
+<span class="kw">const</span> city = user?.address?.city ?? <span class="str">'Unknown'</span>;
+
+<span class="cmt">// Template literals</span>
+<span class="kw">const</span> msg = <span class="str">`Hello <span class="op">${</span>name<span class="op">}</span>, you have <span class="op">${</span>count<span class="op">}</span> messages`</span>;
+
+<span class="cmt">// Arrow functions with implicit return</span>
+<span class="kw">const</span> double = arr.<span class="fn">map</span>(x => x * <span class="num">2</span>);
+
+<span class="cmt">// Modules (ESM)</span>
+<span class="kw">import</span> { readFile } <span class="kw">from</span> <span class="str">'fs/promises'</span>;
+<span class="kw">export default</span> <span class="kw">function</span> <span class="fn">handler</span>() {}
+
+<span class="cmt">// Nullish coalescing & logical assignment</span>
+config.port ??= <span class="num">3000</span>;</code></pre>
+            </div>
+
+            <div class="quiz-section">
+              <div class="quiz-title"><i class="fas fa-circle-question"></i> Quick Quiz — JavaScript</div>
+              <div class="quiz-q">
+                <div class="quiz-question">What does <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--font-code)">Promise.all()</code> do when one promise rejects?</div>
+                <div class="quiz-options">
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>A</span> Waits for all others to settle</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,true)"><span>B</span> Immediately rejects with that error</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>C</span> Ignores the error and continues</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>D</span> Retries the failed promise</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BACKEND ===== -->
+    <div id="backend">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-purple"><i class="fas fa-server"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">Backend Development with Express.js</div>
+            <div class="section-subtitle">Routing, middleware, REST APIs</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'backend')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>Express.js Introduction</h3>
+            <p>Express is the most popular Node.js web framework. It provides a minimal and flexible set of features for building web apps and APIs.</p>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Express Setup</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="kw">const</span> express = <span class="fn">require</span>(<span class="str">'express'</span>);
+<span class="kw">const</span> app = <span class="fn">express</span>();
+
+<span class="cmt">// Built-in middleware</span>
+app.<span class="fn">use</span>(express.<span class="fn">json</span>());               <span class="cmt">// Parse JSON bodies</span>
+app.<span class="fn">use</span>(express.<span class="fn">urlencoded</span>({ extended: <span class="kw">true</span> }));
+app.<span class="fn">use</span>(express.<span class="fn">static</span>(<span class="str">'public'</span>));  <span class="cmt">// Serve static files</span>
+
+<span class="cmt">// Routes</span>
+app.<span class="fn">get</span>(<span class="str">'/'</span>, (req, res) => res.<span class="fn">send</span>(<span class="str">'Hello World!'</span>));
+app.<span class="fn">listen</span>(<span class="num">3000</span>, () => console.<span class="fn">log</span>(<span class="str">'Listening on :3000'</span>));</code></pre>
+            </div>
+
+            <h3>Routing & Middleware</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Middleware & Router</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="cmt">// Custom middleware</span>
+<span class="kw">const</span> <span class="fn">logger</span> = (req, res, next) => {
+  console.<span class="fn">log</span>(<span class="str">`<span class="op">${</span>req.method<span class="op">}</span> <span class="op">${</span>req.url<span class="op">}</span> - <span class="op">${</span><span class="kw">new</span> <span class="cls">Date</span>().<span class="fn">toISOString</span>()<span class="op">}</span>`</span>);
+  <span class="fn">next</span>(); <span class="cmt">// Pass to next middleware</span>
+};
+
+<span class="cmt">// Auth middleware</span>
+<span class="kw">const</span> <span class="fn">authenticate</span> = (req, res, next) => {
+  <span class="kw">const</span> token = req.headers[<span class="str">'authorization'</span>]?.split(<span class="str">' '</span>)[<span class="num">1</span>];
+  <span class="kw">if</span> (!token) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'Unauthorized'</span> });
+  <span class="fn">next</span>();
+};
+
+<span class="cmt">// Router module</span>
+<span class="kw">const</span> router = express.<span class="cls">Router</span>();
+router.<span class="fn">use</span>(logger);
+router.<span class="fn">get</span>(<span class="str">'/users'</span>, authenticate, <span class="fn">getUsers</span>);
+router.<span class="fn">post</span>(<span class="str">'/users'</span>, authenticate, <span class="fn">createUser</span>);
+app.<span class="fn">use</span>(<span class="str">'/api/v1'</span>, router);</code></pre>
+            </div>
+
+            <h3>Build a Todo REST API</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Todo API — Full CRUD</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="kw">const</span> express = <span class="fn">require</span>(<span class="str">'express'</span>);
+<span class="kw">const</span> app = <span class="fn">express</span>();
+app.<span class="fn">use</span>(express.<span class="fn">json</span>());
+
+<span class="kw">let</span> todos = [];
+<span class="kw">let</span> nextId = <span class="num">1</span>;
+
+<span class="cmt">// GET all todos</span>
+app.<span class="fn">get</span>(<span class="str">'/todos'</span>, (req, res) =>
+  res.<span class="fn">json</span>(todos));
+
+<span class="cmt">// GET one todo</span>
+app.<span class="fn">get</span>(<span class="str">'/todos/:id'</span>, (req, res) => {
+  <span class="kw">const</span> todo = todos.<span class="fn">find</span>(t => t.id === +req.params.id);
+  todo ? res.<span class="fn">json</span>(todo) : res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>({ error: <span class="str">'Not found'</span> });
+});
+
+<span class="cmt">// POST create todo</span>
+app.<span class="fn">post</span>(<span class="str">'/todos'</span>, (req, res) => {
+  <span class="kw">const</span> todo = { id: nextId++, text: req.body.text, done: <span class="kw">false</span> };
+  todos.<span class="fn">push</span>(todo);
+  res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>(todo);
+});
+
+<span class="cmt">// PUT update todo</span>
+app.<span class="fn">put</span>(<span class="str">'/todos/:id'</span>, (req, res) => {
+  <span class="kw">const</span> idx = todos.<span class="fn">findIndex</span>(t => t.id === +req.params.id);
+  <span class="kw">if</span> (idx === -<span class="num">1</span>) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">404</span>).<span class="fn">json</span>({ error: <span class="str">'Not found'</span> });
+  todos[idx] = { ...todos[idx], ...req.body };
+  res.<span class="fn">json</span>(todos[idx]);
+});
+
+<span class="cmt">// DELETE todo</span>
+app.<span class="fn">delete</span>(<span class="str">'/todos/:id'</span>, (req, res) => {
+  todos = todos.<span class="fn">filter</span>(t => t.id !== +req.params.id);
+  res.<span class="fn">status</span>(<span class="num">204</span>).<span class="fn">send</span>();
+});
+
+app.<span class="fn">listen</span>(<span class="num">3000</span>);</code></pre>
+            </div>
+
+            <div class="quiz-section">
+              <div class="quiz-title"><i class="fas fa-circle-question"></i> Quick Quiz — Backend</div>
+              <div class="quiz-q">
+                <div class="quiz-question">What HTTP status code should a successful POST (resource created) return?</div>
+                <div class="quiz-options">
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>A</span> 200 OK</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,true)"><span>B</span> 201 Created</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>C</span> 204 No Content</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>D</span> 302 Found</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DATABASE ===== -->
+    <div id="database">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-teal"><i class="fas fa-database"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">Database Integration</div>
+            <div class="section-subtitle">SQL vs NoSQL, MongoDB, Mongoose</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'database')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>SQL vs NoSQL</h3>
+            <table class="compare-table">
+              <tr><th>Feature</th><th>SQL (PostgreSQL)</th><th>NoSQL (MongoDB)</th></tr>
+              <tr><td>Structure</td><td>Fixed schema, tables</td><td>Flexible documents (JSON)</td></tr>
+              <tr><td>Scaling</td><td>Vertical primarily</td><td>Horizontal (sharding)</td></tr>
+              <tr><td>Transactions</td><td><span class="tag tag-green">Excellent</span></td><td><span class="tag tag-yellow">Limited</span></td></tr>
+              <tr><td>Query Language</td><td>SQL (standardized)</td><td>MongoDB Query Language</td></tr>
+              <tr><td>Best For</td><td>Relational data, banking</td><td>Documents, real-time, big data</td></tr>
+              <tr><td>Node Libraries</td><td>pg, Sequelize, Prisma</td><td>mongoose, mongodb</td></tr>
+            </table>
+
+            <h3>Mongoose — CRUD Operations</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Mongoose CRUD</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="kw">const</span> mongoose = <span class="fn">require</span>(<span class="str">'mongoose'</span>);
+mongoose.<span class="fn">connect</span>(<span class="str">'mongodb://localhost/mydb'</span>);
+
+<span class="cmt">// Define Schema</span>
+<span class="kw">const</span> userSchema = <span class="kw">new</span> mongoose.<span class="cls">Schema</span>({
+  name:  { type: <span class="cls">String</span>, required: <span class="kw">true</span>, trim: <span class="kw">true</span> },
+  email: { type: <span class="cls">String</span>, required: <span class="kw">true</span>, unique: <span class="kw">true</span>, lowercase: <span class="kw">true</span> },
+  age:   { type: <span class="cls">Number</span>, min: <span class="num">0</span>, max: <span class="num">120</span> },
+  role:  { type: <span class="cls">String</span>, enum: [<span class="str">'user'</span>, <span class="str">'admin'</span>], default: <span class="str">'user'</span> }
+}, { timestamps: <span class="kw">true</span> });
+
+<span class="kw">const</span> User = mongoose.<span class="fn">model</span>(<span class="str">'User'</span>, userSchema);
+
+<span class="cmt">// CREATE</span>
+<span class="kw">const</span> user = <span class="kw">await</span> User.<span class="fn">create</span>({ name: <span class="str">'Alice'</span>, email: <span class="str">'a@b.com'</span> });
+
+<span class="cmt">// READ (with query)</span>
+<span class="kw">const</span> users = <span class="kw">await</span> User
+  .<span class="fn">find</span>({ role: <span class="str">'admin'</span> })
+  .<span class="fn">select</span>(<span class="str">'name email'</span>)
+  .<span class="fn">sort</span>({ name: <span class="num">1</span> })
+  .<span class="fn">limit</span>(<span class="num">10</span>);
+
+<span class="cmt">// UPDATE</span>
+<span class="kw">await</span> User.<span class="fn">findByIdAndUpdate</span>(id, { age: <span class="num">25</span> }, { <span class="kw">new</span>: <span class="kw">true</span> });
+
+<span class="cmt">// DELETE</span>
+<span class="kw">await</span> User.<span class="fn">findByIdAndDelete</span>(id);</code></pre>
+            </div>
+
+            <div class="quiz-section">
+              <div class="quiz-title"><i class="fas fa-circle-question"></i> Quick Quiz — Database</div>
+              <div class="quiz-q">
+                <div class="quiz-question">Which Mongoose option returns the updated document (not the original)?</div>
+                <div class="quiz-options">
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>A</span> <code style="font-family:var(--font-code)">{ updated: true }</code></div>
+                  <div class="quiz-option" onclick="answerQuiz(this,true)"><span>B</span> <code style="font-family:var(--font-code)">{ new: true }</code></div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>C</span> <code style="font-family:var(--font-code)">{ return: true }</code></div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>D</span> <code style="font-family:var(--font-code)">{ after: true }</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AUTH & SECURITY ===== -->
+    <div id="auth">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-red"><i class="fas fa-shield-halved"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">Authentication & Security</div>
+            <div class="section-subtitle">JWT, bcrypt, security best practices</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'auth')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>JWT Authentication Flow</h3>
+            <div class="timeline">
+              <div class="timeline-item"><h5>1. User sends credentials</h5><p>POST /login with email + password</p></div>
+              <div class="timeline-item"><h5>2. Server verifies & signs JWT</h5><p>jwt.sign(payload, secret, options)</p></div>
+              <div class="timeline-item"><h5>3. Client stores token</h5><p>Usually in memory or httpOnly cookie</p></div>
+              <div class="timeline-item"><h5>4. Client sends token in header</h5><p>Authorization: Bearer &lt;token&gt;</p></div>
+              <div class="timeline-item"><h5>5. Server verifies & extracts payload</h5><p>jwt.verify(token, secret)</p></div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">JWT + bcrypt Auth System</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="kw">const</span> bcrypt = <span class="fn">require</span>(<span class="str">'bcryptjs'</span>);
+<span class="kw">const</span> jwt    = <span class="fn">require</span>(<span class="str">'jsonwebtoken'</span>);
+
+<span class="cmt">// SIGNUP</span>
+<span class="kw">async function</span> <span class="fn">signup</span>(req, res) {
+  <span class="kw">const</span> { email, password } = req.body;
+  <span class="kw">const</span> hash = <span class="kw">await</span> bcrypt.<span class="fn">hash</span>(password, <span class="num">12</span>); <span class="cmt">// Cost factor: 12</span>
+  <span class="kw">const</span> user = <span class="kw">await</span> User.<span class="fn">create</span>({ email, password: hash });
+  res.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>({ message: <span class="str">'Account created!'</span> });
+}
+
+<span class="cmt">// LOGIN</span>
+<span class="kw">async function</span> <span class="fn">login</span>(req, res) {
+  <span class="kw">const</span> { email, password } = req.body;
+  <span class="kw">const</span> user = <span class="kw">await</span> User.<span class="fn">findOne</span>({ email });
+  <span class="kw">if</span> (!user) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'Invalid credentials'</span> });
+
+  <span class="kw">const</span> match = <span class="kw">await</span> bcrypt.<span class="fn">compare</span>(password, user.password);
+  <span class="kw">if</span> (!match) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'Invalid credentials'</span> });
+
+  <span class="kw">const</span> token = jwt.<span class="fn">sign</span>(
+    { userId: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: <span class="str">'7d'</span> }
+  );
+  res.<span class="fn">json</span>({ token });
+}
+
+<span class="cmt">// AUTH MIDDLEWARE</span>
+<span class="kw">function</span> <span class="fn">protect</span>(req, res, next) {
+  <span class="kw">const</span> token = req.headers.authorization?.split(<span class="str">' '</span>)[<span class="num">1</span>];
+  <span class="kw">if</span> (!token) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'No token'</span> });
+  <span class="kw">try</span> {
+    req.user = jwt.<span class="fn">verify</span>(token, process.env.JWT_SECRET);
+    <span class="fn">next</span>();
+  } <span class="kw">catch</span> { res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'Invalid token'</span> }); }
+}</code></pre>
+            </div>
+
+            <h3>Security Best Practices</h3>
+            <div class="concept-grid">
+              <div class="concept-card"><i class="fas fa-helmet-safety" style="color:var(--accent)"></i><h5>Helmet.js</h5><p>Sets security-related HTTP headers automatically</p></div>
+              <div class="concept-card"><i class="fas fa-gauge-simple" style="color:var(--accent4)"></i><h5>Rate Limiting</h5><p>Prevent brute-force with express-rate-limit</p></div>
+              <div class="concept-card"><i class="fas fa-ban" style="color:var(--accent3)"></i><h5>Input Validation</h5><p>Use Joi or zod to validate all inputs</p></div>
+              <div class="concept-card"><i class="fas fa-lock" style="color:var(--accent2)"></i><h5>HTTPS Only</h5><p>Always use TLS in production</p></div>
+              <div class="concept-card"><i class="fas fa-cookie-bite" style="color:#ffa500"></i><h5>httpOnly Cookies</h5><p>Prevent XSS from stealing tokens</p></div>
+              <div class="concept-card"><i class="fas fa-arrow-rotate-left" style="color:#38bdf8"></i><h5>Refresh Tokens</h5><p>Short-lived access + long-lived refresh tokens</p></div>
+            </div>
+
+            <div class="warn-box"><p>⚠️ Never store passwords in plain text. Never put secrets in source code. Always use environment variables for JWT_SECRET and DB credentials.</p></div>
+
+            <div class="quiz-section">
+              <div class="quiz-title"><i class="fas fa-circle-question"></i> Quick Quiz — Security</div>
+              <div class="quiz-q">
+                <div class="quiz-question">What is the purpose of the bcrypt cost/salt factor (e.g. 12)?</div>
+                <div class="quiz-options">
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>A</span> Length of the password hash</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,true)"><span>B</span> Controls computational cost to slow brute-force attacks</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>C</span> Number of characters in the salt</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>D</span> Expiry time of the hash</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ADVANCED NODE.JS ===== -->
+    <div id="advanced">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-orange"><i class="fas fa-microchip"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">Advanced Node.js Internals</div>
+            <div class="section-subtitle">Streams, Worker Threads, Clustering, Event Loop deep dive</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'advanced')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>Event Loop — Deep Dive</h3>
+            <p>The event loop processes callbacks in a specific order across multiple phases. Understanding this order is crucial for writing performant Node.js code.</p>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Event Loop Order</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code>console.<span class="fn">log</span>(<span class="str">'1: Sync'</span>);
+<span class="fn">setTimeout</span>(() => console.<span class="fn">log</span>(<span class="str">'5: setTimeout'</span>), <span class="num">0</span>);
+<span class="cls">Promise</span>.<span class="fn">resolve</span>().<span class="fn">then</span>(() => console.<span class="fn">log</span>(<span class="str">'3: Promise microtask'</span>));
+<span class="fn">queueMicrotask</span>(() => console.<span class="fn">log</span>(<span class="str">'4: queueMicrotask'</span>));
+<span class="fn">setImmediate</span>(() => console.<span class="fn">log</span>(<span class="str">'6: setImmediate'</span>));
+console.<span class="fn">log</span>(<span class="str">'2: Sync'</span>);
+<span class="cmt">// Order: 1 → 2 → 3 → 4 → 5 → 6
+// Microtasks (Promises) always run BEFORE macrotasks (setTimeout)</span></code></pre>
+            </div>
+
+            <h3>Streams</h3>
+            <p>Streams process data in chunks instead of loading it all into memory — essential for handling large files and HTTP responses.</p>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Streams & Pipe</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="kw">const</span> fs   = <span class="fn">require</span>(<span class="str">'fs'</span>);
+<span class="kw">const</span> zlib = <span class="fn">require</span>(<span class="str">'zlib'</span>);
+
+<span class="cmt">// Stream a 2GB file without loading it into memory!</span>
+fs.<span class="fn">createReadStream</span>(<span class="str">'bigfile.txt'</span>)
+  .<span class="fn">pipe</span>(zlib.<span class="fn">createGzip</span>())    <span class="cmt">// Transform: compress</span>
+  .<span class="fn">pipe</span>(fs.<span class="fn">createWriteStream</span>(<span class="str">'bigfile.gz'</span>));
+
+<span class="cmt">// Custom Transform stream</span>
+<span class="kw">const</span> { Transform } = <span class="fn">require</span>(<span class="str">'stream'</span>);
+<span class="kw">const</span> upper = <span class="kw">new</span> <span class="cls">Transform</span>({
+  <span class="fn">transform</span>(chunk, encoding, callback) {
+    <span class="kw">this</span>.<span class="fn">push</span>(chunk.toString().<span class="fn">toUpperCase</span>());
+    <span class="fn">callback</span>();
+  }
+});
+
+process.stdin.<span class="fn">pipe</span>(upper).<span class="fn">pipe</span>(process.stdout);</code></pre>
+            </div>
+
+            <h3>Worker Threads</h3>
+            <p>For CPU-intensive tasks that would block the event loop, offload them to Worker Threads.</p>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Worker Threads</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="cmt">// main.js</span>
+<span class="kw">const</span> { Worker } = <span class="fn">require</span>(<span class="str">'worker_threads'</span>);
+
+<span class="kw">function</span> <span class="fn">runWorker</span>(data) {
+  <span class="kw">return new</span> <span class="cls">Promise</span>((resolve, reject) => {
+    <span class="kw">const</span> worker = <span class="kw">new</span> <span class="cls">Worker</span>(<span class="str">'./worker.js'</span>, { workerData: data });
+    worker.<span class="fn">on</span>(<span class="str">'message'</span>, resolve);
+    worker.<span class="fn">on</span>(<span class="str">'error'</span>, reject);
+  });
+}
+<span class="kw">const</span> result = <span class="kw">await</span> <span class="fn">runWorker</span>({ n: <span class="num">42</span> });
+
+<span class="cmt">// worker.js</span>
+<span class="kw">const</span> { workerData, parentPort } = <span class="fn">require</span>(<span class="str">'worker_threads'</span>);
+<span class="kw">const</span> result = <span class="fn">heavyComputation</span>(workerData.n);
+parentPort.<span class="fn">postMessage</span>(result);</code></pre>
+            </div>
+
+            <h3>Clustering</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Cluster Module</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="kw">const</span> cluster = <span class="fn">require</span>(<span class="str">'cluster'</span>);
+<span class="kw">const</span> os      = <span class="fn">require</span>(<span class="str">'os'</span>);
+
+<span class="kw">if</span> (cluster.<span class="fn">isPrimary</span>) {
+  <span class="kw">const</span> cpuCount = os.<span class="fn">cpus</span>().<span class="prop">length</span>;
+  console.<span class="fn">log</span>(<span class="str">`Forking <span class="op">${</span>cpuCount<span class="op">}</span> workers...`</span>);
+
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i < cpuCount; i++) cluster.<span class="fn">fork</span>();
+
+  cluster.<span class="fn">on</span>(<span class="str">'exit'</span>, (worker) => {
+    console.<span class="fn">log</span>(<span class="str">`Worker <span class="op">${</span>worker.process.pid<span class="op">}</span> died. Respawning...`</span>);
+    cluster.<span class="fn">fork</span>(); <span class="cmt">// Auto-restart crashed workers</span>
+  });
+} <span class="kw">else</span> {
+  <span class="fn">require</span>(<span class="str">'./server'</span>); <span class="cmt">// Each worker runs the server</span>
+}</code></pre>
+            </div>
+
+            <div class="quiz-section">
+              <div class="quiz-title"><i class="fas fa-circle-question"></i> Quick Quiz — Advanced</div>
+              <div class="quiz-q">
+                <div class="quiz-question">Which runs FIRST in Node.js after synchronous code?</div>
+                <div class="quiz-options">
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>A</span> setTimeout callbacks</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,true)"><span>B</span> Promise microtasks</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>C</span> setImmediate callbacks</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>D</span> I/O callbacks</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== API DESIGN ===== -->
+    <div id="api">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-sky"><i class="fas fa-plug"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">API Design Principles</div>
+            <div class="section-subtitle">MVC, REST vs GraphQL, best practices</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'api')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>MVC Architecture</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">MVC Project Structure</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code>project/
+├── controllers/
+│   └── userController.js   <span class="cmt"># Business logic</span>
+├── models/
+│   └── User.js             <span class="cmt"># Data + schema</span>
+├── routes/
+│   └── userRoutes.js       <span class="cmt"># URL → controller mapping</span>
+├── middleware/
+│   ├── auth.js
+│   └── errorHandler.js
+├── services/
+│   └── emailService.js     <span class="cmt"># Reusable utilities</span>
+├── config/
+│   └── db.js
+└── app.js</code></pre>
+            </div>
+
+            <h3>REST vs GraphQL</h3>
+            <table class="compare-table">
+              <tr><th>Aspect</th><th>REST</th><th>GraphQL</th></tr>
+              <tr><td>Data fetching</td><td>Multiple endpoints</td><td>Single /graphql endpoint</td></tr>
+              <tr><td>Over-fetching</td><td><span class="tag tag-red">Common issue</span></td><td><span class="tag tag-green">Eliminated</span></td></tr>
+              <tr><td>Versioning</td><td>/v1, /v2 routes</td><td>Schema evolution</td></tr>
+              <tr><td>Learning curve</td><td><span class="tag tag-green">Low</span></td><td><span class="tag tag-yellow">Medium</span></td></tr>
+              <tr><td>Best for</td><td>Simple CRUD APIs</td><td>Complex, nested data</td></tr>
+            </table>
+
+            <h3>REST Best Practices</h3>
+            <ul>
+              <li><strong>Use nouns, not verbs:</strong> <code style="font-family:var(--font-code);font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px">/users</code> not <code style="font-family:var(--font-code);font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px">/getUsers</code></li>
+              <li><strong>Use plural resource names:</strong> <code style="font-family:var(--font-code);font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px">/articles</code> not <code style="font-family:var(--font-code);font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px">/article</code></li>
+              <li><strong>Use HTTP methods correctly:</strong> GET (read), POST (create), PUT/PATCH (update), DELETE (delete)</li>
+              <li><strong>Return consistent error shapes:</strong> <code style="font-family:var(--font-code);font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px">{"error":"message","code":"ERR_CODE"}</code></li>
+              <li><strong>Version your API:</strong> <code style="font-family:var(--font-code);font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px">/api/v1/users</code></li>
+              <li><strong>Paginate list endpoints:</strong> <code style="font-family:var(--font-code);font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px">?page=1&limit=20</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TESTING ===== -->
+    <div id="testing">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-lime"><i class="fas fa-flask"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">Testing with Jest</div>
+            <div class="section-subtitle">Unit tests, integration tests, test patterns</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'testing')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>Jest Basics</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Unit Tests with Jest</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="cmt">// math.js</span>
+<span class="kw">function</span> <span class="fn">add</span>(a, b) { <span class="kw">return</span> a + b; }
+<span class="kw">function</span> <span class="fn">divide</span>(a, b) {
+  <span class="kw">if</span> (b === <span class="num">0</span>) <span class="kw">throw new</span> <span class="cls">Error</span>(<span class="str">'Division by zero'</span>);
+  <span class="kw">return</span> a / b;
+}
+module.exports = { add, divide };
+
+<span class="cmt">// math.test.js</span>
+<span class="kw">const</span> { add, divide } = <span class="fn">require</span>(<span class="str">'./math'</span>);
+
+<span class="fn">describe</span>(<span class="str">'Math utils'</span>, () => {
+  <span class="fn">test</span>(<span class="str">'adds two numbers'</span>, () => {
+    <span class="fn">expect</span>(<span class="fn">add</span>(<span class="num">2</span>, <span class="num">3</span>)).<span class="fn">toBe</span>(<span class="num">5</span>);
+    <span class="fn">expect</span>(<span class="fn">add</span>(-<span class="num">1</span>, <span class="num">1</span>)).<span class="fn">toBe</span>(<span class="num">0</span>);
+  });
+
+  <span class="fn">test</span>(<span class="str">'throws on division by zero'</span>, () => {
+    <span class="fn">expect</span>(() => <span class="fn">divide</span>(<span class="num">5</span>, <span class="num">0</span>))
+      .<span class="fn">toThrow</span>(<span class="str">'Division by zero'</span>);
+  });
+});</code></pre>
+            </div>
+
+            <h3>Integration Testing with Supertest</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">API Integration Test</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="kw">const</span> request = <span class="fn">require</span>(<span class="str">'supertest'</span>);
+<span class="kw">const</span> app     = <span class="fn">require</span>(<span class="str">'../app'</span>);
+
+<span class="fn">describe</span>(<span class="str">'POST /api/todos'</span>, () => {
+  <span class="fn">it</span>(<span class="str">'creates a new todo'</span>, <span class="kw">async</span> () => {
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">request</span>(app)
+      .<span class="fn">post</span>(<span class="str">'/api/todos'</span>)
+      .<span class="fn">send</span>({ text: <span class="str">'Buy groceries'</span> })
+      .<span class="fn">set</span>(<span class="str">'Authorization'</span>, <span class="str">`Bearer <span class="op">${</span>testToken<span class="op">}</span>`</span>);
+
+    <span class="fn">expect</span>(res.statusCode).<span class="fn">toBe</span>(<span class="num">201</span>);
+    <span class="fn">expect</span>(res.body).<span class="fn">toHaveProperty</span>(<span class="str">'id'</span>);
+    <span class="fn">expect</span>(res.body.text).<span class="fn">toBe</span>(<span class="str">'Buy groceries'</span>);
+  });
+
+  <span class="fn">it</span>(<span class="str">'returns 401 without auth token'</span>, <span class="kw">async</span> () => {
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">request</span>(app).<span class="fn">post</span>(<span class="str">'/api/todos'</span>);
+    <span class="fn">expect</span>(res.statusCode).<span class="fn">toBe</span>(<span class="num">401</span>);
+  });
+});</code></pre>
+            </div>
+
+            <div class="quiz-section">
+              <div class="quiz-title"><i class="fas fa-circle-question"></i> Quick Quiz — Testing</div>
+              <div class="quiz-q">
+                <div class="quiz-question">What is the difference between unit and integration tests?</div>
+                <div class="quiz-options">
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>A</span> Unit tests are slower than integration tests</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,true)"><span>B</span> Unit tests test isolated functions; integration tests test how modules work together</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>C</span> Integration tests only test databases</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>D</span> They are the same thing</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DEVOPS ===== -->
+    <div id="devops">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-indigo"><i class="fas fa-cloud"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">Deployment & DevOps</div>
+            <div class="section-subtitle">Environment variables, Docker, AWS</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'devops')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>Environment Variables</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">.env + dotenv</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="cmt"># .env (never commit this!)</span>
+NODE_ENV=production
+PORT=3000
+MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/db
+JWT_SECRET=your-super-secret-key-here
+REDIS_URL=redis://localhost:6379
+
+<span class="cmt">// app.js</span>
+<span class="fn">require</span>(<span class="str">'dotenv'</span>).<span class="fn">config</span>();
+<span class="kw">const</span> port = process.env.PORT || <span class="num">3000</span>;
+<span class="kw">const</span> uri  = process.env.MONGO_URI;</code></pre>
+            </div>
+
+            <h3>Dockerfile for Node.js</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Dockerfile (Production-Ready)</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="cmt"># Multi-stage build for smaller image</span>
+<span class="kw">FROM</span> node:<span class="num">20</span>-alpine <span class="kw">AS</span> builder
+<span class="kw">WORKDIR</span> /app
+<span class="kw">COPY</span> package*.json ./
+<span class="kw">RUN</span> npm ci --only=production
+
+<span class="kw">FROM</span> node:<span class="num">20</span>-alpine
+<span class="kw">WORKDIR</span> /app
+<span class="cmt"># Run as non-root user for security</span>
+<span class="kw">RUN</span> addgroup -S appgroup && adduser -S appuser -G appgroup
+<span class="kw">COPY</span> --from=builder /app/node_modules ./node_modules
+<span class="kw">COPY</span> . .
+<span class="kw">USER</span> appuser
+<span class="kw">EXPOSE</span> <span class="num">3000</span>
+<span class="kw">CMD</span> ["node", "app.js"]</code></pre>
+            </div>
+
+            <h3>docker-compose.yml</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">docker-compose.yml</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code>services:
+  app:
+    build: .
+    ports:
+      - <span class="str">"3000:3000"</span>
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://mongo:27017/mydb
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:<span class="num">7</span>
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - <span class="str">"27017:27017"</span>
+
+volumes:
+  mongo_data:</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REAL-TIME ===== -->
+    <div id="realtime">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-pink"><i class="fas fa-bolt"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">Real-Time Systems</div>
+            <div class="section-subtitle">WebSockets, Socket.io, Chat App</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'realtime')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>WebSockets vs HTTP</h3>
+            <div class="highlight-box"><p>HTTP is request-response: client asks, server responds. WebSockets are bidirectional: the server can push data to clients at any time — perfect for chat, live dashboards, and multiplayer games.</p></div>
+
+            <h3>Socket.io Chat App</h3>
+            <div class="tabs">
+              <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab(this,'socket-server')">Server</button>
+                <button class="tab-btn" onclick="switchTab(this,'socket-client')">Client</button>
+              </div>
+              <div class="tab-pane active" id="socket-server">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">server.js</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+                  <pre><code><span class="kw">const</span> express = <span class="fn">require</span>(<span class="str">'express'</span>);
+<span class="kw">const</span> http    = <span class="fn">require</span>(<span class="str">'http'</span>);
+<span class="kw">const</span> { Server } = <span class="fn">require</span>(<span class="str">'socket.io'</span>);
+
+<span class="kw">const</span> app    = <span class="fn">express</span>();
+<span class="kw">const</span> server = http.<span class="fn">createServer</span>(app);
+<span class="kw">const</span> io     = <span class="kw">new</span> <span class="cls">Server</span>(server, {
+  cors: { origin: <span class="str">'*'</span> }
+});
+
+io.<span class="fn">on</span>(<span class="str">'connection'</span>, (socket) => {
+  console.<span class="fn">log</span>(<span class="str">`User connected: <span class="op">${</span>socket.id<span class="op">}</span>`</span>);
+
+  socket.<span class="fn">on</span>(<span class="str">'join_room'</span>, (room) => {
+    socket.<span class="fn">join</span>(room);
+    socket.<span class="fn">to</span>(room).<span class="fn">emit</span>(<span class="str">'user_joined'</span>, socket.id);
+  });
+
+  socket.<span class="fn">on</span>(<span class="str">'send_message'</span>, ({ room, message }) => {
+    io.<span class="fn">to</span>(room).<span class="fn">emit</span>(<span class="str">'receive_message'</span>, {
+      author: socket.id,
+      message,
+      timestamp: <span class="kw">new</span> <span class="cls">Date</span>()
+    });
+  });
+
+  socket.<span class="fn">on</span>(<span class="str">'disconnect'</span>, () => {
+    console.<span class="fn">log</span>(<span class="str">`User disconnected: <span class="op">${</span>socket.id<span class="op">}</span>`</span>);
+  });
+});
+
+server.<span class="fn">listen</span>(<span class="num">3000</span>);</code></pre>
+                </div>
+              </div>
+              <div class="tab-pane" id="socket-client">
+                <div class="code-block">
+                  <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">client.js</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+                  <pre><code><span class="kw">const</span> socket = <span class="fn">io</span>(<span class="str">'http://localhost:3000'</span>);
+
+<span class="cmt">// Join a room</span>
+socket.<span class="fn">emit</span>(<span class="str">'join_room'</span>, <span class="str">'general'</span>);
+
+<span class="cmt">// Send a message</span>
+<span class="fn">sendBtn</span>.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, () => {
+  socket.<span class="fn">emit</span>(<span class="str">'send_message'</span>, {
+    room: <span class="str">'general'</span>,
+    message: input.value
+  });
+  input.value = <span class="str">''</span>;
+});
+
+<span class="cmt">// Receive messages</span>
+socket.<span class="fn">on</span>(<span class="str">'receive_message'</span>, ({ author, message, timestamp }) => {
+  <span class="kw">const</span> div = document.<span class="fn">createElement</span>(<span class="str">'div'</span>);
+  div.textContent = <span class="str">`[<span class="op">${</span>author<span class="op">}</span>]: <span class="op">${</span>message<span class="op">}</span>`</span>;
+  chat.<span class="fn">appendChild</span>(div);
+});</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== EXPERT ===== -->
+    <div id="expert">
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="section-icon icon-amber"><i class="fas fa-trophy"></i></div>
+          <div class="section-title-wrap">
+            <div class="section-title">Expert Level — System Design</div>
+            <div class="section-subtitle">Scalability, microservices, distributed systems</div>
+          </div>
+          <div class="section-controls">
+            <button class="mark-done-btn" onclick="markDone(event,'expert')"><i class="fas fa-check"></i> Mark Done</button>
+            <i class="fas fa-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="section-content">
+            <h3>Microservices Architecture</h3>
+            <p>Break a monolith into independent, deployable services that communicate over a network. Each service owns its data and can be scaled independently.</p>
+
+            <div class="concept-grid">
+              <div class="concept-card"><i class="fas fa-sitemap" style="color:var(--accent2)"></i><h5>API Gateway</h5><p>Single entry point routing to all services</p></div>
+              <div class="concept-card"><i class="fas fa-envelope-open-text" style="color:var(--accent)"></i><h5>Message Queue</h5><p>RabbitMQ/Kafka for async communication</p></div>
+              <div class="concept-card"><i class="fas fa-search" style="color:#38bdf8"></i><h5>Service Discovery</h5><p>Consul/k8s for finding service locations</p></div>
+              <div class="concept-card"><i class="fas fa-chart-line" style="color:var(--accent4)"></i><h5>Distributed Tracing</h5><p>Jaeger/Zipkin for cross-service debugging</p></div>
+              <div class="concept-card"><i class="fas fa-circle-stop" style="color:var(--accent3)"></i><h5>Circuit Breaker</h5><p>Prevent cascade failures between services</p></div>
+              <div class="concept-card"><i class="fas fa-clone" style="color:#a3e635"></i><h5>CQRS</h5><p>Separate read/write models for performance</p></div>
+            </div>
+
+            <h3>Scalability Patterns</h3>
+            <div class="timeline">
+              <div class="timeline-item"><h5>Horizontal Scaling</h5><p>Add more server instances behind a load balancer. Use PM2 or Kubernetes.</p></div>
+              <div class="timeline-item"><h5>Caching Layer</h5><p>Redis for session storage, query results, rate limiting. Can reduce DB load by 90%.</p></div>
+              <div class="timeline-item"><h5>Database Optimization</h5><p>Indexes, query optimization, read replicas, connection pooling.</p></div>
+              <div class="timeline-item"><h5>CDN & Static Assets</h5><p>Serve static assets from CDN (CloudFront, Cloudflare) closer to users.</p></div>
+              <div class="timeline-item"><h5>Message Queues</h5><p>Decouple heavy tasks (email, image processing) to workers via queues.</p></div>
+            </div>
+
+            <h3>Production Checklist</h3>
+            <div class="code-block">
+              <div class="code-header"><div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div><div class="code-lang">Production Readiness</div><button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div>
+              <pre><code><span class="cmt">✅ Environment: NODE_ENV=production</span>
+<span class="cmt">✅ Process manager: PM2 with cluster mode</span>
+<span class="cmt">✅ Error handling: Global uncaughtException handler</span>
+<span class="cmt">✅ Logging: Winston/Pino with log levels</span>
+<span class="cmt">✅ Health check endpoint: GET /health</span>
+<span class="cmt">✅ Graceful shutdown: Handle SIGTERM/SIGINT</span>
+<span class="cmt">✅ Rate limiting: express-rate-limit</span>
+<span class="cmt">✅ Security headers: helmet.js</span>
+<span class="cmt">✅ Monitoring: Prometheus + Grafana</span>
+<span class="cmt">✅ APM: Datadog / New Relic / Sentry</span>
+
+<span class="kw">const</span> <span class="fn">gracefulShutdown</span> = <span class="kw">async</span> (signal) => {
+  console.<span class="fn">log</span>(<span class="str">`Received <span class="op">${</span>signal<span class="op">}</span>. Shutting down gracefully...`</span>);
+  server.<span class="fn">close</span>(<span class="kw">async</span> () => {
+    <span class="kw">await</span> mongoose.<span class="fn">disconnect</span>();
+    process.<span class="fn">exit</span>(<span class="num">0</span>);
+  });
+};
+process.<span class="fn">on</span>(<span class="str">'SIGTERM'</span>, () => <span class="fn">gracefulShutdown</span>(<span class="str">'SIGTERM'</span>));
+process.<span class="fn">on</span>(<span class="str">'SIGINT'</span>,  () => <span class="fn">gracefulShutdown</span>(<span class="str">'SIGINT'</span>));</code></pre>
+            </div>
+
+            <div class="info-box"><p>🎉 <strong>Congratulations!</strong> You've completed the Node.js roadmap from beginner to expert. Keep building projects, contribute to open source, and stay current with the Node.js ecosystem.</p></div>
+
+            <div class="quiz-section">
+              <div class="quiz-title"><i class="fas fa-circle-question"></i> Final Boss Quiz — Expert</div>
+              <div class="quiz-q">
+                <div class="quiz-question">What is a Circuit Breaker pattern used for in microservices?</div>
+                <div class="quiz-options">
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>A</span> Encrypting inter-service traffic</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>B</span> Routing requests to healthy instances only</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,true)"><span>C</span> Stopping cascade failures by cutting off failing services temporarily</div>
+                  <div class="quiz-option" onclick="answerQuiz(this,false)"><span>D</span> Compressing data between services</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+// ===== STATE =====
+const completed = new Set(JSON.parse(localStorage.getItem('nodejsCompleted') || '[]'));
+const sections = ['home','beginner','javascript','backend','database','auth','advanced','api','testing','devops','realtime','expert'];
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  restoreProgress();
+  updateProgress();
+  setupIntersectionObserver();
+});
+
+// ===== RESTORE PROGRESS =====
+function restoreProgress() {
+  completed.forEach(id => {
+    const btn = document.querySelector(`[onclick="markDone(event,'${id}')"]`);
+    const check = document.getElementById(`check-${id}`);
+    if (btn) { btn.classList.add('done'); btn.innerHTML = '<i class="fas fa-check"></i> Completed'; }
+    if (check) { check.classList.add('done'); check.innerHTML = '<i class="fas fa-check"></i>'; }
+  });
+}
+
+// ===== MARK DONE =====
+function markDone(e, sectionId) {
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const check = document.getElementById(`check-${sectionId}`);
+  if (completed.has(sectionId)) {
+    completed.delete(sectionId);
+    btn.classList.remove('done');
+    btn.innerHTML = '<i class="fas fa-check"></i> Mark Done';
+    if (check) { check.classList.remove('done'); check.innerHTML = ''; }
+  } else {
+    completed.add(sectionId);
+    btn.classList.add('done');
+    btn.innerHTML = '<i class="fas fa-check"></i> Completed';
+    if (check) { check.classList.add('done'); check.innerHTML = '<i class="fas fa-check"></i>'; }
+  }
+  localStorage.setItem('nodejsCompleted', JSON.stringify([...completed]));
+  updateProgress();
+}
+
+// ===== UPDATE PROGRESS BAR =====
+function updateProgress() {
+  const pct = Math.round((completed.size / sections.length) * 100);
+  document.getElementById('overallProgress').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${completed.size} / ${sections.length} sections`;
+}
+
+// ===== TOGGLE SECTION =====
+function toggleSection(header) {
+  const section = header.closest('.section');
+  section.classList.toggle('open');
+}
+
+// ===== TABS =====
+function switchTab(btn, paneId) {
+  const tabNav = btn.closest('.tab-nav');
+  const tabsContainer = btn.closest('.tabs');
+  tabNav.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  tabsContainer.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const pane = document.getElementById(paneId);
+  if (pane) pane.classList.add('active');
+}
+
+// ===== COPY CODE =====
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+    }, 2000);
+  });
+}
+
+// ===== QUIZ =====
+function answerQuiz(option, isCorrect) {
+  const group = option.closest('.quiz-q');
+  if (group.dataset.answered) return;
+  group.dataset.answered = '1';
+  group.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.style.pointerEvents = 'none';
+  });
+  if (isCorrect) {
+    option.classList.add('correct');
+  } else {
+    option.classList.add('wrong');
+    // Highlight correct
+    group.querySelectorAll('.quiz-option').forEach(opt => {
+      if (opt.dataset.correct) opt.classList.add('correct');
+    });
+  }
+}
+
+// ===== SEARCH / FILTER NAV =====
+function filterNav(query) {
+  const q = query.toLowerCase().trim();
+  document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.classList.toggle('hidden', q !== '' && !text.includes(q));
+  });
+}
+
+// ===== SIDEBAR TOGGLE =====
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('visible');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('visible');
+}
+
+// ===== SCROLL TO SECTION =====
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    const offset = 72;
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+  if (window.innerWidth < 900) closeSidebar();
+}
+
+// ===== ACTIVE NAV HIGHLIGHTING =====
+function setupIntersectionObserver() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+          item.classList.toggle('active', item.dataset.section === id);
+        });
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '-72px 0px -60% 0px' });
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+}
+
+// ===== SCROLL TO TOP BUTTON =====
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTop');
+  btn.classList.toggle('visible', window.scrollY > 400);
+});
+
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+  localStorage.setItem('nodejsTheme', isDark ? 'light' : 'dark');
+}
+// Restore saved theme
+(function() {
+  const saved = localStorage.getItem('nodejsTheme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    const icon = document.getElementById('themeIcon');
+    if (icon) icon.className = saved === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+  }
+})();
+</script>
+</body>
+</html>

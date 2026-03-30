@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.04 — Workflow | NN Guide</title>
+<link rel="stylesheet" href="shared.css">
+<style>:root{--neon:#00ff9d}</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="topnav-logo">NN<span>.GUIDE</span></a>
+  <div class="topnav-links"><a href="01-math.html">01 Math</a><a href="02-fundamentals.html">02 Fundamentals</a><a href="03-python.html">03 Python</a><a href="04-workflow.html" class="active">04 Workflow</a><a href="05-cnn.html">05 CNN</a><a href="06-rnn.html">06 RNN</a><a href="07-nlp.html">07 NLP</a><a href="08-transformers.html">08 Transformers</a><a href="09-advanced.html">09 Advanced</a><a href="10-specializations.html">10 Specs</a><a href="11-projects.html">11 Projects</a></div>
+</nav>
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow" style="width:500px;height:500px;background:rgba(0,0,0,.5);top:-180px;right:-120px;"></div>
+  <div class="chapter-num">Chapter 04 — Workflow</div>
+  <h1><span style="color:#00ff9d">DEEP LEARNING</span><br>WORKFLOW</h1>
+  <p class="hero-sub">Data pipelines, training loops, regularisation, optimisers, hyperparameter tuning, and evaluation — the complete engineering pattern.</p>
+  <div class="hero-meta"><div class="hero-stat"><div class="hero-stat-val" style="color:#00ff9d">6</div><div class="hero-stat-label">Pipeline Steps</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#00ff9d">10</div><div class="hero-stat-label">Techniques</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#00ff9d">8</div><div class="hero-stat-label">Interview Q&A</div></div></div>
+</div>
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">Contents</div>
+    <a class="sb-link active" onclick="show('pipeline')"><span class="sb-icon">🔄</span>Data Pipeline</a>
+<a class="sb-link" onclick="show('training')"><span class="sb-icon">🏋️</span>Training Loop</a>
+<a class="sb-link" onclick="show('regularization')"><span class="sb-icon">🛡️</span>Regularisation</a>
+<a class="sb-link" onclick="show('interview')"><span class="sb-icon">🎯</span>Interview Q&A</a>
+
+    <div class="sb-chapters">
+      <div class="sb-ch-label">Navigate</div>
+      <a class="sb-ch-link" href="03-python.html">← 03 · Python</a><a class="sb-ch-link" href="05-cnn.html">→ 05 · CNN</a>
+    </div>
+  </aside>
+  <div class="content">
+    <div class="section active" id="s-pipeline"><div class="sec-head"><span class="sec-tag tag-i">Intermediate</span><h2 class="sec-head h2">DATA PIPELINE</h2><div class="sec-meta">Loading, augmenting, batching data efficiently</div></div><div class="card"><div class="card-title"><span class="icon" style="background:rgba(0,255,157,.1)">🔹</span>The Complete DL Workflow</div><div class="pipe"><div class="pipe-box pb-g">Data
+Collection</div><span class="pipe-arrow">→</span><div class="pipe-box pb-b">Preprocess
+& Augment</div><span class="pipe-arrow">→</span><div class="pipe-box pb-r">Model
+Design</div><span class="pipe-arrow">→</span><div class="pipe-box pb-y">Train
+& Validate</div><span class="pipe-arrow">→</span><div class="pipe-box pb-v">Evaluate
+& Deploy</div></div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · Data Pipeline</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">from</span> torch.utils.data <span class="kw">import</span> Dataset, DataLoader
+<span class="kw">from</span> torchvision <span class="kw">import</span> transforms
+
+transform = transforms.<span class="cls">Compose</span>([
+    transforms.<span class="cls">RandomHorizontalFlip</span>(),
+    transforms.<span class="cls">RandomCrop</span>(<span class="num">32</span>, padding=<span class="num">4</span>),
+    transforms.<span class="cls">ColorJitter</span>(brightness=<span class="num">0.2</span>),
+    transforms.<span class="cls">ToTensor</span>(),
+    transforms.<span class="cls">Normalize</span>(mean=[<span class="num">0.485</span>,<span class="num">0.456</span>,<span class="num">0.406</span>],
+                            std=[<span class="num">0.229</span>,<span class="num">0.224</span>,<span class="num">0.225</span>])
+])
+
+train_loader = <span class="cls">DataLoader</span>(train_dataset,
+    batch_size=<span class="num">64</span>, shuffle=<span class="kw">True</span>, num_workers=<span class="num">4</span>,
+    pin_memory=<span class="kw">True</span>)  <span class="cm"># pin_memory speeds GPU transfer</span></pre></div></div><div class="section" id="s-training"><div class="sec-head"><span class="sec-tag tag-i">Intermediate</span><h2 class="sec-head h2">TRAINING LOOP</h2><div class="sec-meta">The standard PyTorch training pattern</div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · Professional Training Loop</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">import</span> torch
+<span class="kw">from</span> torch.cuda.amp <span class="kw">import</span> autocast, GradScaler
+
+scaler = <span class="cls">GradScaler</span>()  <span class="cm"># mixed precision</span>
+
+<span class="kw">def</span> <span class="fn">train_epoch</span>(model, loader, optimizer, criterion, device):
+    model.<span class="fn">train</span>()
+    total_loss, correct, total = <span class="num">0</span>, <span class="num">0</span>, <span class="num">0</span>
+    <span class="kw">for</span> X, y <span class="kw">in</span> loader:
+        X, y = X.<span class="fn">to</span>(device), y.<span class="fn">to</span>(device)
+        optimizer.<span class="fn">zero_grad</span>(set_to_none=<span class="kw">True</span>)  <span class="cm"># faster than zero_grad()</span>
+        <span class="kw">with</span> <span class="fn">autocast</span>():  <span class="cm"># fp16 forward pass</span>
+            logits = <span class="fn">model</span>(X)
+            loss = <span class="fn">criterion</span>(logits, y)
+        scaler.<span class="fn">scale</span>(loss).<span class="fn">backward</span>()
+        scaler.<span class="fn">unscale_</span>(optimizer)
+        torch.nn.utils.<span class="fn">clip_grad_norm_</span>(model.<span class="fn">parameters</span>(), <span class="num">1.0</span>)
+        scaler.<span class="fn">step</span>(optimizer)
+        scaler.<span class="fn">update</span>()
+        total_loss += loss.<span class="fn">item</span>()
+        correct += (logits.<span class="fn">argmax</span>(<span class="num">1</span>) == y).<span class="fn">sum</span>().<span class="fn">item</span>()
+        total += y.<span class="fn">size</span>(<span class="num">0</span>)
+    <span class="kw">return</span> total_loss/len(loader), correct/total</pre></div></div><div class="section" id="s-regularization"><div class="sec-head"><span class="sec-tag tag-i">Intermediate</span><h2 class="sec-head h2">REGULARISATION</h2><div class="sec-meta">Dropout · BatchNorm · Weight Decay · Early Stopping</div></div><div class="tbl"><table><tr><th>Technique</th><th>How</th><th>When to Use</th></tr><tr><td>Dropout</td><td>Zero out activations with prob p</td><td>Dense layers, p=0.1-0.5</td></tr><tr><td>BatchNorm</td><td>Normalise per batch</td><td>After conv/linear, before activation</td></tr><tr><td>L2 / Weight Decay</td><td>Penalty on large weights</td><td>Default: 0.01 in AdamW</td></tr><tr><td>Early Stopping</td><td>Stop when val loss stops improving</td><td>Always — prevents overfit</td></tr><tr><td>Data Augmentation</td><td>Artificially expand training set</td><td>Image tasks especially</td></tr><tr><td>Label Smoothing</td><td>Soften one-hot targets by ε</td><td>Classification, prevents overconfidence</td></tr></table></div><div class="callout cl-green"><span class="callout-icon">💡</span><span><strong>Practical tip:</strong> Start with BatchNorm + weight_decay=0.01 in AdamW. Add Dropout only if still overfitting. Data augmentation is free regularisation.</span></div></div><div class="section" id="s-interview"><div class="sec-head"><span class="sec-tag tag-q">Interview</span><h2 class="sec-head h2">INTERVIEW Q&A</h2><div class="sec-meta">DL Workflow · 8 Questions</div></div><div class="qa-level">Intermediate</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q01</span><span class="qa-text">What is mixed precision training and why use it?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Mixed precision training uses FP16 (half precision) for most operations and FP32 for critical accumulations. Benefits: (1) 2x memory reduction — fit larger batches; (2) 2-3x faster on Tensor Core GPUs (V100, A100). The <strong>GradScaler</strong> multiplies the loss by a large scale factor before backward to prevent FP16 underflow (gradients that would become 0). After backward, it unscales before the optimizer step. PyTorch: <code>torch.cuda.amp.autocast()</code> in forward pass + <code>GradScaler</code> for backward. Modern GPUs (A100, H100) support BF16 which has same range as FP32 — often better than FP16.</div></div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q02</span><span class="qa-text">What is learning rate warmup and why is it used?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Warmup gradually increases the learning rate from 0 (or a small value) to the target LR over the first N steps/epochs. Rationale: at the start of training, parameters are random and gradients are noisy and large. A large LR immediately can cause divergence. Warmup lets the optimiser's momentum terms stabilise before committing to large steps. Especially important for: Transformers (warm up for 4% of total steps), fine-tuning (avoids catastrophic forgetting), large batch training. After warmup: cosine annealing or linear decay to 0. Common schedule: warmup 500 steps → cosine to step 10,000.</div></div><div class="qa-level">Advanced</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q03</span><span class="qa-text">Explain gradient accumulation and when to use it.</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Gradient accumulation simulates a larger batch size by accumulating gradients over multiple forward/backward passes before doing a parameter update. Example: effective batch 256 with GPU that can only fit 32 → accumulate 8 steps. Code: skip <code>optimizer.step()</code> and <code>zero_grad()</code> for 7 steps, execute on step 8. Important: loss must be divided by accumulation steps (<code>loss = loss / grad_accum_steps</code>) before backward. Use with mixed precision carefully — scaler.update() only on real steps. When to use: training large models (>1B params), memory-constrained hardware, trying to match published large-batch training configs.</div></div></div>
+  </div>
+</div>
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+function toggleQA(el) {
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.qa-item.open').forEach(e => e.classList.remove('open'));
+  if (!open) el.classList.add('open');
+}
+</script>
+</body>
+</html>

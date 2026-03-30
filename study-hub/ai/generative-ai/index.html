@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generative AI — Complete Learning Guide</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<!-- ── SIDEBAR ─────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <div class="brand">
+      <span class="brand-icon"><i class="fa-solid fa-microchip-ai"></i></span>
+      <div>
+        <div class="brand-name">GenAI<em>Guide</em></div>
+        <div class="brand-sub">Complete Learning Path</div>
+      </div>
+    </div>
+    <button class="sidebar-close" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <div class="progress-widget">
+    <div class="pw-row"><span>Reading Progress</span><span id="progressPct">0%</span></div>
+    <div class="pw-track"><div class="pw-bar" id="progressBar"></div></div>
+  </div>
+
+  <nav class="sidenav">
+    <div class="nav-section-label">Foundation</div>
+    <a href="#s-intro"    class="nav-link" data-s="s-intro"><span class="nl-num">01</span><span>Intro to AI & ML</span></a>
+    <a href="#s-genai"    class="nav-link" data-s="s-genai"><span class="nl-num">02</span><span>Generative AI</span></a>
+    <a href="#s-how"      class="nav-link" data-s="s-how"><span class="nl-num">03</span><span>How It Works</span></a>
+    <a href="#s-llm"      class="nav-link" data-s="s-llm"><span class="nl-num">04</span><span>Large Language Models</span></a>
+
+    <div class="nav-section-label">Practical</div>
+    <a href="#s-prompt"   class="nav-link" data-s="s-prompt"><span class="nl-num">05</span><span>Prompt Engineering</span></a>
+    <a href="#s-code"     class="nav-link" data-s="s-code"><span class="nl-num">06</span><span>Code Examples</span></a>
+    <a href="#s-apps"     class="nav-link" data-s="s-apps"><span class="nl-num">07</span><span>Applications</span></a>
+    <a href="#s-limits"   class="nav-link" data-s="s-limits"><span class="nl-num">08</span><span>Limits & Challenges</span></a>
+
+    <div class="nav-section-label">Career</div>
+    <a href="#s-roadmap"  class="nav-link" data-s="s-roadmap"><span class="nl-num">09</span><span>Roadmap</span></a>
+    <a href="#s-interview" class="nav-link" data-s="s-interview"><span class="nl-num">10</span><span>Interview Prep</span></a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <label class="theme-switch" title="Toggle theme">
+      <input type="checkbox" id="themeCheck" />
+      <span class="ts-track">
+        <span class="ts-knob"><i class="fa-solid fa-sun" id="themeIconInner"></i></span>
+      </span>
+      <span id="themeLabel">Light Mode</span>
+    </label>
+  </div>
+</aside>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- ── MAIN ───────────────────────────────────────── -->
+<main class="main" id="main">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <button class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></button>
+    <span class="topbar-title">Generative AI Guide</span>
+    <label class="theme-switch-top" title="Toggle theme">
+      <input type="checkbox" id="themeCheckTop" />
+      <span class="ts-track sm">
+        <span class="ts-knob sm"><i class="fa-solid fa-sun" id="themeIconTop"></i></span>
+      </span>
+    </label>
+  </header>
+
+  <!-- ═══ HERO ═══════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-eyebrow"><span class="pill">Complete Guide</span> — From Zero to Interview-Ready</div>
+    <h1 class="hero-h1">Master<br><em>Generative AI</em></h1>
+    <p class="hero-desc">A structured, beginner-to-advanced learning path covering LLMs, prompt engineering, transformers, and real-world applications — with code you can run today.</p>
+    <div class="hero-actions">
+      <a href="#s-intro" class="btn-cta">Start Learning <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="#s-interview" class="btn-outline">Interview Prep <i class="fa-solid fa-briefcase"></i></a>
+    </div>
+    <div class="hero-chips">
+      <span class="chip"><i class="fa-solid fa-book-open"></i> 10 Topics</span>
+      <span class="chip"><i class="fa-solid fa-code"></i> Code Snippets</span>
+      <span class="chip"><i class="fa-solid fa-comments"></i> 15+ Q&amp;As</span>
+      <span class="chip"><i class="fa-solid fa-map"></i> 5-Phase Roadmap</span>
+    </div>
+    <!-- decorative -->
+    <div class="hero-deco">
+      <div class="deco-ring r1"></div>
+      <div class="deco-ring r2"></div>
+      <div class="deco-ring r3"></div>
+      <div class="deco-center"><i class="fa-solid fa-brain"></i></div>
+    </div>
+  </section>
+
+  <!-- ═══ 01 — INTRO TO AI & ML ══════════════════════ -->
+  <section class="page-section" id="s-intro">
+    <div class="sec-label"><span>01</span> Foundation</div>
+    <h2 class="sec-title">Introduction to AI &amp; ML</h2>
+    <p class="sec-intro">Before diving into Generative AI, you need to understand the landscape it sits in. AI is the broad field; ML and DL are the methods.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon ci-blue"><i class="fa-solid fa-robot"></i></div>
+        <h3>Artificial Intelligence</h3>
+        <p>AI is the science of building machines that can perform tasks typically requiring human intelligence — recognising speech, making decisions, translating languages.</p>
+        <div class="insight-box">💡 <strong>Analogy:</strong> AI is the umbrella. Everything else lives under it.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-green"><i class="fa-solid fa-chart-line"></i></div>
+        <h3>Machine Learning</h3>
+        <p>ML is a subset of AI where systems <em>learn from data</em> rather than following hand-written rules. They find patterns and improve over time without explicit programming.</p>
+        <div class="insight-box">💡 A spam filter that learns which emails are junk is classic ML.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-purple"><i class="fa-solid fa-circle-nodes"></i></div>
+        <h3>Deep Learning</h3>
+        <p>DL is ML using <em>neural networks</em> with many layers. These layers extract increasingly complex features from raw data — enabling image recognition, translation, and more.</p>
+        <div class="insight-box">💡 DL is why your phone can identify faces in photos.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-orange"><i class="fa-solid fa-layer-group"></i></div>
+        <h3>Neural Networks</h3>
+        <p>Inspired by the brain, neural networks are stacked layers of mathematical nodes. Data enters the input layer, gets transformed through hidden layers, and produces output.</p>
+        <ul class="bullet-list">
+          <li><strong>Input layer</strong> — receives raw data</li>
+          <li><strong>Hidden layers</strong> — learn representations</li>
+          <li><strong>Output layer</strong> — final prediction</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Visual diagram -->
+    <div class="diagram-box">
+      <div class="diagram-title">AI Hierarchy</div>
+      <div class="hierarchy-vis">
+        <div class="hv-ring hv-ai">
+          <span class="hv-label">Artificial Intelligence</span>
+          <div class="hv-ring hv-ml">
+            <span class="hv-label">Machine Learning</span>
+            <div class="hv-ring hv-dl">
+              <span class="hv-label dl">Deep Learning</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="next-bar">
+      <span class="nb-text">Up next: Generative AI</span>
+      <a href="#s-genai" class="btn-next">Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══ 02 — GENERATIVE AI ═════════════════════════ -->
+  <section class="page-section alt" id="s-genai">
+    <div class="sec-label"><span>02</span> Core Concept</div>
+    <h2 class="sec-title">Generative AI</h2>
+    <p class="sec-intro">Generative AI is a class of models that <em>create</em> new content — text, images, audio, code, video — rather than just classifying or predicting.</p>
+
+    <div class="card-grid two-col">
+      <div class="card accent-border-blue">
+        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> &nbsp;What is Generative AI?</h3>
+        <p>Generative AI models are trained on massive datasets and learn the underlying distribution of data. They can then sample from that distribution to generate brand-new, realistic outputs.</p>
+        <div class="insight-box">💡 <strong>Key idea:</strong> Rather than asking "Is this a cat?", GenAI asks "What does a cat look like?" — and draws one.</div>
+      </div>
+      <div class="card accent-border-green">
+        <h3><i class="fa-solid fa-code-compare"></i> &nbsp;Generative vs Traditional AI</h3>
+        <table class="mini-table">
+          <thead><tr><th>Aspect</th><th>Traditional AI</th><th>Generative AI</th></tr></thead>
+          <tbody>
+            <tr><td>Goal</td><td>Classify / predict</td><td>Create new content</td></tr>
+            <tr><td>Output</td><td>Label / number</td><td>Text, image, audio</td></tr>
+            <tr><td>Training</td><td>Labelled data</td><td>Massive unlabelled data</td></tr>
+            <tr><td>Example</td><td>Spam filter</td><td>ChatGPT, DALL·E</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3 class="subsec">Types of Generative Models</h3>
+    <div class="type-cards">
+      <div class="type-card tc-text">
+        <div class="tc-icon">📝</div>
+        <div class="tc-label">Text (LLMs)</div>
+        <p>GPT-4, Claude, Gemini, LLaMA. Generate coherent human-level text for any purpose.</p>
+      </div>
+      <div class="type-card tc-image">
+        <div class="tc-icon">🎨</div>
+        <div class="tc-label">Images</div>
+        <p>DALL·E 3, Midjourney, Stable Diffusion. Use diffusion models or GANs to create photorealistic images.</p>
+      </div>
+      <div class="type-card tc-audio">
+        <div class="tc-icon">🎵</div>
+        <div class="tc-label">Audio</div>
+        <p>Suno, ElevenLabs, MusicLM. Generate speech, music, and sound effects from text prompts.</p>
+      </div>
+      <div class="type-card tc-video">
+        <div class="tc-icon">🎬</div>
+        <div class="tc-label">Video</div>
+        <p>Sora, Runway Gen-2. Create short video clips from text descriptions or images.</p>
+      </div>
+      <div class="type-card tc-code">
+        <div class="tc-icon">💻</div>
+        <div class="tc-label">Code</div>
+        <p>GitHub Copilot, Codex. Complete, explain, and generate entire functions or programmes.</p>
+      </div>
+    </div>
+
+    <div class="next-bar">
+      <span class="nb-text">Up next: How It Works</span>
+      <a href="#s-how" class="btn-next">Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══ 03 — HOW IT WORKS ══════════════════════════ -->
+  <section class="page-section" id="s-how">
+    <div class="sec-label"><span>03</span> Under the Hood</div>
+    <h2 class="sec-title">How Generative AI Works</h2>
+    <p class="sec-intro">You don't need a PhD to understand the core ideas. Here are the four concepts that explain almost everything.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon ci-blue"><i class="fa-solid fa-bolt"></i></div>
+        <h3>Transformers</h3>
+        <p>The transformer is the architecture behind almost all modern LLMs. Its key innovation is the <strong>attention mechanism</strong> — it lets the model weigh how relevant each word is to every other word, regardless of distance.</p>
+        <div class="insight-box">💡 "The bank can guarantee deposits will eventually cover future tuition costs" — attention helps the model know "bank" = financial institution, not river bank.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-green"><i class="fa-solid fa-puzzle-piece"></i></div>
+        <h3>Tokens &amp; Embeddings</h3>
+        <p>Text is split into <strong>tokens</strong> (roughly word-pieces). Each token is converted into a <strong>vector (embedding)</strong> — a list of numbers that encodes meaning. Similar concepts have similar vectors.</p>
+        <ul class="bullet-list">
+          <li>"Hello world" → [15496, 995] (token IDs)</li>
+          <li>King − Man + Woman ≈ Queen (embedding math)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-purple"><i class="fa-solid fa-dumbbell"></i></div>
+        <h3>Training vs Inference</h3>
+        <ul class="bullet-list">
+          <li><strong>Training:</strong> Model sees billions of examples, adjusts billions of parameters to minimise prediction error. Weeks on thousands of GPUs.</li>
+          <li><strong>Inference:</strong> You send a prompt → model runs a forward pass → returns a response. Milliseconds to seconds.</li>
+        </ul>
+        <div class="insight-box">💡 Training is like school; inference is using what you learned.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-orange"><i class="fa-solid fa-dice"></i></div>
+        <h3>Probability-Based Generation</h3>
+        <p>LLMs don't look things up — they <em>predict the next most likely token</em> given everything before it. The model assigns a probability to every possible next word and samples from that distribution.</p>
+        <div class="insight-box">💡 "The sky is ___" → P(blue)=0.45, P(clear)=0.20, P(red)=0.05 … The model picks blue, but not always.</div>
+      </div>
+    </div>
+
+    <!-- Transformer flow diagram -->
+    <div class="diagram-box">
+      <div class="diagram-title">Transformer — Simplified Flow</div>
+      <div class="flow-diagram">
+        <div class="flow-step fs-input">Input Text<br><small>"Tell me a joke"</small></div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step fs-tok">Tokenise<br><small>[464, 502, 257, 8252]</small></div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step fs-emb">Embed<br><small>vectors</small></div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step fs-att">Attention<br><small>layers</small></div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step fs-out">Output<br><small>"Why don't…"</small></div>
+      </div>
+    </div>
+
+    <div class="next-bar">
+      <span class="nb-text">Up next: Large Language Models</span>
+      <a href="#s-llm" class="btn-next">Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══ 04 — LLMs ══════════════════════════════════ -->
+  <section class="page-section alt" id="s-llm">
+    <div class="sec-label"><span>04</span> Core Technology</div>
+    <h2 class="sec-title">Large Language Models</h2>
+    <p class="sec-intro">LLMs are the engines powering ChatGPT, Claude, Gemini and most of modern Generative AI. Here's what you actually need to know.</p>
+
+    <div class="card-grid two-col">
+      <div class="card">
+        <div class="card-icon ci-blue"><i class="fa-solid fa-brain"></i></div>
+        <h3>What are LLMs?</h3>
+        <p>Large Language Models are transformer-based neural networks trained on internet-scale text data (hundreds of billions of tokens). They learn language patterns, facts, reasoning, and code — all from next-token prediction.</p>
+        <ul class="bullet-list">
+          <li>GPT-4 — ~1 trillion parameters (estimated)</li>
+          <li>LLaMA 3 — 8B to 70B parameters (open)</li>
+          <li>Gemini Ultra — multimodal (text + image)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-icon ci-green"><i class="fa-solid fa-message"></i></div>
+        <h3>How LLMs Generate Text</h3>
+        <ol class="bullet-list">
+          <li>You send a <strong>prompt</strong> (your input)</li>
+          <li>It's tokenised and embedded into vectors</li>
+          <li>Passes through ~96 transformer layers</li>
+          <li>Each layer refines understanding with attention</li>
+          <li>Final layer outputs probability over vocabulary</li>
+          <li>Sample next token → repeat until done</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="highlight-card">
+      <div class="hc-icon"><i class="fa-solid fa-window-maximize"></i></div>
+      <div>
+        <h3>Context Window &amp; Tokens</h3>
+        <p>The context window is the maximum amount of text the model can "see" at once — your prompt + its response. GPT-3.5 = 16K tokens, GPT-4o = 128K tokens, Gemini 1.5 Pro = 1M tokens.</p>
+        <p style="margin-top:0.6rem">1 token ≈ 0.75 words. "Hello, world!" ≈ 4 tokens. A 128K context window can hold roughly a 300-page book.</p>
+      </div>
+    </div>
+
+    <h3 class="subsec">Limitations</h3>
+    <div class="limit-grid">
+      <div class="limit-item li-red"><i class="fa-solid fa-ghost"></i><strong>Hallucinations</strong><p>Models confidently produce false information. They don't "know" facts — they predict plausible text.</p></div>
+      <div class="limit-item li-orange"><i class="fa-solid fa-scale-unbalanced"></i><strong>Bias</strong><p>Training data reflects societal biases. Models can reproduce stereotypes and unfair representations.</p></div>
+      <div class="limit-item li-yellow"><i class="fa-solid fa-calendar-xmark"></i><strong>Knowledge Cutoff</strong><p>LLMs have a training cutoff date. They don't know about events after that date without tools.</p></div>
+      <div class="limit-item li-purple"><i class="fa-solid fa-coins"></i><strong>Cost</strong><p>Running inference at scale is expensive. GPT-4 costs significantly more per token than GPT-3.5.</p></div>
+    </div>
+
+    <div class="next-bar">
+      <span class="nb-text">Up next: Prompt Engineering</span>
+      <a href="#s-prompt" class="btn-next">Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══ 05 — PROMPT ENGINEERING ════════════════════ -->
+  <section class="page-section" id="s-prompt">
+    <div class="sec-label"><span>05</span> Essential Skill</div>
+    <h2 class="sec-title">Prompt Engineering</h2>
+    <p class="sec-intro">Prompt engineering is the art of communicating with LLMs effectively. The same question phrased differently can produce wildly different results.</p>
+
+    <div class="card-grid">
+      <div class="card accent-border-blue">
+        <h3><i class="fa-solid fa-1"></i> &nbsp;Zero-Shot Prompting</h3>
+        <p>Ask the model directly without any examples. Works well for common tasks where the model already has strong priors.</p>
+        <div class="prompt-example">
+          <div class="pe-label input">INPUT</div>
+          <div class="pe-text">"Translate 'Good morning' to French."</div>
+          <div class="pe-label output">OUTPUT</div>
+          <div class="pe-text pe-out">"Bonjour"</div>
+        </div>
+      </div>
+      <div class="card accent-border-green">
+        <h3><i class="fa-solid fa-2"></i> &nbsp;Few-Shot Prompting</h3>
+        <p>Provide 2–5 examples of input→output pairs before your actual question. The model learns the pattern from context.</p>
+        <div class="prompt-example">
+          <div class="pe-label input">INPUT</div>
+          <div class="pe-text">Positive: "I love this!" → 😊<br>Negative: "I hate it." → 😞<br>"This is okay." → ?</div>
+          <div class="pe-label output">OUTPUT</div>
+          <div class="pe-text pe-out">😐</div>
+        </div>
+      </div>
+      <div class="card accent-border-purple">
+        <h3><i class="fa-solid fa-3"></i> &nbsp;Chain-of-Thought</h3>
+        <p>Tell the model to <em>think step by step</em>. Dramatically improves performance on math, logic, and multi-step reasoning tasks.</p>
+        <div class="prompt-example">
+          <div class="pe-label input">INPUT</div>
+          <div class="pe-text">"If I have 5 apples and give away 2, then buy 3 more, how many do I have? Think step by step."</div>
+          <div class="pe-label output">OUTPUT</div>
+          <div class="pe-text pe-out">Start: 5. After giving: 5−2=3. After buying: 3+3=6. Answer: 6</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subsec">Best Practices</h3>
+    <div class="practices-grid">
+      <div class="practice-item"><div class="pi-icon">🎯</div><strong>Be Specific</strong><p>Vague prompts get vague answers. Include format, length, tone, and audience.</p></div>
+      <div class="practice-item"><div class="pi-icon">🎭</div><strong>Assign a Role</strong><p>"Act as a senior Python developer" frames the model's expertise and style.</p></div>
+      <div class="practice-item"><div class="pi-icon">📋</div><strong>Give Context</strong><p>More context = better output. Include background, constraints, and examples.</p></div>
+      <div class="practice-item"><div class="pi-icon">🔄</div><strong>Iterate</strong><p>Rarely perfect on the first try. Refine, rephrase, and experiment.</p></div>
+      <div class="practice-item"><div class="pi-icon">📏</div><strong>Specify Format</strong><p>"Respond in JSON", "Write a numbered list", "In under 50 words".</p></div>
+      <div class="practice-item"><div class="pi-icon">🧪</div><strong>Test Variations</strong><p>Small wording changes can produce significantly different outputs.</p></div>
+    </div>
+
+    <div class="next-bar">
+      <span class="nb-text">Up next: Code Examples</span>
+      <a href="#s-code" class="btn-next">Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══ 06 — CODE EXAMPLES ══════════════════════════ -->
+  <section class="page-section alt" id="s-code">
+    <div class="sec-label"><span>06</span> Hands-On</div>
+    <h2 class="sec-title">Code Examples</h2>
+    <p class="sec-intro">Run these examples yourself. All you need is Python and an API key.</p>
+
+    <!-- Code 1 -->
+    <div class="code-block">
+      <div class="cb-header">
+        <span class="cb-lang"><i class="fa-brands fa-python"></i> Python — OpenAI API Basic Call</span>
+        <button class="copy-btn" data-target="code1"><i class="fa-regular fa-copy"></i> Copy</button>
+      </div>
+      <pre id="code1"><code><span class="c-kw">from</span> openai <span class="c-kw">import</span> OpenAI
+
+<span class="c-comment"># Initialise client (reads OPENAI_API_KEY from env)</span>
+client = OpenAI()
+
+response = client.chat.completions.create(
+    model=<span class="c-str">"gpt-4o-mini"</span>,
+    messages=[
+        {
+            <span class="c-str">"role"</span>: <span class="c-str">"system"</span>,
+            <span class="c-str">"content"</span>: <span class="c-str">"You are a helpful assistant."</span>
+        },
+        {
+            <span class="c-str">"role"</span>: <span class="c-str">"user"</span>,
+            <span class="c-str">"content"</span>: <span class="c-str">"Explain Generative AI in one paragraph."</span>
+        }
+    ],
+    max_tokens=<span class="c-num">200</span>,
+    temperature=<span class="c-num">0.7</span>
+)
+
+<span class="c-kw">print</span>(response.choices[<span class="c-num">0</span>].message.content)</code></pre>
+    </div>
+
+    <!-- Code 2 -->
+    <div class="code-block">
+      <div class="cb-header">
+        <span class="cb-lang"><i class="fa-brands fa-python"></i> Python — Simple Chatbot with Memory</span>
+        <button class="copy-btn" data-target="code2"><i class="fa-regular fa-copy"></i> Copy</button>
+      </div>
+      <pre id="code2"><code><span class="c-kw">from</span> openai <span class="c-kw">import</span> OpenAI
+
+client = OpenAI()
+conversation_history = [
+    {<span class="c-str">"role"</span>: <span class="c-str">"system"</span>, <span class="c-str">"content"</span>: <span class="c-str">"You are a friendly AI tutor."</span>}
+]
+
+<span class="c-kw">def</span> chat(user_message):
+    conversation_history.append({
+        <span class="c-str">"role"</span>: <span class="c-str">"user"</span>,
+        <span class="c-str">"content"</span>: user_message
+    })
+    response = client.chat.completions.create(
+        model=<span class="c-str">"gpt-4o-mini"</span>,
+        messages=conversation_history
+    )
+    reply = response.choices[<span class="c-num">0</span>].message.content
+    conversation_history.append({
+        <span class="c-str">"role"</span>: <span class="c-str">"assistant"</span>,
+        <span class="c-str">"content"</span>: reply
+    })
+    <span class="c-kw">return</span> reply
+
+<span class="c-comment"># Interactive loop</span>
+<span class="c-kw">while True</span>:
+    user_input = <span class="c-kw">input</span>(<span class="c-str">"You: "</span>)
+    <span class="c-kw">if</span> user_input.lower() == <span class="c-str">"quit"</span>:
+        <span class="c-kw">break</span>
+    <span class="c-kw">print</span>(<span class="c-str">f"AI: {chat(user_input)}"</span>)</code></pre>
+    </div>
+
+    <!-- Code 3 -->
+    <div class="code-block">
+      <div class="cb-header">
+        <span class="cb-lang"><i class="fa-brands fa-python"></i> Python — Prompt Examples</span>
+        <button class="copy-btn" data-target="code3"><i class="fa-regular fa-copy"></i> Copy</button>
+      </div>
+      <pre id="code3"><code><span class="c-comment"># Zero-shot</span>
+zero_shot = <span class="c-str">"""
+Classify the sentiment of this review as Positive, Negative, or Neutral:
+'The product arrived on time but the quality was disappointing.'
+"""</span>
+
+<span class="c-comment"># Few-shot</span>
+few_shot = <span class="c-str">"""
+Classify sentiment:
+'I love this!' → Positive
+'Terrible service.' → Negative
+'It was okay.' → Neutral
+'Best purchase I've ever made!' → ?
+"""</span>
+
+<span class="c-comment"># Chain-of-thought</span>
+cot = <span class="c-str">"""
+Problem: A store has 120 items. They sell 35 in the morning and 
+receive a delivery of 50 in the afternoon. How many items remain?
+
+Let's think step by step:
+"""</span>
+
+<span class="c-comment"># Role + format prompt</span>
+structured = <span class="c-str">"""
+You are a senior software engineer reviewing code.
+Analyse this Python function and respond in JSON with keys:
+'issues', 'suggestions', 'score' (1-10).
+
+def add(a, b):
+    return a + b
+"""</span></code></pre>
+    </div>
+
+    <div class="next-bar">
+      <span class="nb-text">Up next: Applications</span>
+      <a href="#s-apps" class="btn-next">Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══ 07 — APPLICATIONS ══════════════════════════ -->
+  <section class="page-section" id="s-apps">
+    <div class="sec-label"><span>07</span> Real World</div>
+    <h2 class="sec-title">Applications of Generative AI</h2>
+    <p class="sec-intro">Generative AI is already reshaping every industry. Here's where it's making the biggest impact today.</p>
+
+    <div class="app-grid">
+      <div class="app-card ac-1">
+        <div class="ac-icon">✍️</div>
+        <h3>Content Creation</h3>
+        <p>Blog posts, social copy, marketing emails, product descriptions — generated in seconds at scale. Tools: ChatGPT, Jasper, Copy.ai.</p>
+      </div>
+      <div class="app-card ac-2">
+        <div class="ac-icon">💻</div>
+        <h3>Code Generation</h3>
+        <p>GitHub Copilot writes 40%+ of code at companies using it. Explain bugs, generate tests, scaffold boilerplate in any language.</p>
+      </div>
+      <div class="app-card ac-3">
+        <div class="ac-icon">🤖</div>
+        <h3>Chatbots &amp; Assistants</h3>
+        <p>Customer support bots, internal knowledge assistants, AI tutors. Available 24/7, personalised at scale.</p>
+      </div>
+      <div class="app-card ac-4">
+        <div class="ac-icon">🎨</div>
+        <h3>Image &amp; Design</h3>
+        <p>Concept art, stock photo replacement, ad creative, logo variations. Midjourney, DALL·E 3, Adobe Firefly.</p>
+      </div>
+      <div class="app-card ac-5">
+        <div class="ac-icon">🔬</div>
+        <h3>Healthcare &amp; Science</h3>
+        <p>Protein structure prediction (AlphaFold), drug discovery, medical report summarisation, clinical trial matching.</p>
+      </div>
+      <div class="app-card ac-6">
+        <div class="ac-icon">📊</div>
+        <h3>Data &amp; Analysis</h3>
+        <p>Natural language to SQL, automated report writing, anomaly explanation, data summarisation at scale.</p>
+      </div>
+    </div>
+
+    <div class="next-bar">
+      <span class="nb-text">Up next: Limitations</span>
+      <a href="#s-limits" class="btn-next">Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══ 08 — LIMITATIONS ════════════════════════════ -->
+  <section class="page-section alt" id="s-limits">
+    <div class="sec-label"><span>08</span> Critical Thinking</div>
+    <h2 class="sec-title">Limitations &amp; Challenges</h2>
+    <p class="sec-intro">Every practitioner must understand the failure modes of Generative AI. These are not edge cases — they are everyday concerns.</p>
+
+    <div class="card-grid">
+      <div class="card limit-card">
+        <div class="lc-badge badge-red">Risk</div>
+        <h3><i class="fa-solid fa-ghost"></i> Hallucinations</h3>
+        <p>LLMs generate text that <em>sounds</em> correct but is factually wrong. They cannot distinguish between facts they learned and plausible-sounding fabrications.</p>
+        <div class="insight-box">⚠️ <strong>Example:</strong> An LLM asked for a paper citation may invent a convincing but non-existent paper title and author.</div>
+      </div>
+      <div class="card limit-card">
+        <div class="lc-badge badge-orange">Risk</div>
+        <h3><i class="fa-solid fa-scale-unbalanced"></i> Bias &amp; Fairness</h3>
+        <p>Models trained on internet text inherit its biases — gender stereotypes, racial assumptions, political slants. These biases manifest in output and recommendations.</p>
+      </div>
+      <div class="card limit-card">
+        <div class="lc-badge badge-yellow">Cost</div>
+        <h3><i class="fa-solid fa-coins"></i> Cost &amp; Resources</h3>
+        <p>Training a frontier model costs $10M–$100M+. Inference at scale is expensive. Energy consumption is a growing environmental concern.</p>
+      </div>
+      <div class="card limit-card">
+        <div class="lc-badge badge-purple">Technical</div>
+        <h3><i class="fa-solid fa-lock"></i> Data &amp; Privacy</h3>
+        <p>Models may memorise and regurgitate private training data. Using proprietary data for fine-tuning raises confidentiality and copyright concerns.</p>
+      </div>
+    </div>
+
+    <div class="next-bar">
+      <span class="nb-text">Up next: Learning Roadmap</span>
+      <a href="#s-roadmap" class="btn-next">Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══ 09 — ROADMAP ════════════════════════════════ -->
+  <section class="page-section" id="s-roadmap">
+    <div class="sec-label"><span>09</span> Your Journey</div>
+    <h2 class="sec-title">Learning Roadmap</h2>
+    <p class="sec-intro">Follow this 5-phase path to go from complete beginner to building production Generative AI applications.</p>
+
+    <div class="roadmap">
+      <div class="rm-phase">
+        <div class="rm-marker m1">
+          <div class="rm-num">1</div>
+          <div class="rm-line"></div>
+        </div>
+        <div class="rm-content">
+          <div class="rm-badge b1">Phase 1 · 2–3 weeks</div>
+          <h3>Basics</h3>
+          <ul class="rm-items">
+            <li><i class="fa-solid fa-check"></i> Python fundamentals (variables, loops, functions, classes)</li>
+            <li><i class="fa-solid fa-check"></i> APIs — what they are, HTTP requests, REST</li>
+            <li><i class="fa-solid fa-check"></i> JSON data format</li>
+            <li><i class="fa-solid fa-check"></i> Virtual environments, pip</li>
+          </ul>
+          <div class="rm-resources">Resources: Python.org docs, CS50P, freeCodeCamp Python</div>
+        </div>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-marker m2">
+          <div class="rm-num">2</div>
+          <div class="rm-line"></div>
+        </div>
+        <div class="rm-content">
+          <div class="rm-badge b2">Phase 2 · 3–4 weeks</div>
+          <h3>Core Concepts</h3>
+          <ul class="rm-items">
+            <li><i class="fa-solid fa-check"></i> AI / ML / DL hierarchy</li>
+            <li><i class="fa-solid fa-check"></i> What is Generative AI (this guide!)</li>
+            <li><i class="fa-solid fa-check"></i> How LLMs work — transformers, tokens, embeddings</li>
+            <li><i class="fa-solid fa-check"></i> Explore ChatGPT, Claude, Gemini</li>
+          </ul>
+          <div class="rm-resources">Resources: Andrej Karpathy — Let's build GPT, 3Blue1Brown</div>
+        </div>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-marker m3">
+          <div class="rm-num">3</div>
+          <div class="rm-line"></div>
+        </div>
+        <div class="rm-content">
+          <div class="rm-badge b3">Phase 3 · 3–4 weeks</div>
+          <h3>Practical Skills</h3>
+          <ul class="rm-items">
+            <li><i class="fa-solid fa-check"></i> OpenAI API — chat, completions, embeddings</li>
+            <li><i class="fa-solid fa-check"></i> Prompt engineering techniques</li>
+            <li><i class="fa-solid fa-check"></i> Build a chatbot from scratch</li>
+            <li><i class="fa-solid fa-check"></i> Hugging Face models (free, local)</li>
+          </ul>
+          <div class="rm-resources">Resources: OpenAI Cookbook, Hugging Face course</div>
+        </div>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-marker m4">
+          <div class="rm-num">4</div>
+          <div class="rm-line"></div>
+        </div>
+        <div class="rm-content">
+          <div class="rm-badge b4">Phase 4 · 4–6 weeks</div>
+          <h3>Advanced</h3>
+          <ul class="rm-items">
+            <li><i class="fa-solid fa-check"></i> Fine-tuning basics (LoRA, PEFT)</li>
+            <li><i class="fa-solid fa-check"></i> Embeddings &amp; vector databases (Chroma, Pinecone)</li>
+            <li><i class="fa-solid fa-check"></i> RAG (Retrieval-Augmented Generation)</li>
+            <li><i class="fa-solid fa-check"></i> LangChain / LlamaIndex frameworks</li>
+          </ul>
+          <div class="rm-resources">Resources: LangChain docs, DeepLearning.ai short courses</div>
+        </div>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-marker m5">
+          <div class="rm-num">5</div>
+        </div>
+        <div class="rm-content">
+          <div class="rm-badge b5">Phase 5 · Ongoing</div>
+          <h3>Projects</h3>
+          <ul class="rm-items">
+            <li><i class="fa-solid fa-check"></i> Customer support chatbot with RAG</li>
+            <li><i class="fa-solid fa-check"></i> Content generator (blog, social)</li>
+            <li><i class="fa-solid fa-check"></i> AI assistant with memory</li>
+            <li><i class="fa-solid fa-check"></i> Document Q&amp;A system</li>
+          </ul>
+          <div class="rm-resources">Deploy on: Streamlit, Gradio, Vercel</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="next-bar">
+      <span class="nb-text">Up next: Interview Prep</span>
+      <a href="#s-interview" class="btn-next">Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══ 10 — INTERVIEW PREP ════════════════════════ -->
+  <section class="page-section alt" id="s-interview">
+    <div class="sec-label"><span>10</span> Career Ready</div>
+    <h2 class="sec-title">Interview Preparation</h2>
+    <p class="sec-intro">Click any question to reveal a comprehensive answer. Organised by difficulty level.</p>
+
+    <div class="interview-tabs">
+      <button class="itab active" data-level="beginner">🟢 Beginner</button>
+      <button class="itab" data-level="intermediate">🟡 Intermediate</button>
+      <button class="itab" data-level="advanced">🔴 Advanced</button>
+    </div>
+
+    <!-- BEGINNER -->
+    <div class="qa-group active-group" id="qa-beginner">
+      <div class="qa-item">
+        <button class="qa-q">What is Generative AI?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p>Generative AI is a branch of artificial intelligence focused on creating new content — text, images, audio, code, or video — rather than just classifying or analysing existing data.</p>
+          <p>It works by training large models on massive datasets to learn the patterns and distributions of data. Once trained, these models can generate brand-new outputs that resemble the training data.</p>
+          <p><strong>Examples:</strong> ChatGPT generates text, DALL·E generates images, Suno generates music, GitHub Copilot generates code.</p>
+        </div>
+      </div>
+      <div class="qa-item">
+        <button class="qa-q">What is the difference between AI, ML, and Deep Learning?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p><strong>AI (Artificial Intelligence)</strong> is the broad goal of making machines that can simulate human intelligence. It's the umbrella term.</p>
+          <p><strong>ML (Machine Learning)</strong> is a method to achieve AI — systems that learn from data rather than following explicit rules. A spam filter that improves over time is ML.</p>
+          <p><strong>Deep Learning</strong> is a subset of ML using multi-layer neural networks. It's responsible for most recent breakthroughs — image recognition, language translation, generative AI.</p>
+          <p>Every DL system is ML, every ML system is AI — but not vice versa.</p>
+        </div>
+      </div>
+      <div class="qa-item">
+        <button class="qa-q">What are some examples of Generative AI?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <ul class="bullet-list">
+            <li><strong>ChatGPT / Claude / Gemini</strong> — LLM-powered text generation and conversation</li>
+            <li><strong>DALL·E 3 / Midjourney / Stable Diffusion</strong> — Image generation from text prompts</li>
+            <li><strong>GitHub Copilot</strong> — Code generation and completion</li>
+            <li><strong>Suno / ElevenLabs</strong> — Music and voice synthesis</li>
+            <li><strong>Sora</strong> — Video generation from text</li>
+          </ul>
+        </div>
+      </div>
+      <div class="qa-item">
+        <button class="qa-q">What is a token in the context of LLMs?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p>A token is the basic unit of text that LLMs process. Text is split into tokens before being fed into the model. A token is roughly 0.75 words in English.</p>
+          <p>"Hello, world!" ≈ 4 tokens. "Generative AI is transforming industries." ≈ 7 tokens.</p>
+          <p>Token count matters because: (1) it determines if your input fits in the context window, and (2) most APIs charge per token.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERMEDIATE -->
+    <div class="qa-group" id="qa-intermediate">
+      <div class="qa-item">
+        <button class="qa-q">How do Large Language Models work?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p>LLMs are transformer-based neural networks trained using <strong>self-supervised learning</strong> on massive text corpora. The training objective is simple: predict the next token given all previous tokens.</p>
+          <ol class="bullet-list">
+            <li>Text is tokenised into numeric IDs</li>
+            <li>Token IDs are converted to dense vectors (embeddings)</li>
+            <li>Multiple attention layers process the sequence, learning relationships between all tokens</li>
+            <li>The final layer outputs a probability distribution over the vocabulary</li>
+            <li>The highest probability token is selected (or sampled), appended to output, and the process repeats</li>
+          </ol>
+          <p>After pre-training, models are fine-tuned using <strong>RLHF</strong> (Reinforcement Learning from Human Feedback) to align with human preferences — making them helpful, harmless, and honest.</p>
+        </div>
+      </div>
+      <div class="qa-item">
+        <button class="qa-q">What is prompt engineering?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p>Prompt engineering is the practice of designing inputs to LLMs to elicit the best possible outputs. Since LLMs are extremely sensitive to phrasing, how you ask a question is as important as what you ask.</p>
+          <p><strong>Key techniques:</strong></p>
+          <ul class="bullet-list">
+            <li><strong>Zero-shot:</strong> Direct question, no examples</li>
+            <li><strong>Few-shot:</strong> 2–5 input/output examples before the question</li>
+            <li><strong>Chain-of-thought:</strong> "Think step by step" for complex reasoning</li>
+            <li><strong>Role prompting:</strong> "You are an expert X…"</li>
+            <li><strong>Format specification:</strong> "Respond in JSON / bullet points / under 100 words"</li>
+          </ul>
+        </div>
+      </div>
+      <div class="qa-item">
+        <button class="qa-q">What is RAG (Retrieval-Augmented Generation)?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p>RAG is a technique that combines a retrieval system with an LLM to ground the model's responses in factual, up-to-date information from a knowledge base.</p>
+          <p><strong>How it works:</strong></p>
+          <ol class="bullet-list">
+            <li>Convert your documents into embeddings and store in a vector database</li>
+            <li>When a user asks a question, embed the query</li>
+            <li>Find the most semantically similar document chunks</li>
+            <li>Inject those chunks into the LLM prompt as context</li>
+            <li>The LLM answers using both its trained knowledge and the retrieved context</li>
+          </ol>
+          <p>RAG reduces hallucinations and enables LLMs to answer questions about private or recent data.</p>
+        </div>
+      </div>
+      <div class="qa-item">
+        <button class="qa-q">What is fine-tuning?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p>Fine-tuning is the process of further training a pre-trained model on a smaller, domain-specific dataset to specialise its behaviour.</p>
+          <p><strong>When to fine-tune:</strong> When you need consistent formatting, style, tone, or domain-specific knowledge that can't be achieved through prompting alone.</p>
+          <p><strong>Popular methods:</strong></p>
+          <ul class="bullet-list">
+            <li><strong>Full fine-tuning:</strong> Update all parameters (expensive)</li>
+            <li><strong>LoRA:</strong> Low-Rank Adaptation — train only a small number of adapter parameters (efficient)</li>
+            <li><strong>RLHF:</strong> Reinforcement Learning from Human Feedback — used by OpenAI for ChatGPT</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVANCED -->
+    <div class="qa-group" id="qa-advanced">
+      <div class="qa-item">
+        <button class="qa-q">How does the Transformer architecture work?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p>The Transformer (introduced in "Attention Is All You Need", 2017) replaced RNNs and LSTMs as the dominant sequence model. Its key innovation is <strong>self-attention</strong>.</p>
+          <p><strong>Core components:</strong></p>
+          <ul class="bullet-list">
+            <li><strong>Multi-Head Self-Attention:</strong> Each token attends to all other tokens, computing a weighted sum based on relevance. Multiple attention heads capture different types of relationships.</li>
+            <li><strong>Positional Encoding:</strong> Since attention has no inherent order, position information is added to embeddings.</li>
+            <li><strong>Feed-Forward Layers:</strong> Applied independently to each position after attention.</li>
+            <li><strong>Layer Normalisation &amp; Residual Connections:</strong> Stabilise training of deep networks.</li>
+          </ul>
+          <p>LLMs use only the <strong>decoder</strong> part of the original encoder-decoder transformer (GPT-style).</p>
+        </div>
+      </div>
+      <div class="qa-item">
+        <button class="qa-q">What are embeddings and why do they matter?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p>Embeddings are dense numerical representations (vectors) of words, sentences, or documents that encode semantic meaning. Similar concepts have vectors that are close together in high-dimensional space.</p>
+          <p><strong>Why they matter:</strong></p>
+          <ul class="bullet-list">
+            <li>Enable semantic search (find relevant content by meaning, not keywords)</li>
+            <li>Power RAG systems — embed documents and queries to find relevant chunks</li>
+            <li>Enable recommendation systems</li>
+            <li>Detect semantic similarity, clustering, classification</li>
+          </ul>
+          <p><strong>Example:</strong> text-embedding-3-small from OpenAI maps text to 1536-dimensional vectors. "dog" and "puppy" will be very close. "dog" and "quantum physics" will be far apart.</p>
+        </div>
+      </div>
+      <div class="qa-item">
+        <button class="qa-q">What are the key challenges in deploying Generative AI in production?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <ul class="bullet-list">
+            <li><strong>Hallucinations:</strong> Models confidently produce wrong information. Mitigation: RAG, grounding, output verification.</li>
+            <li><strong>Latency:</strong> LLM inference is slow. Mitigation: streaming, smaller models, caching, batching.</li>
+            <li><strong>Cost:</strong> Token costs add up at scale. Mitigation: prompt compression, smaller models for simpler tasks.</li>
+            <li><strong>Safety &amp; Guardrails:</strong> Preventing harmful outputs. Mitigation: system prompts, output filters, RLHF alignment.</li>
+            <li><strong>Evaluation:</strong> Hard to measure LLM quality systematically. Mitigation: LLM-as-judge, human eval, evals frameworks.</li>
+            <li><strong>Context management:</strong> Long conversations exceed context windows. Mitigation: summarisation, sliding window, vector memory.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="qa-item">
+        <button class="qa-q">What is the difference between temperature and top-p sampling?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="qa-a">
+          <p>Both control the randomness / creativity of LLM outputs by modifying how the model samples from its probability distribution.</p>
+          <p><strong>Temperature:</strong> Scales the probability distribution. Low temperature (0.1–0.3) = deterministic, focused, repetitive. High temperature (0.8–1.2) = creative, varied, sometimes incoherent. Temperature=0 always picks the highest-probability token.</p>
+          <p><strong>Top-p (nucleus sampling):</strong> Instead of scaling all probabilities, only sample from the smallest set of tokens whose cumulative probability exceeds p. Top-p=0.9 means sample from tokens that make up 90% of the probability mass, ignoring the long tail of unlikely tokens.</p>
+          <p>In practice: use temperature for overall creativity level, top-p for controlling the diversity of vocabulary. OpenAI recommends changing one, not both, at a time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="sf-inner">
+      <div class="sf-brand"><i class="fa-solid fa-microchip-ai"></i> GenAI<em>Guide</em></div>
+      <p>A complete, structured learning path for Generative AI — from foundations to production. Built for curious learners.</p>
+      <div class="sf-links">
+        <a href="#s-intro">Foundations</a>
+        <a href="#s-prompt">Prompt Eng.</a>
+        <a href="#s-code">Code</a>
+        <a href="#s-roadmap">Roadmap</a>
+        <a href="#s-interview">Interview</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+<script src="script.js"></script>
+</body>
+</html>

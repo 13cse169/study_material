@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Agents — Complete Learning Guide</title>
+  <link rel="stylesheet" href="ai-styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <span class="logo-icon"><i class="fa-solid fa-robot"></i></span>
+        <span class="logo-text">AI Agents</span>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
+        <i class="fa-solid fa-sun" id="themeIcon"></i>
+      </button>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progress</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul id="navList">
+        <li><a href="#foundations" class="nav-item active" data-section="foundations"><span class="nav-num">01</span><span class="nav-label">Foundations</span></a></li>
+        <li><a href="#intro" class="nav-item" data-section="intro"><span class="nav-num">02</span><span class="nav-label">Introduction</span></a></li>
+        <li><a href="#components" class="nav-item" data-section="components"><span class="nav-num">03</span><span class="nav-label">Components</span></a></li>
+        <li><a href="#types" class="nav-item" data-section="types"><span class="nav-num">04</span><span class="nav-label">Types of Agents</span></a></li>
+        <li><a href="#architecture" class="nav-item" data-section="architecture"><span class="nav-num">05</span><span class="nav-label">Architecture</span></a></li>
+        <li><a href="#howworks" class="nav-item" data-section="howworks"><span class="nav-num">06</span><span class="nav-label">How It Works</span></a></li>
+        <li><a href="#decisions" class="nav-item" data-section="decisions"><span class="nav-num">07</span><span class="nav-label">Decision-Making</span></a></li>
+        <li><a href="#code" class="nav-item" data-section="code"><span class="nav-num">08</span><span class="nav-label">Code Examples</span></a></li>
+        <li><a href="#applications" class="nav-item" data-section="applications"><span class="nav-num">09</span><span class="nav-label">Applications</span></a></li>
+        <li><a href="#challenges" class="nav-item" data-section="challenges"><span class="nav-num">10</span><span class="nav-label">Challenges</span></a></li>
+        <li><a href="#roadmap" class="nav-item" data-section="roadmap"><span class="nav-num">11</span><span class="nav-label">Roadmap</span></a></li>
+        <li><a href="#interview" class="nav-item" data-section="interview"><span class="nav-num">12</span><span class="nav-label">Interview Q&amp;A</span></a></li>
+      </ul>
+    </nav>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+      <i class="fa-solid fa-chevron-left" id="toggleIcon"></i>
+    </button>
+  </aside>
+
+  <!-- MOBILE HAMBURGER -->
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="mainContent">
+
+    <!-- HERO -->
+    <section class="hero-section" id="heroSection">
+      <div class="hero-bg-grid"></div>
+      <div class="hero-inner">
+        <div class="hero-tag reveal">Complete Learning Guide</div>
+        <h1 class="hero-title reveal">
+          <span>Understanding</span>
+          <span class="gradient-text">AI Agents</span>
+        </h1>
+        <p class="hero-desc reveal">From fundamentals to advanced architecture — everything you need to understand, build, and master AI Agents. Interview-ready content included.</p>
+        <div class="hero-pills reveal">
+          <span class="pill"><i class="fa-solid fa-layer-group"></i> 12 Topics</span>
+          <span class="pill"><i class="fa-solid fa-code"></i> Code Examples</span>
+          <span class="pill"><i class="fa-solid fa-circle-question"></i> Interview Q&A</span>
+          <span class="pill"><i class="fa-solid fa-map"></i> Roadmap</span>
+        </div>
+        <a href="#foundations" class="hero-cta reveal">
+          Start Learning <i class="fa-solid fa-arrow-down"></i>
+        </a>
+      </div>
+      <div class="hero-visual">
+        <div class="agent-diagram">
+          <div class="ad-node ad-env">Environment</div>
+          <div class="ad-arrow ad-arr-1"><i class="fa-solid fa-arrow-right"></i></div>
+          <div class="ad-node ad-sense">Sensors</div>
+          <div class="ad-arrow ad-arr-2"><i class="fa-solid fa-arrow-right"></i></div>
+          <div class="ad-node ad-brain">Agent Brain</div>
+          <div class="ad-arrow ad-arr-3"><i class="fa-solid fa-arrow-right"></i></div>
+          <div class="ad-node ad-act">Actuators</div>
+          <div class="ad-arrow ad-arr-4"><i class="fa-solid fa-arrow-down"></i></div>
+          <div class="ad-node ad-effect">Effect</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         01  FOUNDATIONS
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="foundations">
+      <div class="section-inner">
+        <div class="section-label reveal">01 — Foundations</div>
+        <h2 class="section-title reveal">Prerequisite Knowledge</h2>
+        <p class="section-intro reveal">Before diving into AI Agents, let's solidify the core concepts that make them possible.</p>
+
+        <div class="concept-grid">
+          <div class="concept-card reveal" style="--delay:.05s">
+            <div class="cc-icon"><i class="fa-solid fa-brain"></i></div>
+            <h3>Artificial Intelligence</h3>
+            <p>AI is the simulation of human intelligence in machines — enabling them to think, learn, reason, and solve problems. It's the broad field that encompasses everything from search algorithms to neural networks.</p>
+            <div class="cc-tag">The Big Picture</div>
+          </div>
+          <div class="concept-card reveal" style="--delay:.10s">
+            <div class="cc-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <h3>Machine Learning</h3>
+            <p>A subset of AI where systems learn patterns from data without being explicitly programmed. ML models improve through experience — like a spam filter that gets smarter as it sees more emails.</p>
+            <div class="cc-tag">Data-Driven</div>
+          </div>
+          <div class="concept-card reveal" style="--delay:.15s">
+            <div class="cc-icon"><i class="fa-solid fa-network-wired"></i></div>
+            <h3>Deep Learning</h3>
+            <p>A subset of ML using layered neural networks (inspired by the brain) to handle unstructured data like images, audio, and text. Powers face recognition, voice assistants, and image generation.</p>
+            <div class="cc-tag">Neural Networks</div>
+          </div>
+          <div class="concept-card reveal" style="--delay:.20s">
+            <div class="cc-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <h3>Generative AI</h3>
+            <p>AI that creates new content — text, images, code, music. Models like GPT-4 and Gemini are trained on massive datasets and can generate human-quality output, enabling the AI Agent revolution.</p>
+            <div class="cc-tag">Creative AI</div>
+          </div>
+        </div>
+
+        <div class="why-box reveal">
+          <div class="why-icon"><i class="fa-solid fa-lightbulb"></i></div>
+          <div class="why-text">
+            <h4>Why Do We Need AI Agents?</h4>
+            <p>Traditional AI models are passive — you give input, they give output. But real-world problems require <strong>autonomous decision-making, multi-step reasoning, and interaction with the environment.</strong> AI Agents bridge this gap by acting, not just reacting. They can browse the web, run code, call APIs, and complete tasks end-to-end without human intervention at every step.</p>
+          </div>
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="intro">Next: Introduction to AI Agents <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         02  INTRODUCTION
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="intro">
+      <div class="section-inner">
+        <div class="section-label reveal">02 — Introduction</div>
+        <h2 class="section-title reveal">What Is an AI Agent?</h2>
+
+        <div class="definition-box reveal">
+          <div class="def-quote">"</div>
+          <p>An <strong>AI Agent</strong> is an autonomous software entity that <strong>perceives its environment</strong> through sensors, <strong>processes</strong> that information, and <strong>takes actions</strong> to achieve specific goals — optionally learning and improving over time.</p>
+        </div>
+
+        <h3 class="subsection-title reveal">Key Characteristics</h3>
+        <div class="char-grid">
+          <div class="char-card reveal" style="--delay:.05s">
+            <div class="char-num">01</div>
+            <div class="char-icon"><i class="fa-solid fa-person-running"></i></div>
+            <h4>Autonomy</h4>
+            <p>Operates independently without constant human intervention. Makes its own decisions based on its goals and environment state.</p>
+          </div>
+          <div class="char-card reveal" style="--delay:.10s">
+            <div class="char-num">02</div>
+            <div class="char-icon"><i class="fa-solid fa-eye"></i></div>
+            <h4>Perception</h4>
+            <p>Receives information from its environment via sensors — cameras, microphones, API data, text input, or sensor readings.</p>
+          </div>
+          <div class="char-card reveal" style="--delay:.15s">
+            <div class="char-num">03</div>
+            <div class="char-icon"><i class="fa-solid fa-sitemap"></i></div>
+            <h4>Decision-Making</h4>
+            <p>Analyzes perceived data and selects the best action using rules, search algorithms, learned models, or LLM reasoning.</p>
+          </div>
+          <div class="char-card reveal" style="--delay:.20s">
+            <div class="char-num">04</div>
+            <div class="char-icon"><i class="fa-solid fa-bolt"></i></div>
+            <h4>Action</h4>
+            <p>Executes decisions via actuators — sending messages, calling APIs, moving robots, clicking UI elements, or generating output.</p>
+          </div>
+        </div>
+
+        <h3 class="subsection-title reveal">Real-World Examples</h3>
+        <div class="example-list">
+          <div class="example-item reveal" style="--delay:.05s">
+            <div class="ex-icon" style="--c:#61DAFB"><i class="fa-solid fa-comments"></i></div>
+            <div class="ex-body">
+              <strong>Chatbots (e.g., ChatGPT)</strong>
+              <p>Perceive text input → process with LLM → generate and send a response. Can chain tool calls for multi-step tasks.</p>
+            </div>
+          </div>
+          <div class="example-item reveal" style="--delay:.10s">
+            <div class="ex-icon" style="--c:#A78BFA"><i class="fa-solid fa-thumbs-up"></i></div>
+            <div class="ex-body">
+              <strong>Recommendation Systems (e.g., Netflix)</strong>
+              <p>Perceive viewing history → decide what to show → present recommendations → learn from clicks.</p>
+            </div>
+          </div>
+          <div class="example-item reveal" style="--delay:.15s">
+            <div class="ex-icon" style="--c:#F97316"><i class="fa-solid fa-microphone"></i></div>
+            <div class="ex-body">
+              <strong>Virtual Assistants (e.g., Siri, Alexa)</strong>
+              <p>Perceive voice → transcribe → understand intent → take action (play music, set alarm, answer questions).</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="components">Next: Components of an AI Agent <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         03  COMPONENTS
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="components">
+      <div class="section-inner">
+        <div class="section-label reveal">03 — Components</div>
+        <h2 class="section-title reveal">Components of an AI Agent</h2>
+        <p class="section-intro reveal">Every AI agent — from a simple chatbot to a complex autonomous robot — is built from these four core components.</p>
+
+        <div class="component-diagram reveal">
+          <div class="comp-row">
+            <div class="comp-block comp-env">
+              <i class="fa-solid fa-globe"></i>
+              <span>Environment</span>
+              <small>The world the agent lives in</small>
+            </div>
+          </div>
+          <div class="comp-arrows">
+            <div class="comp-arr-label">Perception (Input)</div>
+            <div class="comp-arr-label">Action (Output)</div>
+          </div>
+          <div class="comp-row comp-middle">
+            <div class="comp-block comp-sensor">
+              <i class="fa-solid fa-satellite-dish"></i>
+              <span>Sensors</span>
+              <small>Camera, mic, API, text</small>
+            </div>
+            <div class="comp-block comp-brain-big">
+              <i class="fa-solid fa-microchip"></i>
+              <span>Decision Logic</span>
+              <small>Rules / ML Model / LLM</small>
+            </div>
+            <div class="comp-block comp-actuator">
+              <i class="fa-solid fa-hand-pointer"></i>
+              <span>Actuators</span>
+              <small>Motor, API call, text out</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-cards">
+          <div class="comp-detail-card reveal" style="--delay:.05s; --accent:#61DAFB">
+            <div class="cdc-header">
+              <i class="fa-solid fa-globe"></i>
+              <h3>Environment</h3>
+            </div>
+            <p>The context in which the agent operates. Can be physical (factory floor), digital (web browser), or virtual (game world). The environment provides stimuli and receives the agent's actions.</p>
+            <div class="cdc-example">
+              <strong>Example:</strong> For a self-driving car agent, the environment is the road — with lanes, traffic lights, other vehicles, and pedestrians.
+            </div>
+          </div>
+          <div class="comp-detail-card reveal" style="--delay:.10s; --accent:#A78BFA">
+            <div class="cdc-header">
+              <i class="fa-solid fa-satellite-dish"></i>
+              <h3>Sensors (Input)</h3>
+            </div>
+            <p>The mechanisms through which an agent perceives its environment. Sensors translate real-world signals into data the agent can process.</p>
+            <div class="cdc-example">
+              <strong>Examples:</strong> Camera (vision), microphone (sound), keyboard (text), REST API responses (data), GPS (location).
+            </div>
+          </div>
+          <div class="comp-detail-card reveal" style="--delay:.15s; --accent:#F97316">
+            <div class="cdc-header">
+              <i class="fa-solid fa-hand-pointer"></i>
+              <h3>Actuators (Output)</h3>
+            </div>
+            <p>The mechanisms through which an agent affects its environment. After deciding what to do, actuators carry out the action.</p>
+            <div class="cdc-example">
+              <strong>Examples:</strong> Robot motor (move), speaker (speak), HTTP request (call API), display (show text), database write (store).
+            </div>
+          </div>
+          <div class="comp-detail-card reveal" style="--delay:.20s; --accent:#34D399">
+            <div class="cdc-header">
+              <i class="fa-solid fa-microchip"></i>
+              <h3>Decision Logic / Brain</h3>
+            </div>
+            <p>The core intelligence of the agent — takes sensor input, applies reasoning (rules, ML, LLM), and selects the best action to take.</p>
+            <div class="cdc-example">
+              <strong>Examples:</strong> if-else rules, neural network, GPT-4 API call, Q-learning policy, decision tree.
+            </div>
+          </div>
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="types">Next: Types of AI Agents <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         04  TYPES
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="types">
+      <div class="section-inner">
+        <div class="section-label reveal">04 — Types</div>
+        <h2 class="section-title reveal">Types of AI Agents</h2>
+
+        <div class="types-stack">
+
+          <div class="type-card reveal" style="--delay:.05s; --tc:#61DAFB">
+            <div class="tc-badge">Type 01</div>
+            <div class="tc-body">
+              <div class="tc-header">
+                <i class="fa-solid fa-traffic-light"></i>
+                <h3>Simple Reflex Agent</h3>
+              </div>
+              <p>Acts solely on current percept, ignoring history. Uses condition-action rules: <em>"IF this THEN that."</em> No memory, no planning.</p>
+              <div class="tc-meta">
+                <div class="tc-example"><strong>Example:</strong> A thermostat — if temp &lt; 68°F, turn heater on.</div>
+                <div class="tc-when"><strong>Use when:</strong> Environment is simple, fully observable, and rules cover all cases.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card reveal" style="--delay:.10s; --tc:#A78BFA">
+            <div class="tc-badge">Type 02</div>
+            <div class="tc-body">
+              <div class="tc-header">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <h3>Model-Based Reflex Agent</h3>
+              </div>
+              <p>Maintains an internal model (memory) of the world — tracks unobservable state to make better decisions even with partial information.</p>
+              <div class="tc-meta">
+                <div class="tc-example"><strong>Example:</strong> A vacuum robot that remembers which rooms it has already cleaned.</div>
+                <div class="tc-when"><strong>Use when:</strong> Environment is partially observable and history matters for current decisions.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card reveal" style="--delay:.15s; --tc:#F97316">
+            <div class="tc-badge">Type 03</div>
+            <div class="tc-body">
+              <div class="tc-header">
+                <i class="fa-solid fa-bullseye"></i>
+                <h3>Goal-Based Agent</h3>
+              </div>
+              <p>Has explicit goals and searches for action sequences that achieve them. Plans ahead and evaluates future states.</p>
+              <div class="tc-meta">
+                <div class="tc-example"><strong>Example:</strong> A GPS navigation agent that finds the fastest route to your destination.</div>
+                <div class="tc-when"><strong>Use when:</strong> Multiple paths exist to a goal, and the agent must choose between them.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card reveal" style="--delay:.20s; --tc:#34D399">
+            <div class="tc-badge">Type 04</div>
+            <div class="tc-body">
+              <div class="tc-header">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <h3>Utility-Based Agent</h3>
+              </div>
+              <p>Extends goal-based with a <em>utility function</em> to measure how desirable each outcome is. Chooses actions that maximise utility (quality of solution).</p>
+              <div class="tc-meta">
+                <div class="tc-example"><strong>Example:</strong> A stock-trading agent that weighs risk vs return to pick the best trade.</div>
+                <div class="tc-when"><strong>Use when:</strong> There are conflicting goals or trade-offs (speed vs safety, cost vs quality).</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card reveal" style="--delay:.25s; --tc:#F472B6">
+            <div class="tc-badge">Type 05</div>
+            <div class="tc-body">
+              <div class="tc-header">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <h3>Learning Agent</h3>
+              </div>
+              <p>Improves its performance over time through experience. Has four components: Learning Element, Performance Element, Critic, and Problem Generator.</p>
+              <div class="tc-meta">
+                <div class="tc-example"><strong>Example:</strong> AlphaGo — learned to play Go at superhuman level through self-play reinforcement learning.</div>
+                <div class="tc-when"><strong>Use when:</strong> Optimal behaviour is unknown upfront and must be discovered through interaction.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="architecture">Next: Agent Architecture <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         05  ARCHITECTURE
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="architecture">
+      <div class="section-inner">
+        <div class="section-label reveal">05 — Architecture</div>
+        <h2 class="section-title reveal">Agent Architecture</h2>
+        <p class="section-intro reveal">The architecture defines how components are organized and how data flows through an agent. Understanding this is critical for building real agents.</p>
+
+        <!-- Perception-Decision-Action Loop -->
+        <h3 class="subsection-title reveal">Perception → Decision → Action Loop</h3>
+        <div class="arch-loop reveal">
+          <div class="loop-node loop-p">
+            <div class="loop-icon"><i class="fa-solid fa-eye"></i></div>
+            <div class="loop-label">Perception</div>
+            <div class="loop-sub">Raw input from environment</div>
+          </div>
+          <div class="loop-connector">
+            <div class="connector-line"></div>
+            <div class="connector-label">Process</div>
+          </div>
+          <div class="loop-node loop-d">
+            <div class="loop-icon"><i class="fa-solid fa-microchip"></i></div>
+            <div class="loop-label">Decision</div>
+            <div class="loop-sub">Reason &amp; select action</div>
+          </div>
+          <div class="loop-connector">
+            <div class="connector-line"></div>
+            <div class="connector-label">Execute</div>
+          </div>
+          <div class="loop-node loop-a">
+            <div class="loop-icon"><i class="fa-solid fa-bolt"></i></div>
+            <div class="loop-label">Action</div>
+            <div class="loop-sub">Affect the environment</div>
+          </div>
+          <div class="loop-back">
+            <div class="loop-back-arrow"></div>
+            <div class="loop-back-label">Feedback Loop</div>
+          </div>
+        </div>
+
+        <!-- Internal Architecture -->
+        <h3 class="subsection-title reveal">Internal Architecture</h3>
+        <div class="internal-arch reveal">
+          <div class="ia-layer" style="--lc:#61DAFB">
+            <div class="ia-label">Input Processing Layer</div>
+            <div class="ia-content">
+              <span>Text Parser</span>
+              <span>Image Encoder</span>
+              <span>Signal Filter</span>
+              <span>API Decoder</span>
+            </div>
+          </div>
+          <div class="ia-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+          <div class="ia-layer" style="--lc:#A78BFA">
+            <div class="ia-label">Decision Module (Agent Brain)</div>
+            <div class="ia-content">
+              <span>Working Memory</span>
+              <span>Knowledge Base</span>
+              <span>Reasoning Engine</span>
+              <span>Goal Manager</span>
+            </div>
+          </div>
+          <div class="ia-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+          <div class="ia-layer" style="--lc:#F97316">
+            <div class="ia-label">Action Execution Layer</div>
+            <div class="ia-content">
+              <span>Tool Caller</span>
+              <span>API Sender</span>
+              <span>Motor Controller</span>
+              <span>Response Generator</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Architecture Types -->
+        <h3 class="subsection-title reveal">Common Architecture Patterns</h3>
+        <div class="arch-patterns">
+          <div class="arch-pat reveal" style="--delay:.05s">
+            <div class="ap-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <h4>Reactive Architecture</h4>
+            <p>Direct stimulus-response mapping. No world model. Extremely fast but limited to simple tasks.</p>
+          </div>
+          <div class="arch-pat reveal" style="--delay:.10s">
+            <div class="ap-icon"><i class="fa-solid fa-diagram-project"></i></div>
+            <h4>Deliberative Architecture</h4>
+            <p>Maintains world model, plans ahead using search. Slower but can handle complex, multi-step problems.</p>
+          </div>
+          <div class="arch-pat reveal" style="--delay:.15s">
+            <div class="ap-icon"><i class="fa-solid fa-code-branch"></i></div>
+            <h4>Hybrid Architecture</h4>
+            <p>Combines reactive (fast, low-level) with deliberative (slow, high-level) layers. Used in modern robots and AI systems.</p>
+          </div>
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="howworks">Next: How AI Agents Work <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         06  HOW IT WORKS
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="howworks">
+      <div class="section-inner">
+        <div class="section-label reveal">06 — How It Works</div>
+        <h2 class="section-title reveal">Step-by-Step Agent Flow</h2>
+
+        <div class="steps-flow">
+          <div class="step-card reveal" style="--delay:.05s; --step-c:#61DAFB">
+            <div class="step-num">01</div>
+            <div class="step-body">
+              <div class="step-icon"><i class="fa-solid fa-inbox"></i></div>
+              <h3>Receive Input</h3>
+              <p>The agent receives raw data from its environment — a user message, a sensor reading, an API response, or any external stimulus.</p>
+              <div class="step-eg">e.g., User types: "Book me a flight to Paris next Friday"</div>
+            </div>
+          </div>
+          <div class="step-connector"><i class="fa-solid fa-arrow-down"></i></div>
+
+          <div class="step-card reveal" style="--delay:.10s; --step-c:#A78BFA">
+            <div class="step-num">02</div>
+            <div class="step-body">
+              <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+              <h3>Analyse Environment</h3>
+              <p>Processes the input — parses text, identifies intent, checks context memory, and builds an understanding of the current state.</p>
+              <div class="step-eg">Intent: book_flight | Destination: Paris | Date: next Friday</div>
+            </div>
+          </div>
+          <div class="step-connector"><i class="fa-solid fa-arrow-down"></i></div>
+
+          <div class="step-card reveal" style="--delay:.15s; --step-c:#F97316">
+            <div class="step-num">03</div>
+            <div class="step-body">
+              <div class="step-icon"><i class="fa-solid fa-lightbulb"></i></div>
+              <h3>Decide Action</h3>
+              <p>Applies reasoning — consults rules, learned policies, or LLM reasoning — to select the best next action or sequence of actions.</p>
+              <div class="step-eg">Decision: Call flight_search(origin=current, dest=Paris, date=2025-06-06)</div>
+            </div>
+          </div>
+          <div class="step-connector"><i class="fa-solid fa-arrow-down"></i></div>
+
+          <div class="step-card reveal" style="--delay:.20s; --step-c:#34D399">
+            <div class="step-num">04</div>
+            <div class="step-body">
+              <div class="step-icon"><i class="fa-solid fa-play"></i></div>
+              <h3>Execute Action</h3>
+              <p>Carries out the chosen action via actuators — calls an API, sends a command, generates a response, or triggers a physical motor.</p>
+              <div class="step-eg">API call → returns 3 flights → presents options to user</div>
+            </div>
+          </div>
+          <div class="step-connector"><i class="fa-solid fa-arrow-down"></i></div>
+
+          <div class="step-card reveal" style="--delay:.25s; --step-c:#F472B6">
+            <div class="step-num">05</div>
+            <div class="step-body">
+              <div class="step-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
+              <h3>Learn (Optional)</h3>
+              <p>Updates its model, policy, or memory based on feedback — did the action achieve the goal? What reward was received? Adjusts future behaviour accordingly.</p>
+              <div class="step-eg">User selects flight → store preference → improve future recommendations</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="decisions">Next: Decision-Making <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         07  DECISION-MAKING
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="decisions">
+      <div class="section-inner">
+        <div class="section-label reveal">07 — Decision-Making</div>
+        <h2 class="section-title reveal">How Agents Make Decisions</h2>
+
+        <div class="decision-grid">
+          <div class="dec-card reveal" style="--delay:.05s; --dc:#61DAFB">
+            <div class="dc-icon"><i class="fa-solid fa-code"></i></div>
+            <h3>Rule-Based Logic</h3>
+            <p>Explicit IF-THEN rules written by humans. Fast, explainable, but brittle — breaks down when encountering situations not covered by the rules.</p>
+            <div class="dc-pros-cons">
+              <span class="pro"><i class="fa-solid fa-check"></i> Fast &amp; transparent</span>
+              <span class="con"><i class="fa-solid fa-xmark"></i> Doesn't scale</span>
+            </div>
+          </div>
+          <div class="dec-card reveal" style="--delay:.10s; --dc:#A78BFA">
+            <div class="dc-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+            <h3>Search-Based Decisions</h3>
+            <p>Explores a tree of possible futures (BFS, DFS, A* search) to find a path that leads to the goal. Used in games and planning problems.</p>
+            <div class="dc-pros-cons">
+              <span class="pro"><i class="fa-solid fa-check"></i> Finds optimal paths</span>
+              <span class="con"><i class="fa-solid fa-xmark"></i> Computationally expensive</span>
+            </div>
+          </div>
+          <div class="dec-card reveal" style="--delay:.15s; --dc:#F97316">
+            <div class="dc-icon"><i class="fa-solid fa-chart-bar"></i></div>
+            <h3>Learning-Based Decisions</h3>
+            <p>Trains a model on data to learn decision boundaries. The agent's "brain" is a learned function — neural networks, SVMs, decision trees.</p>
+            <div class="dc-pros-cons">
+              <span class="pro"><i class="fa-solid fa-check"></i> Handles complexity</span>
+              <span class="con"><i class="fa-solid fa-xmark"></i> Needs lots of data</span>
+            </div>
+          </div>
+          <div class="dec-card reveal" style="--delay:.20s; --dc:#34D399">
+            <div class="dc-icon"><i class="fa-solid fa-trophy"></i></div>
+            <h3>Reinforcement Learning</h3>
+            <p>Agent learns by trial-and-error. Receives rewards for good actions, penalties for bad ones. Over time, learns the optimal policy through experience.</p>
+            <div class="rl-diagram">
+              <span class="rl-node">Agent</span>
+              <span class="rl-arr">→ action →</span>
+              <span class="rl-node">Environment</span>
+              <span class="rl-arr">→ reward + state →</span>
+              <span class="rl-node">Agent</span>
+            </div>
+            <div class="dc-pros-cons">
+              <span class="pro"><i class="fa-solid fa-check"></i> Learns optimal policy</span>
+              <span class="con"><i class="fa-solid fa-xmark"></i> Slow to train</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="code">Next: Code Examples <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         08  CODE EXAMPLES
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="code">
+      <div class="section-inner">
+        <div class="section-label reveal">08 — Code Examples</div>
+        <h2 class="section-title reveal">Hands-On Code</h2>
+        <p class="section-intro reveal">Working examples you can run and modify. Click the copy button to grab any snippet.</p>
+
+        <!-- Code Block 1 -->
+        <div class="code-wrap reveal" style="--delay:.05s">
+          <div class="code-header">
+            <div class="code-title"><i class="fa-brands fa-python"></i> Simple Rule-Based Agent</div>
+            <button class="copy-btn" data-target="code1"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <pre class="code-block" id="code1"><code><span class="c"># Simple Rule-Based AI Agent</span>
+<span class="c"># Demonstrates the most basic form of an AI agent</span>
+
+<span class="k">class</span> <span class="cn">SimpleReflexAgent</span>:
+    <span class="s">"""A thermostat-style agent using condition-action rules."""</span>
+
+    <span class="k">def</span> <span class="fn">__init__</span>(self, target_temp=<span class="n">72</span>):
+        self.target_temp = target_temp
+        self.state = <span class="s">"idle"</span>
+
+    <span class="k">def</span> <span class="fn">perceive</span>(self, current_temp):
+        <span class="s">"""Sensor: read environment."""</span>
+        <span class="k">return</span> {<span class="s">"temperature"</span>: current_temp}
+
+    <span class="k">def</span> <span class="fn">decide</span>(self, percept):
+        <span class="s">"""Decision logic: condition → action rules."""</span>
+        temp = percept[<span class="s">"temperature"</span>]
+
+        <span class="k">if</span> temp &lt; self.target_temp - <span class="n">2</span>:
+            <span class="k">return</span> <span class="s">"heat_on"</span>
+        <span class="k">elif</span> temp &gt; self.target_temp + <span class="n">2</span>:
+            <span class="k">return</span> <span class="s">"cool_on"</span>
+        <span class="k">else</span>:
+            <span class="k">return</span> <span class="s">"idle"</span>
+
+    <span class="k">def</span> <span class="fn">act</span>(self, action):
+        <span class="s">"""Actuator: execute the decision."""</span>
+        self.state = action
+        actions = {
+            <span class="s">"heat_on"</span>: <span class="s">"🔥 Heater ON"</span>,
+            <span class="s">"cool_on"</span>: <span class="s">"❄️  AC ON"</span>,
+            <span class="s">"idle"</span>:    <span class="s">"✅ System IDLE"</span>
+        }
+        <span class="k">print</span>(actions[action])
+
+    <span class="k">def</span> <span class="fn">run</span>(self, current_temp):
+        <span class="s">"""Full agent loop: perceive → decide → act."""</span>
+        percept = self.perceive(current_temp)
+        action  = self.decide(percept)
+        self.act(action)
+
+<span class="c"># Usage</span>
+agent = SimpleReflexAgent(target_temp=<span class="n">72</span>)
+agent.run(<span class="n">65</span>)  <span class="c"># → 🔥 Heater ON</span>
+agent.run(<span class="n">72</span>)  <span class="c"># → ✅ System IDLE</span>
+agent.run(<span class="n">80</span>)  <span class="c"># → ❄️  AC ON</span></code></pre>
+        </div>
+
+        <!-- Code Block 2 -->
+        <div class="code-wrap reveal" style="--delay:.08s">
+          <div class="code-header">
+            <div class="code-title"><i class="fa-brands fa-python"></i> Chatbot Agent Logic</div>
+            <button class="copy-btn" data-target="code2"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <pre class="code-block" id="code2"><code><span class="c"># Simple Chatbot Agent with intent detection</span>
+
+<span class="k">import</span> re
+
+<span class="k">class</span> <span class="cn">ChatbotAgent</span>:
+    <span class="k">def</span> <span class="fn">__init__</span>(self):
+        self.memory = []  <span class="c"># conversation history</span>
+        self.intents = {
+            <span class="s">"greeting"</span>: [<span class="s">"hello"</span>, <span class="s">"hi"</span>, <span class="s">"hey"</span>],
+            <span class="s">"farewell"</span>: [<span class="s">"bye"</span>, <span class="s">"goodbye"</span>, <span class="s">"exit"</span>],
+            <span class="s">"weather"</span>:  [<span class="s">"weather"</span>, <span class="s">"temperature"</span>, <span class="s">"rain"</span>],
+            <span class="s">"help"</span>:     [<span class="s">"help"</span>, <span class="s">"assist"</span>, <span class="s">"support"</span>],
+        }
+        self.responses = {
+            <span class="s">"greeting"</span>: <span class="s">"Hello! How can I help you today?"</span>,
+            <span class="s">"farewell"</span>: <span class="s">"Goodbye! Have a great day!"</span>,
+            <span class="s">"weather"</span>:  <span class="s">"I'll check the weather for you..."</span>,
+            <span class="s">"help"</span>:     <span class="s">"Sure! Tell me what you need help with."</span>,
+            <span class="s">"default"</span>:  <span class="s">"I didn't quite understand that. Can you rephrase?"</span>
+        }
+
+    <span class="k">def</span> <span class="fn">perceive</span>(self, user_input):
+        <span class="s">"""Clean and tokenize input."""</span>
+        <span class="k">return</span> user_input.lower().strip()
+
+    <span class="k">def</span> <span class="fn">detect_intent</span>(self, text):
+        <span class="s">"""Match text against known intent keywords."""</span>
+        <span class="k">for</span> intent, keywords <span class="k">in</span> self.intents.items():
+            <span class="k">if</span> <span class="fn">any</span>(kw <span class="k">in</span> text <span class="k">for</span> kw <span class="k">in</span> keywords):
+                <span class="k">return</span> intent
+        <span class="k">return</span> <span class="s">"default"</span>
+
+    <span class="k">def</span> <span class="fn">decide</span>(self, text):
+        <span class="s">"""Choose response based on detected intent."""</span>
+        intent = self.detect_intent(text)
+        <span class="k">return</span> self.responses[intent]
+
+    <span class="k">def</span> <span class="fn">act</span>(self, response):
+        <span class="s">"""Output the response (actuator)."""</span>
+        <span class="k">print</span>(<span class="s">f"Bot: {response}"</span>)
+        self.memory.append(response)
+
+    <span class="k">def</span> <span class="fn">chat</span>(self, user_input):
+        <span class="s">"""Full agent loop."""</span>
+        text     = self.perceive(user_input)
+        response = self.decide(text)
+        self.act(response)
+
+<span class="c"># Usage</span>
+bot = ChatbotAgent()
+bot.chat(<span class="s">"Hello there!"</span>)   <span class="c"># → Hello! How can I help you today?</span>
+bot.chat(<span class="s">"What's the weather?"</span>) <span class="c"># → I'll check the weather for you...</span></code></pre>
+        </div>
+
+        <!-- Code Block 3 -->
+        <div class="code-wrap reveal" style="--delay:.11s">
+          <div class="code-header">
+            <div class="code-title"><i class="fa-brands fa-python"></i> Agent Loop — Pseudo-code</div>
+            <button class="copy-btn" data-target="code3"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <pre class="code-block" id="code3"><code><span class="c"># Universal Agent Loop — the heartbeat of any agent</span>
+
+<span class="k">def</span> <span class="fn">agent_loop</span>(agent, environment, max_steps=<span class="n">100</span>):
+    <span class="s">"""
+    Core agent control loop.
+    Every AI agent — from thermostat to GPT — follows this pattern.
+    """</span>
+    percept = environment.initial_state()
+
+    <span class="k">for</span> step <span class="k">in</span> <span class="fn">range</span>(max_steps):
+        <span class="c"># 1. PERCEIVE — sense the environment</span>
+        observation = agent.perceive(percept)
+
+        <span class="c"># 2. DECIDE — choose an action</span>
+        action = agent.decide(observation)
+
+        <span class="c"># 3. ACT — execute the action</span>
+        result = environment.apply(action)
+
+        <span class="c"># 4. LEARN — update from feedback (optional)</span>
+        <span class="k">if</span> <span class="fn">hasattr</span>(agent, <span class="s">'learn'</span>):
+            reward = environment.get_reward()
+            agent.learn(observation, action, reward)
+
+        <span class="c"># 5. UPDATE — get new state for next iteration</span>
+        percept = result
+
+        <span class="c"># 6. CHECK — are we done?</span>
+        <span class="k">if</span> environment.is_terminal():
+            <span class="k">print</span>(<span class="s">f"✅ Goal reached at step {step}"</span>)
+            <span class="k">break</span>
+
+    <span class="k">return</span> agent.get_performance()
+
+<span class="c"># Key insight: the loop is always the same.</span>
+<span class="c"># What changes is WHAT'S INSIDE perceive(), decide(), and act().</span></code></pre>
+        </div>
+
+        <!-- Code Block 4 -->
+        <div class="code-wrap reveal" style="--delay:.14s">
+          <div class="code-header">
+            <div class="code-title"><i class="fa-brands fa-python"></i> Basic Decision-Making Function</div>
+            <button class="copy-btn" data-target="code4"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <pre class="code-block" id="code4"><code><span class="c"># Utility-Based Decision Function</span>
+<span class="c"># Agent scores each possible action and picks the best</span>
+
+<span class="k">def</span> <span class="fn">utility_decision</span>(state, possible_actions, utility_fn):
+    <span class="s">"""
+    Choose the action with highest expected utility.
+
+    Args:
+        state:            Current world state
+        possible_actions: List of available actions
+        utility_fn:       Function(state, action) → score (float)
+
+    Returns:
+        Best action to take
+    """</span>
+    scores = {
+        action: utility_fn(state, action)
+        <span class="k">for</span> action <span class="k">in</span> possible_actions
+    }
+
+    <span class="c"># Pick action with highest utility score</span>
+    best_action = <span class="fn">max</span>(scores, key=<span class="k">lambda</span> a: scores[a])
+
+    <span class="k">print</span>(<span class="s">f"Scores: {scores}"</span>)
+    <span class="k">print</span>(<span class="s">f"Chosen: {best_action} ({scores[best_action]:.2f})"</span>)
+    <span class="k">return</span> best_action
+
+<span class="c"># Example: route-planning agent</span>
+<span class="k">def</span> <span class="fn">route_utility</span>(state, action):
+    scores = {
+        <span class="s">"highway"</span>:  <span class="n">0.85</span>,  <span class="c"># fast but tolls</span>
+        <span class="s">"city_road"</span>: <span class="n">0.60</span>, <span class="c"># slow but scenic</span>
+        <span class="s">"shortcut"</span>: <span class="n">0.75</span>,  <span class="c"># medium, less certain</span>
+    }
+    <span class="k">return</span> scores.get(action, <span class="n">0.0</span>)
+
+result = utility_decision(
+    state={<span class="s">"traffic"</span>: <span class="s">"low"</span>},
+    possible_actions=[<span class="s">"highway"</span>, <span class="s">"city_road"</span>, <span class="s">"shortcut"</span>],
+    utility_fn=route_utility
+)
+<span class="c"># Output: Chosen: highway (0.85)</span></code></pre>
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="applications">Next: Real-World Applications <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         09  APPLICATIONS
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="applications">
+      <div class="section-inner">
+        <div class="section-label reveal">09 — Applications</div>
+        <h2 class="section-title reveal">Real-World Applications</h2>
+
+        <div class="app-grid">
+          <div class="app-card reveal" style="--delay:.05s; --ac:#61DAFB">
+            <div class="app-icon"><i class="fa-solid fa-comments"></i></div>
+            <h3>Chatbots &amp; Assistants</h3>
+            <p>Customer service bots, virtual assistants (Alexa, Siri), coding assistants (GitHub Copilot), and GPT-based agents that can use tools.</p>
+            <div class="app-examples">
+              <span>ChatGPT</span><span>Claude</span><span>Gemini</span><span>Copilot</span>
+            </div>
+          </div>
+          <div class="app-card reveal" style="--delay:.10s; --ac:#A78BFA">
+            <div class="app-icon"><i class="fa-solid fa-gamepad"></i></div>
+            <h3>Game Agents</h3>
+            <p>AI opponents in chess, Go, video games. AlphaGo (DeepMind) beat world champions. OpenAI Five beat professional Dota 2 players.</p>
+            <div class="app-examples">
+              <span>AlphaGo</span><span>OpenAI Five</span><span>AlphaStar</span>
+            </div>
+          </div>
+          <div class="app-card reveal" style="--delay:.15s; --ac:#F97316">
+            <div class="app-icon"><i class="fa-solid fa-thumbs-up"></i></div>
+            <h3>Recommendation Systems</h3>
+            <p>Analyse user behaviour and preferences to recommend content, products, or connections. Powered by collaborative filtering and deep learning.</p>
+            <div class="app-examples">
+              <span>Netflix</span><span>Spotify</span><span>Amazon</span><span>YouTube</span>
+            </div>
+          </div>
+          <div class="app-card reveal" style="--delay:.20s; --ac:#34D399">
+            <div class="app-icon"><i class="fa-solid fa-robot"></i></div>
+            <h3>Robotics</h3>
+            <p>Autonomous robots in warehouses, surgical robots, Mars rovers, and delivery drones. Use perception-action loops in real physical environments.</p>
+            <div class="app-examples">
+              <span>Boston Dynamics</span><span>Perseverance</span><span>DaVinci</span>
+            </div>
+          </div>
+          <div class="app-card reveal" style="--delay:.25s; --ac:#F472B6">
+            <div class="app-icon"><i class="fa-solid fa-gears"></i></div>
+            <h3>Automation Systems</h3>
+            <p>RPA (Robotic Process Automation) agents automate repetitive business tasks — data entry, invoice processing, email triage, and workflow execution.</p>
+            <div class="app-examples">
+              <span>UiPath</span><span>AutoGPT</span><span>CrewAI</span><span>n8n</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="challenges">Next: Challenges &amp; Limitations <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         10  CHALLENGES
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="challenges">
+      <div class="section-inner">
+        <div class="section-label reveal">10 — Challenges</div>
+        <h2 class="section-title reveal">Challenges &amp; Limitations</h2>
+
+        <div class="challenges-grid">
+          <div class="challenge-card reveal" style="--delay:.05s">
+            <div class="ch-icon" style="color:#F97316"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3>Limited Intelligence</h3>
+            <p>Simple agents can only handle situations covered by their rules or training data. They fail at edge cases and novel scenarios outside their training distribution.</p>
+          </div>
+          <div class="challenge-card reveal" style="--delay:.10s">
+            <div class="ch-icon" style="color:#EF4444"><i class="fa-solid fa-database"></i></div>
+            <h3>Data Dependency</h3>
+            <p>ML-based agents require massive, clean, well-labelled datasets. Bias in training data leads to biased agent behaviour — a critical ethical issue.</p>
+          </div>
+          <div class="challenge-card reveal" style="--delay:.15s">
+            <div class="ch-icon" style="color:#A78BFA"><i class="fa-solid fa-server"></i></div>
+            <h3>Scalability Issues</h3>
+            <p>Complex agents are computationally expensive. Real-time decision-making at scale requires significant infrastructure, latency management, and cost.</p>
+          </div>
+          <div class="challenge-card reveal" style="--delay:.20s">
+            <div class="ch-icon" style="color:#61DAFB"><i class="fa-solid fa-question-circle"></i></div>
+            <h3>Real-World Uncertainty</h3>
+            <p>The real world is noisy, unpredictable, and partially observable. Agents trained in simulation often fail when deployed in real environments (the "sim-to-real gap").</p>
+          </div>
+          <div class="challenge-card reveal" style="--delay:.25s">
+            <div class="ch-icon" style="color:#34D399"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>Safety &amp; Alignment</h3>
+            <p>Ensuring agents pursue the goals humans intended — not unintended proxies — is an open research problem. Misaligned agents can cause serious harm.</p>
+          </div>
+          <div class="challenge-card reveal" style="--delay:.30s">
+            <div class="ch-icon" style="color:#F472B6"><i class="fa-solid fa-eye-slash"></i></div>
+            <h3>Explainability</h3>
+            <p>Deep learning agents are "black boxes." Understanding why an agent made a specific decision is crucial for high-stakes domains like healthcare and finance.</p>
+          </div>
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="roadmap">Next: Learning Roadmap <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         11  ROADMAP
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="roadmap">
+      <div class="section-inner">
+        <div class="section-label reveal">11 — Roadmap</div>
+        <h2 class="section-title reveal">Learning Roadmap</h2>
+        <p class="section-intro reveal">Follow this structured path from absolute beginner to building your own AI Agents.</p>
+
+        <div class="roadmap-timeline">
+
+          <div class="roadmap-phase reveal" style="--delay:.05s; --ph:#61DAFB">
+            <div class="rp-marker">
+              <div class="rp-dot"></div>
+              <div class="rp-line"></div>
+            </div>
+            <div class="rp-content">
+              <div class="rp-phase-label">Phase 1</div>
+              <h3>The Basics</h3>
+              <div class="rp-items">
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Python fundamentals (variables, functions, OOP)</div>
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Problem-solving &amp; algorithmic thinking</div>
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Data structures (lists, dicts, stacks, queues)</div>
+              </div>
+              <div class="rp-duration"><i class="fa-regular fa-clock"></i> 4-6 weeks</div>
+            </div>
+          </div>
+
+          <div class="roadmap-phase reveal" style="--delay:.10s; --ph:#A78BFA">
+            <div class="rp-marker">
+              <div class="rp-dot"></div>
+              <div class="rp-line"></div>
+            </div>
+            <div class="rp-content">
+              <div class="rp-phase-label">Phase 2</div>
+              <h3>Core AI &amp; ML Concepts</h3>
+              <div class="rp-items">
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> AI fundamentals (search, logic, planning)</div>
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Machine Learning basics (linear regression, classification)</div>
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Intro to Neural Networks</div>
+              </div>
+              <div class="rp-duration"><i class="fa-regular fa-clock"></i> 6-8 weeks</div>
+            </div>
+          </div>
+
+          <div class="roadmap-phase reveal" style="--delay:.15s; --ph:#F97316">
+            <div class="rp-marker">
+              <div class="rp-dot"></div>
+              <div class="rp-line"></div>
+            </div>
+            <div class="rp-content">
+              <div class="rp-phase-label">Phase 3</div>
+              <h3>AI Agents</h3>
+              <div class="rp-items">
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Agent types and architectures</div>
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Decision-making algorithms</div>
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Tool use and function calling (LangChain / AutoGen)</div>
+              </div>
+              <div class="rp-duration"><i class="fa-regular fa-clock"></i> 6-8 weeks</div>
+            </div>
+          </div>
+
+          <div class="roadmap-phase reveal" style="--delay:.20s; --ph:#34D399">
+            <div class="rp-marker">
+              <div class="rp-dot"></div>
+              <div class="rp-line"></div>
+            </div>
+            <div class="rp-content">
+              <div class="rp-phase-label">Phase 4</div>
+              <h3>Advanced Topics</h3>
+              <div class="rp-items">
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Reinforcement learning (Q-learning, PPO)</div>
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> Multi-agent systems &amp; coordination</div>
+                <div class="rp-item"><i class="fa-solid fa-check-circle"></i> RAG, embeddings, and memory systems</div>
+              </div>
+              <div class="rp-duration"><i class="fa-regular fa-clock"></i> 8-10 weeks</div>
+            </div>
+          </div>
+
+          <div class="roadmap-phase reveal" style="--delay:.25s; --ph:#F472B6">
+            <div class="rp-marker">
+              <div class="rp-dot"></div>
+            </div>
+            <div class="rp-content">
+              <div class="rp-phase-label">Phase 5</div>
+              <h3>Projects &amp; Portfolio</h3>
+              <div class="rp-items">
+                <div class="rp-item"><i class="fa-solid fa-rocket"></i> Build a chatbot agent with memory</div>
+                <div class="rp-item"><i class="fa-solid fa-rocket"></i> Build a rule-based automation system</div>
+                <div class="rp-item"><i class="fa-solid fa-rocket"></i> Build a simple game-playing agent (Tic-Tac-Toe / Chess)</div>
+              </div>
+              <div class="rp-duration"><i class="fa-regular fa-clock"></i> Ongoing</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="next-btn-wrap">
+          <button class="next-btn" data-target="interview">Next: Interview Q&amp;A <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         12  INTERVIEW Q&A
+    ══════════════════════════════════════════════════════ -->
+    <section class="content-section" id="interview">
+      <div class="section-inner">
+        <div class="section-label reveal">12 — Interview Prep</div>
+        <h2 class="section-title reveal">Interview Questions &amp; Answers</h2>
+
+        <!-- Beginner -->
+        <div class="qa-group reveal">
+          <div class="qa-group-label"><i class="fa-solid fa-seedling"></i> Beginner</div>
+          <div class="accordion">
+            <div class="acc-item">
+              <button class="acc-trigger">What is an AI agent? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <p>An AI agent is an autonomous software entity that perceives its environment through sensors, processes that information using decision logic, and takes actions via actuators to achieve specific goals — all without requiring constant human input.</p>
+                <p><strong>Key analogy:</strong> Think of a chess AI — it observes the board (perception), calculates the best move (decision), and moves a piece (action). It does this autonomously, without someone telling it what to do each turn.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger">What are the main components of an AI agent? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <p>The four core components of any AI agent are:</p>
+                <ul>
+                  <li><strong>Environment</strong> — The world the agent operates in (physical, digital, or simulated)</li>
+                  <li><strong>Sensors</strong> — Input mechanisms (camera, microphone, text input, APIs)</li>
+                  <li><strong>Decision Logic</strong> — The brain: rules, ML models, or LLMs that choose actions</li>
+                  <li><strong>Actuators</strong> — Output mechanisms (motors, API calls, text responses, database writes)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger">What is the difference between AI and an AI agent? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <p><strong>AI</strong> is the broad field/concept — any system that simulates intelligence. An <strong>AI Agent</strong> is a specific implementation: an autonomous entity that <em>perceives, decides, and acts</em> in a loop.</p>
+                <p>Not all AI is agentic. A model that answers a single question (like a search engine) is AI, but not an agent. An agent that searches the web, reads results, writes a report, and emails it — autonomously — is an AI agent.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Intermediate -->
+        <div class="qa-group reveal" style="--delay:.08s">
+          <div class="qa-group-label" style="--gl:#A78BFA"><i class="fa-solid fa-code"></i> Intermediate</div>
+          <div class="accordion">
+            <div class="acc-item">
+              <button class="acc-trigger">What are the five types of AI agents? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <ol>
+                  <li><strong>Simple Reflex</strong> — IF-THEN rules, no memory (e.g., thermostat)</li>
+                  <li><strong>Model-Based</strong> — Maintains internal world model (e.g., vacuum robot with map)</li>
+                  <li><strong>Goal-Based</strong> — Plans ahead to reach a goal (e.g., GPS navigation)</li>
+                  <li><strong>Utility-Based</strong> — Maximises a utility function, handles trade-offs (e.g., stock trader)</li>
+                  <li><strong>Learning Agent</strong> — Improves through experience/feedback (e.g., AlphaGo)</li>
+                </ol>
+                <p>Each type builds on the previous — a learning agent can incorporate all the other approaches.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger">How do agents make decisions? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <p>AI agents use three main decision-making approaches:</p>
+                <ul>
+                  <li><strong>Rule-Based</strong>: Explicit IF condition THEN action rules. Fast and explainable but doesn't scale.</li>
+                  <li><strong>Search-Based</strong>: Explores a tree of possible future states (A*, BFS, MCTS). Good for planning in well-defined problems.</li>
+                  <li><strong>Learning-Based</strong>: A trained model predicts the best action. Used in complex, high-dimensional environments.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger">What is the Perception-Decision-Action loop? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <p>The PDA loop is the fundamental operating cycle of every AI agent:</p>
+                <ol>
+                  <li><strong>Perceive</strong>: Agent reads input from environment via sensors</li>
+                  <li><strong>Decide</strong>: Agent processes input and selects an action</li>
+                  <li><strong>Act</strong>: Agent executes the action, affecting the environment</li>
+                  <li>Loop repeats — the new environment state becomes the next perception</li>
+                </ol>
+                <p>This loop runs continuously — thousands of times per second in a game agent, or once per user message in a chatbot.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advanced -->
+        <div class="qa-group reveal" style="--delay:.12s">
+          <div class="qa-group-label" style="--gl:#F97316"><i class="fa-solid fa-fire"></i> Advanced</div>
+          <div class="accordion">
+            <div class="acc-item">
+              <button class="acc-trigger">What is a learning agent and how does it work? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <p>A learning agent has four internal components:</p>
+                <ul>
+                  <li><strong>Performance Element</strong>: Makes decisions (the current policy/model)</li>
+                  <li><strong>Critic</strong>: Evaluates performance — provides feedback/reward signal</li>
+                  <li><strong>Learning Element</strong>: Updates the performance element based on critic feedback</li>
+                  <li><strong>Problem Generator</strong>: Suggests exploratory actions to discover new knowledge</li>
+                </ul>
+                <p><strong>Example:</strong> AlphaGo's performance element plays moves, the critic scores positions, the learning element updates the neural network via self-play, and the problem generator explores novel game positions.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger">Difference between goal-based and utility-based agents? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <p><strong>Goal-Based Agent</strong>: Binary success — either achieves the goal or doesn't. Example: reaching a destination. Multiple paths may satisfy the goal equally.</p>
+                <p><strong>Utility-Based Agent</strong>: Measures HOW WELL goals are achieved with a continuous utility score. Example: reaching a destination quickly, cheaply, and safely — all three matter and must be balanced.</p>
+                <p><strong>Key difference:</strong> When there are conflicting goals or the quality of the solution matters (not just whether you reached it), you need a utility-based agent.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger">What are multi-agent systems (MAS)? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <p>A <strong>Multi-Agent System</strong> is an environment with multiple interacting AI agents. Each agent is autonomous but must coordinate, compete, or communicate with others.</p>
+                <p><strong>Key properties:</strong></p>
+                <ul>
+                  <li><strong>Cooperation</strong>: Agents work together (e.g., warehouse robot swarm)</li>
+                  <li><strong>Competition</strong>: Agents compete (e.g., agents in a market simulation)</li>
+                  <li><strong>Emergent behaviour</strong>: Complex system behaviour arises from simple agent interactions</li>
+                </ul>
+                <p><strong>Examples:</strong> AutoGen (Microsoft), CrewAI, MetaGPT — frameworks where multiple LLM agents collaborate on complex tasks.</p>
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-trigger">What is Reinforcement Learning in the context of agents? <i class="fa-solid fa-chevron-down acc-icon"></i></button>
+              <div class="acc-body">
+                <p>RL is the primary learning paradigm for training agents in interactive environments:</p>
+                <ul>
+                  <li><strong>Agent</strong> takes actions in an environment</li>
+                  <li><strong>Environment</strong> returns reward + new state</li>
+                  <li><strong>Agent</strong> learns a policy π(state) → action that maximises cumulative reward</li>
+                </ul>
+                <p><strong>Key algorithms:</strong> Q-Learning, Deep Q-Network (DQN), Proximal Policy Optimization (PPO), Actor-Critic methods.</p>
+                <p><strong>Used in:</strong> Game agents (AlphaGo, Atari), robotics locomotion, dialogue systems, and RLHF (training ChatGPT to be helpful).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="final-cta reveal">
+          <div class="fc-icon"><i class="fa-solid fa-trophy"></i></div>
+          <h3>You've completed the guide!</h3>
+          <p>You now have a solid foundation in AI Agents — from basic concepts to advanced architectures and interview preparation. Start building!</p>
+          <a href="#foundations" class="hero-cta fc-btn">Review from Start <i class="fa-solid fa-arrow-up"></i></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="ai-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.01 — Math Foundation | NN Guide</title>
+<link rel="stylesheet" href="shared.css">
+<style>:root{--neon:#00ff9d}</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="topnav-logo">NN<span>.GUIDE</span></a>
+  <div class="topnav-links">
+    <a href="01-math.html" class="active">01 Math</a><a href="02-fundamentals.html">02 Fundamentals</a><a href="03-python.html">03 Python</a><a href="04-workflow.html">04 Workflow</a><a href="05-cnn.html">05 CNN</a><a href="06-rnn.html">06 RNN</a><a href="07-nlp.html">07 NLP</a><a href="08-transformers.html">08 Transformers</a><a href="09-advanced.html">09 Advanced</a><a href="10-specializations.html">10 Specs</a><a href="11-projects.html">11 Projects</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow" style="width:400px;height:400px;background:rgba(0,255,157,1);top:-150px;right:-100px;"></div>
+  <div class="chapter-num">Chapter 01 — Foundation</div>
+  <h1 class="hero h1"><span class="accent">MATH</span><br>FOUNDATION</h1>
+  <p class="hero-sub">Linear algebra, calculus, probability & statistics — the mathematical backbone every deep learning engineer must master.</p>
+  <div class="hero-meta">
+    <div class="hero-stat"><div class="hero-stat-val">4</div><div class="hero-stat-label">Core Areas</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">8</div><div class="hero-stat-label">Topics</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">10</div><div class="hero-stat-label">Interview Q&amp;A</div></div>
+  </div>
+</div>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">Contents</div>
+    <a class="sb-link active" onclick="show('linalg')"><span class="sb-icon">📐</span>Linear Algebra</a>
+    <a class="sb-link" onclick="show('calculus')"><span class="sb-icon">📈</span>Calculus</a>
+    <a class="sb-link" onclick="show('prob')"><span class="sb-icon">🎲</span>Probability</a>
+    <a class="sb-link" onclick="show('stats')"><span class="sb-icon">📊</span>Statistics</a>
+    <a class="sb-link" onclick="show('interview')"><span class="sb-icon">🎯</span>Interview Q&amp;A</a>
+    <div class="sb-chapters">
+      <div class="sb-ch-label">Next Chapter</div>
+      <a class="sb-ch-link" href="02-fundamentals.html">→ 02 · NN Fundamentals</a>
+    </div>
+  </aside>
+
+  <div class="content">
+
+    <!-- LINEAR ALGEBRA -->
+    <div class="section active" id="s-linalg">
+      <div class="sec-head">
+        <span class="sec-tag tag-b">Beginner</span>
+        <h2 class="sec-head h2">LINEAR ALGEBRA</h2>
+        <div class="sec-meta">Vectors · Matrices · Operations · Eigenvalues</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,255,157,.1)">📐</span>Scalars, Vectors, Matrices, Tensors</div>
+        <p>Deep learning is tensor computation. Every piece of data — an image, a sentence, a batch — is a tensor flowing through your network.</p>
+        <div class="tbl"><table>
+          <tr><th>Object</th><th>Rank</th><th>Example</th><th>DL Use</th></tr>
+          <tr><td>Scalar</td><td>0</td><td>3.14</td><td>Loss value, learning rate</td></tr>
+          <tr><td>Vector</td><td>1</td><td>[1,2,3]</td><td>Single sample features, bias</td></tr>
+          <tr><td>Matrix</td><td>2</td><td>[[1,2],[3,4]]</td><td>Weight matrix, batch of vectors</td></tr>
+          <tr><td>Tensor</td><td>≥3</td><td>shape(B,C,H,W)</td><td>Image batch, feature maps</td></tr>
+        </table></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">✖️</span>Matrix Multiplication — The Core Operation</div>
+        <p>Every linear layer computes: <em>Y = XW + b</em>. This is a matrix multiply. For X∈ℝ^(m×n) and W∈ℝ^(n×p), result Y∈ℝ^(m×p).</p>
+        <div class="formula">Y = XW + b
+(m×n) · (n×p) + (p,) = (m×p)
+Inner dimensions must match!</div>
+        <div class="code-box">
+          <div class="code-top"><span class="code-label">Python · NumPy</span><div class="code-dots"><i></i><i></i><i></i></div></div>
+          <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+X = np.<span class="fn">random</span>.randn(<span class="num">32</span>, <span class="num">784</span>)   <span class="cm"># batch of 32 images, 784 pixels</span>
+W = np.<span class="fn">random</span>.randn(<span class="num">784</span>, <span class="num">256</span>)  <span class="cm"># weight matrix</span>
+b = np.<span class="fn">zeros</span>(<span class="num">256</span>)               <span class="cm"># bias</span>
+
+Y = X @ W + b                    <span class="cm"># @ is matrix multiply → shape (32, 256)</span>
+<span class="fn">print</span>(Y.shape)                   <span class="cm"># (32, 256)</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(255,61,113,.1)">🔄</span>Key Operations for DL</div>
+        <div class="two-col">
+          <div class="mini"><h4>Transpose</h4><p>Flip rows ↔ cols. A^T[i,j] = A[j,i]. Used in attention: QKᵀ</p></div>
+          <div class="mini"><h4>Dot Product</h4><p>a·b = Σaᵢbᵢ = |a||b|cosθ. Measures similarity. Foundation of attention scores.</p></div>
+          <div class="mini"><h4>Norms</h4><p>L1: Σ|xᵢ|, L2: √(Σxᵢ²). Used in regularisation (weight decay = L2 norm penalty).</p></div>
+          <div class="mini"><h4>Eigendecomposition</h4><p>Av = λv. Eigenvectors give principal directions; eigenvalues give importance. Core of PCA.</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(255,214,10,.1)">🌀</span>Singular Value Decomposition (SVD)</div>
+        <p>Any matrix M = UΣVᵀ. U and V are orthogonal, Σ is diagonal with singular values. Used in PCA, matrix factorisation, and model compression (low-rank approximation of weight matrices).</p>
+        <div class="code-box">
+          <div class="code-top"><span class="code-label">NumPy SVD</span><div class="code-dots"><i></i><i></i><i></i></div></div>
+          <pre>M = np.random.randn(<span class="num">100</span>, <span class="num">50</span>)
+U, S, Vt = np.linalg.<span class="fn">svd</span>(M, full_matrices=<span class="kw">False</span>)
+<span class="cm"># Low-rank approximation with k=10 components</span>
+k = <span class="num">10</span>
+M_approx = U[:, :k] @ np.<span class="fn">diag</span>(S[:k]) @ Vt[:k, :]
+<span class="fn">print</span>(f<span class="str">"Compression: {M.size} → {k*(U.shape[0]+Vt.shape[1])} params"</span>)</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALCULUS -->
+    <div class="section" id="s-calculus">
+      <div class="sec-head">
+        <span class="sec-tag tag-b">Beginner</span>
+        <h2 class="sec-head h2">CALCULUS</h2>
+        <div class="sec-meta">Derivatives · Chain Rule · Gradients · Jacobians</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,255,157,.1)">📈</span>Why Calculus? Gradient Descent!</div>
+        <p>Training a neural network = minimising a loss function L(θ) by updating parameters θ. We do this by computing the gradient ∂L/∂θ and stepping opposite to it.</p>
+        <div class="formula">θ ← θ − η · ∂L/∂θ
+η = learning rate (step size)
+∂L/∂θ = gradient (direction of steepest ascent)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">🔗</span>Chain Rule — Backpropagation's Engine</div>
+        <p>The chain rule lets us differentiate composite functions. A neural network is a composition of functions: L(f_n(f_{n-1}(...f_1(x)))). Backprop applies chain rule layer by layer:</p>
+        <div class="formula">If y = f(g(x)), then dy/dx = (df/dg) · (dg/dx)
+For network: ∂L/∂W¹ = ∂L/∂a² · ∂a²/∂z² · ∂z²/∂a¹ · ∂a¹/∂z¹ · ∂z¹/∂W¹</div>
+        <div class="callout cl-green"><span class="callout-icon">💡</span><span><strong>Key insight:</strong> Gradients flow backwards through the network in exact reverse order. Each layer receives ∂L/∂output and returns ∂L/∂input and ∂L/∂weights.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(255,61,113,.1)">🎯</span>Partial Derivatives & Gradients</div>
+        <p>The gradient ∇L is a vector of partial derivatives: ∇L = [∂L/∂w₁, ∂L/∂w₂, ..., ∂L/∂wₙ]. It points in the direction of steepest increase of L.</p>
+        <div class="code-box">
+          <div class="code-top"><span class="code-label">PyTorch Autograd</span><div class="code-dots"><i></i><i></i><i></i></div></div>
+          <pre><span class="kw">import</span> torch
+
+<span class="cm"># Automatic differentiation example</span>
+x = torch.<span class="fn">tensor</span>([<span class="num">2.0</span>, <span class="num">3.0</span>], requires_grad=<span class="kw">True</span>)
+y = x[<span class="num">0</span>]**<span class="num">2</span> + <span class.num">3</span>*x[<span class="num">1</span>]   <span class="cm"># y = x₀² + 3x₁</span>
+
+y.<span class="fn">backward</span>()
+<span class="fn">print</span>(x.grad)  <span class="cm"># tensor([4., 3.])  → [2x₀, 3]</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(178,75,255,.1)">📐</span>Jacobians and Hessians</div>
+        <div class="two-col">
+          <div class="mini"><h4>Jacobian Matrix</h4><p>Generalises gradient to vector-valued functions. J[i,j] = ∂yᵢ/∂xⱼ. Used in backprop through multi-output layers.</p></div>
+          <div class="mini"><h4>Hessian Matrix</h4><p>Second-order derivatives. H[i,j] = ∂²L/∂wᵢ∂wⱼ. Tells curvature. Used in Newton's method and saddle point analysis.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROBABILITY -->
+    <div class="section" id="s-prob">
+      <div class="sec-head">
+        <span class="sec-tag tag-b">Beginner</span>
+        <h2 class="sec-head h2">PROBABILITY</h2>
+        <div class="sec-meta">Distributions · Bayes · Entropy · MLE</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,255,157,.1)">🎲</span>Why Probability in DL?</div>
+        <p>Neural networks output probability distributions. Softmax gives P(class|input). Loss functions like cross-entropy are derived from maximum likelihood estimation. Understanding probability is essential for understanding why models work.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">📊</span>Key Distributions</div>
+        <div class="tbl"><table>
+          <tr><th>Distribution</th><th>Use in DL</th><th>Parameters</th></tr>
+          <tr><td>Bernoulli</td><td>Binary classification output</td><td>p</td></tr>
+          <tr><td>Categorical</td><td>Multi-class softmax output</td><td>p₁...pₖ</td></tr>
+          <tr><td>Gaussian (Normal)</td><td>Weight init, VAE latent space</td><td>μ, σ²</td></tr>
+          <tr><td>Uniform</td><td>Xavier/Glorot init</td><td>a, b</td></tr>
+        </table></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(255,214,10,.1)">🔑</span>Cross-Entropy Loss — Derived from MLE</div>
+        <p>Maximum Likelihood Estimation: find parameters θ that maximise P(data|θ). For classification, this becomes minimising cross-entropy:</p>
+        <div class="formula">L = -Σ yᵢ · log(ŷᵢ)
+= -log(ŷ_correct_class)   (for one-hot y)
+This is exactly -log P(correct class | input, θ)</div>
+        <div class="callout cl-blue"><span class="callout-icon">📌</span><span>Cross-entropy loss = negative log-likelihood of the correct label under the model's predicted distribution. Minimising loss = maximising likelihood.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(255,61,113,.1)">ℹ️</span>Information Theory — KL Divergence & Entropy</div>
+        <div class="formula">Entropy:    H(P) = -Σ P(x) log P(x)
+KL Divergence: D_KL(P||Q) = Σ P(x) log(P(x)/Q(x))
+Cross-Entropy: H(P,Q) = H(P) + D_KL(P||Q)</div>
+        <p>KL divergence measures how different distribution Q is from reference P. Used in VAEs (KL loss term) and knowledge distillation.</p>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="section" id="s-stats">
+      <div class="sec-head">
+        <span class="sec-tag tag-i">Intermediate</span>
+        <h2 class="sec-head h2">STATISTICS</h2>
+        <div class="sec-meta">Mean·Variance · Normalisation · Hypothesis Testing</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,255,157,.1)">📊</span>Descriptive Statistics in DL</div>
+        <div class="tbl"><table>
+          <tr><th>Statistic</th><th>Formula</th><th>DL Application</th></tr>
+          <tr><td>Mean</td><td>μ = Σxᵢ/n</td><td>Batch normalisation centre</td></tr>
+          <tr><td>Variance</td><td>σ² = Σ(xᵢ-μ)²/n</td><td>Batch norm scale, weight init</td></tr>
+          <tr><td>Std Dev</td><td>σ = √σ²</td><td>Gradient clipping threshold</td></tr>
+          <tr><td>Covariance</td><td>Cov(X,Y) = E[(X-μ)(Y-μ)]</td><td>Feature correlation analysis</td></tr>
+        </table></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">⚖️</span>Data Normalisation Methods</div>
+        <div class="code-box">
+          <div class="code-top"><span class="code-label">Python · Normalisation Methods</span><div class="code-dots"><i></i><i></i><i></i></div></div>
+          <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+X = np.random.randn(<span class="num">1000</span>, <span class="num">10</span>) * <span class="num">5</span> + <span class="num">3</span>
+
+<span class="cm"># 1. Z-score (standardisation) — mean=0, std=1</span>
+X_std = (X - X.<span class="fn">mean</span>(<span class="num">0</span>)) / X.<span class="fn">std</span>(<span class="num">0</span>)
+
+<span class="cm"># 2. Min-Max scaling — [0, 1]</span>
+X_mm = (X - X.<span class="fn">min</span>(<span class="num">0</span>)) / (X.<span class="fn">max</span>(<span class="num">0</span>) - X.<span class="fn">min</span>(<span class="num">0</span>))
+
+<span class="cm"># 3. Batch Norm (PyTorch handles this in layers)</span>
+<span class="cm"># nn.BatchNorm2d(num_features) in your model</span></pre>
+        </div>
+        <div class="callout cl-gold"><span class="callout-icon">⚠️</span><span>Always compute normalisation statistics on train set only, then apply to val/test. Never let test data influence your mean/std.</span></div>
+      </div>
+    </div>
+
+    <!-- INTERVIEW -->
+    <div class="section" id="s-interview">
+      <div class="sec-head">
+        <span class="sec-tag tag-q">Interview</span>
+        <h2 class="sec-head h2">INTERVIEW Q&amp;A</h2>
+        <div class="sec-meta">Math Foundation · 10 Questions · All Levels</div>
+      </div>
+
+      <div class="qa-level">Beginner</div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q01</span><span class="qa-text">Why do we need matrix multiplication in neural networks?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-easy">easy</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">Every linear layer in a neural network performs a matrix multiplication: <code>Y = XW + b</code>. This is a linear transformation that maps the input feature space to a new representation space. The weight matrix W learns which combinations of input features are useful for the task. Matrix multiplication is highly parallelisable on GPUs, which is why neural networks train so efficiently on modern hardware. Without matrix operations, we'd need loops — far slower.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q02</span><span class="qa-text">What is the chain rule and why is it fundamental to backpropagation?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-easy">easy</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">The chain rule states that if y = f(g(x)), then dy/dx = f'(g(x)) · g'(x). A neural network is a composition of many functions (layers). Backpropagation is simply the chain rule applied recursively from the loss back to the first layer. Each layer receives the upstream gradient (∂L/∂output) and computes two things: (1) the gradient for its parameters (∂L/∂W = ∂L/∂output · ∂output/∂W), and (2) the gradient for the previous layer (∂L/∂input = ∂L/∂output · ∂output/∂input). This is efficient because we compute each intermediate gradient exactly once.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q03</span><span class="qa-text">What is gradient descent and its variants?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-easy">easy</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a"><strong>Batch GD:</strong> Uses entire dataset per update. Accurate gradients but slow and memory-intensive. <strong>Stochastic GD (SGD):</strong> One sample per update. Very noisy but fast and can escape local minima. <strong>Mini-batch GD:</strong> Standard practice — use batches of 32–512 samples. Balances accuracy and efficiency. <strong>SGD with momentum:</strong> Accumulates velocity v = βv + g, update θ -= η·v. Reduces oscillation. <strong>Adam:</strong> Adaptive learning rates using first moment (momentum) and second moment (variance). Most popular in practice.</div>
+      </div>
+
+      <div class="qa-level">Intermediate</div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q04</span><span class="qa-text">Why is cross-entropy preferred over MSE for classification?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">MSE loss with sigmoid/softmax outputs causes the vanishing gradient problem. When the prediction is very wrong (sigmoid output ≈ 0 when target=1), MSE gradient ∂L/∂z = (ŷ-y)·σ'(z) is nearly zero because σ'(z) → 0. Cross-entropy loss -log(ŷ) has gradient ∂L/∂z = (ŷ-y) — the sigmoid cancels out, giving a large gradient when predictions are wrong. This means faster learning. Additionally, cross-entropy is the proper probabilistic loss derived from maximum likelihood estimation for categorical distributions.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q05</span><span class="qa-text">What is the difference between L1 and L2 regularisation?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a"><strong>L2 (Weight Decay):</strong> Adds λΣwᵢ² to loss. Gradient: 2λwᵢ — pushes weights towards zero proportionally. Results in small but non-zero weights. Probabilistically equivalent to Gaussian prior on weights. Implemented in PyTorch as <code>weight_decay</code> in optimiser. <strong>L1 (Lasso):</strong> Adds λΣ|wᵢ| to loss. Gradient: λ·sign(wᵢ) — constant penalty regardless of weight magnitude. Promotes sparsity — many weights become exactly zero. Useful for feature selection. In practice, L2 is used almost universally in DL; L1 or ElasticNet for sparse features.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q06</span><span class="qa-text">Explain KL divergence and where it's used in deep learning.</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">KL divergence D_KL(P||Q) = Σ P(x)log(P(x)/Q(x)) measures how much information is lost when using Q to approximate P. It's asymmetric: D_KL(P||Q) ≠ D_KL(Q||P). In deep learning: <strong>VAEs</strong> use KL divergence to regularise the latent space, ensuring the encoder output (approximate posterior) stays close to the prior N(0,I). The ELBO = reconstruction loss + KL divergence. <strong>Knowledge Distillation</strong> minimises KL between student and teacher softmax distributions. <strong>Policy Gradient</strong> methods (PPO) clip the KL between old and new policies for stability.</div>
+      </div>
+
+      <div class="qa-level">Advanced</div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q07</span><span class="qa-text">What is the vanishing gradient problem and how do modern architectures solve it?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">In deep networks with sigmoid/tanh activations, gradients get multiplied by σ'(z) at each layer during backprop. Since max(σ'(z)) = 0.25, gradients shrink by ~4x per layer — exponentially small in early layers. Solutions: <strong>ReLU activations</strong> — gradient is 1 for z>0, doesn't shrink. <strong>Residual connections (skip connections)</strong> — gradient has a direct path of magnitude 1 bypassing layers: ∂L/∂x = ∂L/∂(x+F(x)) = ∂L/∂output · (1 + ∂F/∂x). The "+1" means gradient always reaches early layers. <strong>Batch/Layer Norm</strong> — normalises activations, keeping them in the linear regime of activations. <strong>Careful initialisation</strong> (He, Xavier) — keeps gradient variance roughly constant across layers.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q08</span><span class="qa-text">Why does batch normalisation work? What are its effects on training?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">BatchNorm normalises activations within a mini-batch: x̂ = (x-μ_B)/σ_B, then scales: y = γx̂ + β. Effects: (1) <strong>Reduces internal covariate shift</strong> — each layer's input distribution stays stable, so deeper layers don't need to constantly readjust to upstream changes. (2) <strong>Allows higher learning rates</strong> — loss landscape is smoother. (3) <strong>Acts as regulariser</strong> — stochastic batch statistics add noise. (4) <strong>Reduces sensitivity to weight initialisation</strong>. Limitations: doesn't work well with small batch sizes; problematic in RNNs (use LayerNorm instead); train/inference discrepancy (running mean/var used at test time).</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q09</span><span class="qa-text">Explain the concept of eigenvalues in the context of neural network training.</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a">The Hessian matrix H = ∂²L/∂θ² captures the curvature of the loss landscape. Its eigenvalues determine training stability: if the largest eigenvalue λ_max is large, the loss changes rapidly in that direction — using a learning rate η > 2/λ_max causes divergence. This is why learning rate scheduling is critical. <strong>Saddle points</strong> — have positive and negative eigenvalues — are more common than local minima in high-dimensional loss surfaces. SGD noise helps escape saddle points. <strong>Conditioning</strong>: a ratio of max to min eigenvalue (condition number) >> 1 means directions have very different curvatures, causing slow convergence — Adam addresses this with per-parameter adaptive rates.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q10</span><span class="qa-text">What is Xavier/Glorot and He initialisation? When to use each?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div>
+        <div class="qa-a"><strong>Xavier/Glorot:</strong> W ~ Uniform(-√(6/(nᵢₙ+nₒᵤₜ)), √(6/(nᵢₙ+nₒᵤₜ))). Derived assuming linear activations. Keeps variance of activations and gradients equal across layers. Use with <strong>sigmoid or tanh</strong>. <strong>He/Kaiming:</strong> W ~ N(0, 2/nᵢₙ). Accounts for ReLU's zero-ing of negative half (effectively halves the variance). Use with <strong>ReLU, Leaky ReLU, ELU</strong>. Intuition: if variance grows layer-by-layer → exploding activations; if it shrinks → vanishing. Good initialisation starts training from a regime where forward and backward passes have stable variance.</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /layout -->
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+function toggleQA(el) {
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.qa-item.open').forEach(e => e.classList.remove('open'));
+  if (!open) el.classList.add('open');
+}
+</script>
+</body>
+</html>

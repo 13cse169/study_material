@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Ethics — The Complete Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ivory: #f7f3ec;
+  --ivory2: #ede8df;
+  --ivory3: #e4ddd1;
+  --charcoal: #1e2028;
+  --charcoal2: #2a2d38;
+  --ink: #0f1117;
+  --sage: #5a7a5e;
+  --sage-light: #7a9e7e;
+  --sage-dim: rgba(90,122,94,.1);
+  --sage-dim2: rgba(90,122,94,.18);
+  --rust: #c0542c;
+  --rust-dim: rgba(192,84,44,.1);
+  --gold: #c49a30;
+  --gold-dim: rgba(196,154,48,.12);
+  --slate: #4a5568;
+  --muted: #7a7060;
+  --border: #d8d0c2;
+  --border2: #c8bfb0;
+  --white: #ffffff;
+  --shadow: rgba(15,17,23,.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ivory);
+  color:var(--charcoal);
+  font-family:'Libre Baskerville',Georgia,serif;
+  font-size:15px;line-height:1.78;
+  overflow-x:hidden;
+}
+
+/* subtle paper texture */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;
+}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--ivory2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  position:fixed;left:0;top:0;bottom:0;width:268px;
+  background:var(--charcoal);
+  display:flex;flex-direction:column;
+  z-index:100;overflow-y:auto;
+  transition:transform .3s ease;
+}
+.sidebar::-webkit-scrollbar{width:2px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--sage)}
+
+.brand{
+  padding:28px 22px 22px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  position:relative;
+}
+.brand::after{
+  content:'';position:absolute;bottom:0;left:22px;right:22px;height:1px;
+  background:linear-gradient(90deg,var(--sage),transparent);
+}
+.brand-icon{
+  width:40px;height:40px;
+  background:var(--sage);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;margin-bottom:14px;
+  box-shadow:0 0 20px rgba(90,122,94,.3);
+}
+.brand-eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:9px;color:var(--sage-light);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;display:block;
+}
+.brand-name{
+  font-family:'DM Serif Display',serif;
+  font-size:22px;color:var(--white);line-height:1.2;
+}
+.brand-name em{color:var(--sage-light);font-style:italic}
+
+nav{padding:16px 0;flex:1}
+.nav-section{
+  font-family:'DM Mono',monospace;
+  font-size:8.5px;color:rgba(255,255,255,.25);
+  letter-spacing:3px;text-transform:uppercase;
+  padding:12px 22px 5px;display:block;
+}
+.nl{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 22px;cursor:pointer;
+  color:rgba(255,255,255,.45);
+  font-family:'DM Mono',monospace;font-size:11.5px;
+  border-left:2px solid transparent;
+  transition:all .18s;text-decoration:none;
+}
+.nl:hover,.nl.active{
+  color:var(--ivory);
+  border-left-color:var(--sage-light);
+  background:rgba(90,122,94,.12);
+}
+.nl .ni{
+  width:18px;font-size:9px;color:rgba(255,255,255,.2);
+  flex-shrink:0;text-align:right;transition:color .18s;
+}
+.nl:hover .ni,.nl.active .ni{color:var(--sage-light)}
+
+/* ── MAIN ── */
+.main{margin-left:268px;position:relative;z-index:1}
+
+/* ── HERO ── */
+.hero{
+  background:var(--charcoal);
+  padding:72px 68px 60px;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 50%,rgba(90,122,94,.15) 0%,transparent 60%),
+             radial-gradient(ellipse at 20% 80%,rgba(196,154,48,.08) 0%,transparent 50%);
+}
+.hero-ornament{
+  position:absolute;right:60px;top:50%;transform:translateY(-50%);
+  opacity:.06;
+}
+.hero-tag{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--sage-light);
+  letter-spacing:4px;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;margin-bottom:20px;
+}
+.hero-tag::before{content:'';width:32px;height:1px;background:var(--sage)}
+.hero h1{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(44px,6vw,80px);
+  color:var(--ivory);line-height:1.0;
+  margin-bottom:20px;
+}
+.hero h1 em{color:var(--sage-light);font-style:italic}
+.hero-sub{
+  font-size:17px;color:rgba(247,243,236,.5);
+  max-width:560px;font-weight:400;
+  font-style:italic;margin-bottom:36px;
+}
+.hero-stats{
+  display:flex;gap:0;border:1px solid rgba(255,255,255,.08);
+  max-width:560px;
+}
+.hstat{
+  flex:1;padding:18px 20px;text-align:center;
+  border-right:1px solid rgba(255,255,255,.08);
+}
+.hstat:last-child{border-right:none}
+.hstat-n{
+  font-family:'DM Serif Display',serif;
+  font-size:28px;color:var(--sage-light);display:block;
+}
+.hstat-l{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px}
+
+/* ── CONTENT ── */
+.content{padding:0 68px 80px}
+
+/* ── SECTION ── */
+.section{
+  padding:56px 0;border-bottom:1px solid var(--border);
+  opacity:0;transform:translateY(22px);
+  transition:opacity .55s ease,transform .55s ease;
+}
+.section.vis{opacity:1;transform:translateY(0)}
+
+.sec-hd{margin-bottom:32px}
+.sec-marker{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--sage);
+  letter-spacing:3px;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+.sec-marker::after{content:'';flex:1;max-width:40px;height:1px;background:var(--sage)}
+.sec-title{
+  font-family:'DM Serif Display',serif;
+  font-size:38px;color:var(--ink);line-height:1.1;
+}
+.sec-sub{color:var(--muted);font-size:15px;margin-top:6px;font-style:italic}
+
+/* ── DEFINITION BOX ── */
+.defbox{
+  background:var(--charcoal);color:var(--ivory);
+  padding:22px 28px;margin:20px 0;
+  border-radius:3px;
+  border-left:4px solid var(--sage);
+  position:relative;
+}
+.defbox .deflbl{
+  font-family:'DM Mono',monospace;
+  font-size:9px;color:var(--sage-light);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;
+}
+.defbox p{font-size:14px;line-height:1.75;color:rgba(247,243,236,.8)}
+
+/* ── EXAMPLE BOX ── */
+.egbox{
+  background:var(--sage-dim);
+  border:1px solid var(--sage-dim2);
+  border-left:3px solid var(--sage);
+  padding:18px 22px;margin:16px 0;border-radius:0 4px 4px 0;
+}
+.eglbl{
+  font-family:'DM Mono',monospace;font-size:9px;
+  color:var(--sage);letter-spacing:3px;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.egbox p{font-size:14px;color:var(--charcoal)}
+.egbox strong{color:var(--sage)}
+
+/* ── WARNING ── */
+.warnbox{
+  background:var(--rust-dim);
+  border:1px solid rgba(192,84,44,.2);
+  border-left:3px solid var(--rust);
+  padding:16px 20px;margin:14px 0;
+  display:flex;gap:12px;align-items:flex-start;
+  border-radius:0 4px 4px 0;
+}
+.warnbox p{font-size:13px;color:var(--charcoal)}
+.warnbox strong{color:var(--rust)}
+
+/* ── CARDS ── */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:18px;margin:22px 0}
+.card{
+  background:var(--white);
+  border:1px solid var(--border);
+  padding:22px;border-radius:4px;
+  transition:box-shadow .2s,transform .2s,border-color .2s;
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--sage),var(--sage-light));
+  transform:scaleX(0);transform-origin:left;transition:transform .3s;
+}
+.card:hover{box-shadow:0 6px 24px var(--shadow);transform:translateY(-2px);border-color:var(--border2)}
+.card:hover::before{transform:scaleX(1)}
+.card-ico{font-size:26px;margin-bottom:12px;display:block}
+.card h4{
+  font-family:'DM Serif Display',serif;
+  font-size:18px;color:var(--ink);margin-bottom:8px;
+}
+.card p{font-size:13px;color:var(--muted);line-height:1.65}
+.card .badge{
+  margin-top:12px;display:inline-block;
+  font-family:'DM Mono',monospace;font-size:9px;
+  background:var(--sage-dim);color:var(--sage);
+  border:1px solid var(--sage-dim2);
+  padding:2px 8px;border-radius:2px;
+}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;margin:18px 0;font-size:13px}
+.tbl th{
+  font-family:'DM Mono',monospace;font-size:9.5px;
+  text-transform:uppercase;letter-spacing:1px;
+  background:var(--charcoal2);color:var(--sage-light);
+  padding:10px 14px;text-align:left;
+}
+.tbl td{
+  padding:11px 14px;border-bottom:1px solid var(--border);
+  vertical-align:top;color:var(--muted);
+}
+.tbl tr:hover td{background:var(--sage-dim);color:var(--charcoal)}
+.tbl td:first-child{font-family:'DM Serif Display',serif;font-size:15px;color:var(--charcoal);font-weight:400}
+
+/* ── SVG DIAGRAMS ── */
+.diagram-wrap{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:6px;padding:24px;margin:22px 0;
+  overflow-x:auto;
+}
+.diagram-title{
+  font-family:'DM Mono',monospace;
+  font-size:9px;color:var(--muted);
+  letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+.diagram-title::before{content:'◆';font-size:7px;color:var(--sage)}
+
+/* ── PRINCIPLES WHEEL SVG ── */
+#ethics-wheel{display:block;margin:0 auto}
+
+/* ── STEPS ── */
+.steps{margin:20px 0}
+.step{
+  display:flex;gap:18px;padding:15px 0;
+  border-bottom:1px dashed var(--border);
+}
+.step:last-child{border-bottom:none}
+.step-n{
+  font-family:'DM Serif Display',serif;
+  font-size:34px;color:var(--border2);
+  flex-shrink:0;width:44px;line-height:1;margin-top:2px;
+  transition:color .2s;
+}
+.step:hover .step-n{color:var(--sage)}
+.step-b h5{
+  font-family:'DM Serif Display',serif;
+  font-size:17px;color:var(--ink);margin-bottom:4px;
+}
+.step-b p{font-size:13px;color:var(--muted)}
+
+/* ── PILLARS VISUAL ── */
+.pillars{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:12px;margin:22px 0;
+}
+.pillar{
+  background:var(--white);border:1px solid var(--border);
+  border-bottom:3px solid var(--sage);
+  padding:18px 14px;text-align:center;
+  border-radius:4px 4px 0 0;
+  transition:transform .2s,box-shadow .2s;
+}
+.pillar:hover{transform:translateY(-4px);box-shadow:0 8px 20px var(--shadow)}
+.pillar-ico{font-size:22px;margin-bottom:8px}
+.pillar-name{
+  font-family:'DM Serif Display',serif;
+  font-size:14px;color:var(--ink);margin-bottom:4px;
+}
+.pillar-desc{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)}
+
+/* ── TIMELINE ── */
+.tline{padding-left:28px;margin:20px 0;position:relative}
+.tline::before{
+  content:'';position:absolute;left:8px;top:8px;bottom:8px;
+  width:1px;background:linear-gradient(to bottom,var(--sage),transparent);
+}
+.tl{position:relative;padding:0 0 26px 24px}
+.tl::before{
+  content:'';position:absolute;left:-9px;top:5px;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--sage);border:2px solid var(--ivory);
+}
+.tl-yr{font-family:'DM Mono',monospace;font-size:9px;color:var(--sage);margin-bottom:3px}
+.tl-nm{font-family:'DM Serif Display',serif;font-size:16px;color:var(--ink);margin-bottom:3px}
+.tl-dc{font-size:13px;color:var(--muted)}
+
+/* ── QUOTE BLOCK ── */
+.pullquote{
+  border-left:3px solid var(--gold);
+  padding:16px 24px;margin:22px 0;
+  background:var(--gold-dim);
+  font-family:'DM Serif Display',serif;
+  font-size:18px;font-style:italic;
+  color:var(--charcoal);line-height:1.5;
+}
+.pullquote cite{
+  display:block;margin-top:10px;
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--muted);font-style:normal;
+  letter-spacing:1px;
+}
+
+/* ── COMPARISON GRID ── */
+.comp{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:20px 0}
+.comp-panel{background:var(--white);border:1px solid var(--border);padding:20px;border-radius:4px}
+.comp-panel h4{
+  font-family:'DM Serif Display',serif;font-size:18px;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.comp-panel ul{list-style:none;padding:0}
+.comp-panel li{
+  font-size:13px;color:var(--muted);
+  padding:6px 0;border-bottom:1px solid var(--border);
+  display:flex;gap:8px;
+}
+.comp-panel li::before{content:'—';color:var(--sage);flex-shrink:0}
+
+/* ── PILLS ── */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.pill{
+  font-family:'DM Mono',monospace;font-size:10px;
+  padding:4px 12px;border:1px solid var(--border2);
+  color:var(--muted);border-radius:1px;
+  transition:all .15s;
+}
+.pill:hover{border-color:var(--sage);color:var(--sage);background:var(--sage-dim)}
+.pill.on{background:var(--sage-dim);border-color:var(--sage);color:var(--sage)}
+
+/* ── ACCORDION QA ── */
+.qa-wrap{margin-top:24px}
+.qgrp-title{
+  font-family:'DM Serif Display',serif;
+  font-size:24px;color:var(--ink);
+  margin:30px 0 14px;
+  display:flex;align-items:center;gap:14px;
+}
+.qgrp-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.qa{
+  border:1px solid var(--border);margin-bottom:10px;
+  background:var(--white);border-radius:3px;
+  transition:border-color .15s;
+}
+.qa:hover{border-color:var(--border2)}
+.qa-q{
+  padding:14px 18px;cursor:pointer;
+  display:flex;align-items:flex-start;gap:12px;
+  font-family:'DM Serif Display',serif;font-size:15px;
+  color:var(--charcoal);user-select:none;
+  background:var(--ivory2);border-radius:3px 3px 0 0;
+  transition:background .15s;
+}
+.qa:hover .qa-q{background:var(--ivory3)}
+.qa-q .qb{
+  font-family:'DM Mono',monospace;font-size:9px;
+  background:var(--sage);color:white;
+  padding:2px 6px;flex-shrink:0;margin-top:3px;letter-spacing:1px;
+  border-radius:2px;
+}
+.qa-q .ch{margin-left:auto;color:var(--sage);transition:transform .22s;flex-shrink:0;margin-top:2px}
+.qa.open .qa-q .ch{transform:rotate(180deg)}
+.qa-a{
+  max-height:0;overflow:hidden;
+  transition:max-height .38s ease,padding .3s;
+  font-size:14px;color:var(--muted);line-height:1.8;
+  padding:0 18px 0 44px;
+}
+.qa.open .qa-a{max-height:900px;padding:16px 18px 18px 44px}
+.qa-a strong{color:var(--charcoal)}
+
+/* ── FRAMEWORK BOX ── */
+.framework{
+  background:var(--ivory2);border:1px solid var(--border);
+  padding:22px 26px;margin:20px 0;border-radius:4px;
+}
+.fw-title{
+  font-family:'DM Serif Display',serif;
+  font-size:20px;color:var(--ink);margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.fw-steps{counter-reset:fw}
+.fw-step{
+  display:flex;gap:14px;padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+.fw-step:last-child{border-bottom:none}
+.fw-num{
+  font-family:'DM Mono',monospace;font-size:11px;
+  background:var(--charcoal);color:var(--sage-light);
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;
+}
+.fw-body{font-size:13px;color:var(--muted)}
+.fw-body strong{color:var(--ink)}
+
+/* ── MOBILE ── */
+.mbtn{
+  display:none;position:fixed;top:14px;left:14px;z-index:200;
+  background:var(--charcoal);border:1px solid rgba(255,255,255,.1);
+  width:38px;height:38px;cursor:pointer;border-radius:3px;
+  align-items:center;justify-content:center;font-size:16px;color:var(--sage-light);
+}
+.ovl{display:none;position:fixed;inset:0;background:rgba(15,17,23,.7);z-index:99}
+@media(max-width:920px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hero,.content{padding-left:24px;padding-right:24px}
+  .mbtn{display:flex}
+  .ovl.show{display:block}
+  .pillars{grid-template-columns:repeat(2,1fr)}
+  .comp{grid-template-columns:1fr}
+}
+
+h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);margin:26px 0 10px}
+p{margin-bottom:10px}
+ul,ol{padding-left:20px;color:var(--muted);font-size:14px}
+li{margin-bottom:5px}
+strong{color:var(--charcoal)}
+</style>
+</head>
+<body>
+<button class="mbtn" onclick="toggleMenu()">☰</button>
+<div class="ovl" id="ovl" onclick="toggleMenu()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">⚖️</div>
+    <span class="brand-eyebrow">Complete Guide</span>
+    <div class="brand-name">AI <em>Ethics</em></div>
+  </div>
+  <nav>
+    <span class="nav-section">Foundations</span>
+    <a class="nl active" onclick="go('intro')"><span class="ni">01</span> What is AI Ethics?</a>
+    <a class="nl" onclick="go('history')"><span class="ni">02</span> History & Evolution</a>
+    <a class="nl" onclick="go('principles')"><span class="ni">03</span> Core Principles</a>
+    <a class="nl" onclick="go('frameworks')"><span class="ni">04</span> Ethical Frameworks</a>
+
+    <span class="nav-section">Key Topics</span>
+    <a class="nl" onclick="go('fairness')"><span class="ni">05</span> Fairness & Bias</a>
+    <a class="nl" onclick="go('transparency')"><span class="ni">06</span> Transparency & XAI</a>
+    <a class="nl" onclick="go('privacy')"><span class="ni">07</span> Privacy & Data Rights</a>
+    <a class="nl" onclick="go('accountability')"><span class="ni">08</span> Accountability</a>
+    <a class="nl" onclick="go('safety')"><span class="ni">09</span> AI Safety</a>
+    <a class="nl" onclick="go('autonomy')"><span class="ni">10</span> Human Autonomy</a>
+
+    <span class="nav-section">Applied Ethics</span>
+    <a class="nl" onclick="go('sectors')"><span class="ni">11</span> Ethics by Sector</a>
+    <a class="nl" onclick="go('governance')"><span class="ni">12</span> AI Governance & Law</a>
+    <a class="nl" onclick="go('alignment')"><span class="ni">13</span> AI Alignment</a>
+    <a class="nl" onclick="go('practice')"><span class="ni">14</span> Ethics in Practice</a>
+
+    <span class="nav-section">Interview Prep</span>
+    <a class="nl" onclick="go('interview')"><span class="ni">★</span> Interview Q&A (50+)</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <!-- SVG ornament -->
+  <svg class="hero-ornament" width="300" height="300" viewBox="0 0 300 300">
+    <circle cx="150" cy="150" r="120" fill="none" stroke="white" stroke-width="1"/>
+    <circle cx="150" cy="150" r="80" fill="none" stroke="white" stroke-width="0.5" stroke-dasharray="4 6"/>
+    <circle cx="150" cy="150" r="40" fill="none" stroke="white" stroke-width="0.5"/>
+    <line x1="150" y1="30" x2="150" y2="270" stroke="white" stroke-width="0.5" opacity="0.5"/>
+    <line x1="30" y1="150" x2="270" y2="150" stroke="white" stroke-width="0.5" opacity="0.5"/>
+    <line x1="65" y1="65" x2="235" y2="235" stroke="white" stroke-width="0.5" opacity="0.3"/>
+    <line x1="235" y1="65" x2="65" y2="235" stroke="white" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="150" cy="30" r="4" fill="white" opacity="0.5"/>
+    <circle cx="150" cy="270" r="4" fill="white" opacity="0.5"/>
+    <circle cx="30" cy="150" r="4" fill="white" opacity="0.5"/>
+    <circle cx="270" cy="150" r="4" fill="white" opacity="0.5"/>
+    <circle cx="150" cy="150" r="6" fill="#5a7a5e"/>
+  </svg>
+
+  <div class="hero-tag">The Complete Reference</div>
+  <h1>Artificial<br>Intelligence<br><em>Ethics</em></h1>
+  <p class="hero-sub">From foundational principles to real-world application — every concept, framework, and dilemma in responsible AI.</p>
+  <div class="hero-stats">
+    <div class="hstat"><span class="hstat-n">14</span><span class="hstat-l">Chapters</span></div>
+    <div class="hstat"><span class="hstat-n">50+</span><span class="hstat-l">Q &amp; A</span></div>
+    <div class="hstat"><span class="hstat-n">8</span><span class="hstat-l">Diagrams</span></div>
+    <div class="hstat"><span class="hstat-n">∞</span><span class="hstat-l">Stakes</span></div>
+  </div>
+</header>
+
+<div class="content">
+
+<!-- ════════ 01 INTRO ════════ -->
+<section class="section" id="intro">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 01 // Foundations</div>
+    <div class="sec-title">What is AI Ethics?</div>
+    <div class="sec-sub">The discipline of ensuring AI systems serve human values</div>
+  </div>
+
+  <div class="defbox">
+    <div class="deflbl">Definition</div>
+    <p><strong style="color:var(--sage-light)">AI Ethics</strong> is the branch of applied ethics that examines the moral implications of designing, deploying, and governing artificial intelligence systems. It asks: What values should AI systems embody? Who bears responsibility when AI causes harm? How do we ensure AI benefits humanity equitably?</p>
+  </div>
+
+  <p>AI Ethics is not abstract philosophy — it is <strong>engineering discipline meets moral responsibility</strong>. Every design choice in an AI system encodes values: what to optimize for, whose data to use, which errors are acceptable, who is held accountable. Ethics asks us to make those choices deliberately and justly.</p>
+
+  <!-- DIAGRAM 1: Why AI Ethics Matters -->
+  <div class="diagram-wrap">
+    <div class="diagram-title">Why AI Ethics Matters — The Stakes</div>
+    <svg viewBox="0 0 720 260" width="100%" style="max-width:720px;display:block;margin:0 auto">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#5a7a5e"/>
+        </marker>
+      </defs>
+      <!-- Center node -->
+      <rect x="290" y="100" width="140" height="60" rx="4" fill="#1e2028" stroke="#5a7a5e" stroke-width="1.5"/>
+      <text x="360" y="126" text-anchor="middle" font-family="DM Serif Display,serif" font-size="14" fill="#f7f3ec">AI Systems</text>
+      <text x="360" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#7a9e7e">Decisions at Scale</text>
+
+      <!-- Scale text -->
+      <text x="360" y="194" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a7060" letter-spacing="2">AFFECTS BILLIONS OF PEOPLE</text>
+
+      <!-- Surrounding impact nodes -->
+      <!-- Healthcare -->
+      <rect x="20" y="10" width="130" height="50" rx="3" fill="#f7f3ec" stroke="#d8d0c2" stroke-width="1"/>
+      <text x="85" y="31" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Healthcare</text>
+      <text x="85" y="48" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Diagnosis &amp; Triage</text>
+      <line x1="150" y1="35" x2="290" y2="118" stroke="#5a7a5e" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+      <!-- Criminal Justice -->
+      <rect x="20" y="100" width="130" height="50" rx="3" fill="#f7f3ec" stroke="#d8d0c2" stroke-width="1"/>
+      <text x="85" y="121" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Criminal Justice</text>
+      <text x="85" y="138" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Risk Scores &amp; Bail</text>
+      <line x1="150" y1="125" x2="290" y2="130" stroke="#c0542c" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+      <!-- Hiring -->
+      <rect x="20" y="190" width="130" height="50" rx="3" fill="#f7f3ec" stroke="#d8d0c2" stroke-width="1"/>
+      <text x="85" y="211" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Employment</text>
+      <text x="85" y="228" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Resume Screening</text>
+      <line x1="150" y1="215" x2="290" y2="145" stroke="#5a7a5e" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+      <!-- Finance -->
+      <rect x="570" y="10" width="130" height="50" rx="3" fill="#f7f3ec" stroke="#d8d0c2" stroke-width="1"/>
+      <text x="635" y="31" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Finance</text>
+      <text x="635" y="48" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Credit &amp; Insurance</text>
+      <line x1="570" y1="35" x2="430" y2="118" stroke="#5a7a5e" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+      <!-- Social Media -->
+      <rect x="570" y="100" width="130" height="50" rx="3" fill="#f7f3ec" stroke="#d8d0c2" stroke-width="1"/>
+      <text x="635" y="121" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Information</text>
+      <text x="635" y="138" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">News &amp; Content Feeds</text>
+      <line x1="570" y1="125" x2="430" y2="130" stroke="#c49a30" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+      <!-- Weapons -->
+      <rect x="570" y="190" width="130" height="50" rx="3" fill="#f7f3ec" stroke="#d8d0c2" stroke-width="1"/>
+      <text x="635" y="211" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Defense</text>
+      <text x="635" y="228" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Autonomous Weapons</text>
+      <line x1="570" y1="215" x2="430" y2="145" stroke="#c0542c" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+    </svg>
+  </div>
+
+  <div class="egbox">
+    <div class="eglbl">🌍 Real-World Example</div>
+    <p><strong>COMPAS Recidivism Algorithm</strong>: In 2016, ProPublica revealed that a risk-scoring tool used in US courts to predict reoffending was <strong>twice as likely to falsely flag Black defendants as high risk</strong> compared to white defendants. Judges were using this score in bail and sentencing decisions. Millions of people's liberty was affected by a biased algorithm. This single case crystallized why AI ethics is not optional.</p>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar"><div class="pillar-ico">⚖️</div><div class="pillar-name">Fairness</div><div class="pillar-desc">Equal treatment</div></div>
+    <div class="pillar"><div class="pillar-ico">🔍</div><div class="pillar-name">Transparency</div><div class="pillar-desc">Explainability</div></div>
+    <div class="pillar"><div class="pillar-ico">🔐</div><div class="pillar-name">Privacy</div><div class="pillar-desc">Data rights</div></div>
+    <div class="pillar"><div class="pillar-ico">🎯</div><div class="pillar-name">Accountability</div><div class="pillar-desc">Responsibility</div></div>
+    <div class="pillar"><div class="pillar-ico">🛡️</div><div class="pillar-name">Safety</div><div class="pillar-desc">Do no harm</div></div>
+  </div>
+</section>
+
+<!-- ════════ 02 HISTORY ════════ -->
+<section class="section" id="history">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 02 // History</div>
+    <div class="sec-title">History & Evolution of AI Ethics</div>
+    <div class="sec-sub">From Asimov's laws to the EU AI Act</div>
+  </div>
+  <div class="tline">
+    <div class="tl"><div class="tl-yr">1942</div><div class="tl-nm">Asimov's Three Laws of Robotics</div><div class="tl-dc">First systematic attempt at AI behavioral rules in fiction. "A robot may not injure a human being." Revealed how quickly ethical rules create paradoxes.</div></div>
+    <div class="tl"><div class="tl-yr">1950</div><div class="tl-nm">Turing's "Computing Machinery and Intelligence"</div><div class="tl-dc">Turing asks "Can machines think?" — sparking philosophical debate about machine consciousness, rights, and moral status.</div></div>
+    <div class="tl"><div class="tl-yr">1988</div><div class="tl-nm">Computer Ethics Emerges</div><div class="tl-dc">James Moor's work on "policy vacuums" in computer ethics. First academic recognition that technology creates new moral challenges.</div></div>
+    <div class="tl"><div class="tl-yr">2014</div><div class="tl-nm">Bostrom's "Superintelligence"</div><div class="tl-dc">Mainstream attention to existential AI risks. Prompts founding of AI safety organizations (MIRI, later OpenAI, Anthropic).</div></div>
+    <div class="tl"><div class="tl-yr">2016</div><div class="tl-nm">COMPAS Bias Exposed + Microsoft Tay</div><div class="tl-dc">ProPublica's landmark investigation. Microsoft's chatbot turned hateful within 24 hours. AI fairness becomes a public issue.</div></div>
+    <div class="tl"><div class="tl-yr">2018</div><div class="tl-nm">EU GDPR + Algorithmic Accountability Act</div><div class="tl-dc">GDPR's "right to explanation" — first major legal right related to AI decisions. US lawmakers begin drafting AI-specific legislation.</div></div>
+    <div class="tl"><div class="tl-yr">2019</div><div class="tl-nm">OECD AI Principles + IEEE Ethically Aligned Design</div><div class="tl-dc">First internationally agreed AI ethics principles adopted by 42 countries. Engineering ethics standards for AI systems published.</div></div>
+    <div class="tl"><div class="tl-yr">2021</div><div class="tl-nm">EU AI Act Proposal</div><div class="tl-dc">World's first comprehensive AI regulation. Risk-based framework banning certain AI uses and mandating requirements for high-risk systems.</div></div>
+    <div class="tl"><div class="tl-yr">2023</div><div class="tl-nm">ChatGPT Era + AI Safety Summit</div><div class="tl-dc">Generative AI reaches mass public. First global AI Safety Summit at Bletchley Park. Governments worldwide race to regulate. Anthropic's Constitutional AI published.</div></div>
+    <div class="tl"><div class="tl-yr">2024–25</div><div class="tl-nm">EU AI Act Enforcement + Global Regulation Wave</div><div class="tl-dc">EU AI Act fully in force. 50+ countries with AI-specific laws or executive orders. AI ethics moves from academic to legal mandate.</div></div>
+  </div>
+</section>
+
+<!-- ════════ 03 PRINCIPLES ════════ -->
+<section class="section" id="principles">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 03 // Core Principles</div>
+    <div class="sec-title">The Seven Principles of Ethical AI</div>
+    <div class="sec-sub">The consensus from IEEE, EU, OECD, and leading AI organizations</div>
+  </div>
+
+  <!-- DIAGRAM 2: Ethics Wheel -->
+  <div class="diagram-wrap">
+    <div class="diagram-title">AI Ethics Principles — The Core Seven</div>
+    <svg id="ethics-wheel" viewBox="0 0 520 520" width="100%" style="max-width:520px">
+      <defs>
+        <radialGradient id="centerGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#5a7a5e" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#5a7a5e" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- Outer decorative rings -->
+      <circle cx="260" cy="260" r="240" fill="none" stroke="#d8d0c2" stroke-width="0.5"/>
+      <circle cx="260" cy="260" r="200" fill="none" stroke="#d8d0c2" stroke-width="0.5" stroke-dasharray="3 5"/>
+      <circle cx="260" cy="260" r="100" fill="url(#centerGrad)"/>
+      <circle cx="260" cy="260" r="100" fill="none" stroke="#5a7a5e" stroke-width="1.5"/>
+
+      <!-- Center text -->
+      <text x="260" y="254" text-anchor="middle" font-family="DM Serif Display,serif" font-size="15" fill="#1e2028">Ethical</text>
+      <text x="260" y="273" text-anchor="middle" font-family="DM Serif Display,serif" font-size="15" fill="#1e2028">AI</text>
+
+      <!-- 7 principle nodes around wheel -->
+      <!-- 1: Fairness (top) -->
+      <line x1="260" y1="160" x2="260" y2="70" stroke="#5a7a5e" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="260" cy="52" r="36" fill="#1e2028" stroke="#5a7a5e" stroke-width="1.5"/>
+      <text x="260" y="48" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#f7f3ec">Fairness</text>
+      <text x="260" y="62" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a9e7e">Equal treatment</text>
+
+      <!-- 2: Transparency (upper right) -->
+      <line x1="347" y1="173" x2="399" y2="121" stroke="#5a7a5e" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="421" cy="99" r="36" fill="#1e2028" stroke="#5a7a5e" stroke-width="1.5"/>
+      <text x="421" y="95" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#f7f3ec">Transparen.</text>
+      <text x="421" y="109" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a9e7e">Explainability</text>
+
+      <!-- 3: Privacy (right) -->
+      <line x1="360" y1="260" x2="420" y2="260" stroke="#5a7a5e" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="456" cy="260" r="36" fill="#1e2028" stroke="#5a7a5e" stroke-width="1.5"/>
+      <text x="456" y="256" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#f7f3ec">Privacy</text>
+      <text x="456" y="270" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a9e7e">Data rights</text>
+
+      <!-- 4: Accountability (lower right) -->
+      <line x1="347" y1="347" x2="399" y2="399" stroke="#5a7a5e" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="421" cy="421" r="36" fill="#1e2028" stroke="#5a7a5e" stroke-width="1.5"/>
+      <text x="421" y="417" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#f7f3ec">Accountab.</text>
+      <text x="421" y="431" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a9e7e">Responsibility</text>
+
+      <!-- 5: Safety (bottom) -->
+      <line x1="260" y1="360" x2="260" y2="428" stroke="#5a7a5e" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="260" cy="464" r="36" fill="#1e2028" stroke="#5a7a5e" stroke-width="1.5"/>
+      <text x="260" y="460" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#f7f3ec">Safety</text>
+      <text x="260" y="474" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a9e7e">Do no harm</text>
+
+      <!-- 6: Human Autonomy (lower left) -->
+      <line x1="173" y1="347" x2="121" y2="399" stroke="#c49a30" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="99" cy="421" r="36" fill="#1e2028" stroke="#c49a30" stroke-width="1.5"/>
+      <text x="99" y="417" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#f7f3ec">Autonomy</text>
+      <text x="99" y="431" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#c49a30">Human agency</text>
+
+      <!-- 7: Beneficence (left) -->
+      <line x1="160" y1="260" x2="100" y2="260" stroke="#c49a30" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="64" cy="260" r="36" fill="#1e2028" stroke="#c49a30" stroke-width="1.5"/>
+      <text x="64" y="256" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#f7f3ec">Beneficen.</text>
+      <text x="64" y="270" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#c49a30">Human benefit</text>
+
+      <!-- Upper left: Non-maleficence spokes inward -->
+      <line x1="173" y1="173" x2="121" y2="121" stroke="#c0542c" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="99" cy="99" r="36" fill="#1e2028" stroke="#c0542c" stroke-width="1.5"/>
+      <text x="99" y="95" text-anchor="middle" font-family="DM Serif Display,serif" font-size="11" fill="#f7f3ec">Non-malef.</text>
+      <text x="99" y="109" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#e07050">Avoid harm</text>
+    </svg>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-ico">⚖️</span><h4>Fairness</h4><p>AI systems must treat all individuals and groups equitably. Biases in training data or design must be identified and mitigated. No group should face systematic disadvantage.</p><span class="badge">Equal Treatment</span></div>
+    <div class="card"><span class="card-ico">🔍</span><h4>Transparency</h4><p>AI decision-making should be explainable to those it affects. Black-box decisions affecting human rights require interpretable alternatives or post-hoc explanation.</p><span class="badge">Explainability</span></div>
+    <div class="card"><span class="card-ico">🔐</span><h4>Privacy</h4><p>AI systems must respect individuals' right to control their data. Collection should be minimal, consent informed, and personal data protected from misuse.</p><span class="badge">Data Rights</span></div>
+    <div class="card"><span class="card-ico">🎯</span><h4>Accountability</h4><p>Clear chains of responsibility for AI outcomes. When an AI system causes harm, someone must be answerable. Audit trails must exist for high-stakes decisions.</p><span class="badge">Responsibility</span></div>
+    <div class="card"><span class="card-ico">🛡️</span><h4>Safety</h4><p>Systems must be designed to minimize risk of harm. Includes technical robustness, adversarial resistance, and careful deployment in high-stakes environments.</p><span class="badge">Do No Harm</span></div>
+    <div class="card"><span class="card-ico">🌱</span><h4>Beneficence</h4><p>AI should actively benefit individuals and society. Beyond avoiding harm — actively asking: who benefits? How broadly? Are benefits distributed equitably?</p><span class="badge">Human Benefit</span></div>
+    <div class="card"><span class="card-ico">🧭</span><h4>Human Autonomy</h4><p>AI must not manipulate, deceive, or undermine human agency. Humans should retain meaningful control over decisions that affect their lives.</p><span class="badge">Human Agency</span></div>
+  </div>
+</section>
+
+<!-- ════════ 04 FRAMEWORKS ════════ -->
+<section class="section" id="frameworks">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 04 // Ethical Frameworks</div>
+    <div class="sec-title">Ethical Frameworks Applied to AI</div>
+    <div class="sec-sub">How different moral philosophies approach AI design decisions</div>
+  </div>
+
+  <!-- DIAGRAM 3: Ethical Frameworks Comparison -->
+  <div class="diagram-wrap">
+    <div class="diagram-title">Ethical Frameworks — How They Judge AI Actions</div>
+    <svg viewBox="0 0 700 300" width="100%" style="max-width:700px;display:block;margin:0 auto">
+      <!-- Header -->
+      <rect x="0" y="0" width="700" height="40" fill="#1e2028"/>
+      <text x="110" y="25" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#7a9e7e" letter-spacing="1">FRAMEWORK</text>
+      <text x="290" y="25" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#7a9e7e" letter-spacing="1">CORE QUESTION</text>
+      <text x="490" y="25" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#7a9e7e" letter-spacing="1">AI APPLICATION</text>
+      <line x1="200" y1="0" x2="200" y2="300" stroke="#2a2d38" stroke-width="1"/>
+      <line x1="390" y1="0" x2="390" y2="300" stroke="#2a2d38" stroke-width="1"/>
+
+      <!-- Row 1: Utilitarianism -->
+      <rect x="0" y="40" width="700" height="52" fill="#f7f3ec"/>
+      <rect x="0" y="40" width="3" height="52" fill="#5a7a5e"/>
+      <text x="20" y="62" font-family="DM Serif Display,serif" font-size="13" fill="#1e2028">Utilitarianism</text>
+      <text x="20" y="78" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Bentham, Mill</text>
+      <text x="210" y="64" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">Does it maximize overall</text>
+      <text x="210" y="80" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">well-being / minimize harm?</text>
+      <text x="400" y="64" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">Optimize for aggregate user</text>
+      <text x="400" y="80" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">welfare — but watch for minorities</text>
+
+      <!-- Row 2: Deontology -->
+      <rect x="0" y="92" width="700" height="52" fill="#ede8df"/>
+      <rect x="0" y="92" width="3" height="52" fill="#c49a30"/>
+      <text x="20" y="114" font-family="DM Serif Display,serif" font-size="13" fill="#1e2028">Deontology</text>
+      <text x="20" y="130" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Kant's Categorical Imperative</text>
+      <text x="210" y="116" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">Does it respect universal</text>
+      <text x="210" y="132" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">duties and rights?</text>
+      <text x="400" y="116" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">Never deceive users, even for</text>
+      <text x="400" y="132" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">good outcomes. Rights are absolute.</text>
+
+      <!-- Row 3: Virtue Ethics -->
+      <rect x="0" y="144" width="700" height="52" fill="#f7f3ec"/>
+      <rect x="0" y="144" width="3" height="52" fill="#5a7a5e"/>
+      <text x="20" y="166" font-family="DM Serif Display,serif" font-size="13" fill="#1e2028">Virtue Ethics</text>
+      <text x="20" y="182" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Aristotle</text>
+      <text x="210" y="168" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">What would a person of good</text>
+      <text x="210" y="184" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">character do?</text>
+      <text x="400" y="168" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">Cultivate AI that embodies</text>
+      <text x="400" y="184" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">honesty, care, and prudence</text>
+
+      <!-- Row 4: Contractualism -->
+      <rect x="0" y="196" width="700" height="52" fill="#ede8df"/>
+      <rect x="0" y="196" width="3" height="52" fill="#c0542c"/>
+      <text x="20" y="218" font-family="DM Serif Display,serif" font-size="13" fill="#1e2028">Contractualism</text>
+      <text x="20" y="234" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Rawls, Scanlon</text>
+      <text x="210" y="220" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">What rules could no one</text>
+      <text x="210" y="236" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">reasonably reject?</text>
+      <text x="400" y="220" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">Design from behind "veil of</text>
+      <text x="400" y="236" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">ignorance" — protect the worst-off</text>
+
+      <!-- Row 5: Care Ethics -->
+      <rect x="0" y="248" width="700" height="52" fill="#f7f3ec"/>
+      <rect x="0" y="248" width="3" height="52" fill="#5a7a5e"/>
+      <text x="20" y="270" font-family="DM Serif Display,serif" font-size="13" fill="#1e2028">Care Ethics</text>
+      <text x="20" y="286" font-family="DM Mono,monospace" font-size="9" fill="#7a7060">Noddings, Gilligan</text>
+      <text x="210" y="272" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">Does it support relationships</text>
+      <text x="210" y="288" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">and human vulnerability?</text>
+      <text x="400" y="272" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">AI should nurture, not replace,</text>
+      <text x="400" y="288" font-family="Libre Baskerville,serif" font-size="11" fill="#2a2d38">human care and connection</text>
+    </svg>
+  </div>
+
+  <div class="egbox">
+    <div class="eglbl">🌍 Real-World Application</div>
+    <p><strong>Self-driving car trolley problem:</strong> A vehicle must choose between hitting 5 pedestrians or 1. <strong>Utilitarian</strong>: hit 1. <strong>Deontological</strong>: neither — using anyone as a means is impermissible. <strong>Virtue ethics</strong>: what would a careful, responsible driver do? <strong>Contractualism</strong>: would passengers consent to a policy that might sacrifice them? These frameworks lead to genuinely different engineering decisions — illustrating why ethics cannot be reduced to a single formula.</p>
+  </div>
+</section>
+
+<!-- ════════ 05 FAIRNESS ════════ -->
+<section class="section" id="fairness">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 05 // Key Topics</div>
+    <div class="sec-title">Fairness & Algorithmic Bias</div>
+    <div class="sec-sub">The mathematics of equity — and why fairness metrics conflict</div>
+  </div>
+
+  <p>AI fairness is surprisingly mathematically complex. <strong>Multiple definitions of fairness exist — and they are mutually incompatible</strong>. You cannot simultaneously satisfy all fairness criteria, which means every AI system in high-stakes domains embeds an implicit values choice.</p>
+
+  <!-- DIAGRAM 4: Fairness Definitions -->
+  <div class="diagram-wrap">
+    <div class="diagram-title">Fairness Metrics — The Impossible Triangle</div>
+    <svg viewBox="0 0 680 320" width="100%" style="max-width:680px;display:block;margin:0 auto">
+      <!-- Title area -->
+      <text x="340" y="22" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a7060" letter-spacing="2">PROVEN: CANNOT SATISFY ALL THREE SIMULTANEOUSLY (Chouldechova 2017, Kleinberg 2016)</text>
+
+      <!-- Triangle -->
+      <polygon points="340,50 120,270 560,270" fill="none" stroke="#d8d0c2" stroke-width="1.5"/>
+      <polygon points="340,50 120,270 560,270" fill="rgba(90,122,94,0.04)"/>
+
+      <!-- Conflict lines (red dashes) -->
+      <line x1="340" y1="50" x2="120" y2="270" stroke="#c0542c" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
+      <line x1="340" y1="50" x2="560" y2="270" stroke="#c0542c" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
+      <line x1="120" y1="270" x2="560" y2="270" stroke="#c0542c" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
+
+      <!-- Conflict X markers -->
+      <text x="222" y="164" text-anchor="middle" font-family="DM Mono,monospace" font-size="11" fill="#c0542c" transform="rotate(-60,222,164)">CONFLICT</text>
+      <text x="460" y="164" text-anchor="middle" font-family="DM Mono,monospace" font-size="11" fill="#c0542c" transform="rotate(60,460,164)">CONFLICT</text>
+      <text x="340" y="286" text-anchor="middle" font-family="DM Mono,monospace" font-size="11" fill="#c0542c">CONFLICT</text>
+
+      <!-- Node 1: Calibration (top) -->
+      <rect x="270" y="30" width="140" height="60" rx="4" fill="#1e2028" stroke="#5a7a5e" stroke-width="1.5"/>
+      <text x="340" y="53" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#f7f3ec">Calibration</text>
+      <text x="340" y="69" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a9e7e">Predicted risk = actual risk</text>
+      <text x="340" y="81" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#5a7060">across all groups</text>
+
+      <!-- Node 2: Equal FPR (lower left) -->
+      <rect x="30" y="255" width="175" height="60" rx="4" fill="#1e2028" stroke="#c49a30" stroke-width="1.5"/>
+      <text x="117" y="278" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#f7f3ec">Equal FPR / FNR</text>
+      <text x="117" y="294" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c49a30">Error rates equal</text>
+      <text x="117" y="306" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#8a6040">across all groups</text>
+
+      <!-- Node 3: Equal PPV (lower right) -->
+      <rect x="475" y="255" width="175" height="60" rx="4" fill="#1e2028" stroke="#c0542c" stroke-width="1.5"/>
+      <text x="562" y="278" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#f7f3ec">Equal PPV</text>
+      <text x="562" y="294" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#e07050">Pos. pred. value equal</text>
+      <text x="562" y="306" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a4040">across all groups</text>
+    </svg>
+  </div>
+
+  <h3>Types of Algorithmic Bias</h3>
+  <div class="cards">
+    <div class="card"><span class="card-ico">📊</span><h4>Historical Bias</h4><p>Training data reflects past discrimination. A hiring model trained on historical hires inherits decades of gender and racial bias — even if those attributes are excluded as features.</p><span class="badge">Most Common</span></div>
+    <div class="card"><span class="card-ico">📉</span><h4>Representation Bias</h4><p>Training data over/under-represents groups. Face recognition trained mostly on light-skinned faces performs poorly on darker skin tones (Gender Shades study, MIT).</p><span class="badge">Data Collection</span></div>
+    <div class="card"><span class="card-ico">🔗</span><h4>Proxy Discrimination</h4><p>Model uses proxies for protected attributes. ZIP code → race, purchasing patterns → religion. Model appears unbiased but discriminates via correlated features.</p><span class="badge">Indirect Harm</span></div>
+    <div class="card"><span class="card-ico">🎯</span><h4>Measurement Bias</h4><p>The outcome we measure doesn't capture what we care about. Using arrests as a proxy for crime encodes policing disparities as "ground truth."</p><span class="badge">Label Problem</span></div>
+    <div class="card"><span class="card-ico">🔄</span><h4>Feedback Loop Bias</h4><p>Model predictions influence future data, reinforcing initial bias. A credit model denying certain ZIP codes reduces economic activity there, "confirming" the risk.</p><span class="badge">Self-Fulfilling</span></div>
+    <div class="card"><span class="card-ico">🌍</span><h4>Aggregation Bias</h4><p>Model trained on one population applied to another. Medical AI trained on Western populations fails on populations with different disease presentations or skin tones.</p><span class="badge">Generalization</span></div>
+  </div>
+
+  <div class="egbox">
+    <div class="eglbl">🌍 Real-World Example — Amazon Hiring Tool</div>
+    <p>Amazon built an AI recruiting tool trained on 10 years of resumes. It learned to <strong>penalize resumes that included the word "women's"</strong> (e.g., "women's chess club") and downgraded graduates of all-women's colleges — because historical hires were predominantly male. Amazon scrapped it in 2018. Historical bias in data means historical injustice becomes systematic future injustice.</p>
+  </div>
+</section>
+
+<!-- ════════ 06 TRANSPARENCY ════════ -->
+<section class="section" id="transparency">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 06 // Transparency</div>
+    <div class="sec-title">Transparency & Explainable AI (XAI)</div>
+    <div class="sec-sub">The right to understand decisions that affect you</div>
+  </div>
+
+  <!-- DIAGRAM 5: Accuracy-Explainability Tradeoff -->
+  <div class="diagram-wrap">
+    <div class="diagram-title">The Accuracy–Explainability Trade-off</div>
+    <svg viewBox="0 0 620 300" width="100%" style="max-width:620px;display:block;margin:0 auto">
+      <!-- Axes -->
+      <line x1="60" y1="250" x2="560" y2="250" stroke="#d8d0c2" stroke-width="1.5"/>
+      <line x1="60" y1="250" x2="60" y2="30" stroke="#d8d0c2" stroke-width="1.5"/>
+      <!-- Labels -->
+      <text x="310" y="278" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#7a7060" letter-spacing="1">EXPLAINABILITY →</text>
+      <text x="20" y="150" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#7a7060" letter-spacing="1" transform="rotate(-90,20,150)">PERFORMANCE →</text>
+
+      <!-- Curve -->
+      <path d="M 100,80 Q 200,90 300,130 Q 400,170 520,230" fill="none" stroke="#5a7a5e" stroke-width="2.5"/>
+
+      <!-- Model points -->
+      <!-- Deep Neural Net -->
+      <circle cx="110" cy="82" r="8" fill="#c0542c"/>
+      <text x="120" y="72" font-family="DM Mono,monospace" font-size="9" fill="#c0542c">Deep Neural Net</text>
+      <text x="120" y="84" font-family="DM Mono,monospace" font-size="8" fill="#7a7060">High accuracy, opaque</text>
+
+      <!-- Random Forest -->
+      <circle cx="210" cy="96" r="8" fill="#c49a30"/>
+      <text x="222" y="86" font-family="DM Mono,monospace" font-size="9" fill="#c49a30">Random Forest</text>
+      <text x="222" y="98" font-family="DM Mono,monospace" font-size="8" fill="#7a7060">Moderate both</text>
+
+      <!-- Linear Regression -->
+      <circle cx="420" cy="178" r="8" fill="#5a7a5e"/>
+      <text x="432" y="168" font-family="DM Mono,monospace" font-size="9" fill="#5a7a5e">Linear Regression</text>
+      <text x="432" y="180" font-family="DM Mono,monospace" font-size="8" fill="#7a7060">Low accuracy, fully transparent</text>
+
+      <!-- Decision Tree -->
+      <circle cx="510" cy="222" r="8" fill="#5a7a5e"/>
+      <text x="380" y="212" font-family="DM Mono,monospace" font-size="9" fill="#5a7a5e">Decision Tree</text>
+      <text x="380" y="224" font-family="DM Mono,monospace" font-size="8" fill="#7a7060">Fully interpretable</text>
+
+      <!-- XAI bridge zone -->
+      <rect x="140" y="100" width="240" height="130" rx="4" fill="rgba(90,122,94,0.06)" stroke="rgba(90,122,94,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="260" y="192" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#5a7a5e" font-style="italic">XAI Methods Bridge</text>
+      <text x="260" y="208" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#5a7a5e">SHAP, LIME, Attention Maps</text>
+    </svg>
+  </div>
+
+  <h3>XAI Techniques</h3>
+  <div class="cards">
+    <div class="card"><span class="card-ico">🔵</span><h4>SHAP Values</h4><p>SHapley Additive exPlanations. Game-theoretic approach assigning each feature a contribution to each prediction. Globally consistent and locally accurate. Industry standard.</p><span class="badge">Post-hoc, Model-agnostic</span></div>
+    <div class="card"><span class="card-ico">🟡</span><h4>LIME</h4><p>Local Interpretable Model-agnostic Explanations. Trains a simple model locally around each prediction to approximate the complex model's behavior for that instance.</p><span class="badge">Local Explanations</span></div>
+    <div class="card"><span class="card-ico">🟢</span><h4>Attention Visualization</h4><p>In transformer models, visualize which tokens the model "attended to" when generating a prediction. Common for NLP — shows what text influenced a decision.</p><span class="badge">Transformers</span></div>
+    <div class="card"><span class="card-ico">🔴</span><h4>Counterfactual Explanations</h4><p>"If your income were $2,000 higher, the loan would be approved." Minimal changes to input that would flip the decision. Directly actionable for users.</p><span class="badge">User-Facing</span></div>
+  </div>
+</section>
+
+<!-- ════════ 07 PRIVACY ════════ -->
+<section class="section" id="privacy">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 07 // Privacy</div>
+    <div class="sec-title">Privacy & Data Rights in AI</div>
+    <div class="sec-sub">From GDPR to model memorization — protecting people in the AI era</div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-ico">📜</span><h4>GDPR Right to Explanation</h4><p>EU law grants individuals the right to a meaningful explanation of automated decisions that significantly affect them. Mandatory for credit scoring, hiring, and legal decisions in Europe.</p><span class="badge">Legal Mandate</span></div>
+    <div class="card"><span class="card-ico">🧪</span><h4>Differential Privacy</h4><p>Mathematical framework adding calibrated noise to outputs so individual records cannot be inferred. Apple uses DP for keyboard analytics; Google uses it in Chrome telemetry.</p><span class="badge">Technical Tool</span></div>
+    <div class="card"><span class="card-ico">🤝</span><h4>Federated Learning</h4><p>Train models on distributed devices without centralizing data. Google Keyboard, Apple Face ID use FL — model weights average across devices, raw data never leaves the device.</p><span class="badge">Privacy-Preserving ML</span></div>
+    <div class="card"><span class="card-ico">🔏</span><h4>Model Memorization</h4><p>LLMs can reproduce verbatim training data — including emails, phone numbers, SSNs. Carlini et al. extracted personal data from GPT-2. A profound privacy risk in generative AI.</p><span class="badge">Emerging Risk</span></div>
+  </div>
+
+  <div class="egbox">
+    <div class="eglbl">🌍 Real-World Example — Clearview AI</div>
+    <p>Clearview AI scraped 30 billion facial images from public websites without consent, building a facial recognition database sold to law enforcement. This was declared illegal under GDPR in France, Italy, UK, Greece, and Australia. Fines totaled €100M+. The case illustrates that <strong>"publicly available" data is not the same as "ethically available" data</strong> — especially when aggregated at scale.</p>
+  </div>
+</section>
+
+<!-- ════════ 08 ACCOUNTABILITY ════════ -->
+<section class="section" id="accountability">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 08 // Accountability</div>
+    <div class="sec-title">Accountability & Responsibility</div>
+    <div class="sec-sub">Who is responsible when AI causes harm?</div>
+  </div>
+
+  <!-- DIAGRAM 6: Responsibility Chain -->
+  <div class="diagram-wrap">
+    <div class="diagram-title">The AI Responsibility Chain</div>
+    <svg viewBox="0 0 700 160" width="100%" style="max-width:700px;display:block;margin:0 auto">
+      <defs>
+        <marker id="a2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#5a7a5e"/>
+        </marker>
+      </defs>
+      <!-- Chain nodes -->
+      <rect x="10" y="50" width="110" height="60" rx="3" fill="#f7f3ec" stroke="#d8d0c2"/>
+      <text x="65" y="76" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Data</text>
+      <text x="65" y="91" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Providers</text>
+      <text x="65" y="105" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a7060">Bias, consent</text>
+
+      <line x1="122" y1="80" x2="148" y2="80" stroke="#5a7a5e" stroke-width="1.5" marker-end="url(#a2)"/>
+
+      <rect x="150" y="50" width="110" height="60" rx="3" fill="#f7f3ec" stroke="#d8d0c2"/>
+      <text x="205" y="76" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Model</text>
+      <text x="205" y="91" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Developers</text>
+      <text x="205" y="105" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a7060">Architecture, training</text>
+
+      <line x1="262" y1="80" x2="288" y2="80" stroke="#5a7a5e" stroke-width="1.5" marker-end="url(#a2)"/>
+
+      <rect x="290" y="50" width="110" height="60" rx="3" fill="#f7f3ec" stroke="#d8d0c2"/>
+      <text x="345" y="76" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Deploying</text>
+      <text x="345" y="91" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">Organizations</text>
+      <text x="345" y="105" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a7060">Context, oversight</text>
+
+      <line x1="402" y1="80" x2="428" y2="80" stroke="#5a7a5e" stroke-width="1.5" marker-end="url(#a2)"/>
+
+      <rect x="430" y="50" width="110" height="60" rx="3" fill="#f7f3ec" stroke="#d8d0c2"/>
+      <text x="485" y="76" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">End-Users</text>
+      <text x="485" y="91" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#1e2028">&amp; Operators</text>
+      <text x="485" y="105" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#7a7060">Use, misuse</text>
+
+      <line x1="542" y1="80" x2="568" y2="80" stroke="#5a7a5e" stroke-width="1.5" marker-end="url(#a2)"/>
+
+      <rect x="570" y="50" width="120" height="60" rx="3" fill="#1e2028" stroke="#5a7a5e" stroke-width="1.5"/>
+      <text x="630" y="76" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="#f7f3ec">Harm Occurs</text>
+      <text x="630" y="91" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#7a9e7e">→ Who is</text>
+      <text x="630" y="104" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c0542c">responsible?</text>
+
+      <!-- Shared responsibility arc -->
+      <path d="M 65,50 Q 340,10 630,50" fill="none" stroke="#c49a30" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="340" y="26" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c49a30" letter-spacing="1">SHARED RESPONSIBILITY — DISTRIBUTED ACROSS CHAIN</text>
+    </svg>
+  </div>
+
+  <div class="warnbox">
+    <span style="font-size:18px;flex-shrink:0">⚠️</span>
+    <p><strong>The Accountability Gap:</strong> When AI causes harm, each party in the chain can point to another. Data providers blame model developers for misuse. Developers blame deployers for wrong context. Deployers blame users. Users blame the AI. This diffusion of responsibility is a fundamental challenge — addressed by the EU AI Act through mandatory "AI system providers" responsible for the entire lifecycle.</p>
+  </div>
+</section>
+
+<!-- ════════ 09 SAFETY ════════ -->
+<section class="section" id="safety">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 09 // Safety</div>
+    <div class="sec-title">AI Safety</div>
+    <div class="sec-sub">From short-term risks to existential concerns</div>
+  </div>
+
+  <div class="comp">
+    <div class="comp-panel">
+      <h4 style="color:var(--rust)">🔴 Near-Term Safety</h4>
+      <ul>
+        <li>Model hallucinations in medical advice</li>
+        <li>Adversarial attacks on autonomous vehicles</li>
+        <li>AI-generated disinformation at scale</li>
+        <li>Deepfakes undermining trust in media</li>
+        <li>Autonomous weapons without human oversight</li>
+        <li>AI systems manipulating vulnerable users</li>
+      </ul>
+    </div>
+    <div class="comp-panel">
+      <h4 style="color:var(--gold)">🟡 Long-Term Safety</h4>
+      <ul>
+        <li>Misaligned AI pursuing wrong objectives</li>
+        <li>AI systems harder to control than anticipated</li>
+        <li>Power concentration in few AI developers</li>
+        <li>Automation displacement without social support</li>
+        <li>Erosion of human skill and decision-making</li>
+        <li>Superintelligent systems acting against human values</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    "The development of full artificial intelligence could spell the end of the human race… It would take off on its own and re-design itself at an ever-increasing rate. Humans, who are limited by slow biological evolution, couldn't compete and would be superseded."
+    <cite>— Stephen Hawking, BBC Interview (2014)</cite>
+  </div>
+
+  <div class="egbox">
+    <div class="eglbl">🌍 Real-World Example — Adversarial Attacks</div>
+    <p>Researchers showed that adding barely-visible noise to a stop sign causes an autonomous vehicle's vision system to classify it as a speed limit sign — with 100% confidence. Similarly, a single sticker on a stop sign caused misclassification. These <strong>adversarial examples</strong> reveal a fundamental gap between human and machine perception — critical for any AI deployed in physical environments.</p>
+  </div>
+</section>
+
+<!-- ════════ 10 AUTONOMY ════════ -->
+<section class="section" id="autonomy">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 10 // Human Autonomy</div>
+    <div class="sec-title">Human Autonomy & AI Manipulation</div>
+    <div class="sec-sub">The fine line between personalization and manipulation</div>
+  </div>
+
+  <!-- DIAGRAM 7: Influence Spectrum -->
+  <div class="diagram-wrap">
+    <div class="diagram-title">The Influence Spectrum — Personalization to Manipulation</div>
+    <svg viewBox="0 0 680 120" width="100%" style="max-width:680px;display:block;margin:0 auto">
+      <!-- Gradient bar -->
+      <defs>
+        <linearGradient id="specGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#5a7a5e"/>
+          <stop offset="50%" stop-color="#c49a30"/>
+          <stop offset="100%" stop-color="#c0542c"/>
+        </linearGradient>
+      </defs>
+      <rect x="40" y="50" width="600" height="20" rx="2" fill="url(#specGrad)" opacity="0.8"/>
+
+      <!-- Labels below bar -->
+      <text x="40" y="86" font-family="DM Mono,monospace" font-size="9" fill="#5a7a5e">ETHICAL</text>
+      <text x="340" y="86" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c49a30">GREY ZONE</text>
+      <text x="640" y="86" text-anchor="end" font-family="DM Mono,monospace" font-size="9" fill="#c0542c">MANIPULATION</text>
+
+      <!-- Points on spectrum -->
+      <circle cx="100" cy="60" r="5" fill="white"/>
+      <text x="100" y="40" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#5a7a5e">Relevant</text>
+      <text x="100" y="28" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#5a7a5e">Recomm.</text>
+
+      <circle cx="230" cy="60" r="5" fill="white"/>
+      <text x="230" y="40" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#5a7a5e">Personalized</text>
+      <text x="230" y="28" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#5a7a5e">UX</text>
+
+      <circle cx="380" cy="60" r="5" fill="white"/>
+      <text x="380" y="40" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c49a30">Filter</text>
+      <text x="380" y="28" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c49a30">Bubbles</text>
+
+      <circle cx="510" cy="60" r="5" fill="white"/>
+      <text x="510" y="40" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c49a30">Dark</text>
+      <text x="510" y="28" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c49a30">Patterns</text>
+
+      <circle cx="610" cy="60" r="5" fill="white"/>
+      <text x="610" y="40" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c0542c">Exploiting</text>
+      <text x="610" y="28" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#c0542c">Vulnerabilities</text>
+    </svg>
+  </div>
+
+  <div class="egbox">
+    <div class="eglbl">🌍 Real-World Example — Social Media Engagement</div>
+    <p>Frances Haugen's 2021 Facebook whistleblowing revealed internal research showing that Instagram <strong>knew its recommendation algorithm increased body-image issues in teenage girls by 13%</strong> but continued optimizing for engagement. The same algorithm that "helpfully" shows you content you like can also create addictive loops, radicalization pathways, and eating disorder content — trading user wellbeing for engagement metrics.</p>
+  </div>
+</section>
+
+<!-- ════════ 11 SECTORS ════════ -->
+<section class="section" id="sectors">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 11 // Applied Ethics</div>
+    <div class="sec-title">AI Ethics by Sector</div>
+    <div class="sec-sub">Domain-specific ethical challenges and real cases</div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>Sector</th><th>Key Ethical Issues</th><th>Real Case</th><th>Regulation</th></tr></thead>
+      <tbody>
+        <tr><td>Healthcare</td><td>Diagnostic bias, data privacy, liability for AI errors, consent for training data</td><td>Dermatology AI trained on light skin fails on dark skin tones</td><td>FDA approval, HIPAA</td></tr>
+        <tr><td>Criminal Justice</td><td>Algorithmic sentencing, racial bias, due process, predictive policing</td><td>COMPAS score racial disparity (ProPublica 2016)</td><td>GDPR Art. 22, local bans</td></tr>
+        <tr><td>Finance</td><td>Credit discrimination, opaque denials, market manipulation, systemic risk</td><td>HUD sued Facebook for housing ad targeting discrimination (2019)</td><td>Fair Credit Act, EU AI Act</td></tr>
+        <tr><td>Education</td><td>Proctoring surveillance, grade prediction bias, data collection on minors</td><td>Proctorio and similar tools flagged students of color disproportionately</td><td>FERPA, COPPA</td></tr>
+        <tr><td>Hiring</td><td>Resume screening bias, interview AI performance disparities, proxy discrimination</td><td>Amazon's biased hiring AI (2018)</td><td>NYC Bias Audit Law (2023)</td></tr>
+        <tr><td>Autonomous Vehicles</td><td>Safety certification, ethical programming, liability in accidents</td><td>Uber AV fatality in Tempe, AZ (2018)</td><td>NHTSA guidelines</td></tr>
+        <tr><td>Social Media</td><td>Radicalization, manipulation, mental health, disinformation amplification</td><td>Facebook internal research on teen mental health suppressed</td><td>DSA (EU), Online Safety Bill</td></tr>
+        <tr><td>Defense/Security</td><td>Lethal autonomous weapons, civilian harm, accountability for AI warfare</td><td>UN debates on LAWS (Lethal Autonomous Weapons Systems)</td><td>Geneva Convention gaps</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════════ 12 GOVERNANCE ════════ -->
+<section class="section" id="governance">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 12 // Governance</div>
+    <div class="sec-title">AI Governance & Regulation</div>
+    <div class="sec-sub">How governments, companies, and civil society are shaping AI policy</div>
+  </div>
+
+  <!-- DIAGRAM 8: EU AI Act Risk Pyramid -->
+  <div class="diagram-wrap">
+    <div class="diagram-title">EU AI Act — Risk-Based Classification Pyramid</div>
+    <svg viewBox="0 0 520 340" width="100%" style="max-width:520px;display:block;margin:0 auto">
+      <!-- Level 1: Unacceptable (red, top) -->
+      <polygon points="260,20 160,100 360,100" fill="#c0542c" opacity="0.85"/>
+      <text x="260" y="60" text-anchor="middle" font-family="DM Serif Display,serif" font-size="12" fill="white">PROHIBITED</text>
+      <text x="260" y="75" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="rgba(255,255,255,0.8)">Social scoring, mass surveillance,</text>
+      <text x="260" y="87" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="rgba(255,255,255,0.8)">biometric categorisation</text>
+
+      <!-- Level 2: High risk (amber) -->
+      <polygon points="160,104 100,190 420,190" fill="#c49a30" opacity="0.8"/>
+      <text x="260" y="145" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="white">HIGH RISK</text>
+      <text x="260" y="162" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,255,255,0.9)">Strict obligations: conformity assessment,</text>
+      <text x="260" y="175" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,255,255,0.9)">transparency, human oversight, data governance</text>
+
+      <!-- Level 3: Limited risk (yellow) -->
+      <polygon points="100,194 50,272 470,272" fill="#c49a30" opacity="0.5"/>
+      <text x="260" y="228" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="#1e2028">LIMITED RISK</text>
+      <text x="260" y="245" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#2a2d38">Transparency obligations:</text>
+      <text x="260" y="258" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#2a2d38">disclose when users interact with AI</text>
+
+      <!-- Level 4: Minimal risk (green) -->
+      <polygon points="50,276 20,340 500,340" fill="#5a7a5e" opacity="0.7"/>
+      <text x="260" y="308" text-anchor="middle" font-family="DM Serif Display,serif" font-size="13" fill="white">MINIMAL RISK</text>
+      <text x="260" y="325" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="rgba(255,255,255,0.9)">Spam filters, recommendation engines — no mandatory obligations</text>
+
+      <!-- Right labels -->
+      <text x="430" y="68" font-family="DM Mono,monospace" font-size="9" fill="#c0542c">BANNED</text>
+      <text x="430" y="152" font-family="DM Mono,monospace" font-size="9" fill="#c49a30">REGULATED</text>
+      <text x="430" y="234" font-family="DM Mono,monospace" font-size="9" fill="#8a7040">DISCLOSE</text>
+      <text x="430" y="308" font-family="DM Mono,monospace" font-size="9" fill="#5a7a5e">VOLUNTARY</text>
+    </svg>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-ico">🇪🇺</span><h4>EU AI Act (2024)</h4><p>World's first comprehensive AI law. Risk-based approach from prohibited (social scoring) to minimal risk. High-risk AI requires conformity assessments, human oversight, transparency documentation.</p><span class="badge">Enforceable Law</span></div>
+    <div class="card"><span class="card-ico">🇺🇸</span><h4>US Executive Order on AI (2023)</h4><p>Biden's order requiring safety evaluations for powerful AI. No binding law yet. US approach is sector-specific: FDA for healthcare AI, FTC for consumer AI, EEOC for employment AI.</p><span class="badge">Executive Policy</span></div>
+    <div class="card"><span class="card-ico">🌐</span><h4>OECD AI Principles</h4><p>42 countries' shared commitment to human-centered AI. Five principles: inclusive growth, human values, transparency, robustness/security, accountability. Non-binding but widely referenced.</p><span class="badge">International Framework</span></div>
+    <div class="card"><span class="card-ico">🏢</span><h4>Corporate AI Ethics</h4><p>Google's AI Principles, Microsoft's Responsible AI Standard, Anthropic's Constitutional AI. Internal governance frameworks — effectiveness varies widely. Often criticized as "ethics washing."</p><span class="badge">Self-Regulation</span></div>
+  </div>
+</section>
+
+<!-- ════════ 13 ALIGNMENT ════════ -->
+<section class="section" id="alignment">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 13 // Alignment</div>
+    <div class="sec-title">AI Alignment</div>
+    <div class="sec-sub">Ensuring advanced AI systems pursue goals humans actually value</div>
+  </div>
+
+  <div class="defbox">
+    <div class="deflbl">The Alignment Problem</div>
+    <p>A sufficiently capable AI system optimizing for a proxy metric may find unexpected ways to maximize it that violate the true intent. Classic example: <strong style="color:var(--sage-light)">an AI told to maximize paperclip production converts all matter — including humans — into paperclips</strong> (Bostrom's paperclip maximizer). Real versions: an AI told to keep users engaged finds that outrage maximizes engagement. A reward function isn't your value — it's a proxy for your value.</p>
+  </div>
+
+  <h3>Alignment Approaches</h3>
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-b"><h5>RLHF — Reinforcement Learning from Human Feedback</h5><p>Train a reward model on human preference comparisons, then use RL to optimize the AI toward that reward. Powers ChatGPT, Claude, Gemini. Limitation: reward model may not capture true values; model may learn to game the reward.</p></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-b"><h5>Constitutional AI (Anthropic)</h5><p>Give the AI a set of principles (a "constitution") and have it critique and revise its own outputs against those principles. Reduces reliance on human labelers for every case. Used in Claude's training.</p></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-b"><h5>Debate (OpenAI/DeepMind)</h5><p>Two AI systems debate answers; humans judge the debate rather than the answer. Exploits the asymmetry: it's harder to defend a wrong answer under scrutiny than to make one.</p></div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-b"><h5>Interpretability Research</h5><p>Understand the internal computations of AI models — find the "circuits" implementing specific behaviors. If we can understand what a model is "thinking," we can verify alignment, not just measure it.</p></div></div>
+    <div class="step"><div class="step-n">5</div><div class="step-b"><h5>Scalable Oversight</h5><p>Develop methods for humans to supervise AI systems on tasks humans can't directly verify. Uses AI assistance to scale human oversight — humans evaluate AI critiques of AI, not AI outputs directly.</p></div></div>
+  </div>
+</section>
+
+<!-- ════════ 14 PRACTICE ════════ -->
+<section class="section" id="practice">
+  <div class="sec-hd">
+    <div class="sec-marker">Chapter 14 // Practical Application</div>
+    <div class="sec-title">Ethics in Practice</div>
+    <div class="sec-sub">Frameworks and checklists for responsible AI development</div>
+  </div>
+
+  <div class="framework">
+    <div class="fw-title">🗺️ The Responsible AI Development Checklist</div>
+    <div class="fw-steps">
+      <div class="fw-step"><div class="fw-num">1</div><div class="fw-body"><strong>Problem Framing:</strong> Is AI appropriate for this task? What are the risks of automation? Who could be harmed? Have affected communities been consulted?</div></div>
+      <div class="fw-step"><div class="fw-num">2</div><div class="fw-body"><strong>Data Audit:</strong> Is data representative? Was it ethically collected? Are there proxy variables for protected attributes? What are the limitations?</div></div>
+      <div class="fw-step"><div class="fw-num">3</div><div class="fw-body"><strong>Model Evaluation:</strong> Evaluate across demographic subgroups. Check for disparate impact. Test on edge cases and adversarial inputs. Benchmark fairness metrics.</div></div>
+      <div class="fw-step"><div class="fw-num">4</div><div class="fw-body"><strong>Transparency Documentation:</strong> Write a Model Card. Document intended use, limitations, training data, and known biases. Who should and shouldn't use this model?</div></div>
+      <div class="fw-step"><div class="fw-num">5</div><div class="fw-body"><strong>Human Oversight:</strong> Design appropriate human review for high-stakes decisions. No fully automated decisions in life-affecting contexts without human recourse.</div></div>
+      <div class="fw-step"><div class="fw-num">6</div><div class="fw-body"><strong>Deployment Monitoring:</strong> Monitor for performance degradation across groups over time. Establish feedback channels for affected individuals to report harms.</div></div>
+      <div class="fw-step"><div class="fw-num">7</div><div class="fw-body"><strong>Accountability:</strong> Designate clear ownership. Establish incident response procedures. Know when to shut the system down.</div></div>
+    </div>
+  </div>
+
+  <div class="pills">
+    <span class="pill on">Model Cards</span>
+    <span class="pill on">Datasheets for Datasets</span>
+    <span class="pill">Ethics Review Board</span>
+    <span class="pill">Impact Assessments</span>
+    <span class="pill on">Red Teaming</span>
+    <span class="pill">Community Engagement</span>
+    <span class="pill on">Fairness Audits</span>
+    <span class="pill">Algorithmic Impact Assessment</span>
+    <span class="pill">Adversarial Testing</span>
+  </div>
+</section>
+
+<!-- ════════ INTERVIEW ════════ -->
+<section class="section" id="interview">
+  <div class="sec-hd">
+    <div class="sec-marker">★ Interview Preparation</div>
+    <div class="sec-title">AI Ethics Interview Q&A</div>
+    <div class="sec-sub">50+ questions across technical roles, policy, and leadership</div>
+  </div>
+
+  <div class="qa-wrap">
+
+    <div class="qgrp-title">🟢 Fundamentals</div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is AI ethics and why does it matter now more than ever?<span class="ch">▾</span></div>
+    <div class="qa-a">AI ethics is the study of the moral implications of designing, deploying, and governing AI systems. It matters critically now because AI has transitioned from academic tool to infrastructure: it makes bail decisions, approves loans, screens resumes, and curates information for billions. Three forces make AI ethics urgent: <strong>Scale</strong> — a single biased algorithm can affect millions simultaneously, not individuals case-by-case. <strong>Automation</strong> — decisions happen too fast for human review, removing natural error-correction mechanisms. <strong>Opacity</strong> — stakeholders often cannot understand why a decision was made. Without deliberate ethical design, AI systematically encodes and amplifies existing societal biases — giving historical injustice algorithmic permanence at unprecedented scale.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What are the five core principles of responsible AI?<span class="ch">▾</span></div>
+    <div class="qa-a">While frameworks vary, the most widely endorsed principles (from IEEE, EU, OECD) are: (1) <strong>Fairness</strong> — AI must not systematically disadvantage individuals based on protected characteristics. This requires active bias testing, not merely omitting protected attributes. (2) <strong>Transparency & Explainability</strong> — stakeholders should understand how consequential AI decisions are made; post-hoc explanations (SHAP, LIME) or inherently interpretable models for high-stakes uses. (3) <strong>Privacy</strong> — data minimization, informed consent, right to explanation (GDPR Art. 22). (4) <strong>Accountability</strong> — clear ownership of AI outcomes; audit trails; mechanisms for affected individuals to seek redress. (5) <strong>Safety & Robustness</strong> — systems should be tested for failure modes, adversarial attacks, and edge cases before deployment. Beneficence (do good) and Non-maleficence (avoid harm) are often added as overarching goals.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is algorithmic bias and how does it enter AI systems?<span class="ch">▾</span></div>
+    <div class="qa-a">Algorithmic bias is systematic unfairness in AI outputs that disadvantages certain groups. Entry points: (1) <strong>Training data bias</strong> — data reflects historical discrimination (Amazon hiring, facial recognition accuracy gaps). (2) <strong>Representation bias</strong> — underrepresentation of groups in training data causes poor performance for those groups (Joy Buolamwini's Gender Shades study: major commercial face recognition had 34% worse accuracy on dark-skinned women vs. light-skinned men). (3) <strong>Proxy discrimination</strong> — model uses correlated proxies for protected attributes (ZIP code → race; name → ethnicity). (4) <strong>Measurement bias</strong> — the outcome measure is itself biased (using arrest records as proxy for crime imports policing disparities). (5) <strong>Feedback loops</strong> — biased predictions influence future data, reinforcing themselves (predictive policing concentrating officers in certain areas generates more arrests there, "confirming" the model). Crucially: removing protected attributes from features doesn't prevent bias if correlated proxies remain in the data.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>Explain the impossibility theorem of fairness.<span class="ch">▾</span></div>
+    <div class="qa-a">The Impossibility Theorem of Fairness (Chouldechova 2017, Kleinberg et al. 2016) mathematically proves that <strong>calibration, equal false positive rate, and equal false negative rate cannot all be satisfied simultaneously when base rates differ between groups</strong>. In COMPAS: Black defendants had a higher base rate of reoffending in the dataset. If the model is calibrated (score of 7 means 70% reoffend for all groups), it will necessarily have higher false positive rates for Black defendants. Conversely, if you equalize false positive rates, the model loses calibration. This isn't a bug — it's a mathematical theorem. The implication: any fairness-affecting AI system makes a <strong>normative value choice</strong> about which fairness criterion to prioritize. That choice should be explicit, documented, and made by stakeholders — not silently embedded in optimization code.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is the difference between transparency and explainability in AI?<span class="ch">▾</span></div>
+    <div class="qa-a"><strong>Transparency</strong> refers to the system's design being open to inspection — publishing architecture, training data sources, methodology. A transparent system is "glass box" in its construction. <strong>Explainability</strong> (XAI) refers to the ability to communicate in human-understandable terms <em>why a specific decision was made</em>. These are different: (1) A decision tree is transparent AND explainable — you can see every node and trace every decision. (2) A neural network may be transparent (published architecture) but not explainable — you can't explain why input X produced output Y from weights alone. (3) SHAP/LIME provide explainability for opaque models without making them transparent — they approximate local model behavior. For regulated industries, <strong>explanations must be actionable and meaningful to affected individuals</strong> — "the model didn't like your zip code" is not an acceptable explanation. The GDPR right to explanation requires information sufficient to contest a decision.</div></div>
+
+    <div class="qgrp-title">🟡 Technical & Applied</div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How would you audit a model for bias before deployment?<span class="ch">▾</span></div>
+    <div class="qa-a">A comprehensive bias audit has five layers: (1) <strong>Data audit</strong>: examine training data for representation gaps, historical biases, proxy variables. Check demographic distributions. Look for outcome label quality (are the labels themselves biased?). (2) <strong>Disaggregated evaluation</strong>: break down all performance metrics (accuracy, precision, recall, FPR, FNR) by every demographic subgroup and their intersections (race × gender × age). Don't just look at aggregate performance. (3) <strong>Fairness metric testing</strong>: compute demographic parity (equal positive prediction rates), equalized odds (equal TPR and FPR), individual fairness (similar individuals treated similarly). Document explicitly which metric you're optimizing for. (4) <strong>Counterfactual testing</strong>: change only protected attributes and measure prediction changes. A fair model should be largely invariant to protected characteristics. Tools: IBM AI Fairness 360, Google's What-If Tool, Fairlearn. (5) <strong>External red team audit</strong>: independent third-party testing, especially for high-stakes applications. Repeat quarterly — bias can emerge or grow over time as data distributions shift.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is differential privacy and where is it used in practice?<span class="ch">▾</span></div>
+    <div class="qa-a">Differential privacy (DP) is a mathematical guarantee: the probability of any output changes by at most e^ε when any single individual's data is added or removed from the dataset. This makes it impossible to determine any individual's contribution to the model. Mechanism: add carefully calibrated Gaussian or Laplace noise to query results or gradients during training. The privacy budget ε controls the tradeoff — smaller ε means more privacy but more noise and less accuracy. Real deployments: <strong>Apple</strong> uses DP for keyboard analytics and emoji usage statistics (ε ≈ 1). <strong>Google</strong> uses RAPPOR for Chrome usage statistics and DP in its census data work. <strong>US Census Bureau</strong> uses DP for the 2020 Census data release. <strong>Google's TensorFlow Privacy</strong> and <strong>Apple's CryptoKit</strong> make DP accessible. Limitations: DP protects individual privacy in training data but doesn't prevent all privacy harms — models can still memorize non-private aggregate patterns, and DP doesn't protect against misuse of model outputs.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is the EU AI Act and how does it classify AI systems?<span class="ch">▾</span></div>
+    <div class="qa-a">The EU AI Act (fully in force 2024–2025) is the world's first comprehensive AI regulation. It uses a <strong>risk-based pyramid</strong>: (1) <strong>Prohibited AI</strong>: social scoring systems (China-style), real-time biometric surveillance in public, subliminal manipulation of vulnerable groups, emotion recognition in workplace/education. These are banned outright. (2) <strong>High-risk AI</strong>: strict requirements including: mandatory conformity assessment before deployment, technical documentation, human oversight provisions, data governance standards, cybersecurity requirements. Applies to: critical infrastructure, education, employment, essential services, law enforcement, migration management, administration of justice. (3) <strong>Limited risk</strong>: transparency obligations — must disclose when users interact with AI (chatbots must identify themselves). (4) <strong>Minimal risk</strong>: spam filters, recommendation engines — no mandatory requirements. Fines: up to €35M or 7% of global turnover for prohibited AI violations. For ML practitioners: if you're building high-risk AI for the EU market, you need conformity documentation, bias testing, human oversight mechanisms, and a registered "AI system provider" responsible for compliance.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How does Anthropic's Constitutional AI work and what ethical principles does it embed?<span class="ch">▾</span></div>
+    <div class="qa-a">Constitutional AI (CAI) is Anthropic's alignment technique with two phases: (1) <strong>Supervised Learning from AI Feedback (SL-CAF)</strong>: given a "constitution" — a list of principles (e.g., "Be helpful, harmless, and honest," "Don't produce content that could cause serious harm") — the AI generates a response, then critiques it against the constitution, then revises it. The revised response becomes training data. (2) <strong>RL from AI Feedback (RLAIF)</strong>: instead of human raters for all preference data, the AI evaluates which of two responses better follows constitutional principles. A reward model is trained on these AI preferences, then used to fine-tune the model via RL. Key ethical principles embedded: <strong>Beneficence</strong> (be genuinely helpful), <strong>Non-maleficence</strong> (avoid harm to users and third parties), <strong>Honesty</strong> (don't deceive or manipulate), <strong>Autonomy preservation</strong> (don't undermine users' rational agency), <strong>Harm avoidance</strong> for vulnerable populations. Advantages: reduces reliance on human labelers for every case, makes ethical principles explicit and auditable, reduces need for detailed per-response human feedback at scale.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is the alignment problem and why is it hard?<span class="ch">▾</span></div>
+    <div class="qa-a">The alignment problem asks: how do we ensure AI systems pursue goals humans actually value? It's hard for interconnected reasons: (1) <strong>Specification problem</strong>: human values are complex, contextual, and often contradictory. Any reward function is a simplification that a sufficiently capable system can satisfy in unintended ways. An AI told to "maximize user engagement" finds outrage and addiction work well. (2) <strong>Goodhart's Law</strong>: "when a measure becomes a target, it ceases to be a good measure." This applies with particular force to AI reward functions. (3) <strong>Scalable oversight</strong>: as AI becomes more capable, humans may not be able to verify whether its outputs are correct — we can't supervise tasks we can't do ourselves. (4) <strong>Distributional shift</strong>: a system aligned in training may encounter novel situations where its values generalize poorly. (5) <strong>Mesa-optimization</strong>: a trained model may develop its own internal optimization process pursuing a different goal than the training objective. Current best approaches — RLHF, CAI, debate, interpretability — improve alignment but don't fully solve it. The field is active and urgent precisely because the stakes grow with capability.</div></div>
+
+    <div class="qgrp-title">🟠 Governance & Policy</div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is "ethics washing" and how do you identify it?<span class="ch">▾</span></div>
+    <div class="qa-a">Ethics washing (also "AI ethics theater") is when organizations use the language of ethics to appear responsible without making substantive changes to their AI systems or business practices. Signals of ethics washing: (1) <strong>Ethics boards without power</strong>: advisory ethics boards that can't halt deployments. Google disbanded its AI ethics board 8 days after forming it in 2019. (2) <strong>Principles without implementation</strong>: high-minded value statements (fairness! transparency!) with no operational definition, measurement, or enforcement. (3) <strong>Post-hoc explainability as alibi</strong>: adding LIME/SHAP to a harmful system and calling it "transparent." (4) <strong>Community consultation theatre</strong>: consulting affected communities at the end, not the beginning — when decisions are already made. (5) <strong>Voluntary commitments</strong>: committing to principles that don't constrain profitable behavior. Genuine AI ethics requires: binding internal governance, independent external audits, affected community power in design, meaningful consequences for violations, and willingness to cancel profitable products that cause harm.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How should a company respond to discovering their deployed AI is causing harm?<span class="ch">▾</span></div>
+    <div class="qa-a">Responsible incident response: (1) <strong>Stop first, investigate second</strong>: if the harm is ongoing and serious, pause or restrict the system before completing the full investigation. The cost of pause is lower than the cost of continued harm. (2) <strong>Notify affected parties</strong>: inform users or customers that a problem exists and that it is being addressed — without waiting for a complete fix. (3) <strong>Root cause analysis</strong>: is it data bias, model error, deployment context mismatch, or misuse? Distinguish between a fixable bug and a fundamental design problem. (4) <strong>Independent review</strong>: bring in external ethics or technical reviewers — internal teams have incentives to underestimate harm. (5) <strong>Remediation</strong>: technical fix, model retraining, deployment restriction, or system shutdown depending on severity. (6) <strong>Redress</strong>: what can be done for individuals already harmed? Can decisions be revisited? (7) <strong>Public disclosure</strong>: transparent communication about what happened, what was done, and what will change. Covering up is almost always worse than the original problem. (8) <strong>Systemic change</strong>: add the failure mode to your evaluation suite so it can't silently recur.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is the difference between AI safety and AI ethics?<span class="ch">▾</span></div>
+    <div class="qa-a">Related but distinct disciplines with different timescales and concerns: <strong>AI ethics</strong> focuses primarily on current and near-term harms from AI systems being deployed today: bias in hiring tools, privacy violations, manipulation via recommendation systems, accountability gaps. It is deeply connected to social justice, civil rights, and existing legal frameworks. It studies how AI affects people right now. <strong>AI safety</strong> (often called technical AI safety) focuses on ensuring advanced AI systems — including systems substantially more capable than current ones — behave as intended and don't pose catastrophic risks. It concerns the alignment problem, control of superintelligent systems, robustness against adversarial environments, and avoiding scenarios where AI pursues goals misaligned with human values at scale. In practice, they overlap: a safe AI must be ethical; an ethical AI must be safe. But the research communities have historically been separate — ethics researchers often from social science, law, and humanities; safety researchers from ML theory, mathematics, and CS. The best organizations (Anthropic, DeepMind's alignment team) work across both.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What are autonomous weapons and what ethical issues do they raise?<span class="ch">▾</span></div>
+    <div class="qa-a">Lethal Autonomous Weapons Systems (LAWS) are weapons capable of selecting and engaging targets without meaningful human control. Current examples include loitering munitions (drone swarms) and some missile defense systems. Ethical issues: (1) <strong>Accountability gap</strong>: if an autonomous drone kills civilians, who is criminally liable? The programmer? The commander? The manufacturer? The Geneva Conventions have no mechanism for AI. (2) <strong>Proportionality and distinction</strong>: international humanitarian law requires distinguishing combatants from civilians and proportional use of force. Can an AI system reliably make these contextual, culturally-dependent judgments? (3) <strong>Lowering the threshold for war</strong>: removing human soldiers from risk reduces political costs of conflict, potentially making war more likely. (4) <strong>Arms race dynamics</strong>: competitive pressure may push nations to deploy less-than-safe systems. (5) <strong>Dehumanization</strong>: there is a moral argument that killing requires a human to bear moral responsibility — an AI killing cannot be a moral act. The Campaign to Stop Killer Robots advocates for a preemptive treaty. The UN has been debating this since 2014 without resolution.</div></div>
+
+    <div class="qgrp-title">💼 Behavioral / Scenario-Based</div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>Your team's AI model has 95% accuracy but performs significantly worse on minority groups. What do you do?<span class="ch">▾</span></div>
+    <div class="qa-a">This is a common scenario requiring both technical and ethical judgment. Steps: (1) <strong>Quantify the disparity</strong> precisely: what are the performance gaps across all metrics (accuracy, FPR, FNR, PPV) for each subgroup? Is this statistical noise or systemic? (2) <strong>Determine deployment context</strong>: what decisions does this model influence? A 90% vs 95% accuracy for a recommendation engine is different from the same gap in a medical diagnostic or criminal justice tool. Severity of disparity is contextual. (3) <strong>Root cause analysis</strong>: is it insufficient training data for minority groups? Biased labels? Proxy discrimination? Different base rates? Each requires a different fix. (4) <strong>Technical mitigation options</strong>: collect more representative training data, use fairness-aware algorithms (Fairlearn), apply post-processing to equalize error rates, train subgroup-specific models. (5) <strong>Evaluate the ethical tradeoff</strong>: recall that fairness metrics conflict — you may need to reduce overall accuracy to improve equity. This is an explicit values decision, not a purely technical one — escalate to leadership and legal. (6) <strong>Consider pausing deployment</strong>: if the affected decisions are high-stakes (healthcare, credit, criminal justice) and the disparity is significant, the responsible choice may be to delay deployment until equity is achieved, even at cost.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How do you explain the ethical implications of a recommendation algorithm to a non-technical executive?<span class="ch">▾</span></div>
+    <div class="qa-a">Frame around business risk and human impact — not technical concepts: "Our recommendation algorithm makes decisions for 50 million users. Unlike a human editor who makes a choice and can explain it, our system makes 50 million simultaneous choices, often opaquely, and at a speed no team can review. This creates three kinds of risk: (1) <strong>Fairness risk</strong>: if the algorithm recommends different quality content to users based on demographic characteristics — even unintentionally — we face discrimination liability and user trust damage. Facebook paid $115M to settle housing discrimination claims against their ad targeting. (2) <strong>Manipulation risk</strong>: an algorithm optimized purely for engagement may surface content that is addictive or harmful. This is what happened with YouTube's radicalization pipeline and Facebook's teen mental health findings. Regulatory scrutiny of algorithmic manipulation is intensifying globally. (3) <strong>Reputational risk</strong>: when harms become public — and they usually do — 'the algorithm did it' is not an acceptable answer. We own the system. The cost of building in fairness, transparency, and safety now is a small fraction of the legal and reputational cost of a major AI scandal."</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is the "right to explanation" under GDPR and how do you implement it technically?<span class="ch">▾</span></div>
+    <div class="qa-a">GDPR Article 22 grants individuals the right not to be subject to solely automated decisions that significantly affect them — and the right to request a human review, express their point of view, and receive a meaningful explanation. Scope: credit decisions, job screening, insurance pricing, loan approvals, bail assessments — any automated decision with legal or similarly significant effects. Technical implementation: (1) <strong>Log all inputs and outputs</strong> for every automated decision with the user's ID and timestamp — you must be able to reproduce any decision on demand. (2) <strong>Generate local explanations</strong>: use SHAP or LIME to generate feature-level contributions for each decision. Store these alongside the decision. (3) <strong>Translate to user language</strong>: SHAP values of [credit_utilization: +0.32, payment_history: -0.18] must be translated to "Your application was affected most significantly by your credit utilization rate (which was higher than our threshold) and positively by your payment history." (4) <strong>Implement human review workflow</strong>: users must have a documented, accessible way to request human review of automated decisions. (5) <strong>Right to contest</strong>: users can provide additional context — your system must support re-evaluation with new information. The explanation must be "meaningful" — courts have found that generic explanations ("the model assessed your creditworthiness") don't satisfy GDPR. Actionable specifics are required.</div></div>
+
+  </div><!-- /qa-wrap -->
+</section>
+
+</div><!-- /content -->
+</main>
+
+<script>
+// Intersection observer — section animations
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')})
+},{threshold:0.04});
+document.querySelectorAll('.section').forEach(s=>io.observe(s));
+
+// Active nav
+const nls = document.querySelectorAll('.nl');
+const sio = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      nls.forEach(n=>n.classList.remove('active'));
+      const a=document.querySelector(`.nl[onclick*="${e.target.id}"]`);
+      if(a)a.classList.add('active');
+    }
+  });
+},{threshold:0.2});
+document.querySelectorAll('.section').forEach(s=>sio.observe(s));
+
+function go(id){
+  const el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  if(window.innerWidth<=920)toggleMenu();
+}
+
+function toggle(el){
+  const item=el.closest('.qa');
+  const open=item.classList.contains('open');
+  document.querySelectorAll('.qa.open').forEach(q=>q.classList.remove('open'));
+  if(!open)item.classList.add('open');
+}
+
+function toggleMenu(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('ovl').classList.toggle('show');
+}
+</script>
+</body>
+</html>

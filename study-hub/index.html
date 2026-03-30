@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Learning Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </head>
+  <body>
+
+    <!-- NAV -->
+    <nav class="navbar" id="navbar">
+      <div class="nav-inner">
+        <a href="#" class="nav-logo">
+          <span class="logo-mark">BS</span>
+          <span class="logo-text">BirendraSingh</span>
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
+          <li><a href="#topics" class="nav-link" data-section="topics">Topics</a></li>
+          <li><a href="#progress" class="nav-link" data-section="progress">Progress</a></li>
+          <li><a href="#about" class="nav-link" data-section="about">About</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <!-- Search -->
+          <div class="search-wrap">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search topics…" />
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          </div>
+          <!-- Dark/Light toggle -->
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+              <i class="fa-solid fa-sun sun-icon"></i>
+              <i class="fa-solid fa-moon moon-icon"></i>
+            </span>
+          </button>
+          <!-- Hamburger -->
+          <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <canvas id="particleCanvas"></canvas>
+      <div class="hero-content">
+        <div class="hero-badge reveal">
+          <i class="fa-solid fa-bolt"></i> Your Personal Learning OS
+        </div>
+        <h1 class="hero-title reveal">
+          <span>My Learning</span>
+          <span class="accent-line">Dashboard</span>
+        </h1>
+        <p class="hero-sub reveal">
+          Master <span class="type-target" id="typeTarget"></span>
+          <span class="type-cursor">|</span>
+        </p>
+        <div class="hero-cta reveal">
+          <a href="#topics" class="btn btn-primary" id="startBtn">
+            <span>Start Learning</span>
+            <i class="fa-solid fa-arrow-down"></i>
+          </a>
+          <a href="#progress" class="btn btn-ghost">View Progress</a>
+        </div>
+        <div class="hero-stats reveal">
+          <div class="stat"><strong>12</strong><span>Tracks</span></div>
+          <div class="stat-div"></div>
+          <div class="stat"><strong>300+</strong><span>Topics</span></div>
+          <div class="stat-div"></div>
+          <div class="stat"><strong>∞</strong><span>Potential</span></div>
+        </div>
+      </div>
+      <div class="hero-scroll-hint">
+        <span>Scroll</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- TOPICS -->
+    <section class="topics-section" id="topics">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">Study Tracks</span>
+          <h2 class="section-title">Choose Your Path</h2>
+          <p class="section-desc">Twelve curated tracks designed to take you from concept to mastery. Tap any card to dive in.</p>
+        </div>
+
+        <div class="cards-grid" id="cardsGrid">
+
+          <!-- TypeScript -->
+          <article class="card reveal card--coming-soon" data-tags="typescript javascript types frontend" style="--card-accent:#3178C6;--card-delay:.64s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-brands fa-js card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <!-- <span class="badge badge-soon"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</span> -->
+                <span class="badge badge-inter">Intermediate</span>
+                <span class="badge badge-hot"><i class="fa-solid fa-fire-flame-curved"></i> Hot</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">JavaScript / TypeScript</h3>
+              <p class="card-desc">Static types, generics, utility types, advanced patterns, and integrating JavaScript & TypeScript in large-scale React & Node projects.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 26 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~13 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="68">68%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="68"></div></div>
+              </div>
+            </div>
+            <a href="js-ts/js-ts-study-guide.html" class="card-btn" target="_blank">
+              Open Guide <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </article>
+
+          <!-- React -->
+          <article class="card reveal" data-tags="react frontend javascript" style="--card-accent:#61DAFB;--card-delay:0s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-brands fa-react card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-inter">Intermediate</span>
+                <span class="badge badge-hot"><i class="fa-solid fa-fire-flame-curved"></i> Hot</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">React</h3>
+              <p class="card-desc">Hooks, state management, component patterns, performance optimisation, and modern React 18 features.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 28 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~14 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="65">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="65"></div></div>
+              </div>
+            </div>
+            <a href="react/index.html" class="card-btn" target="_blank">
+              Open Guide <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </article>
+
+          <!-- Node -->
+          <article class="card reveal" data-tags="node nodejs backend javascript" style="--card-accent:#68A063;--card-delay:.08s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-brands fa-node-js card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-inter">Intermediate</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Node.js</h3>
+              <p class="card-desc">Event loop, streams, REST APIs, authentication, databases integration, and deployment best practices.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 24 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~12 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="40">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="40"></div></div>
+              </div>
+            </div>
+            <a href="node/index.html" class="card-btn" target="_blank">
+              Open Guide <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </article>
+
+          <!-- GitHub -->
+          <article class="card reveal" data-tags="github git version control devops" style="--card-accent:#E8E8E8;--card-delay:.48s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-brands fa-github card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-beg">Beginner</span>
+                <span class="badge badge-hot"><i class="fa-solid fa-fire-flame-curved"></i> Hot</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">GitHub &amp; Git</h3>
+              <p class="card-desc">Branching, merging, pull requests, GitHub Actions CI/CD, workflows, and collaborative development best practices.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 18 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~8 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="35">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="35"></div></div>
+              </div>
+            </div>
+            <a href="github/index.html" class="card-btn" target="_blank">
+              Open Guide <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </article>
+
+          <!-- SQL -->
+          <article class="card reveal" data-tags="sql database query postgres mysql" style="--card-accent:#00758F;--card-delay:.40s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-solid fa-database card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-beg">Beginner</span>
+                <span class="badge badge-pop"><i class="fa-solid fa-star"></i> Popular</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">SQL</h3>
+              <p class="card-desc">Queries, joins, aggregations, indexing, transactions, and advanced SQL patterns across PostgreSQL & MySQL.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 22 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~10 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="50">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="50"></div></div>
+              </div>
+            </div>
+            <a href="sql/sql_complete_guide.html" class="card-btn" target="_blank">
+              Open Guide <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </article>
+
+          <!-- Python -->
+          <article class="card reveal" data-tags="python backend data science" style="--card-accent:#FFD43B;--card-delay:.16s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-brands fa-python card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-beg">Beginner</span>
+                <span class="badge badge-pop"><i class="fa-solid fa-star"></i> Popular</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Python</h3>
+              <p class="card-desc">Core syntax, OOP, file handling, decorators, generators, and the full standard library toolbelt.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 32 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~16 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="80">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="80"></div></div>
+              </div>
+            </div>
+            <a href="python/index.html" class="card-btn" target="_blank">
+              Open Guide <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </article>
+
+          <!-- DSA -->
+          <article class="card reveal" data-tags="dsa algorithms data structures" style="--card-accent:#F97316;--card-delay:.24s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-solid fa-diagram-project card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-adv">Advanced</span>
+                <span class="badge badge-hot"><i class="fa-solid fa-fire-flame-curved"></i> Hot</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">DSA</h3>
+              <p class="card-desc">Arrays, trees, graphs, dynamic programming, sorting, searching — crack any technical interview.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 40 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~20 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="30">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="30"></div></div>
+              </div>
+            </div>
+            <a href="dsa/index.html" class="card-btn" target="_blank">
+              Open Guide <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </article>
+
+          <!-- ML -->
+          <article class="card reveal" data-tags="machine learning ai data science ml" style="--card-accent:#A78BFA;--card-delay:.32s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-solid fa-brain card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-adv">Advanced</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Machine Learning</h3>
+              <p class="card-desc">Supervised & unsupervised learning, neural networks, model evaluation, and deploying ML in production.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 36 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~18 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="15">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="15"></div></div>
+              </div>
+            </div>
+            <a href="ml/index.html" class="card-btn" target="_blank">
+              Open Guide <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </article>
+
+          <!-- AI -->
+          <article class="card reveal" data-tags="ai artificial intelligence llm gpt prompt engineering" style="--card-accent:#F472B6;--card-delay:.56s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-solid fa-robot card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-adv">Advanced</span>
+                <span class="badge badge-hot"><i class="fa-solid fa-fire-flame-curved"></i> Hot</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">AI &amp; LLMs</h3>
+              <p class="card-desc">Prompt engineering, RAG pipelines, fine-tuning, LangChain, embeddings, and building production AI applications.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 30 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~15 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="20">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="20"></div></div>
+              </div>
+            </div>
+            <a href="ai/index.html" class="card-btn" target="_blank">
+              Open Guide <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </article>
+
+          <!-- Docker — Dummy -->
+          <article class="card reveal card--coming-soon" data-tags="docker devops containers kubernetes" style="--card-accent:#2496ED;--card-delay:.72s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-brands fa-docker card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-inter">Intermediate</span>
+                <span class="badge badge-soon"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Docker &amp; DevOps</h3>
+              <p class="card-desc">Containers, images, Compose, CI/CD pipelines, Kubernetes basics, and shipping software reliably at scale.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 20 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~11 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="0">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="0"></div></div>
+              </div>
+            </div>
+            <a href="#" class="card-btn card-btn--disabled" aria-disabled="true">
+              Coming Soon <i class="fa-solid fa-lock"></i>
+            </a>
+          </article>
+
+          <!-- Linux — Dummy -->
+          <article class="card reveal card--coming-soon" data-tags="linux bash shell terminal unix" style="--card-accent:#FCC624;--card-delay:.80s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-brands fa-linux card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-beg">Beginner</span>
+                <span class="badge badge-soon"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Linux &amp; Bash</h3>
+              <p class="card-desc">File system, shell scripting, process management, networking commands, and becoming a terminal power user.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 24 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~12 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="0">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="0"></div></div>
+              </div>
+            </div>
+            <a href="#" class="card-btn card-btn--disabled" aria-disabled="true">
+              Coming Soon <i class="fa-solid fa-lock"></i>
+            </a>
+          </article>
+
+          <!-- Go — Dummy -->
+          <article class="card reveal card--coming-soon" data-tags="go golang backend systems" style="--card-accent:#00ACD7;--card-delay:.88s">
+            <div class="card-glow"></div>
+            <div class="card-top">
+              <div class="card-icon-wrap">
+                <i class="fa-solid fa-g card-icon"></i>
+              </div>
+              <div class="card-badges">
+                <span class="badge badge-inter">Intermediate</span>
+                <span class="badge badge-soon"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">Go (Golang)</h3>
+              <p class="card-desc">Goroutines, channels, interfaces, HTTP servers, and building high-performance concurrent backend services.</p>
+              <div class="card-meta">
+                <span><i class="fa-solid fa-book-open"></i> 28 topics</span>
+                <span><i class="fa-regular fa-clock"></i> ~14 hrs</span>
+              </div>
+              <div class="card-progress-wrap">
+                <div class="cp-label"><span>Progress</span><span class="cp-pct" data-pct="0">0%</span></div>
+                <div class="card-progress-bar"><div class="cpb-fill" data-fill="0"></div></div>
+              </div>
+            </div>
+            <a href="#" class="card-btn card-btn--disabled" aria-disabled="true">
+              Coming Soon <i class="fa-solid fa-lock"></i>
+            </a>
+          </article>
+
+        </div><!-- /cards-grid -->
+
+        <div class="no-results" id="noResults" style="display:none">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <p>No topics match "<span id="noResultsQuery"></span>"</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRESS OVERVIEW -->
+    <section class="progress-section" id="progress">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">Your Journey</span>
+          <h2 class="section-title">Overall Progress</h2>
+        </div>
+        <div class="progress-overview reveal">
+          <div class="overall-ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 200 200">
+              <circle class="ring-bg" cx="100" cy="100" r="80"/>
+              <circle class="ring-fill" id="overallRing" cx="100" cy="100" r="80"
+                      stroke-dasharray="502.65"
+                      stroke-dashoffset="502.65"/>
+            </svg>
+            <div class="ring-label">
+              <span class="ring-pct" id="overallPct">0%</span>
+              <span class="ring-sub">Overall</span>
+            </div>
+          </div>
+          <div class="track-list">
+            <div class="track-item" data-pct="65">
+              <span class="ti-icon" style="color:#61DAFB"><i class="fa-brands fa-react"></i></span>
+              <div class="ti-info">
+                <span class="ti-name">React</span>
+                <div class="ti-bar"><div class="ti-fill" data-fill="65"></div></div>
+              </div>
+              <span class="ti-pct">65%</span>
+            </div>
+            <div class="track-item" data-pct="40">
+              <span class="ti-icon" style="color:#68A063"><i class="fa-brands fa-node-js"></i></span>
+              <div class="ti-info">
+                <span class="ti-name">Node.js</span>
+                <div class="ti-bar"><div class="ti-fill" data-fill="40"></div></div>
+              </div>
+              <span class="ti-pct">40%</span>
+            </div>
+            <div class="track-item" data-pct="80">
+              <span class="ti-icon" style="color:#FFD43B"><i class="fa-brands fa-python"></i></span>
+              <div class="ti-info">
+                <span class="ti-name">Python</span>
+                <div class="ti-bar"><div class="ti-fill" data-fill="80"></div></div>
+              </div>
+              <span class="ti-pct">80%</span>
+            </div>
+            <div class="track-item" data-pct="30">
+              <span class="ti-icon" style="color:#F97316"><i class="fa-solid fa-diagram-project"></i></span>
+              <div class="ti-info">
+                <span class="ti-name">DSA</span>
+                <div class="ti-bar"><div class="ti-fill" data-fill="30"></div></div>
+              </div>
+              <span class="ti-pct">30%</span>
+            </div>
+            <div class="track-item" data-pct="15">
+              <span class="ti-icon" style="color:#A78BFA"><i class="fa-solid fa-brain"></i></span>
+              <div class="ti-info">
+                <span class="ti-name">Machine Learning</span>
+                <div class="ti-bar"><div class="ti-fill" data-fill="15"></div></div>
+              </div>
+              <span class="ti-pct">15%</span>
+            </div>
+            <div class="track-item" data-pct="50">
+              <span class="ti-icon" style="color:#00758F"><i class="fa-solid fa-database"></i></span>
+              <div class="ti-info">
+                <span class="ti-name">SQL</span>
+                <div class="ti-bar"><div class="ti-fill" data-fill="50"></div></div>
+              </div>
+              <span class="ti-pct">50%</span>
+            </div>
+            <div class="track-item" data-pct="35">
+              <span class="ti-icon" style="color:#E8E8E8"><i class="fa-brands fa-github"></i></span>
+              <div class="ti-info">
+                <span class="ti-name">GitHub &amp; Git</span>
+                <div class="ti-bar"><div class="ti-fill" data-fill="35"></div></div>
+              </div>
+              <span class="ti-pct">35%</span>
+            </div>
+            <div class="track-item" data-pct="20">
+              <span class="ti-icon" style="color:#F472B6"><i class="fa-solid fa-robot"></i></span>
+              <div class="ti-info">
+                <span class="ti-name">AI &amp; LLMs</span>
+                <div class="ti-bar"><div class="ti-fill" data-fill="20"></div></div>
+              </div>
+              <span class="ti-pct">20%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about-section" id="about">
+      <div class="container">
+        <div class="about-inner reveal">
+          <div class="about-text">
+            <span class="section-label">About</span>
+            <h2 class="section-title">Built for focused learners</h2>
+            <p>LearnForge is a personal study hub designed to keep all your technical study guides in one beautifully organised place. No distractions, no subscriptions — just you and the knowledge.</p>
+            <ul class="about-list">
+              <li><i class="fa-solid fa-check"></i> Offline-ready HTML study guides</li>
+              <li><i class="fa-solid fa-check"></i> Progress tracked in your browser</li>
+              <li><i class="fa-solid fa-check"></i> Dark &amp; light mode for any environment</li>
+            </ul>
+          </div>
+          <div class="about-visual">
+            <div class="av-card av-card--1"><i class="fa-solid fa-bolt"></i></div>
+            <div class="av-card av-card--2"><i class="fa-solid fa-book"></i></div>
+            <div class="av-card av-card--3"><i class="fa-solid fa-code"></i></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <span class="logo-mark">BS</span>
+            <span class="logo-text">BirendraSingh</span>
+            <p>Your personal knowledge OS.</p>
+          </div>
+          <div class="footer-links">
+            <h4>Tracks</h4>
+            <ul>
+              <li><a href="react.html">React</a></li>
+              <li><a href="node.html">Node.js</a></li>
+              <li><a href="python.html">Python</a></li>
+              <li><a href="dsa.html">DSA</a></li>
+              <li><a href="ml.html">Machine Learning</a></li>
+              <li><a href="sql.html">SQL</a></li>
+              <li><a href="github.html">GitHub &amp; Git</a></li>
+              <li><a href="ai.html">AI &amp; LLMs</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>Navigate</h4>
+            <ul>
+              <li><a href="#home">Home</a></li>
+              <li><a href="#topics">Topics</a></li>
+              <li><a href="#progress">Progress</a></li>
+              <li><a href="#about">About</a></li>
+            </ul>
+          </div>
+          <div class="footer-social">
+            <h4>Connect</h4>
+            <div class="social-icons">
+              <a href="https://github.com/13cse169" aria-label="GitHub" target="_blank"><i class="fa-brands fa-github"></i></a>
+              <a href="https://www.linkedin.com/in/birendra-singh-13cse169/" aria-label="LinkedIn" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>Made with <i class="fa-solid fa-heart"></i> by <strong>Birendra Singh</strong></p>
+          <p class="copy">&copy; 2025 BirendraSingh. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

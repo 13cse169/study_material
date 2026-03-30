@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern AI · Transformers Deep Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050810;
+    --surface: #0c1120;
+    --surface2: #111827;
+    --border: #1e2d45;
+    --accent: #00e5ff;
+    --accent2: #7b61ff;
+    --accent3: #ff6b6b;
+    --gold: #ffd166;
+    --text: #e2eaf6;
+    --muted: #6b7e99;
+    --green: #06d6a0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Newsreader', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative; z-index: 10;
+    padding: 0 2rem;
+    background: rgba(5,8,16,.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px; position: sticky; top: 0;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+    letter-spacing: -.02em;
+    color: var(--accent);
+  }
+  .logo span { color: var(--text); }
+
+  nav { display: flex; gap: .25rem; }
+  nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .7rem; font-weight: 400;
+    color: var(--muted); text-decoration: none;
+    padding: .4rem .75rem; border-radius: 4px;
+    transition: all .2s;
+    letter-spacing: .05em;
+  }
+  nav a:hover { color: var(--accent); background: rgba(0,229,255,.08); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1;
+    padding: 7rem 2rem 5rem;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute; top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(123,97,255,.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .7rem; letter-spacing: .15em;
+    color: var(--accent); text-transform: uppercase;
+    border: 1px solid rgba(0,229,255,.3);
+    padding: .3rem .9rem; border-radius: 99px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp .6s ease both;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 800; line-height: 1.0;
+    letter-spacing: -.03em;
+    animation: fadeUp .7s .1s ease both;
+  }
+
+  h1 em { color: var(--accent); font-style: normal; }
+
+  .hero-sub {
+    font-size: 1.15rem; color: var(--muted);
+    max-width: 580px; margin: 1.5rem auto 0;
+    line-height: 1.7; font-weight: 300;
+    animation: fadeUp .7s .2s ease both;
+  }
+
+  /* ── LEVEL PILLS ── */
+  .levels {
+    display: flex; gap: .75rem; justify-content: center;
+    flex-wrap: wrap; margin-top: 2.5rem;
+    animation: fadeUp .7s .3s ease both;
+  }
+  .level-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem; font-weight: 500;
+    padding: .5rem 1.1rem; border-radius: 99px;
+    cursor: pointer; transition: all .25s;
+    border: 1px solid;
+    letter-spacing: .05em;
+  }
+  .level-pill.beginner { color: var(--green); border-color: rgba(6,214,160,.3); }
+  .level-pill.intermediate { color: var(--gold); border-color: rgba(255,209,102,.3); }
+  .level-pill.advanced { color: var(--accent3); border-color: rgba(255,107,107,.3); }
+  .level-pill.active, .level-pill:hover { filter: brightness(1.3); }
+  .level-pill.beginner.active { background: rgba(6,214,160,.12); }
+  .level-pill.intermediate.active { background: rgba(255,209,102,.12); }
+  .level-pill.advanced.active { background: rgba(255,107,107,.12); }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 2rem 6rem;
+    display: grid; grid-template-columns: 260px 1fr;
+    gap: 2.5rem; align-items: start;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: sticky; top: 80px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem;
+  }
+
+  .sidebar-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .65rem; letter-spacing: .15em;
+    color: var(--muted); text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-item {
+    display: flex; align-items: center; gap: .6rem;
+    padding: .55rem .75rem; border-radius: 8px;
+    cursor: pointer; transition: all .2s;
+    font-family: 'Syne', sans-serif;
+    font-size: .82rem; font-weight: 600;
+    color: var(--muted); margin-bottom: .1rem;
+    text-decoration: none;
+  }
+  .sidebar-item:hover { color: var(--text); background: rgba(255,255,255,.04); }
+  .sidebar-item.active { color: var(--accent); background: rgba(0,229,255,.08); }
+
+  .sidebar-item .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; flex-shrink: 0;
+  }
+
+  .sidebar-divider {
+    border: none; border-top: 1px solid var(--border);
+    margin: 1rem 0;
+  }
+
+  .sidebar-item.interview { color: var(--gold); }
+  .sidebar-item.interview:hover, .sidebar-item.interview.active {
+    color: var(--gold); background: rgba(255,209,102,.08);
+  }
+
+  /* ── CONTENT ── */
+  .content { min-width: 0; }
+
+  .section {
+    display: none;
+    animation: fadeUp .4s ease both;
+  }
+  .section.active { display: block; }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-badge {
+    display: inline-flex; align-items: center; gap: .4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+    padding: .3rem .75rem; border-radius: 99px;
+    margin-bottom: 1rem;
+  }
+  .badge-beginner { color: var(--green); background: rgba(6,214,160,.1); border: 1px solid rgba(6,214,160,.2); }
+  .badge-intermediate { color: var(--gold); background: rgba(255,209,102,.1); border: 1px solid rgba(255,209,102,.2); }
+  .badge-advanced { color: var(--accent3); background: rgba(255,107,107,.1); border: 1px solid rgba(255,107,107,.2); }
+  .badge-interview { color: var(--accent2); background: rgba(123,97,255,.1); border: 1px solid rgba(123,97,255,.2); }
+
+  .section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    letter-spacing: -.02em; line-height: 1.2;
+    margin-bottom: .5rem;
+  }
+
+  .section-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem; color: var(--muted);
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.75rem;
+    margin-bottom: 1.25rem;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: rgba(0,229,255,.2); }
+
+  .card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: .75rem;
+    display: flex; align-items: center; gap: .6rem;
+  }
+
+  .card h3 .icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .9rem; flex-shrink: 0;
+  }
+
+  .card p {
+    font-size: .95rem; line-height: 1.8;
+    color: #a8bbd4; font-weight: 300;
+    margin-bottom: .75rem;
+  }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: #060c18;
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .code-block .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .62rem; letter-spacing: .1em;
+    color: var(--muted); text-transform: uppercase;
+    margin-bottom: .6rem;
+  }
+
+  .code-block code, .code-block pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem; line-height: 1.7;
+    color: #7dd3fc;
+    white-space: pre;
+    display: block;
+  }
+
+  .kw { color: #c084fc; }
+  .fn { color: #86efac; }
+  .str { color: #fde68a; }
+  .cm { color: #475569; font-style: italic; }
+  .num { color: #fb923c; }
+
+  /* ── DIAGRAM ── */
+  .diagram {
+    background: #060c18;
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 2rem;
+    margin: 1rem 0; text-align: center;
+  }
+
+  .transformer-viz {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem;
+  }
+
+  .viz-box {
+    padding: .6rem 2rem; border-radius: 6px;
+    min-width: 200px; text-align: center;
+    font-weight: 500;
+  }
+  .viz-arrow {
+    color: var(--muted); font-size: 1rem;
+    padding: .15rem 0;
+  }
+  .viz-encoder { background: rgba(0,229,255,.12); border: 1px solid rgba(0,229,255,.3); color: var(--accent); }
+  .viz-decoder { background: rgba(123,97,255,.12); border: 1px solid rgba(123,97,255,.3); color: var(--accent2); }
+  .viz-attn { background: rgba(255,209,102,.1); border: 1px solid rgba(255,209,102,.25); color: var(--gold); }
+  .viz-ffn { background: rgba(6,214,160,.1); border: 1px solid rgba(6,214,160,.25); color: var(--green); }
+  .viz-embed { background: rgba(255,107,107,.1); border: 1px solid rgba(255,107,107,.25); color: var(--accent3); }
+  .viz-out { background: rgba(255,255,255,.06); border: 1px solid var(--border); color: var(--text); }
+
+  .viz-row {
+    display: flex; gap: 1rem; align-items: center;
+  }
+
+  /* ── FORMULA ── */
+  .formula {
+    background: rgba(123,97,255,.08);
+    border: 1px solid rgba(123,97,255,.2);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem; margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .85rem; color: #d4c5ff;
+    letter-spacing: .03em;
+  }
+
+  /* ── STEP TRACKER ── */
+  .steps {
+    counter-reset: step-counter;
+    display: flex; flex-direction: column; gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .step {
+    display: flex; gap: 1rem;
+    counter-increment: step-counter;
+  }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent2); color: white;
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: .8rem; display: flex; align-items: center;
+    justify-content: center;
+  }
+
+  .step-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: .95rem; font-weight: 700; margin-bottom: .3rem;
+  }
+
+  .step-content p {
+    font-size: .88rem; color: #7e99bb;
+    line-height: 1.65; margin: 0 !important;
+  }
+
+  /* ── INTERVIEW QA ── */
+  .qa-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 1rem;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .qa-item:hover { border-color: rgba(123,97,255,.3); }
+
+  .qa-q {
+    padding: 1.2rem 1.5rem;
+    cursor: pointer;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    font-family: 'Syne', sans-serif;
+    font-size: .95rem; font-weight: 700;
+    transition: background .2s;
+  }
+  .qa-q:hover { background: rgba(255,255,255,.02); }
+
+  .qa-q .q-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .65rem; letter-spacing: .08em;
+    color: var(--accent2); text-transform: uppercase;
+    flex-shrink: 0; margin-top: .15rem;
+  }
+
+  .qa-toggle {
+    flex-shrink: 0; font-size: 1.2rem;
+    color: var(--muted); transition: transform .3s;
+  }
+  .qa-item.open .qa-toggle { transform: rotate(45deg); }
+
+  .qa-a {
+    display: none; padding: 0 1.5rem 1.25rem;
+    font-size: .92rem; color: #8fa8c4; line-height: 1.8; font-weight: 300;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  .qa-item.open .qa-a { display: block; }
+
+  .qa-diff {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .6rem; padding: .15rem .5rem; border-radius: 99px;
+    margin-left: .5rem; vertical-align: middle;
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .diff-easy { color: var(--green); background: rgba(6,214,160,.1); }
+  .diff-mid { color: var(--gold); background: rgba(255,209,102,.1); }
+  .diff-hard { color: var(--accent3); background: rgba(255,107,107,.1); }
+
+  /* ── TABLE ── */
+  .comparison-table {
+    width: 100%; border-collapse: collapse;
+    font-size: .85rem; margin: 1rem 0;
+  }
+  .comparison-table th {
+    background: var(--surface2);
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: .78rem; padding: .75rem 1rem;
+    text-align: left; color: var(--muted);
+    border-bottom: 2px solid var(--border);
+    letter-spacing: .04em;
+  }
+  .comparison-table td {
+    padding: .7rem 1rem; border-bottom: 1px solid var(--border);
+    color: #a0b8d0; line-height: 1.5; font-weight: 300;
+  }
+  .comparison-table tr:last-child td { border-bottom: none; }
+  .comparison-table tr:hover td { background: rgba(255,255,255,.02); }
+
+  /* ── HIGHLIGHT BOXES ── */
+  .highlight {
+    border-radius: 8px; padding: 1rem 1.25rem;
+    margin: .75rem 0; font-size: .88rem; line-height: 1.7;
+    font-weight: 300;
+  }
+  .highlight-info { background: rgba(0,229,255,.07); border-left: 3px solid var(--accent); color: #7dd3fc; }
+  .highlight-warn { background: rgba(255,209,102,.07); border-left: 3px solid var(--gold); color: #fde68a; }
+  .highlight-tip  { background: rgba(6,214,160,.07); border-left: 3px solid var(--green); color: #6ee7b7; }
+
+  /* ── CHIPS ── */
+  .chip-row { display: flex; flex-wrap: wrap; gap: .4rem; margin: .6rem 0; }
+  .chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .68rem; padding: .25rem .65rem; border-radius: 4px;
+    background: rgba(255,255,255,.06); color: var(--muted);
+    border: 1px solid var(--border);
+    letter-spacing: .04em;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-track {
+    background: var(--surface2); border-radius: 99px;
+    height: 6px; margin: .4rem 0 .8rem; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    transition: width 1s ease;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width: 768px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    nav { display: none; }
+    h1 { font-size: 2.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">transformer<span>.guide</span></div>
+  <nav>
+    <a href="#" onclick="showSection('attention')">Attention</a>
+    <a href="#" onclick="showSection('bert')">BERT</a>
+    <a href="#" onclick="showSection('gpt')">GPT</a>
+    <a href="#" onclick="showSection('finetune')">Fine-Tuning</a>
+    <a href="#" onclick="showSection('hf')">HuggingFace</a>
+    <a href="#" onclick="showSection('interview')">Interview</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">Beginner → Advanced</div>
+  <h1>Modern AI &amp; <em>Transformers</em><br>Complete Guide</h1>
+  <p class="hero-sub">Master attention mechanisms, BERT, GPT architectures, fine-tuning, and Hugging Face — from zero to production.</p>
+  <div class="levels">
+    <div class="level-pill beginner active" onclick="filterLevel('beginner')">⬤ Beginner</div>
+    <div class="level-pill intermediate" onclick="filterLevel('intermediate')">⬤ Intermediate</div>
+    <div class="level-pill advanced" onclick="filterLevel('advanced')">⬤ Advanced</div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Topics</div>
+
+    <a class="sidebar-item active" onclick="showSection('attention')">
+      <span class="dot"></span> Attention Mechanism
+    </a>
+    <a class="sidebar-item" onclick="showSection('bert')">
+      <span class="dot"></span> BERT Architecture
+    </a>
+    <a class="sidebar-item" onclick="showSection('gpt')">
+      <span class="dot"></span> GPT Architecture
+    </a>
+    <a class="sidebar-item" onclick="showSection('finetune')">
+      <span class="dot"></span> Fine-Tuning
+    </a>
+    <a class="sidebar-item" onclick="showSection('hf')">
+      <span class="dot"></span> Hugging Face
+    </a>
+
+    <hr class="sidebar-divider">
+
+    <a class="sidebar-item interview" onclick="showSection('interview')">
+      <span class="dot"></span> Interview Q&amp;A
+    </a>
+
+    <hr class="sidebar-divider">
+    <div class="sidebar-title">Your Progress</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:.4rem;">Attention</div>
+    <div class="progress-track"><div class="progress-fill" style="width:85%"></div></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:.4rem;">BERT</div>
+    <div class="progress-track"><div class="progress-fill" style="width:70%"></div></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:.4rem;">GPT</div>
+    <div class="progress-track"><div class="progress-fill" style="width:60%"></div></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:.4rem;">Fine-Tuning</div>
+    <div class="progress-track"><div class="progress-fill" style="width:45%"></div></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:.4rem;">Hugging Face</div>
+    <div class="progress-track"><div class="progress-fill" style="width:30%"></div></div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!--  SECTIONS                                               -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="content">
+
+    <!-- ── ATTENTION ── -->
+    <div class="section active" id="section-attention">
+      <div class="section-header">
+        <span class="section-badge badge-beginner">① Beginner → Advanced</span>
+        <h2>Attention Mechanism</h2>
+        <div class="section-meta">Core concept · ~20 min read · Foundational</div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(0,229,255,.15)">🔍</span> What Is Attention?</h3>
+        <p>Attention is a mechanism that allows a model to focus on different parts of the input when producing each part of the output. Instead of compressing the whole input into a fixed vector, attention dynamically weights each input position.</p>
+        <p>Think of reading a sentence — you don't re-read every word to understand a pronoun; you <em>attend</em> to the relevant noun. Attention mirrors this selective focus computationally.</p>
+        <div class="highlight highlight-info">💡 Key insight: Attention replaced the bottleneck of RNN hidden states by allowing direct connections between any two positions in a sequence.</div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(255,209,102,.15)">📐</span> Query, Key &amp; Value</h3>
+        <p>Every attention layer computes three projections of the input — <strong>Query (Q)</strong>, <strong>Key (K)</strong>, and <strong>Value (V)</strong> — using learned weight matrices.</p>
+        <div class="formula">Attention(Q, K, V) = softmax( QKᵀ / √dₖ ) · V</div>
+        <p><strong>Q</strong> — "What am I looking for?"<br>
+           <strong>K</strong> — "What do I contain?"<br>
+           <strong>V</strong> — "What do I actually return?"</p>
+        <p>The dot product QKᵀ produces a score matrix. Dividing by √dₖ stabilises gradients. Softmax turns scores into a probability distribution, and V is then weighted-summed.</p>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(123,97,255,.15)">🔀</span> Multi-Head Attention</h3>
+        <p>Instead of a single attention function, Transformers run <em>h</em> parallel attention heads, each learning different relationship types (syntax, coreference, semantics…). Outputs are concatenated and projected.</p>
+        <div class="formula">MultiHead(Q,K,V) = Concat(head₁,…,headₕ) · Wᴼ<br>where headᵢ = Attention(Q·Wᵢᵠ, K·Wᵢᴷ, V·Wᵢᵛ)</div>
+        <div class="code-block">
+          <div class="code-label">Python · PyTorch</div>
+          <pre><code><span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="kw">class</span> <span class="fn">MultiHeadAttention</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, d_model=<span class="num">512</span>, num_heads=<span class="num">8</span>):
+        <span class="fn">super</span>().__init__()
+        self.d_head = d_model // num_heads
+        self.num_heads = num_heads
+        self.qkv = nn.<span class="fn">Linear</span>(d_model, d_model * <span class="num">3</span>)
+        self.out = nn.<span class="fn">Linear</span>(d_model, d_model)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        B, T, C = x.shape
+        qkv = self.<span class="fn">qkv</span>(x).<span class="fn">chunk</span>(<span class="num">3</span>, dim=-<span class="num">1</span>)   <span class="cm"># split Q,K,V</span>
+        q, k, v = [t.<span class="fn">view</span>(B,T,self.num_heads,self.d_head)
+                    .<span class="fn">transpose</span>(<span class="num">1</span>,<span class="num">2</span>) <span class="kw">for</span> t <span class="kw">in</span> qkv]
+        scale = self.d_head ** -<span class="num">0.5</span>
+        attn = (q @ k.<span class="fn">transpose</span>(-<span class="num">2</span>,-<span class="num">1</span>)) * scale
+        attn = attn.<span class="fn">softmax</span>(dim=-<span class="num">1</span>)
+        out = (attn @ v).<span class="fn">transpose</span>(<span class="num">1</span>,<span class="num">2</span>).<span class="fn">contiguous</span>()
+        <span class="kw">return</span> self.<span class="fn">out</span>(out.<span class="fn">view</span>(B, T, -<span class="num">1</span>))</code></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(6,214,160,.15)">📊</span> Self-Attention vs Cross-Attention</h3>
+        <table class="comparison-table">
+          <tr><th>Type</th><th>Q from</th><th>K, V from</th><th>Used in</th></tr>
+          <tr><td>Self-Attention</td><td>Same sequence</td><td>Same sequence</td><td>Encoder, Decoder (masked)</td></tr>
+          <tr><td>Cross-Attention</td><td>Decoder</td><td>Encoder output</td><td>Seq2Seq decoder</td></tr>
+          <tr><td>Causal Attention</td><td>Same sequence</td><td>Past positions only</td><td>GPT / autoregressive models</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(255,107,107,.15)">⚡</span> Advanced: Flash Attention &amp; Efficient Variants</h3>
+        <div class="chip-row">
+          <span class="chip">Flash Attention 2</span>
+          <span class="chip">Sparse Attention</span>
+          <span class="chip">Linear Attention</span>
+          <span class="chip">Sliding Window</span>
+          <span class="chip">Rotary Embeddings (RoPE)</span>
+          <span class="chip">ALiBi</span>
+        </div>
+        <p>Standard attention is O(n²) in time and memory. FlashAttention rewrites the CUDA kernel to tile computations, achieving O(n) memory. Sparse attention (used in Longformer, BigBird) attends to only a subset of positions.</p>
+        <div class="highlight highlight-warn">⚠️ For sequences &gt; 4K tokens, always use an efficient attention variant — vanilla softmax attention will OOM on a 24 GB GPU at ~8K tokens with batch size 4.</div>
+      </div>
+    </div>
+
+    <!-- ── BERT ── -->
+    <div class="section" id="section-bert">
+      <div class="section-header">
+        <span class="section-badge badge-intermediate">② Intermediate</span>
+        <h2>BERT Architecture</h2>
+        <div class="section-meta">Bidirectional Encoder · Google 2018 · Classification &amp; Understanding</div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(0,229,255,.15)">🏗️</span> What is BERT?</h3>
+        <p><strong>B</strong>idirectional <strong>E</strong>ncoder <strong>R</strong>epresentations from <strong>T</strong>ransformers. BERT is an encoder-only model that processes the entire input sequence simultaneously — unlike GPT which processes left-to-right only.</p>
+        <p>BERT was pre-trained on two self-supervised tasks: <strong>Masked Language Modelling (MLM)</strong> and <strong>Next Sentence Prediction (NSP)</strong>.</p>
+        <div class="diagram">
+          <div class="transformer-viz">
+            <div class="viz-box viz-embed">Token + Segment + Position Embeddings</div>
+            <div class="viz-arrow">↓</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin:.2rem 0">× 12 layers (BERT-Base) or 24 layers (BERT-Large)</div>
+            <div class="viz-box viz-attn">Multi-Head Self-Attention (Bidirectional)</div>
+            <div class="viz-arrow">↓</div>
+            <div class="viz-box viz-ffn">Add &amp; Norm → Feed-Forward → Add &amp; Norm</div>
+            <div class="viz-arrow">↓</div>
+            <div class="viz-box viz-out">[CLS] token → Classification Head</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(255,209,102,.15)">🎭</span> Pre-Training Tasks</h3>
+        <p><strong>Masked LM:</strong> 15% of tokens are randomly masked. BERT learns to predict them using context from <em>both directions</em>.</p>
+        <div class="code-block">
+          <div class="code-label">Example — Masked LM</div>
+          <pre><code>Input:  "The cat [MASK] on the mat"
+Target: "The cat sat  on the mat"
+<span class="cm"># BERT sees ALL surrounding context → bidirectional</span></code></pre>
+        </div>
+        <p><strong>Next Sentence Prediction:</strong> Given sentence A and B, predict whether B follows A. Helps with tasks like QA and NLI.</p>
+        <div class="highlight highlight-tip">✅ RoBERTa (2019) removed NSP, trained longer with more data and dynamic masking — significantly outperforming original BERT on most benchmarks.</div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(6,214,160,.15)">📦</span> Model Variants</h3>
+        <table class="comparison-table">
+          <tr><th>Model</th><th>Layers</th><th>Hidden</th><th>Heads</th><th>Parameters</th></tr>
+          <tr><td>BERT-Base</td><td>12</td><td>768</td><td>12</td><td>110M</td></tr>
+          <tr><td>BERT-Large</td><td>24</td><td>1024</td><td>16</td><td>340M</td></tr>
+          <tr><td>DistilBERT</td><td>6</td><td>768</td><td>12</td><td>66M (40% smaller)</td></tr>
+          <tr><td>RoBERTa-Base</td><td>12</td><td>768</td><td>12</td><td>125M</td></tr>
+          <tr><td>DeBERTa-v3-Large</td><td>24</td><td>1024</td><td>16</td><td>304M</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(123,97,255,.15)">🚀</span> Quick Start with BERT</h3>
+        <div class="code-block">
+          <div class="code-label">Python · HuggingFace</div>
+          <pre><code><span class="kw">from</span> transformers <span class="kw">import</span> BertTokenizer, BertForSequenceClassification
+<span class="kw">import</span> torch
+
+tokenizer = BertTokenizer.<span class="fn">from_pretrained</span>(<span class="str">"bert-base-uncased"</span>)
+model = BertForSequenceClassification.<span class="fn">from_pretrained</span>(
+    <span class="str">"bert-base-uncased"</span>, num_labels=<span class="num">2</span>
+)
+
+text = <span class="str">"The transformer architecture revolutionised NLP."</span>
+inputs = <span class="fn">tokenizer</span>(text, return_tensors=<span class="str">"pt"</span>, truncation=<span class="kw">True</span>)
+
+<span class="kw">with</span> torch.no_grad():
+    logits = model(**inputs).logits
+
+pred = logits.<span class="fn">argmax</span>(dim=-<span class="num">1</span>)
+<span class="fn">print</span>(<span class="str">"Predicted class:"</span>, pred.<span class="fn">item</span>())  <span class="cm"># 0 = neg, 1 = pos</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GPT ── -->
+    <div class="section" id="section-gpt">
+      <div class="section-header">
+        <span class="section-badge badge-intermediate">③ Intermediate → Advanced</span>
+        <h2>GPT Architecture</h2>
+        <div class="section-meta">Decoder-Only · OpenAI · Autoregressive Text Generation</div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(123,97,255,.15)">🧠</span> GPT vs BERT — Core Difference</h3>
+        <p>GPT uses a <strong>decoder-only</strong> Transformer with <strong>causal (left-to-right) self-attention</strong>. At each position, the model can only attend to previous tokens. This makes GPT naturally suited for <em>text generation</em>.</p>
+        <table class="comparison-table">
+          <tr><th>Property</th><th>BERT</th><th>GPT</th></tr>
+          <tr><td>Architecture</td><td>Encoder</td><td>Decoder</td></tr>
+          <tr><td>Attention</td><td>Bidirectional</td><td>Causal (unidirectional)</td></tr>
+          <tr><td>Pre-training</td><td>Masked LM</td><td>Next token prediction</td></tr>
+          <tr><td>Best for</td><td>Classification, NER, QA</td><td>Generation, chat, completion</td></tr>
+          <tr><td>Examples</td><td>BERT, RoBERTa, DeBERTa</td><td>GPT-2/3/4, LLaMA, Gemma</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(0,229,255,.15)">🏗️</span> GPT Decoder Block</h3>
+        <div class="diagram">
+          <div class="transformer-viz">
+            <div class="viz-box viz-embed">Token Embedding + Positional Encoding</div>
+            <div class="viz-arrow">↓</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted)">× N decoder blocks</div>
+            <div class="viz-box viz-attn">Masked Multi-Head Self-Attention</div>
+            <div class="viz-arrow">↓</div>
+            <div class="viz-box viz-ffn">Layer Norm → FFN (4× expansion) → Layer Norm</div>
+            <div class="viz-arrow">↓</div>
+            <div class="viz-box viz-out">Linear → Softmax → Next Token Probability</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(255,209,102,.15)">📈</span> Scaling Laws &amp; GPT Evolution</h3>
+        <table class="comparison-table">
+          <tr><th>Model</th><th>Year</th><th>Parameters</th><th>Context</th></tr>
+          <tr><td>GPT-1</td><td>2018</td><td>117M</td><td>512 tok</td></tr>
+          <tr><td>GPT-2</td><td>2019</td><td>1.5B</td><td>1,024 tok</td></tr>
+          <tr><td>GPT-3</td><td>2020</td><td>175B</td><td>2,048 tok</td></tr>
+          <tr><td>GPT-4</td><td>2023</td><td>~1.8T (est.)</td><td>128K tok</td></tr>
+          <tr><td>LLaMA 3.1</td><td>2024</td><td>405B</td><td>128K tok</td></tr>
+        </table>
+        <div class="highlight highlight-info">📌 Chinchilla (2022) showed that for optimal compute, you should scale data proportionally with parameters — not just maximise parameter count.</div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(255,107,107,.15)">⚙️</span> Modern GPT-style Improvements</h3>
+        <div class="chip-row">
+          <span class="chip">Pre-LayerNorm</span>
+          <span class="chip">RoPE / ALiBi embeddings</span>
+          <span class="chip">Grouped Query Attention</span>
+          <span class="chip">SwiGLU activation</span>
+          <span class="chip">RMSNorm</span>
+          <span class="chip">MoE layers</span>
+        </div>
+        <p><strong>Pre-LayerNorm:</strong> Apply layer norm before (not after) attention — more stable training.</p>
+        <p><strong>Grouped Query Attention (GQA):</strong> Multiple query heads share key/value heads — reduces KV-cache memory by 4–8×.</p>
+        <p><strong>SwiGLU:</strong> Replaces ReLU in FFN layers — empirically outperforms GELU on most benchmarks.</p>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(6,214,160,.15)">💻</span> Run GPT-2 Locally</h3>
+        <div class="code-block">
+          <div class="code-label">Python · Text Generation</div>
+          <pre><code><span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+
+<span class="cm"># One-liner inference</span>
+generator = <span class="fn">pipeline</span>(<span class="str">"text-generation"</span>, model=<span class="str">"gpt2"</span>)
+
+result = <span class="fn">generator</span>(
+    <span class="str">"The attention mechanism works by"</span>,
+    max_new_tokens=<span class="num">80</span>,
+    do_sample=<span class="kw">True</span>,
+    temperature=<span class="num">0.7</span>,
+    top_p=<span class="num">0.9</span>
+)
+<span class="fn">print</span>(result[<span class="num">0</span>][<span class="str">"generated_text"</span>])</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FINE-TUNING ── -->
+    <div class="section" id="section-finetune">
+      <div class="section-header">
+        <span class="section-badge badge-advanced">④ Advanced</span>
+        <h2>Fine-Tuning LLMs</h2>
+        <div class="section-meta">Full FT · LoRA · QLoRA · RLHF · Instruction Tuning</div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(0,229,255,.15)">🎯</span> Why Fine-Tune?</h3>
+        <p>Pre-trained models have general knowledge but may lack domain expertise, output format control, or safety alignment. Fine-tuning adapts the model on task-specific data with a fraction of the original compute.</p>
+        <div class="chip-row">
+          <span class="chip">Full Fine-Tuning</span>
+          <span class="chip">LoRA</span>
+          <span class="chip">QLoRA</span>
+          <span class="chip">Prefix Tuning</span>
+          <span class="chip">Prompt Tuning</span>
+          <span class="chip">RLHF</span>
+          <span class="chip">DPO</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(123,97,255,.15)">🔧</span> LoRA — Low-Rank Adaptation</h3>
+        <p>Instead of updating all weights (billions of params), LoRA injects small trainable rank-decomposition matrices into each layer. Only ~0.1–1% of parameters are trained.</p>
+        <div class="formula">W' = W₀ + ΔW = W₀ + B·A<br>where B ∈ ℝ^(d×r), A ∈ ℝ^(r×k), rank r &lt;&lt; d,k</div>
+        <div class="code-block">
+          <div class="code-label">Python · PEFT + LoRA</div>
+          <pre><code><span class="kw">from</span> peft <span class="kw">import</span> LoraConfig, get_peft_model
+<span class="kw">from</span> transformers <span class="kw">import</span> AutoModelForCausalLM
+
+model = AutoModelForCausalLM.<span class="fn">from_pretrained</span>(<span class="str">"meta-llama/Llama-3.2-3B"</span>)
+
+lora_config = <span class="fn">LoraConfig</span>(
+    r=<span class="num">16</span>,               <span class="cm"># rank</span>
+    lora_alpha=<span class="num">32</span>,      <span class="cm"># scaling factor</span>
+    target_modules=[<span class="str">"q_proj"</span>, <span class="str">"v_proj"</span>],
+    lora_dropout=<span class="num">0.05</span>,
+    bias=<span class="str">"none"</span>,
+    task_type=<span class="str">"CAUSAL_LM"</span>
+)
+
+model = <span class="fn">get_peft_model</span>(model, lora_config)
+model.<span class="fn">print_trainable_parameters</span>()
+<span class="cm"># trainable params: 4,194,304 || all params: 3,212,749,824 (0.13%)</span></code></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(255,209,102,.15)">🗜️</span> QLoRA — Quantised LoRA</h3>
+        <p>QLoRA combines 4-bit quantisation of the base model with LoRA adapters trained in bf16. Enables fine-tuning a 65B model on a single 48 GB GPU.</p>
+        <div class="code-block">
+          <div class="code-label">Python · BitsAndBytes + QLoRA</div>
+          <pre><code><span class="kw">from</span> transformers <span class="kw">import</span> BitsAndBytesConfig
+<span class="kw">import</span> torch
+
+bnb_config = <span class="fn">BitsAndBytesConfig</span>(
+    load_in_4bit=<span class="kw">True</span>,
+    bnb_4bit_quant_type=<span class="str">"nf4"</span>,
+    bnb_4bit_compute_dtype=torch.bfloat16,
+    bnb_4bit_use_double_quant=<span class="kw">True</span>,   <span class="cm"># nested quantisation</span>
+)
+
+model = AutoModelForCausalLM.<span class="fn">from_pretrained</span>(
+    <span class="str">"meta-llama/Llama-3.2-3B"</span>,
+    quantization_config=bnb_config,
+    device_map=<span class="str">"auto"</span>
+)</code></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(6,214,160,.15)">📋</span> Full Fine-Tuning Workflow</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Prepare Dataset</h4>
+              <p>Format data as (prompt, completion) pairs. Use instruction format for chat models. Aim for 500–50K high-quality examples.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Choose Base Model</h4>
+              <p>Pick a pre-trained checkpoint close to your domain. Smaller models (7B) train faster; larger (70B) generalise better.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Configure Training</h4>
+              <p>Set learning rate (1e-4 to 2e-5 for LoRA), batch size, gradient accumulation, warmup steps, and max sequence length.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h4>Train &amp; Evaluate</h4>
+              <p>Monitor train/eval loss. Use early stopping. Evaluate on held-out set with task-specific metrics (F1, ROUGE, accuracy).</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <h4>Merge &amp; Deploy</h4>
+              <p>Merge LoRA weights into base model. Quantise for production (GGUF / AWQ). Serve with vLLM or HuggingFace TGI.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(255,107,107,.15)">🏆</span> RLHF &amp; DPO</h3>
+        <p><strong>RLHF</strong> (Reinforcement Learning from Human Feedback) trains a reward model from human preferences, then fine-tunes the LLM with PPO to maximise that reward — used in ChatGPT, Claude, Gemini.</p>
+        <p><strong>DPO</strong> (Direct Preference Optimisation, 2023) simplifies RLHF by directly optimising on (chosen, rejected) pairs without needing a separate reward model. More stable and cheaper to run.</p>
+        <div class="formula">L_DPO(π) = -E[(x,y_w,y_l)] [ log σ( β·log(π(y_w|x)/π_ref(y_w|x)) − β·log(π(y_l|x)/π_ref(y_l|x)) ) ]</div>
+      </div>
+    </div>
+
+    <!-- ── HUGGING FACE ── -->
+    <div class="section" id="section-hf">
+      <div class="section-header">
+        <span class="section-badge badge-beginner">⑤ Beginner → Advanced</span>
+        <h2>Hugging Face</h2>
+        <div class="section-meta">Transformers · Datasets · PEFT · Accelerate · Hub</div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(255,209,102,.15)">🤗</span> The HuggingFace Ecosystem</h3>
+        <div class="chip-row">
+          <span class="chip">transformers</span>
+          <span class="chip">datasets</span>
+          <span class="chip">peft</span>
+          <span class="chip">accelerate</span>
+          <span class="chip">trl</span>
+          <span class="chip">evaluate</span>
+          <span class="chip">hub</span>
+          <span class="chip">tokenizers</span>
+        </div>
+        <p>HuggingFace provides the de-facto standard libraries for working with pre-trained models. The Hub hosts 500K+ models and 100K+ datasets with one-line download.</p>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(0,229,255,.15)">📦</span> Installation &amp; Setup</h3>
+        <div class="code-block">
+          <div class="code-label">Bash</div>
+          <pre><code><span class="cm"># Core stack</span>
+pip install transformers datasets accelerate peft trl
+
+<span class="cm"># For GPU training</span>
+pip install bitsandbytes  <span class="cm"># quantisation</span>
+
+<span class="cm"># Authenticate to Hub</span>
+huggingface-cli login      <span class="cm"># paste your HF token</span></code></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(6,214,160,.15)">🔄</span> Pipeline API — Zero-Code Inference</h3>
+        <div class="code-block">
+          <div class="code-label">Python · All-in-one Pipelines</div>
+          <pre><code><span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+
+<span class="cm"># Sentiment analysis</span>
+clf = <span class="fn">pipeline</span>(<span class="str">"sentiment-analysis"</span>)
+<span class="fn">print</span>(<span class="fn">clf</span>(<span class="str">"I love transformers!"</span>))
+<span class="cm"># [{'label': 'POSITIVE', 'score': 0.999}]</span>
+
+<span class="cm"># Named Entity Recognition</span>
+ner = <span class="fn">pipeline</span>(<span class="str">"ner"</span>, aggregation_strategy=<span class="str">"simple"</span>)
+<span class="fn">print</span>(<span class="fn">ner</span>(<span class="str">"Hugging Face was founded in New York."</span>))
+
+<span class="cm"># Question Answering</span>
+qa = <span class="fn">pipeline</span>(<span class="str">"question-answering"</span>)
+<span class="fn">print</span>(<span class="fn">qa</span>(question=<span class="str">"What is attention?"</span>,
+         context=<span class="str">"Attention is a mechanism that..."</span>))
+
+<span class="cm"># Text Summarization</span>
+summ = <span class="fn">pipeline</span>(<span class="str">"summarization"</span>, model=<span class="str">"facebook/bart-large-cnn"</span>)
+<span class="fn">print</span>(<span class="fn">summ</span>(long_text, max_length=<span class="num">130</span>, min_length=<span class="num">30</span>))</code></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(123,97,255,.15)">🏋️</span> Training with Trainer API</h3>
+        <div class="code-block">
+          <div class="code-label">Python · Full Training Loop</div>
+          <pre><code><span class="kw">from</span> transformers <span class="kw">import</span> (
+    AutoTokenizer, AutoModelForSequenceClassification,
+    TrainingArguments, Trainer
+)
+<span class="kw">from</span> datasets <span class="kw">import</span> load_dataset
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># 1. Load data</span>
+ds = <span class="fn">load_dataset</span>(<span class="str">"imdb"</span>)
+tokenizer = AutoTokenizer.<span class="fn">from_pretrained</span>(<span class="str">"distilbert-base-uncased"</span>)
+
+<span class="cm"># 2. Tokenize</span>
+<span class="kw">def</span> <span class="fn">tokenize</span>(batch):
+    <span class="kw">return</span> <span class="fn">tokenizer</span>(batch[<span class="str">"text"</span>], truncation=<span class="kw">True</span>, padding=<span class="kw">True</span>)
+
+ds = ds.<span class="fn">map</span>(tokenize, batched=<span class="kw">True</span>)
+
+<span class="cm"># 3. Load model</span>
+model = AutoModelForSequenceClassification.<span class="fn">from_pretrained</span>(
+    <span class="str">"distilbert-base-uncased"</span>, num_labels=<span class="num">2</span>
+)
+
+<span class="cm"># 4. Training config</span>
+args = <span class="fn">TrainingArguments</span>(
+    output_dir=<span class="str">"./results"</span>,
+    num_train_epochs=<span class="num">3</span>,
+    per_device_train_batch_size=<span class="num">16</span>,
+    learning_rate=<span class="num">2e-5</span>,
+    evaluation_strategy=<span class="str">"epoch"</span>,
+    save_strategy=<span class="str">"epoch"</span>,
+    load_best_model_at_end=<span class="kw">True</span>,
+    fp16=<span class="kw">True</span>,
+)
+
+<span class="cm"># 5. Train!</span>
+trainer = <span class="fn">Trainer</span>(model=model, args=args,
+    train_dataset=ds[<span class="str">"train"</span>], eval_dataset=ds[<span class="str">"test"</span>])
+trainer.<span class="fn">train</span>()</code></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="icon" style="background:rgba(255,107,107,.15)">🚀</span> Push to Hub &amp; Share</h3>
+        <div class="code-block">
+          <div class="code-label">Python · Publish Your Model</div>
+          <pre><code><span class="cm"># After training, push to HuggingFace Hub</span>
+trainer.<span class="fn">push_to_hub</span>(<span class="str">"my-awesome-bert-imdb"</span>)
+
+<span class="cm"># Or save locally then push</span>
+model.<span class="fn">save_pretrained</span>(<span class="str">"./my-model"</span>)
+tokenizer.<span class="fn">save_pretrained</span>(<span class="str">"./my-model"</span>)
+
+<span class="kw">from</span> huggingface_hub <span class="kw">import</span> HfApi
+api = <span class="fn">HfApi</span>()
+api.<span class="fn">upload_folder</span>(
+    folder_path=<span class="str">"./my-model"</span>,
+    repo_id=<span class="str">"username/my-awesome-bert-imdb"</span>,
+    repo_type=<span class="str">"model"</span>
+)</code></pre>
+        </div>
+        <div class="highlight highlight-tip">✅ Once on the Hub, anyone can use your model with <code style="font-family:'JetBrains Mono',monospace;font-size:.8em">pipeline("text-classification", model="username/my-model")</code></div>
+      </div>
+    </div>
+
+    <!-- ── INTERVIEW ── -->
+    <div class="section" id="section-interview">
+      <div class="section-header">
+        <span class="section-badge badge-interview">🎯 Interview Prep</span>
+        <h2>Interview Q&amp;A</h2>
+        <div class="section-meta">30 questions · Beginner to Advanced · ML Engineer / Research roles</div>
+      </div>
+
+      <!-- BEGINNER -->
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.1em;color:var(--green);text-transform:uppercase;margin:0 0 .75rem">Beginner</div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q01</span> What is the Transformer architecture and why was it a breakthrough?<span class="qa-diff diff-easy">easy</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">The Transformer (Vaswani et al., 2017) is a model architecture based entirely on attention mechanisms, discarding recurrence and convolutions. It was a breakthrough because it enabled full parallelisation during training (unlike RNNs), captured long-range dependencies better, and scaled remarkably well with more compute and data. The self-attention mechanism allows every position to attend to every other position in a single layer, solving the vanishing gradient problem of RNNs for long sequences.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q02</span> Explain the difference between encoder-only, decoder-only, and encoder-decoder models.<span class="qa-diff diff-easy">easy</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a"><strong>Encoder-only (e.g., BERT):</strong> Processes the full input bidirectionally. Best for understanding tasks — classification, NER, sentence similarity. <br><br><strong>Decoder-only (e.g., GPT):</strong> Processes tokens left-to-right with causal masking. Best for generation tasks — completion, chat, code generation.<br><br><strong>Encoder-Decoder (e.g., T5, BART):</strong> Encoder reads input, decoder generates output attending to encoder states. Best for seq2seq tasks — translation, summarisation, QA.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q03</span> What is positional encoding and why is it needed?<span class="qa-diff diff-easy">easy</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">Self-attention is permutation-invariant — it doesn't know the order of tokens. Positional encodings inject position information into the embeddings. Original Transformers used sinusoidal encodings: PE(pos, 2i) = sin(pos / 10000^(2i/d)), PE(pos, 2i+1) = cos(...). Modern LLMs prefer learnable relative encodings (RoPE, ALiBi) which generalise better to longer sequences than seen during training.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q04</span> What is tokenisation? How does BPE work?<span class="qa-diff diff-easy">easy</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">Tokenisation splits raw text into sub-word units. BPE (Byte-Pair Encoding) starts with individual characters, then iteratively merges the most frequent adjacent pair into a new token until a vocabulary size is reached. For example: "low", "lower", "newest" might share the token "low" and "est". This balances vocabulary size with coverage of rare words — unknown words are decomposed into known sub-words instead of becoming [UNK].</div>
+      </div>
+
+      <!-- INTERMEDIATE -->
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin:1.5rem 0 .75rem">Intermediate</div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q05</span> Why do we scale dot products by √dₖ in attention?<span class="qa-diff diff-mid">mid</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">For large dₖ, dot products grow large in magnitude, pushing the softmax into saturation regions with very small gradients. Scaling by 1/√dₖ keeps the variance of the dot product at ~1 regardless of dₖ (assuming Q and K are unit-variance random vectors). This prevents vanishing gradients during backprop through softmax.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q06</span> What is Layer Normalisation and how does it differ from Batch Norm?<span class="qa-diff diff-mid">mid</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">Batch Norm normalises across the batch dimension — requires large batches and struggles with variable-length sequences. Layer Norm normalises across the feature dimension for each sample independently, making it batch-size invariant and well-suited for NLP. In Transformers, Pre-LayerNorm (applied before attention) is now preferred over the original Post-LayerNorm for training stability at scale.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q07</span> What is the [CLS] token in BERT and how is it used?<span class="qa-diff diff-mid">mid</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">BERT prepends a special [CLS] (classification) token to every input. After passing through all encoder layers, the [CLS] token's final hidden state aggregates information from the entire sequence via self-attention. This representation is used as the sequence-level embedding for downstream classification tasks. A linear head is added on top for fine-tuning.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q08</span> What is the difference between fine-tuning and prompt engineering?<span class="qa-diff diff-mid">mid</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">Fine-tuning updates model weights on task-specific data — requires compute but achieves top performance for narrow tasks. Prompt engineering crafts input text to steer a frozen model's output — zero-shot/few-shot, chain-of-thought, ReAct patterns. Prompt engineering is cheaper and more flexible; fine-tuning is better when you have consistent input distribution and need reproducible, task-specific behaviour.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q09</span> Explain the KV-Cache and why it matters for inference.<span class="qa-diff diff-mid">mid</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">During autoregressive generation, each new token must attend to all previous tokens. Without caching, you'd recompute K and V for all past tokens every step — O(n²) total FLOPs. The KV-Cache stores K and V tensors for all past positions and appends the new token's K, V at each step — reducing incremental generation to O(n) FLOPs. The trade-off is memory: a 7B model KV-cache at batch=1, seq=8K, FP16 costs ~2 GB.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q10</span> What is temperature in text generation and how does it affect output?<span class="qa-diff diff-mid">mid</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">Temperature T scales the logits before softmax: p_i = exp(logit_i / T). T=1 is standard sampling. T&lt;1 sharpens the distribution (more deterministic/repetitive). T&gt;1 flattens it (more random/creative). T→0 approaches greedy decoding. In practice: T=0.7 for creative tasks, T=0.1 for factual QA, T=1.0 with top-p=0.9 for conversational.</div>
+      </div>
+
+      <!-- ADVANCED -->
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.1em;color:var(--accent3);text-transform:uppercase;margin:1.5rem 0 .75rem">Advanced</div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q11</span> Explain LoRA's mechanics and how rank r affects the trade-off.<span class="qa-diff diff-hard">hard</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">LoRA factorises weight updates as ΔW = B·A where B∈ℝ^(d×r) and A∈ℝ^(r×k). B is zero-initialised so ΔW=0 at the start (same as base model). Only B and A are trained. Rank r controls expressiveness: low r (4–8) for simple domain adaptation; higher r (64–128) for complex tasks or larger distributional shifts. Too high r approaches full fine-tuning cost with less regularisation. Alpha/r ratio (commonly 2:1) controls the effective learning rate of the adapter.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q12</span> How does Flash Attention achieve O(n) memory?<span class="qa-diff diff-hard">hard</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">Standard attention materialises the full n×n attention matrix in HBM (GPU DRAM) — O(n²) memory. Flash Attention uses tiled computation: it processes small blocks of Q, K, V that fit in SRAM (on-chip, fast), computes local softmax with online normalisation (the log-sum-exp trick), and accumulates the output without ever writing the full attention matrix to HBM. The result: O(n) HBM reads/writes, ~4× less HBM I/O, and 2–4× wall-clock speedup for long sequences.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q13</span> What are the differences between DPO, PPO-RLHF, and ORPO?<span class="qa-diff diff-hard">hard</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a"><strong>PPO-RLHF:</strong> Trains a separate reward model, then uses PPO to maximise it while KL-constraining against the reference policy. Complex, unstable, requires 4 models simultaneously. <br><br><strong>DPO:</strong> Derives a closed-form equivalence to RLHF objective, training directly on (chosen, rejected) pairs with the reference model frozen. No separate reward model, more stable, but requires a good reference model.<br><br><strong>ORPO:</strong> Odd Ratio Preference Optimisation (2024) combines SFT and alignment into a single loss function without needing a reference model — most compute-efficient of the three.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q14</span> Explain Grouped Query Attention (GQA) and its motivation.<span class="qa-diff diff-hard">hard</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">Multi-Head Attention (MHA) has H query, key, and value heads — KV-cache scales as O(n·H·d_head). Multi-Query Attention (MQA) uses 1 shared K,V for all query heads — 8× smaller KV-cache but lower quality. GQA is a middle ground: G groups of query heads share one K,V head per group (typically G=H/8). LLaMA-3 and Mistral use GQA — getting ~4–8× KV-cache reduction with near-MHA quality.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q15</span> What is speculative decoding and how does it speed up LLM inference?<span class="qa-diff diff-hard">hard</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">LLM inference is memory-bandwidth bound: generating 1 token uses the full model's parameters regardless. Speculative decoding uses a small "draft" model (e.g. 1B params) to generate K candidate tokens cheaply, then verifies all K tokens in one parallel forward pass through the large "target" model (e.g. 70B). Tokens that match the target's distribution are accepted; the first mismatch is corrected. If the draft quality is high, you get 2–4× wall-clock speedup because the large model processes K tokens in ~1 pass instead of K sequential passes.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q16</span> What is catastrophic forgetting and how do you mitigate it when fine-tuning?<span class="qa-diff diff-hard">hard</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">When fine-tuning on task-specific data, the model tends to overwrite pre-trained weights, losing general capabilities. Mitigations: (1) <strong>LoRA/PEFT</strong> — only update a small adapter, base weights unchanged; (2) <strong>Low learning rate</strong> with cosine decay; (3) <strong>Replay</strong> — mix in general data during fine-tuning; (4) <strong>EWC</strong> (Elastic Weight Consolidation) — penalise changes to weights important for previous tasks; (5) <strong>Early stopping</strong> based on held-out general benchmarks.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q17</span> What causes hallucinations in LLMs and how can they be reduced?<span class="qa-diff diff-hard">hard</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">Hallucinations arise from: (1) training on noisy/incorrect data; (2) the model maximising token probability rather than factual correctness; (3) overconfident decoding at high temperature; (4) insufficient factual grounding. Mitigations include: RAG (retrieval-augmented generation) to ground outputs in retrieved documents; calibration/uncertainty estimation; RLHF with factuality rewards; self-consistency sampling (generate multiple times, pick majority); tool use (calculators, search APIs); and lower temperature / beam search for factual tasks.</div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-q">
+          <div><span class="q-label">Q18</span> Describe the training objective of T5 and how it unifies NLP tasks.<span class="qa-diff diff-hard">hard</span></div>
+          <div class="qa-toggle">+</div>
+        </div>
+        <div class="qa-a">T5 (Text-to-Text Transfer Transformer) frames every NLP task as a text-to-text problem: the input is a text string with a task prefix ("summarize:", "translate English to German:"), and the output is always generated text. Pre-training uses a "span corruption" objective — randomly mask contiguous spans and train the decoder to reconstruct them. This unified framing means one model and one training recipe handles classification, generation, translation, QA, and summarisation — just change the input prefix.</div>
+      </div>
+    </div>
+    <!-- /interview -->
+
+  </div>
+  <!-- /content -->
+</div>
+<!-- /main -->
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-' + id)?.classList.add('active');
+    document.querySelectorAll('.sidebar-item').forEach(el => {
+      if (el.getAttribute('onclick')?.includes("'" + id + "'")) el.classList.add('active');
+    });
+  }
+
+  function filterLevel(level) {
+    document.querySelectorAll('.level-pill').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  function toggleQA(item) {
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.qa-item.open').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+
+  // Animate progress bars on load
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.progress-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0';
+      setTimeout(() => { bar.style.width = w; }, 300);
+    });
+  });
+</script>
+
+</body>
+</html>

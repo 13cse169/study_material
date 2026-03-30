@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scikit-Learn: Beginner to Advanced</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --accent3: #43e97b;
+    --accent4: #f7971e;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --code-bg: #0d0d14;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 50%, #0a0a0f 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(108,99,255,0.12) 0%, transparent 60%);
+    animation: pulse 6s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.5} 50%{transform:scale(1.1);opacity:1} }
+
+  .badge {
+    display: inline-block;
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.4);
+    color: #a89fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, #a89fff 50%, #6c63ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* LAYOUT */
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  nav {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .nav-section {
+    padding: 8px 20px 4px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 12px;
+  }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    color: #8888a0;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+  }
+  nav a:hover, nav a.active {
+    color: var(--text);
+    background: rgba(108,99,255,0.08);
+    border-left-color: var(--accent);
+  }
+  nav a .icon { font-size: 16px; min-width: 20px; }
+  nav a .level {
+    margin-left: auto;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .lv-beginner { background: rgba(67,233,123,0.15); color: #43e97b; }
+  .lv-intermediate { background: rgba(247,151,30,0.15); color: #f7971e; }
+  .lv-advanced { background: rgba(255,101,132,0.15); color: #ff6584; }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    padding: 40px;
+    max-width: 860px;
+    overflow-x: hidden;
+  }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 60px;
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    font-size: 32px;
+    min-width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .section-title h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .section-title p { color: var(--muted); font-size: 13px; }
+
+  .level-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  /* CONCEPTS */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .concept-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .concept-card:hover { border-color: var(--accent); }
+  .concept-card .icon { font-size: 24px; margin-bottom: 8px; }
+  .concept-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .concept-card p { font-size: 12px; color: var(--muted); }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .code-dots span:nth-child(1) { background: #ff5f57; }
+  .code-dots span:nth-child(2) { background: #febc2e; }
+  .code-dots span:nth-child(3) { background: #28c840; }
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .copy-btn {
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.3);
+    color: #a89fff;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(108,99,255,0.3); }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #cdd6f4;
+    scrollbar-width: thin;
+  }
+
+  /* Syntax highlighting */
+  .kw { color: #cba6f7; }   /* keywords */
+  .fn { color: #89b4fa; }   /* functions */
+  .st { color: #a6e3a1; }   /* strings */
+  .cm { color: #585b70; font-style: italic; } /* comments */
+  .nm { color: #fab387; }   /* numbers */
+  .cl { color: #f38ba8; }   /* class names */
+  .op { color: #89dceb; }   /* operators/special */
+
+  /* INFO BOXES */
+  .info-box {
+    display: flex;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 10px;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .info-box.tip { background: rgba(67,233,123,0.07); border: 1px solid rgba(67,233,123,0.2); }
+  .info-box.warning { background: rgba(247,151,30,0.07); border: 1px solid rgba(247,151,30,0.2); }
+  .info-box.note { background: rgba(108,99,255,0.07); border: 1px solid rgba(108,99,255,0.2); }
+  .info-box .icon { font-size: 18px; min-width: 24px; margin-top: 1px; }
+  .info-box.tip .icon { color: #43e97b; }
+  .info-box.warning .icon { color: #f7971e; }
+  .info-box.note .icon { color: #a89fff; }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+    color: var(--text);
+  }
+  tr:hover td { background: rgba(108,99,255,0.04); }
+
+  /* STEP FLOW */
+  .step-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 20px 0;
+  }
+  .step {
+    display: flex;
+    gap: 16px;
+    position: relative;
+  }
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: var(--border);
+    margin: 4px 0;
+    min-height: 20px;
+  }
+  .step-content {
+    padding-bottom: 24px;
+    flex: 1;
+  }
+  .step-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text);
+    padding-top: 5px;
+  }
+  .step-content p { font-size: 13px; color: var(--muted); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* HIGHLIGHT */
+  .highlight { color: var(--accent); font-weight: 500; }
+  .highlight2 { color: var(--accent3); }
+  .highlight3 { color: var(--accent4); }
+
+  p { margin-bottom: 12px; }
+  ul, ol { padding-left: 20px; margin-bottom: 12px; }
+  li { margin-bottom: 6px; font-size: 14px; color: #c0c0d0; }
+  strong { color: var(--text); font-weight: 600; }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 28px 0 12px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { display: none; }
+    main { padding: 24px 16px; }
+    .stats { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Complete Learning Path</div>
+  <h1>Scikit-Learn Mastery</h1>
+  <p class="subtitle">From your first model to production-ready pipelines — a structured, example-driven guide</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">12</div><div class="stat-label">Topics</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Levels</div></div>
+    <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Code Examples</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Practical</div></div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- SIDEBAR -->
+<nav>
+  <div class="nav-section">🟢 Beginner</div>
+  <a href="#intro" class="active"><span class="icon">🏁</span> Introduction <span class="level lv-beginner">START</span></a>
+  <a href="#setup"><span class="icon">⚙️</span> Setup & Install</a>
+  <a href="#data"><span class="icon">📦</span> Loading Data</a>
+  <a href="#preprocessing"><span class="icon">🔧</span> Preprocessing</a>
+  <a href="#linear"><span class="icon">📈</span> Linear Regression</a>
+  <a href="#classification"><span class="icon">🎯</span> Classification</a>
+  <a href="#evaluation"><span class="icon">📊</span> Model Evaluation</a>
+
+  <div class="nav-section">🟡 Intermediate</div>
+  <a href="#crossval"><span class="icon">🔄</span> Cross Validation <span class="level lv-intermediate">MID</span></a>
+  <a href="#tuning"><span class="icon">🎛️</span> Hyperparameter Tuning</a>
+  <a href="#pipeline"><span class="icon">🔗</span> Pipelines</a>
+  <a href="#ensemble"><span class="icon">🌲</span> Ensemble Methods</a>
+
+  <div class="nav-section">🔴 Advanced</div>
+  <a href="#custom"><span class="icon">🔬</span> Custom Transformers <span class="level lv-advanced">PRO</span></a>
+  <a href="#featureeng"><span class="icon">⚗️</span> Feature Engineering</a>
+  <a href="#imbalanced"><span class="icon">⚖️</span> Imbalanced Data</a>
+  <a href="#production"><span class="icon">🚀</span> Production & Saving</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+
+<!-- ===== SECTION 1: INTRO ===== -->
+<section class="section" id="intro">
+  <div class="section-header">
+    <div class="section-icon">🏁</div>
+    <div class="section-title">
+      <span class="level-tag lv-beginner">Beginner</span>
+      <h2>What is Scikit-Learn?</h2>
+      <p>The most popular ML library in Python — simple, consistent, powerful</p>
+    </div>
+  </div>
+
+  <p>Scikit-Learn (sklearn) is a free, open-source machine learning library for Python. It provides simple and efficient tools for data analysis and modeling, built on NumPy, SciPy, and Matplotlib.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="icon">🤖</div>
+      <h4>Classification</h4>
+      <p>Predict categories (spam/not spam, dog/cat)</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">📈</div>
+      <h4>Regression</h4>
+      <p>Predict numbers (price, temperature)</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">🎯</div>
+      <h4>Clustering</h4>
+      <p>Group similar data points together</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">📉</div>
+      <h4>Dimensionality Reduction</h4>
+      <p>Reduce features while keeping information</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">🔗</div>
+      <h4>Pipelines</h4>
+      <p>Chain preprocessing + modeling steps</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">🎛️</div>
+      <h4>Model Selection</h4>
+      <p>Cross-validation, hyperparameter tuning</p>
+    </div>
+  </div>
+
+  <h3>The Sklearn Workflow (Always the Same!)</h3>
+  <div class="step-flow">
+    <div class="step">
+      <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+      <div class="step-content"><h4>Load / Prepare Data</h4><p>Get your dataset, split into features (X) and target (y)</p></div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+      <div class="step-content"><h4>Preprocess</h4><p>Scale, encode, handle missing values</p></div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+      <div class="step-content"><h4>Split Data</h4><p>Train/test split to evaluate fairly</p></div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+      <div class="step-content"><h4>Choose & Train Model</h4><p>model.fit(X_train, y_train)</p></div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div>
+      <div class="step-content"><h4>Evaluate</h4><p>model.score(), classification_report()</p></div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">6</div></div>
+      <div class="step-content"><h4>Predict</h4><p>model.predict(new_data)</p></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 2: SETUP ===== -->
+<section class="section" id="setup">
+  <div class="section-header">
+    <div class="section-icon">⚙️</div>
+    <div class="section-title">
+      <span class="level-tag lv-beginner">Beginner</span>
+      <h2>Setup & Installation</h2>
+      <p>Get your environment ready in minutes</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">TERMINAL</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="cm"># Install core libraries</span>
+pip install scikit-learn numpy pandas matplotlib seaborn
+
+<span class="cm"># Verify installation</span>
+python -c <span class="st">"import sklearn; print(sklearn.__version__)"</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — standard imports</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="cm"># Always start with these imports</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+<span class="cm"># Core sklearn imports</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> accuracy_score, classification_report
+
+print(<span class="st">"✅ All imports successful!"</span>)</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 3: DATA ===== -->
+<section class="section" id="data">
+  <div class="section-header">
+    <div class="section-icon">📦</div>
+    <div class="section-title">
+      <span class="level-tag lv-beginner">Beginner</span>
+      <h2>Loading Data</h2>
+      <p>Built-in datasets, CSV files, and custom data</p>
+    </div>
+  </div>
+
+  <h3>Method 1: Built-in Sklearn Datasets</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.datasets <span class="kw">import</span> (
+    load_iris,        <span class="cm"># 🌸 flower classification (150 samples)</span>
+    load_boston,      <span class="cm"># 🏠 house prices (regression)</span>
+    load_digits,      <span class="cm"># 🔢 handwritten digits</span>
+    load_breast_cancer, <span class="cm"># 🏥 cancer classification</span>
+    make_classification, <span class="cm"># 🎲 generate synthetic data</span>
+    make_regression
+)
+
+<span class="cm"># Load Iris dataset</span>
+iris = load_iris()
+X = iris.data       <span class="cm"># Features: sepal/petal measurements</span>
+y = iris.target     <span class="cm"># Labels: 0=setosa, 1=versicolor, 2=virginica</span>
+
+print(<span class="st">f"Features shape: {X.shape}"</span>)   <span class="cm"># (150, 4)</span>
+print(<span class="st">f"Labels shape:   {y.shape}"</span>)   <span class="cm"># (150,)</span>
+print(<span class="st">f"Classes: {iris.target_names}"</span>) <span class="cm"># ['setosa' 'versicolor' 'virginica']</span>
+print(<span class="st">f"Features: {iris.feature_names}"</span>)</pre>
+  </div>
+
+  <h3>Method 2: From CSV File</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># Load from CSV</span>
+df = pd.read_csv(<span class="st">'your_data.csv'</span>)
+
+<span class="cm"># Quick exploration</span>
+print(df.head())          <span class="cm"># first 5 rows</span>
+print(df.info())          <span class="cm"># data types, null counts</span>
+print(df.describe())      <span class="cm"># statistics</span>
+print(df.isnull().sum())  <span class="cm"># missing values per column</span>
+
+<span class="cm"># Separate features and target</span>
+X = df.drop(<span class="st">'target_column'</span>, axis=<span class="nm">1</span>)  <span class="cm"># all columns except target</span>
+y = df[<span class="st">'target_column'</span>]               <span class="cm"># target column</span></pre>
+  </div>
+
+  <h3>Train-Test Split</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=<span class="nm">0.2</span>,      <span class="cm"># 20% for testing, 80% for training</span>
+    random_state=<span class="nm">42</span>,   <span class="cm"># for reproducibility</span>
+    stratify=y          <span class="cm"># keep class proportions balanced</span>
+)
+
+print(<span class="st">f"Train size: {X_train.shape}"</span>)  <span class="cm"># (120, 4)</span>
+print(<span class="st">f"Test size:  {X_test.shape}"</span>)   <span class="cm"># (30, 4)</span></pre>
+  </div>
+
+  <div class="info-box tip">
+    <span class="icon">💡</span>
+    <div>Always use <strong>random_state=42</strong> (or any fixed number) so your results are reproducible. Use <strong>stratify=y</strong> for classification to ensure balanced splits.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 4: PREPROCESSING ===== -->
+<section class="section" id="preprocessing">
+  <div class="section-header">
+    <div class="section-icon">🔧</div>
+    <div class="section-title">
+      <span class="level-tag lv-beginner">Beginner</span>
+      <h2>Data Preprocessing</h2>
+      <p>Clean and transform data before training</p>
+    </div>
+  </div>
+
+  <h3>1. Feature Scaling</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — StandardScaler & MinMaxScaler</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler, MinMaxScaler
+
+<span class="cm"># StandardScaler → mean=0, std=1  (best for SVM, Logistic Regression)</span>
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)  <span class="cm"># fit AND transform train</span>
+X_test_scaled  = scaler.transform(X_test)       <span class="cm"># ONLY transform test!</span>
+
+<span class="cm"># MinMaxScaler → range [0, 1]  (best for Neural Networks)</span>
+mm_scaler = MinMaxScaler()
+X_train_mm = mm_scaler.fit_transform(X_train)
+X_test_mm  = mm_scaler.transform(X_test)
+
+print(<span class="st">f"Before scaling - mean: {X_train[:,0].mean():.2f}"</span>)
+print(<span class="st">f"After scaling  - mean: {X_train_scaled[:,0].mean():.2f}"</span>)  <span class="cm"># ≈ 0</span></pre>
+  </div>
+
+  <div class="info-box warning">
+    <span class="icon">⚠️</span>
+    <div><strong>Important:</strong> Always <code>fit_transform()</code> on training data, but only <code>transform()</code> on test data. Never fit on test data — it causes data leakage!</div>
+  </div>
+
+  <h3>2. Handling Missing Values</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — SimpleImputer</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Create data with missing values</span>
+X = np.array([[<span class="nm">1</span>, <span class="nm">2</span>], [np.nan, <span class="nm">3</span>], [<span class="nm">7</span>, np.nan], [<span class="nm">4</span>, <span class="nm">5</span>]])
+
+<span class="cm"># Fill missing values with mean of column</span>
+imputer = SimpleImputer(strategy=<span class="st">'mean'</span>)   <span class="cm"># or 'median', 'most_frequent'</span>
+X_filled = imputer.fit_transform(X)
+print(X_filled)
+<span class="cm"># [[1.  2. ]</span>
+<span class="cm">#  [4.  3. ]   ← NaN replaced with column mean</span>
+<span class="cm">#  [7.  3.3]   ← NaN replaced with column mean</span>
+<span class="cm">#  [4.  5. ]]</span></pre>
+  </div>
+
+  <h3>3. Encoding Categorical Data</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — LabelEncoder & OneHotEncoder</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> LabelEncoder, OneHotEncoder
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># LabelEncoder — for target variable (y)</span>
+le = LabelEncoder()
+y = [<span class="st">'cat'</span>, <span class="st">'dog'</span>, <span class="st">'cat'</span>, <span class="st">'bird'</span>]
+y_encoded = le.fit_transform(y)
+print(y_encoded)   <span class="cm"># [1, 2, 1, 0]  ← bird=0, cat=1, dog=2</span>
+
+<span class="cm"># OneHotEncoder — for features (X) with no ordinal relationship</span>
+<span class="cm"># ['Red', 'Blue', 'Green'] → [1,0,0], [0,1,0], [0,0,1]</span>
+ohe = OneHotEncoder(sparse_output=<span class="kw">False</span>)
+colors = [[<span class="st">'Red'</span>], [<span class="st">'Blue'</span>], [<span class="st">'Green'</span>], [<span class="st">'Red'</span>]]
+encoded = ohe.fit_transform(colors)
+print(encoded)
+<span class="cm"># [[0. 0. 1.]   ← Red</span>
+<span class="cm">#  [1. 0. 0.]   ← Blue</span>
+<span class="cm">#  [0. 1. 0.]   ← Green</span>
+<span class="cm">#  [0. 0. 1.]]  ← Red</span>
+
+<span class="cm"># pandas get_dummies is easier for DataFrames!</span>
+df = pd.DataFrame({<span class="st">'color'</span>: [<span class="st">'Red'</span>, <span class="st">'Blue'</span>, <span class="st">'Green'</span>]})
+df_encoded = pd.get_dummies(df, columns=[<span class="st">'color'</span>])
+print(df_encoded)</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 5: LINEAR REGRESSION ===== -->
+<section class="section" id="linear">
+  <div class="section-header">
+    <div class="section-icon">📈</div>
+    <div class="section-title">
+      <span class="level-tag lv-beginner">Beginner</span>
+      <h2>Linear Regression</h2>
+      <p>Predict continuous numeric values</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — House Price Prediction</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LinearRegression
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> mean_squared_error, r2_score
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># 🏠 House size (sq ft) → Price ($1000s)</span>
+np.random.seed(<span class="nm">42</span>)
+X = np.random.uniform(<span class="nm">500</span>, <span class="nm">3000</span>, (<span class="nm">100</span>, <span class="nm">1</span>))
+y = <span class="nm">0.15</span> * X.ravel() + np.random.normal(<span class="nm">0</span>, <span class="nm">20</span>, <span class="nm">100</span>) + <span class="nm">50</span>
+
+<span class="cm"># Split data</span>
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>)
+
+<span class="cm"># Train model</span>
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+<span class="cm"># Make predictions</span>
+y_pred = model.predict(X_test)
+
+<span class="cm"># Evaluate</span>
+mse  = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2   = r2_score(y_test, y_pred)
+
+print(<span class="st">f"Coefficient (slope): {model.coef_[0]:.4f}"</span>)
+print(<span class="st">f"Intercept:           {model.intercept_:.4f}"</span>)
+print(<span class="st">f"RMSE:  {rmse:.2f}"</span>)   <span class="cm"># lower = better</span>
+print(<span class="st">f"R²:    {r2:.4f}"</span>)    <span class="cm"># closer to 1 = better</span>
+
+<span class="cm"># Predict new house</span>
+new_house = np.array([[<span class="nm">1800</span>]])
+price = model.predict(new_house)
+print(<span class="st">f"Predicted price for 1800 sq ft: ${price[0]*1000:.0f}"</span>)</pre>
+  </div>
+
+  <table>
+    <tr><th>Metric</th><th>Formula</th><th>Interpretation</th></tr>
+    <tr><td>MSE</td><td>mean((y - ŷ)²)</td><td>Lower is better, penalizes large errors</td></tr>
+    <tr><td>RMSE</td><td>√MSE</td><td>Same units as target — easy to interpret</td></tr>
+    <tr><td>R²</td><td>1 - SS_res/SS_tot</td><td>0 to 1, how well model explains variance</td></tr>
+    <tr><td>MAE</td><td>mean(|y - ŷ|)</td><td>Average absolute error — robust to outliers</td></tr>
+  </table>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 6: CLASSIFICATION ===== -->
+<section class="section" id="classification">
+  <div class="section-header">
+    <div class="section-icon">🎯</div>
+    <div class="section-title">
+      <span class="level-tag lv-beginner">Beginner</span>
+      <h2>Classification Algorithms</h2>
+      <p>KNN, Logistic Regression, Decision Tree, SVM — all with the same API!</p>
+    </div>
+  </div>
+
+  <div class="info-box note">
+    <span class="icon">💡</span>
+    <div>The beauty of sklearn: <strong>every classifier uses the same 3 methods</strong> — <code>.fit()</code>, <code>.predict()</code>, <code>.score()</code>. Switch algorithms by changing just one line!</div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — Compare All Classifiers</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_iris
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+
+<span class="cm"># Classifiers to compare</span>
+<span class="kw">from</span> sklearn.neighbors <span class="kw">import</span> KNeighborsClassifier
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> DecisionTreeClassifier
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.svm <span class="kw">import</span> SVC
+
+<span class="cm"># Load & prepare data</span>
+iris = load_iris()
+X, y = iris.data, iris.target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>)
+
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test  = scaler.transform(X_test)
+
+<span class="cm"># All classifiers with the SAME interface!</span>
+classifiers = {
+    <span class="st">'KNN'</span>:             KNeighborsClassifier(n_neighbors=<span class="nm">5</span>),
+    <span class="st">'Logistic Reg'</span>:    LogisticRegression(random_state=<span class="nm">42</span>),
+    <span class="st">'Decision Tree'</span>:   DecisionTreeClassifier(max_depth=<span class="nm">3</span>, random_state=<span class="nm">42</span>),
+    <span class="st">'Random Forest'</span>:   RandomForestClassifier(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>),
+    <span class="st">'SVM'</span>:             SVC(kernel=<span class="st">'rbf'</span>, random_state=<span class="nm">42</span>)
+}
+
+print(<span class="st">f"{'Model':<20} {'Accuracy':>10}"</span>)
+print(<span class="st">"-"</span> * <span class="nm">32</span>)
+
+<span class="kw">for</span> name, clf <span class="kw">in</span> classifiers.items():
+    clf.fit(X_train, y_train)          <span class="cm"># 1. Train</span>
+    score = clf.score(X_test, y_test)  <span class="cm"># 2. Evaluate</span>
+    print(<span class="st">f"{name:<20} {score:>10.4f}"</span>)
+
+<span class="cm"># Output:</span>
+<span class="cm"># KNN                    0.9667</span>
+<span class="cm"># Logistic Reg           0.9667</span>
+<span class="cm"># Decision Tree          0.9667</span>
+<span class="cm"># Random Forest          1.0000</span>
+<span class="cm"># SVM                    0.9667</span></pre>
+  </div>
+
+  <h3>K-Nearest Neighbors (KNN) — Deep Dive</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — KNN in detail</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.neighbors <span class="kw">import</span> KNeighborsClassifier
+
+<span class="cm"># Find best K value</span>
+train_scores, test_scores = [], []
+k_range = range(<span class="nm">1</span>, <span class="nm">21</span>)
+
+<span class="kw">for</span> k <span class="kw">in</span> k_range:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    train_scores.append(knn.score(X_train, y_train))
+    test_scores.append(knn.score(X_test, y_test))
+
+<span class="cm"># Plot to find sweet spot</span>
+plt.figure(figsize=(<span class="nm">10</span>, <span class="nm">4</span>))
+plt.plot(k_range, train_scores, label=<span class="st">'Train'</span>, marker=<span class="st">'o'</span>)
+plt.plot(k_range, test_scores, label=<span class="st">'Test'</span>, marker=<span class="st">'s'</span>)
+plt.xlabel(<span class="st">'K (number of neighbors)'</span>)
+plt.ylabel(<span class="st">'Accuracy'</span>)
+plt.legend()
+plt.title(<span class="st">'Finding Best K for KNN'</span>)
+plt.show()
+
+best_k = k_range[test_scores.index(max(test_scores))]
+print(<span class="st">f"Best K: {best_k}, Test Accuracy: {max(test_scores):.4f}"</span>)</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 7: EVALUATION ===== -->
+<section class="section" id="evaluation">
+  <div class="section-header">
+    <div class="section-icon">📊</div>
+    <div class="section-title">
+      <span class="level-tag lv-beginner">Beginner</span>
+      <h2>Model Evaluation</h2>
+      <p>Metrics, confusion matrix, and classification reports</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — Full Evaluation Suite</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (
+    accuracy_score, precision_score, recall_score,
+    f1_score, classification_report, confusion_matrix
+)
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+<span class="cm"># Train a model first</span>
+rf = RandomForestClassifier(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>)
+rf.fit(X_train, y_train)
+y_pred = rf.predict(X_test)
+
+<span class="cm"># === INDIVIDUAL METRICS ===</span>
+print(<span class="st">f"Accuracy:  {accuracy_score(y_test, y_pred):.4f}"</span>)
+<span class="cm"># Of all predictions, how many were correct?</span>
+
+print(<span class="st">f"Precision: {precision_score(y_test, y_pred, average='macro'):.4f}"</span>)
+<span class="cm"># Of predicted positives, how many were actually positive?</span>
+
+print(<span class="st">f"Recall:    {recall_score(y_test, y_pred, average='macro'):.4f}"</span>)
+<span class="cm"># Of actual positives, how many did we catch?</span>
+
+print(<span class="st">f"F1 Score:  {f1_score(y_test, y_pred, average='macro'):.4f}"</span>)
+<span class="cm"># Harmonic mean of Precision and Recall</span>
+
+<span class="cm"># === CLASSIFICATION REPORT ===</span>
+print(<span class="st">"\n"</span>, classification_report(y_test, y_pred, target_names=iris.target_names))
+
+<span class="cm"># === CONFUSION MATRIX ===</span>
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(<span class="nm">6</span>, <span class="nm">4</span>))
+sns.heatmap(cm, annot=<span class="kw">True</span>, fmt=<span class="st">'d'</span>, cmap=<span class="st">'Blues'</span>,
+            xticklabels=iris.target_names,
+            yticklabels=iris.target_names)
+plt.title(<span class="st">'Confusion Matrix'</span>)
+plt.ylabel(<span class="st">'Actual'</span>); plt.xlabel(<span class="st">'Predicted'</span>)
+plt.show()</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 8: CROSS VALIDATION ===== -->
+<section class="section" id="crossval">
+  <div class="section-header">
+    <div class="section-icon">🔄</div>
+    <div class="section-title">
+      <span class="level-tag lv-intermediate">Intermediate</span>
+      <h2>Cross-Validation</h2>
+      <p>Get reliable model performance estimates</p>
+    </div>
+  </div>
+
+  <p>A single train-test split can be lucky or unlucky. Cross-validation uses <strong>multiple splits</strong> to get a reliable average performance.</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — K-Fold Cross Validation</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> (
+    cross_val_score, cross_validate, KFold, StratifiedKFold
+)
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_iris
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+iris = load_iris()
+X, y = iris.data, iris.target
+model = RandomForestClassifier(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>)
+
+<span class="cm"># === Simple 5-fold CV ===</span>
+scores = cross_val_score(model, X, y, cv=<span class="nm">5</span>, scoring=<span class="st">'accuracy'</span>)
+print(<span class="st">f"CV Scores:  {scores}"</span>)
+print(<span class="st">f"Mean: {scores.mean():.4f} ± {scores.std():.4f}"</span>)
+
+<span class="cm"># === StratifiedKFold (best for classification) ===</span>
+<span class="cm"># Ensures each fold has same class distribution</span>
+skf = StratifiedKFold(n_splits=<span class="nm">5</span>, shuffle=<span class="kw">True</span>, random_state=<span class="nm">42</span>)
+scores_skf = cross_val_score(model, X, y, cv=skf, scoring=<span class="st">'accuracy'</span>)
+print(<span class="st">f"\nStratified CV: {scores_skf.mean():.4f} ± {scores_skf.std():.4f}"</span>)
+
+<span class="cm"># === Multiple metrics at once ===</span>
+results = cross_validate(model, X, y, cv=<span class="nm">5</span>,
+    scoring=[<span class="st">'accuracy'</span>, <span class="st">'precision_macro'</span>, <span class="st">'recall_macro'</span>],
+    return_train_score=<span class="kw">True</span>
+)
+print(<span class="st">f"\nTrain Accuracy: {results['train_accuracy'].mean():.4f}"</span>)
+print(<span class="st">f"Test Accuracy:  {results['test_accuracy'].mean():.4f}"</span>)
+<span class="cm"># Large gap between train/test = overfitting!</span></pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 9: HYPERPARAMETER TUNING ===== -->
+<section class="section" id="tuning">
+  <div class="section-header">
+    <div class="section-icon">🎛️</div>
+    <div class="section-title">
+      <span class="level-tag lv-intermediate">Intermediate</span>
+      <h2>Hyperparameter Tuning</h2>
+      <p>GridSearchCV and RandomizedSearchCV</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — GridSearchCV (exhaustive)</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> GridSearchCV, RandomizedSearchCV
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> scipy.stats <span class="kw">import</span> randint
+
+<span class="cm"># === GRID SEARCH — tries every combination ===</span>
+param_grid = {
+    <span class="st">'n_estimators'</span>: [<span class="nm">50</span>, <span class="nm">100</span>, <span class="nm">200</span>],
+    <span class="st">'max_depth'</span>:    [<span class="nm">3</span>, <span class="nm">5</span>, <span class="nm">10</span>, <span class="kw">None</span>],
+    <span class="st">'min_samples_split'</span>: [<span class="nm">2</span>, <span class="nm">5</span>, <span class="nm">10</span>]
+}  <span class="cm"># Total combinations: 3 × 4 × 3 = 36</span>
+
+grid_search = GridSearchCV(
+    RandomForestClassifier(random_state=<span class="nm">42</span>),
+    param_grid,
+    cv=<span class="nm">5</span>,                    <span class="cm"># 5-fold CV for each combination</span>
+    scoring=<span class="st">'accuracy'</span>,
+    n_jobs=<span class="nm">-1</span>,               <span class="cm"># use all CPU cores</span>
+    verbose=<span class="nm">1</span>
+)
+grid_search.fit(X_train, y_train)
+
+print(<span class="st">f"Best params: {grid_search.best_params_}"</span>)
+print(<span class="st">f"Best CV score: {grid_search.best_score_:.4f}"</span>)
+print(<span class="st">f"Test score: {grid_search.score(X_test, y_test):.4f}"</span>)
+
+best_model = grid_search.best_estimator_  <span class="cm"># already fitted!</span>
+
+<span class="cm"># === RANDOMIZED SEARCH — faster for large spaces ===</span>
+param_dist = {
+    <span class="st">'n_estimators'</span>: randint(<span class="nm">50</span>, <span class="nm">500</span>),
+    <span class="st">'max_depth'</span>: randint(<span class="nm">1</span>, <span class="nm">20</span>),
+    <span class="st">'min_samples_split'</span>: randint(<span class="nm">2</span>, <span class="nm">20</span>)
+}
+
+rand_search = RandomizedSearchCV(
+    RandomForestClassifier(random_state=<span class="nm">42</span>),
+    param_dist,
+    n_iter=<span class="nm">20</span>,   <span class="cm"># only try 20 random combinations</span>
+    cv=<span class="nm">5</span>,
+    scoring=<span class="st">'accuracy'</span>,
+    random_state=<span class="nm">42</span>
+)
+rand_search.fit(X_train, y_train)
+print(<span class="st">f"\nBest params: {rand_search.best_params_}"</span>)</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 10: PIPELINES ===== -->
+<section class="section" id="pipeline">
+  <div class="section-header">
+    <div class="section-icon">🔗</div>
+    <div class="section-title">
+      <span class="level-tag lv-intermediate">Intermediate</span>
+      <h2>Pipelines</h2>
+      <p>Chain preprocessing and modeling into one reusable object</p>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <span class="icon">✨</span>
+    <div>Pipelines are the <strong>#1 best practice</strong> in sklearn. They prevent data leakage, make code cleaner, and allow hyperparameter tuning across all steps.</div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — Building a Full Pipeline</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+
+<span class="cm"># Build pipeline: each step feeds into the next</span>
+pipeline = Pipeline([
+    (<span class="st">'imputer'</span>,  SimpleImputer(strategy=<span class="st">'mean'</span>)),  <span class="cm"># step 1: fill NaN</span>
+    (<span class="st">'scaler'</span>,   StandardScaler()),                  <span class="cm"># step 2: scale</span>
+    (<span class="st">'model'</span>,    RandomForestClassifier(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>))
+])
+
+<span class="cm"># Use exactly like a regular model!</span>
+pipeline.fit(X_train, y_train)
+print(<span class="st">f"Test accuracy: {pipeline.score(X_test, y_test):.4f}"</span>)
+predictions = pipeline.predict(X_test)
+
+<span class="cm"># Cross-validate the full pipeline (no leakage!)</span>
+scores = cross_val_score(pipeline, X, y, cv=<span class="nm">5</span>)
+print(<span class="st">f"CV Mean: {scores.mean():.4f}"</span>)
+
+<span class="cm"># Grid search over pipeline parameters!</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> GridSearchCV
+
+param_grid = {
+    <span class="st">'model__n_estimators'</span>: [<span class="nm">50</span>, <span class="nm">100</span>],   <span class="cm"># step_name__param</span>
+    <span class="st">'model__max_depth'</span>:    [<span class="nm">3</span>, <span class="nm">5</span>, <span class="kw">None</span>],
+    <span class="st">'imputer__strategy'</span>:   [<span class="st">'mean'</span>, <span class="st">'median'</span>]
+}
+grid = GridSearchCV(pipeline, param_grid, cv=<span class="nm">5</span>, n_jobs=<span class="nm">-1</span>)
+grid.fit(X_train, y_train)
+print(<span class="st">f"Best: {grid.best_params_}"</span>)</pre>
+  </div>
+
+  <h3>Column Transformer — Different Processing for Different Features</h3>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — ColumnTransformer</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.compose <span class="kw">import</span> ColumnTransformer
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler, OneHotEncoder
+<span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># Example: Titanic-like data with mixed types</span>
+numeric_features = [<span class="st">'age'</span>, <span class="st">'fare'</span>]
+categorical_features = [<span class="st">'sex'</span>, <span class="st">'embarked'</span>]
+
+<span class="cm"># Processing pipelines per column type</span>
+numeric_pipeline = Pipeline([
+    (<span class="st">'imputer'</span>, SimpleImputer(strategy=<span class="st">'median'</span>)),
+    (<span class="st">'scaler'</span>,  StandardScaler())
+])
+
+categorical_pipeline = Pipeline([
+    (<span class="st">'imputer'</span>, SimpleImputer(strategy=<span class="st">'most_frequent'</span>)),
+    (<span class="st">'encoder'</span>, OneHotEncoder(handle_unknown=<span class="st">'ignore'</span>))
+])
+
+<span class="cm"># Combine them</span>
+preprocessor = ColumnTransformer([
+    (<span class="st">'num'</span>, numeric_pipeline, numeric_features),
+    (<span class="st">'cat'</span>, categorical_pipeline, categorical_features)
+])
+
+<span class="cm"># Final full pipeline</span>
+full_pipeline = Pipeline([
+    (<span class="st">'preprocessor'</span>, preprocessor),
+    (<span class="st">'classifier'</span>, RandomForestClassifier(random_state=<span class="nm">42</span>))
+])</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 11: ENSEMBLE ===== -->
+<section class="section" id="ensemble">
+  <div class="section-header">
+    <div class="section-icon">🌲</div>
+    <div class="section-title">
+      <span class="level-tag lv-intermediate">Intermediate</span>
+      <h2>Ensemble Methods</h2>
+      <p>Bagging, Boosting, and Stacking — combine models for better results</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — Bagging, Boosting, Voting, Stacking</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> (
+    BaggingClassifier, GradientBoostingClassifier,
+    VotingClassifier, StackingClassifier,
+    RandomForestClassifier, AdaBoostClassifier
+)
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+<span class="kw">from</span> sklearn.svm <span class="kw">import</span> SVC
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> DecisionTreeClassifier
+
+<span class="cm"># === BAGGING — trains models on random subsets ===</span>
+bagging = BaggingClassifier(
+    estimator=DecisionTreeClassifier(),
+    n_estimators=<span class="nm">100</span>,
+    random_state=<span class="nm">42</span>
+)
+
+<span class="cm"># === GRADIENT BOOSTING — models learn from previous errors ===</span>
+gb = GradientBoostingClassifier(
+    n_estimators=<span class="nm">100</span>,
+    learning_rate=<span class="nm">0.1</span>,
+    max_depth=<span class="nm">3</span>,
+    random_state=<span class="nm">42</span>
+)
+
+<span class="cm"># === VOTING — combine multiple classifiers ===</span>
+voting = VotingClassifier(
+    estimators=[
+        (<span class="st">'rf'</span>,  RandomForestClassifier(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>)),
+        (<span class="st">'svm'</span>, SVC(probability=<span class="kw">True</span>, random_state=<span class="nm">42</span>)),
+        (<span class="st">'lr'</span>,  LogisticRegression(random_state=<span class="nm">42</span>))
+    ],
+    voting=<span class="st">'soft'</span>  <span class="cm"># 'hard'=majority vote, 'soft'=probability avg</span>
+)
+
+<span class="cm"># === STACKING — meta-model learns from base models ===</span>
+stacking = StackingClassifier(
+    estimators=[
+        (<span class="st">'rf'</span>,  RandomForestClassifier(n_estimators=<span class="nm">50</span>, random_state=<span class="nm">42</span>)),
+        (<span class="st">'svm'</span>, SVC(random_state=<span class="nm">42</span>)),
+    ],
+    final_estimator=LogisticRegression(),  <span class="cm"># meta-learner</span>
+    cv=<span class="nm">5</span>
+)
+
+<span class="cm"># Compare all!</span>
+models = {<span class="st">'Bagging'</span>: bagging, <span class="st">'GradBoost'</span>: gb, 
+          <span class="st">'Voting'</span>: voting, <span class="st">'Stacking'</span>: stacking}
+
+<span class="kw">for</span> name, model <span class="kw">in</span> models.items():
+    scores = cross_val_score(model, X, y, cv=<span class="nm">5</span>)
+    print(<span class="st">f"{name:12}: {scores.mean():.4f} ± {scores.std():.4f}"</span>)</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 12: CUSTOM TRANSFORMERS ===== -->
+<section class="section" id="custom">
+  <div class="section-header">
+    <div class="section-icon">🔬</div>
+    <div class="section-title">
+      <span class="level-tag lv-advanced">Advanced</span>
+      <h2>Custom Transformers</h2>
+      <p>Build your own preprocessing steps that plug into Pipelines</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — Custom Transformer Class</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.base <span class="kw">import</span> BaseEstimator, TransformerMixin
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Custom transformer: log-transform skewed features</span>
+<span class="kw">class</span> <span class="cl">LogTransformer</span>(BaseEstimator, TransformerMixin):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, add_one=<span class="kw">True</span>):
+        self.add_one = add_one  <span class="cm"># handle zeros</span>
+
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y=<span class="kw">None</span>):
+        <span class="kw">return</span> self  <span class="cm"># nothing to learn</span>
+
+    <span class="kw">def</span> <span class="fn">transform</span>(self, X):
+        <span class="kw">if</span> self.add_one:
+            <span class="kw">return</span> np.log1p(X)  <span class="cm"># log(1 + x)</span>
+        <span class="kw">return</span> np.log(X)
+
+<span class="cm"># Custom transformer: add new engineered features</span>
+<span class="kw">class</span> <span class="cl">FeatureAdder</span>(BaseEstimator, TransformerMixin):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, add_ratios=<span class="kw">True</span>):
+        self.add_ratios = add_ratios
+
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X, y=<span class="kw">None</span>):
+        <span class="kw">return</span> self
+
+    <span class="kw">def</span> <span class="fn">transform</span>(self, X):
+        X = np.array(X)
+        <span class="kw">if</span> self.add_ratios <span class="kw">and</span> X.shape[<span class="nm">1</span>] >= <span class="nm">2</span>:
+            ratio = (X[:, <span class="nm">0</span>] / (X[:, <span class="nm">1</span>] + <span class="nm">1e-8</span>)).reshape(-<span class="nm">1</span>, <span class="nm">1</span>)
+            <span class="kw">return</span> np.hstack([X, ratio])
+        <span class="kw">return</span> X
+
+<span class="cm"># Use in a pipeline!</span>
+custom_pipeline = Pipeline([
+    (<span class="st">'log_transform'</span>, LogTransformer()),
+    (<span class="st">'feature_adder'</span>, FeatureAdder()),
+    (<span class="st">'scaler'</span>,        StandardScaler()),
+    (<span class="st">'model'</span>,         RandomForestClassifier(random_state=<span class="nm">42</span>))
+])
+
+custom_pipeline.fit(X_train, y_train)
+print(custom_pipeline.score(X_test, y_test))</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 13: FEATURE ENGINEERING ===== -->
+<section class="section" id="featureeng">
+  <div class="section-header">
+    <div class="section-icon">⚗️</div>
+    <div class="section-title">
+      <span class="level-tag lv-advanced">Advanced</span>
+      <h2>Feature Engineering & Selection</h2>
+      <p>Create better features and remove useless ones</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — Polynomial Features & Selection</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> PolynomialFeatures
+<span class="kw">from</span> sklearn.feature_selection <span class="kw">import</span> (
+    SelectKBest, f_classif, RFE, SelectFromModel
+)
+<span class="kw">from</span> sklearn.decomposition <span class="kw">import</span> PCA
+
+<span class="cm"># === POLYNOMIAL FEATURES ===</span>
+<span class="cm"># Create interaction & polynomial terms</span>
+poly = PolynomialFeatures(degree=<span class="nm">2</span>, include_bias=<span class="kw">False</span>)
+X_poly = poly.fit_transform(X)  <span class="cm"># [x1, x2] → [x1, x2, x1², x1x2, x2²]</span>
+print(<span class="st">f"Original: {X.shape} → Polynomial: {X_poly.shape}"</span>)
+
+<span class="cm"># === SELECT K BEST — statistical test ===</span>
+selector = SelectKBest(score_func=f_classif, k=<span class="nm">2</span>)  <span class="cm"># keep top 2 features</span>
+X_selected = selector.fit_transform(X, y)
+print(<span class="st">f"Feature scores: {selector.scores_}"</span>)
+print(<span class="st">f"Selected features: {selector.get_support()}"</span>)  <span class="cm"># True/False mask</span>
+
+<span class="cm"># === RECURSIVE FEATURE ELIMINATION (RFE) ===</span>
+rfe = RFE(estimator=RandomForestClassifier(random_state=<span class="nm">42</span>), n_features_to_select=<span class="nm">2</span>)
+rfe.fit(X_train, y_train)
+print(<span class="st">f"Selected: {rfe.support_}"</span>)
+print(<span class="st">f"Ranking:  {rfe.ranking_}"</span>)  <span class="cm"># 1 = selected</span>
+
+<span class="cm"># === PCA — Dimensionality Reduction ===</span>
+pca = PCA(n_components=<span class="nm">2</span>)  <span class="cm"># reduce to 2 components</span>
+X_pca = pca.fit_transform(X_train)
+print(<span class="st">f"Variance explained: {pca.explained_variance_ratio_}"</span>)
+print(<span class="st">f"Total variance kept: {pca.explained_variance_ratio_.sum():.2%}"</span>)
+
+<span class="cm"># PCA in pipeline</span>
+pca_pipeline = Pipeline([
+    (<span class="st">'scaler'</span>, StandardScaler()),
+    (<span class="st">'pca'</span>,    PCA(n_components=<span class="nm">0.95</span>)),  <span class="cm"># keep 95% variance</span>
+    (<span class="st">'model'</span>,  RandomForestClassifier(random_state=<span class="nm">42</span>))
+])</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 14: IMBALANCED ===== -->
+<section class="section" id="imbalanced">
+  <div class="section-header">
+    <div class="section-icon">⚖️</div>
+    <div class="section-title">
+      <span class="level-tag lv-advanced">Advanced</span>
+      <h2>Handling Imbalanced Data</h2>
+      <p>When one class is much rarer (fraud, disease detection)</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — Class Weights & Threshold Tuning</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.datasets <span class="kw">import</span> make_classification
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> classification_report, roc_auc_score
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Simulate imbalanced dataset (5% positive, 95% negative)</span>
+X, y = make_classification(
+    n_samples=<span class="nm">10000</span>, n_features=<span class="nm">10</span>,
+    weights=[<span class="nm">0.95</span>, <span class="nm">0.05</span>],  <span class="cm"># 95% class 0, 5% class 1</span>
+    random_state=<span class="nm">42</span>
+)
+print(<span class="st">f"Class distribution: {np.bincount(y)}"</span>)  <span class="cm"># [9500, 500]</span>
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="nm">0.2</span>,
+                                                    stratify=y, random_state=<span class="nm">42</span>)
+
+<span class="cm"># METHOD 1: class_weight='balanced' — auto-adjusts sample weights</span>
+model = LogisticRegression(class_weight=<span class="st">'balanced'</span>, random_state=<span class="nm">42</span>)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print(classification_report(y_test, y_pred))
+print(<span class="st">f"ROC-AUC: {roc_auc_score(y_test, model.predict_proba(X_test)[:,1]):.4f}"</span>)
+
+<span class="cm"># METHOD 2: Adjust decision threshold (default is 0.5)</span>
+probas = model.predict_proba(X_test)[:, <span class="nm">1</span>]
+
+<span class="cm"># Lower threshold → catch more positives (higher recall, lower precision)</span>
+<span class="kw">for</span> threshold <span class="kw">in</span> [<span class="nm">0.3</span>, <span class="nm">0.4</span>, <span class="nm">0.5</span>]:
+    preds = (probas >= threshold).astype(int)
+    report = classification_report(y_test, preds, output_dict=<span class="kw">True</span>)
+    print(<span class="st">f"Threshold {threshold}: "
+          f"Precision={report['1']['precision']:.2f} "
+          f"Recall={report['1']['recall']:.2f}"</span>)</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION 15: PRODUCTION ===== -->
+<section class="section" id="production">
+  <div class="section-header">
+    <div class="section-icon">🚀</div>
+    <div class="section-title">
+      <span class="level-tag lv-advanced">Advanced</span>
+      <h2>Saving Models for Production</h2>
+      <p>Persist and deploy your trained models</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <div class="code-label">PYTHON — Save & Load Models</div>
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+    </div>
+    <pre><span class="kw">import</span> joblib
+<span class="kw">import</span> pickle
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+
+<span class="cm"># Train your pipeline</span>
+pipeline = Pipeline([
+    (<span class="st">'scaler'</span>, StandardScaler()),
+    (<span class="st">'model'</span>,  RandomForestClassifier(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>))
+])
+pipeline.fit(X_train, y_train)
+
+<span class="cm"># === METHOD 1: joblib (recommended for sklearn) ===</span>
+joblib.dump(pipeline, <span class="st">'model.pkl'</span>)
+loaded_model = joblib.load(<span class="st">'model.pkl'</span>)
+print(loaded_model.predict(X_test[:<span class="nm">3</span>]))
+
+<span class="cm"># === METHOD 2: pickle ===</span>
+<span class="kw">with</span> open(<span class="st">'model.pickle'</span>, <span class="st">'wb'</span>) <span class="kw">as</span> f:
+    pickle.dump(pipeline, f)
+
+<span class="kw">with</span> open(<span class="st">'model.pickle'</span>, <span class="st">'rb'</span>) <span class="kw">as</span> f:
+    model2 = pickle.load(f)
+
+<span class="cm"># === PRODUCTION PREDICTION FUNCTION ===</span>
+<span class="kw">def</span> <span class="fn">predict</span>(features: dict) -> dict:
+    <span class="st">"""
+    Ready-to-deploy prediction function.
+    features: {'sepal_length': 5.1, 'sepal_width': 3.5, ...}
+    """</span>
+    <span class="kw">import</span> pandas <span class="kw">as</span> pd
+    loaded = joblib.load(<span class="st">'model.pkl'</span>)
+    X_new = pd.DataFrame([features])
+    prediction = loaded.predict(X_new)[<span class="nm">0</span>]
+    probability = loaded.predict_proba(X_new).max()
+    <span class="kw">return</span> {
+        <span class="st">'prediction'</span>: int(prediction),
+        <span class="st">'confidence'</span>: float(probability)
+    }
+
+<span class="cm"># === MODEL METADATA — track your models! ===</span>
+<span class="kw">import</span> json
+from datetime <span class="kw">import</span> datetime
+
+metadata = {
+    <span class="st">'model_type'</span>:     <span class="st">'RandomForest'</span>,
+    <span class="st">'trained_on'</span>:     datetime.now().isoformat(),
+    <span class="st">'train_accuracy'</span>: pipeline.score(X_train, y_train),
+    <span class="st">'test_accuracy'</span>:  pipeline.score(X_test, y_test),
+    <span class="st">'n_features'</span>:     X_train.shape[<span class="nm">1</span>],
+    <span class="st">'n_samples'</span>:      X_train.shape[<span class="nm">0</span>]
+}
+<span class="kw">with</span> open(<span class="st">'model_metadata.json'</span>, <span class="st">'w'</span>) <span class="kw">as</span> f:
+    json.dump(metadata, f, indent=<span class="nm">2</span>)
+print(json.dumps(metadata, indent=<span class="nm">2</span>))</pre>
+  </div>
+
+  <h3>🎓 What to Learn Next</h3>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="icon">⚡</div>
+      <h4>XGBoost / LightGBM</h4>
+      <p>State-of-the-art gradient boosting that wins Kaggle competitions</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">🧠</div>
+      <h4>Neural Networks</h4>
+      <p>TensorFlow / PyTorch for deep learning tasks</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">🔍</div>
+      <h4>Optuna / Hyperopt</h4>
+      <p>Advanced Bayesian hyperparameter optimization</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">📊</div>
+      <h4>SHAP / LIME</h4>
+      <p>Explainable AI — understand why your model predicts what it does</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">🌐</div>
+      <h4>FastAPI / Flask</h4>
+      <p>Deploy your model as a REST API</p>
+    </div>
+    <div class="concept-card">
+      <div class="icon">🔁</div>
+      <h4>MLflow</h4>
+      <p>Track experiments, models, and deployments at scale</p>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+  // Smooth scroll for nav links
+  document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      }
+    });
+  });
+
+  // Copy button
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!';
+      btn.style.color = '#43e97b';
+      setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 2000);
+    });
+  }
+
+  // Highlight active section on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

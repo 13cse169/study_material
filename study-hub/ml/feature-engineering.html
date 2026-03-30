@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feature Engineering — Complete Mastery Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:wght@400;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #f8f7f3;
+  --bg2:       #eeecea;
+  --surface:   #ffffff;
+  --s2:        #f4f3ef;
+  --border:    #e0ddd6;
+  --b2:        #cac6bc;
+  --ink:       #17140e;
+  --ink2:      #2e2a22;
+  --ink3:      #5c5649;
+  --muted:     #9c9589;
+  --teal:      #007a6e;
+  --teal-l:    #00a896;
+  --teal-bg:   rgba(0,168,150,0.07);
+  --coral:     #d94f3b;
+  --coral-bg:  rgba(217,79,59,0.07);
+  --amber:     #c47c1a;
+  --amber-bg:  rgba(196,124,26,0.08);
+  --indigo:    #3b4fa8;
+  --indigo-bg: rgba(59,79,168,0.07);
+  --violet:    #7c3fa8;
+  --green:     #2e7d4f;
+  --green-bg:  rgba(46,125,79,0.07);
+  --code-bg:   #1b1916;
+  --code-text: #e8e2d8;
+  --shadow:    0 2px 12px rgba(23,20,14,0.08);
+  --shadow2:   0 8px 32px rgba(23,20,14,0.12);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body {
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* Dot-grid background */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:radial-gradient(circle, rgba(23,20,14,0.08) 1px, transparent 1px);
+  background-size:24px 24px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── HEADER ─────────────────────────────── */
+header {
+  position:sticky;top:0;z-index:600;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;height:60px;
+  border-bottom:3px solid var(--teal-l);
+}
+
+.logo {
+  display:flex;align-items:center;gap:12px;
+}
+
+.logo-icon {
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--teal-l),var(--indigo));
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:.75rem;font-weight:500;color:#fff;
+  letter-spacing:.5px;
+}
+
+.logo-text {
+  font-family:'Playfair Display',serif;
+  font-size:1.15rem;font-weight:700;color:#fff;letter-spacing:-.3px;
+}
+.logo-text span{color:var(--teal-l);}
+
+.logo-sub {
+  font-family:'DM Mono',monospace;font-size:.6rem;
+  color:rgba(255,255,255,.35);letter-spacing:1.5px;text-transform:uppercase;
+  border-left:1px solid rgba(255,255,255,.12);padding-left:12px;
+}
+
+nav{display:flex;gap:2px;flex-wrap:wrap;}
+
+nav button {
+  background:transparent;border:1px solid transparent;
+  color:rgba(255,255,255,.45);padding:5px 11px;border-radius:4px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.3px;transition:all .15s;white-space:nowrap;
+}
+nav button:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06);}
+nav button.active{background:var(--teal-l);border-color:var(--teal-l);color:#fff;}
+
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.prog-lbl{font-family:'DM Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.35);letter-spacing:1px;}
+.prog-bar{width:80px;height:3px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--teal-l);width:0%;transition:width .6s ease;border-radius:99px;}
+
+/* ── LAYOUT ──────────────────────────────── */
+.layout{display:flex;min-height:calc(100vh - 60px);position:relative;z-index:1;}
+
+/* ── SIDEBAR ─────────────────────────────── */
+aside {
+  width:258px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  overflow-y:auto;position:sticky;top:60px;
+  height:calc(100vh - 60px);
+}
+
+.sb-sec{padding:14px 0;border-bottom:1px solid var(--border);}
+.sb-sec-title {
+  font-family:'DM Mono',monospace;font-size:.58rem;
+  text-transform:uppercase;letter-spacing:2px;
+  color:var(--muted);padding:0 16px 8px;font-weight:500;
+}
+
+.sb-item {
+  display:flex;align-items:center;gap:9px;
+  padding:7px 16px;cursor:pointer;
+  font-size:.8rem;font-weight:500;color:var(--ink3);
+  transition:all .12s;border-left:2px solid transparent;
+}
+.sb-item:hover{background:var(--s2);color:var(--ink);border-left-color:var(--b2);}
+.sb-item.active{background:var(--teal-bg);color:var(--teal);border-left-color:var(--teal-l);font-weight:600;}
+
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;}
+.sb-item.active .sb-dot{background:var(--teal-l);}
+
+.sb-tag{
+  margin-left:auto;font-family:'DM Mono',monospace;font-size:.55rem;
+  padding:2px 6px;border-radius:3px;font-weight:600;letter-spacing:.5px;
+}
+.t-b{background:rgba(46,125,79,.12);color:var(--green);}
+.t-m{background:rgba(196,124,26,.12);color:var(--amber);}
+.t-a{background:rgba(217,79,59,.12);color:var(--coral);}
+.t-q{background:rgba(59,79,168,.12);color:var(--indigo);}
+
+/* ── MAIN ────────────────────────────────── */
+main{flex:1;padding:2.5rem 2.5rem 5rem;max-width:940px;}
+
+.page{display:none;}
+.page.active{display:block;animation:fadeUp .28s ease;}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ── HERO ────────────────────────────────── */
+.hero {
+  background:var(--ink);border-radius:16px;
+  padding:3rem 3rem 2.5rem;margin-bottom:2.5rem;
+  position:relative;overflow:hidden;
+  box-shadow:var(--shadow2);
+}
+
+.hero::after {
+  content:'';position:absolute;
+  top:-60px;right:-60px;width:280px;height:280px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(0,168,150,.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.hero-chip {
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'DM Mono',monospace;font-size:.65rem;font-weight:500;
+  color:var(--teal-l);letter-spacing:1.5px;text-transform:uppercase;
+  border:1px solid rgba(0,168,150,.25);padding:4px 12px;border-radius:99px;
+  margin-bottom:1.25rem;
+}
+
+.hero h1 {
+  font-family:'Playfair Display',serif;
+  font-size:3rem;font-weight:900;color:#fff;
+  line-height:1.05;letter-spacing:-.5px;margin-bottom:1rem;
+}
+.hero h1 em{color:var(--teal-l);font-style:normal;}
+
+.hero p {
+  font-family:'DM Mono',monospace;font-size:.75rem;
+  color:rgba(255,255,255,.45);line-height:1.85;max-width:500px;
+}
+
+.hero-stats{
+  display:flex;gap:2.5rem;margin-top:2rem;
+  padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.08);
+}
+.hs-num{
+  font-family:'Playfair Display',serif;font-size:2rem;
+  font-weight:700;color:var(--teal-l);line-height:1;
+}
+.hs-lbl{
+  font-family:'DM Mono',monospace;font-size:.58rem;
+  color:rgba(255,255,255,.3);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;
+}
+
+/* ── SECTION HEADER ─────────────────────── */
+.sec-hdr{
+  display:flex;align-items:flex-start;gap:14px;
+  margin-bottom:1.5rem;padding-bottom:1rem;
+  border-bottom:2px solid var(--border);
+}
+
+.sec-num{
+  font-family:'Playfair Display',serif;font-size:2.8rem;
+  font-weight:700;color:var(--border);line-height:.9;flex-shrink:0;
+}
+
+.sec-info h2{
+  font-family:'Playfair Display',serif;font-size:1.6rem;
+  font-weight:700;color:var(--ink);line-height:1.1;
+}
+.sec-info p{font-size:.78rem;color:var(--muted);margin-top:5px;font-family:'DM Mono',monospace;}
+
+.sec-badge{
+  margin-left:auto;font-family:'DM Mono',monospace;font-size:.6rem;
+  padding:4px 10px;border-radius:4px;font-weight:600;letter-spacing:.5px;flex-shrink:0;
+}
+.sb-beg{background:var(--green-bg);color:var(--green);border:1px solid rgba(46,125,79,.2);}
+.sb-mid{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(196,124,26,.2);}
+.sb-adv{background:var(--coral-bg);color:var(--coral);border:1px solid rgba(217,79,59,.2);}
+.sb-qa {background:var(--indigo-bg);color:var(--indigo);border:1px solid rgba(59,79,168,.2);}
+
+/* ── LEVEL TABS ─────────────────────────── */
+.ltabs{
+  display:flex;gap:0;
+  border:1.5px solid var(--border);border-radius:8px;overflow:hidden;
+  width:fit-content;margin-bottom:2rem;background:var(--surface);
+}
+.ltab{
+  padding:7px 18px;border:none;background:transparent;
+  color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.75rem;
+  font-weight:600;cursor:pointer;transition:all .15s;border-right:1px solid var(--border);
+}
+.ltab:last-child{border-right:none;}
+.ltab:hover{background:var(--s2);color:var(--ink);}
+.ltab.active[data-l="beginner"]{background:var(--green);color:#fff;}
+.ltab.active[data-l="intermediate"]{background:var(--amber);color:#fff;}
+.ltab.active[data-l="advanced"]{background:var(--coral);color:#fff;}
+
+.lcontent{display:none;}
+.lcontent.active{display:block;animation:fadeUp .2s ease;}
+
+/* ── CARD ─────────────────────────────── */
+.card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;
+  box-shadow:var(--shadow);transition:box-shadow .2s,border-color .2s;
+}
+.card:hover{box-shadow:var(--shadow2);border-color:var(--b2);}
+
+.card h3{
+  font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+  margin-bottom:.75rem;display:flex;align-items:center;gap:8px;color:var(--ink);
+}
+.card p,.card li{font-size:.85rem;line-height:1.85;color:var(--ink3);}
+.card ul{list-style:none;margin-top:.5rem;}
+.card ul li{padding:3px 0 3px 18px;position:relative;}
+.card ul li::before{content:'→';position:absolute;left:0;color:var(--teal-l);font-size:.75rem;font-weight:700;}
+
+/* ── CALLOUT ─────────────────────────── */
+.callout{
+  display:flex;gap:12px;padding:1rem 1.25rem;margin:1.25rem 0;
+  border-left:3px solid;border-radius:0 8px 8px 0;font-size:.82rem;
+  line-height:1.78;font-family:'DM Mono',monospace;
+}
+.callout.tip{background:var(--teal-bg);border-color:var(--teal-l);color:var(--ink3);}
+.callout.warn{background:var(--coral-bg);border-color:var(--coral);color:var(--ink3);}
+.callout.info{background:var(--indigo-bg);border-color:var(--indigo);color:var(--ink3);}
+.callout.note{background:var(--amber-bg);border-color:var(--amber);color:var(--ink3);}
+.ci{font-size:1rem;flex-shrink:0;margin-top:1px;}
+.callout strong{display:block;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;font-weight:700;}
+.callout.tip strong{color:var(--teal);}
+.callout.warn strong{color:var(--coral);}
+.callout.info strong{color:var(--indigo);}
+.callout.note strong{color:var(--amber);}
+
+/* ── CODE BLOCK ─────────────────────── */
+.codeblock{
+  background:var(--code-bg);border-radius:10px;
+  overflow:hidden;margin:1.25rem 0;
+  box-shadow:0 4px 16px rgba(23,20,14,.18);
+}
+.cbhdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 16px;background:rgba(255,255,255,.03);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.cbhdr-l{display:flex;align-items:center;gap:10px;}
+.cbtdots{display:flex;gap:5px;}
+.cbtdots span{width:10px;height:10px;border-radius:50%;}
+.cbtdots span:nth-child(1){background:#ff5f57;}
+.cbtdots span:nth-child(2){background:#febc2e;}
+.cbtdots span:nth-child(3){background:#28c840;}
+.cbfname{font-family:'DM Mono',monospace;font-size:.65rem;color:rgba(232,226,216,.35);}
+.cblang{
+  font-family:'DM Mono',monospace;font-size:.58rem;
+  background:rgba(0,168,150,.15);color:var(--teal-l);
+  padding:2px 7px;border-radius:3px;letter-spacing:1px;text-transform:uppercase;font-weight:600;
+}
+.copybtn{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  color:rgba(255,255,255,.3);font-size:.6rem;padding:3px 10px;border-radius:4px;
+  cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:1px;
+  text-transform:uppercase;transition:all .15s;
+}
+.copybtn:hover{border-color:var(--teal-l);color:var(--teal-l);background:rgba(0,168,150,.08);}
+
+pre{
+  padding:1.25rem 1.5rem;overflow-x:auto;
+  font-family:'DM Mono',monospace;font-size:.78rem;
+  line-height:1.78;color:var(--code-text);tab-size:4;
+}
+pre::-webkit-scrollbar{height:4px;}
+pre::-webkit-scrollbar-track{background:transparent;}
+pre::-webkit-scrollbar-thumb{background:#333;border-radius:2px;}
+
+/* Python syntax */
+.kw{color:#e06c75;font-weight:500;}
+.fn{color:#61afef;}
+.st{color:#98c379;}
+.nm{color:#d19a66;}
+.cm{color:#5c6370;font-style:italic;}
+.cl{color:#e5c07b;}
+.op{color:#56b6c2;}
+.dc{color:#c678dd;}
+.bi{color:#56b6c2;}
+
+/* ── OUTPUT BOX ─────────────────────── */
+.outbox{
+  background:#101008;border:1px solid rgba(46,125,79,.25);
+  border-left:3px solid var(--green);border-radius:0 6px 6px 0;
+  padding:.75rem 1.25rem;margin-top:-1px;
+  font-family:'DM Mono',monospace;font-size:.76rem;color:#7dcf94;line-height:1.7;
+}
+.out-lbl{font-size:.55rem;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(125,207,148,.45);margin-bottom:4px;font-weight:700;}
+
+/* ── CONCEPT GRID ─────────────────── */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.cbox{background:var(--s2);border:1.5px solid var(--border);border-radius:8px;padding:1rem;}
+.cbox h5{
+  font-family:'DM Mono',monospace;font-size:.75rem;font-weight:600;
+  color:var(--teal);margin-bottom:6px;letter-spacing:.3px;
+}
+.cbox p{font-size:.78rem;color:var(--ink3);line-height:1.65;}
+
+/* ── FORMULA BOX ─────────────────── */
+.formula{
+  background:var(--surface);border:2px solid var(--border);
+  border-radius:8px;padding:1rem 1.5rem;margin:1rem 0;
+  text-align:center;font-family:'DM Mono',monospace;font-size:.9rem;
+  color:var(--ink);letter-spacing:.3px;box-shadow:var(--shadow);
+}
+.formula .fname{
+  font-size:.62rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;font-family:'DM Sans',sans-serif;font-weight:600;
+}
+.formula .feq{font-size:1rem;font-weight:500;color:var(--teal);}
+
+/* ── VISUAL BAR CHART (CSS only) ──── */
+.bar-chart{
+  background:var(--s2);border:1.5px solid var(--border);
+  border-radius:8px;padding:1.25rem;margin:1rem 0;
+}
+.bar-chart h5{
+  font-family:'DM Mono',monospace;font-size:.65rem;font-weight:600;
+  color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;
+}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.bar-label{
+  font-family:'DM Mono',monospace;font-size:.68rem;
+  color:var(--ink3);width:100px;flex-shrink:0;text-align:right;
+}
+.bar-track{flex:1;height:18px;background:var(--border);border-radius:4px;overflow:hidden;}
+.bar-fill{
+  height:100%;border-radius:4px;
+  transition:width .8s ease;display:flex;align-items:center;padding-left:6px;
+}
+.bar-fill span{font-family:'DM Mono',monospace;font-size:.62rem;font-weight:600;color:#fff;}
+
+/* ── COMPARISON TABLE ─────────────── */
+.ctable{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.82rem;}
+.ctable th{
+  background:var(--ink);color:var(--bg);padding:9px 14px;text-align:left;
+  font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:1.5px;text-transform:uppercase;
+}
+.ctable td{
+  padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink3);
+}
+.ctable tr:nth-child(even) td{background:var(--s2);}
+.ctable tr:hover td{background:var(--teal-bg);}
+.ctable td:first-child{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--teal);font-weight:600;}
+
+/* ── PCA SCATTER (CSS art) ────────── */
+.scatter-box{
+  background:var(--code-bg);border-radius:10px;
+  padding:1.5rem;margin:1rem 0;position:relative;
+  height:200px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(23,20,14,.18);
+}
+.scatter-title{
+  font-family:'DM Mono',monospace;font-size:.63rem;
+  color:rgba(232,226,216,.35);margin-bottom:8px;letter-spacing:1px;
+  text-transform:uppercase;
+}
+.dot-cluster{position:absolute;}
+.sdot{
+  position:absolute;border-radius:50%;
+  transform:translate(-50%,-50%);transition:all .3s;
+}
+
+/* ── Q&A ──────────────────────────── */
+.qa{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:10px;margin-bottom:.75rem;
+  box-shadow:var(--shadow);transition:box-shadow .15s,border-color .15s;
+  overflow:hidden;
+}
+.qa.open{box-shadow:var(--shadow2);border-color:var(--teal-l);}
+
+.qa-q{
+  padding:1rem 1.25rem;cursor:pointer;
+  display:flex;align-items:flex-start;gap:12px;
+  transition:background .12s;user-select:none;
+}
+.qa-q:hover{background:var(--s2);}
+
+.qa-num{
+  flex-shrink:0;width:28px;height:28px;
+  background:var(--ink);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:.72rem;font-weight:500;
+  color:var(--teal-l);
+}
+.qa-text{flex:1;font-size:.88rem;font-weight:600;color:var(--ink);line-height:1.5;}
+.qa-arr{
+  flex-shrink:0;color:var(--muted);font-size:.75rem;
+  transition:transform .2s,color .2s;margin-top:3px;
+}
+.qa.open .qa-arr{transform:rotate(180deg);color:var(--teal-l);}
+
+.qa-a{
+  display:none;padding:0 1.25rem 1.25rem 3.75rem;
+  border-top:1px solid var(--border);background:rgba(0,168,150,.02);
+}
+.qa.open .qa-a{display:block;animation:fadeUp .18s ease;}
+.qa-a p{font-size:.84rem;line-height:1.88;color:var(--ink3);padding-top:1rem;}
+.qa-a code{
+  font-family:'DM Mono',monospace;font-size:.8em;
+  background:rgba(0,120,110,.08);border:1px solid rgba(0,120,110,.15);
+  padding:1px 5px;border-radius:3px;color:var(--teal);
+}
+.hl{color:var(--teal);font-weight:700;}
+.hlr{color:var(--coral);font-weight:600;}
+.hla{color:var(--amber);font-weight:600;}
+.hli{color:var(--indigo);font-weight:600;}
+
+/* ── DIVIDER ──────────────────────── */
+.divider{
+  height:1px;
+  background:linear-gradient(90deg,var(--teal-l),var(--border),transparent);
+  margin:2.5rem 0;
+}
+
+/* ── FLOW ─────────────────────────── */
+.flow{display:flex;align-items:center;gap:0;margin:1.5rem 0;overflow-x:auto;flex-wrap:wrap;}
+.fstep{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:8px;padding:10px 16px;text-align:center;flex-shrink:0;
+  box-shadow:var(--shadow);
+}
+.fstep .fi{font-size:1.1rem;margin-bottom:4px;}
+.fstep .fn{font-family:'DM Mono',monospace;font-size:.65rem;font-weight:600;color:var(--ink);}
+.fstep .fd{font-size:.62rem;color:var(--muted);margin-top:2px;}
+.farr{color:var(--teal-l);padding:0 8px;font-size:1.1rem;font-weight:700;flex-shrink:0;}
+
+/* ── INLINE CODE ─────────────────── */
+code{
+  font-family:'DM Mono',monospace;font-size:.82em;
+  background:rgba(0,120,110,.08);border:1px solid rgba(0,120,110,.15);
+  padding:1px 5px;border-radius:3px;color:var(--teal);
+}
+
+/* ── SCROLLBAR ────────────────────── */
+aside::-webkit-scrollbar{width:3px;}
+aside::-webkit-scrollbar-track{background:transparent;}
+aside::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+@media(max-width:800px){
+  aside{display:none;}
+  main{padding:1.5rem;}
+  .hero h1{font-size:2.2rem;}
+  .cgrid{grid-template-columns:1fr;}
+  nav{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">FE</div>
+    <div class="logo-text">Feature<span>Eng</span></div>
+    <div class="logo-sub">ML Data Prep Guide</div>
+  </div>
+  <nav>
+    <button class="active" onclick="showPage('encoding')">Encoding</button>
+    <button onclick="showPage('scaling')">Scaling</button>
+    <button onclick="showPage('pca')">PCA</button>
+    <button onclick="showPage('selection')">Selection</button>
+    <button onclick="showPage('extraction')">Extraction</button>
+    <button onclick="showPage('interview')">Interview</button>
+  </nav>
+  <div class="hdr-right">
+    <span class="prog-lbl" id="ptxt">0%</span>
+    <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+  </div>
+</header>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="sb-sec">
+    <div class="sb-sec-title">🔢 Encoding</div>
+    <div class="sb-item active" onclick="showPage('encoding');sba(this)"><div class="sb-dot"></div>Overview<span class="sb-tag t-b">BEG</span></div>
+    <div class="sb-item" onclick="showPage('encoding');sba(this)"><div class="sb-dot"></div>Label Encoding</div>
+    <div class="sb-item" onclick="showPage('encoding');sba(this)"><div class="sb-dot"></div>One-Hot Encoding</div>
+    <div class="sb-item" onclick="showPage('encoding');sba(this)"><div class="sb-dot"></div>Target Encoding<span class="sb-tag t-m">MID</span></div>
+    <div class="sb-item" onclick="showPage('encoding');sba(this)"><div class="sb-dot"></div>Ordinal & Hash</div>
+    <div class="sb-item" onclick="showPage('encoding');sba(this)"><div class="sb-dot"></div>Embedding<span class="sb-tag t-a">ADV</span></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-sec-title">📏 Scaling & Norm.</div>
+    <div class="sb-item" onclick="showPage('scaling');sba(this)"><div class="sb-dot"></div>Why Scale?<span class="sb-tag t-b">BEG</span></div>
+    <div class="sb-item" onclick="showPage('scaling');sba(this)"><div class="sb-dot"></div>Min-Max Scaling</div>
+    <div class="sb-item" onclick="showPage('scaling');sba(this)"><div class="sb-dot"></div>Standardization (Z)</div>
+    <div class="sb-item" onclick="showPage('scaling');sba(this)"><div class="sb-dot"></div>Robust Scaler<span class="sb-tag t-m">MID</span></div>
+    <div class="sb-item" onclick="showPage('scaling');sba(this)"><div class="sb-dot"></div>L1/L2 Norm.</div>
+    <div class="sb-item" onclick="showPage('scaling');sba(this)"><div class="sb-dot"></div>Power Transforms<span class="sb-tag t-a">ADV</span></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-sec-title">🔵 PCA & Dim. Reduction</div>
+    <div class="sb-item" onclick="showPage('pca');sba(this)"><div class="sb-dot"></div>PCA Intuition<span class="sb-tag t-m">MID</span></div>
+    <div class="sb-item" onclick="showPage('pca');sba(this)"><div class="sb-dot"></div>Components & Variance</div>
+    <div class="sb-item" onclick="showPage('pca');sba(this)"><div class="sb-dot"></div>t-SNE & UMAP<span class="sb-tag t-a">ADV</span></div>
+    <div class="sb-item" onclick="showPage('pca');sba(this)"><div class="sb-dot"></div>LDA</div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-sec-title">🎯 Feature Selection</div>
+    <div class="sb-item" onclick="showPage('selection');sba(this)"><div class="sb-dot"></div>Filter Methods<span class="sb-tag t-b">BEG</span></div>
+    <div class="sb-item" onclick="showPage('selection');sba(this)"><div class="sb-dot"></div>Wrapper Methods<span class="sb-tag t-m">MID</span></div>
+    <div class="sb-item" onclick="showPage('selection');sba(this)"><div class="sb-dot"></div>Embedded Methods</div>
+    <div class="sb-item" onclick="showPage('selection');sba(this)"><div class="sb-dot"></div>SHAP & Permutation<span class="sb-tag t-a">ADV</span></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-sec-title">⚗️ Feature Extraction</div>
+    <div class="sb-item" onclick="showPage('extraction');sba(this)"><div class="sb-dot"></div>Text Features<span class="sb-tag t-m">MID</span></div>
+    <div class="sb-item" onclick="showPage('extraction');sba(this)"><div class="sb-dot"></div>Image Features</div>
+    <div class="sb-item" onclick="showPage('extraction');sba(this)"><div class="sb-dot"></div>Time Series</div>
+    <div class="sb-item" onclick="showPage('extraction');sba(this)"><div class="sb-dot"></div>Interaction Features<span class="sb-tag t-a">ADV</span></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-sec-title">🎯 Interview Q&A</div>
+    <div class="sb-item" onclick="showPage('interview');sba(this)"><div class="sb-dot"></div>Core Concepts<span class="sb-tag t-q">Q&A</span></div>
+    <div class="sb-item" onclick="showPage('interview');sba(this)"><div class="sb-dot"></div>Encoding & Scaling</div>
+    <div class="sb-item" onclick="showPage('interview');sba(this)"><div class="sb-dot"></div>Advanced FE</div>
+  </div>
+</aside>
+
+<main>
+
+<!-- ══════════════════ ENCODING PAGE ══════════════════ -->
+<div class="page active" id="page-encoding">
+
+  <div class="hero">
+    <div class="hero-chip">📊 Feature Engineering</div>
+    <h1>Complete Guide to<br><em>Feature Engineering</em></h1>
+    <p>// Transform raw data into ML-ready features. Master encoding, scaling, PCA, normalization, feature selection and extraction — with Python code.</p>
+    <div class="hero-stats">
+      <div><div class="hs-num">7</div><div class="hs-lbl">Core Topics</div></div>
+      <div><div class="hs-num">50+</div><div class="hs-lbl">Code Examples</div></div>
+      <div><div class="hs-num">30+</div><div class="hs-lbl">Interview Q&A</div></div>
+    </div>
+  </div>
+
+  <div class="ltabs">
+    <button class="ltab active" data-l="beginner" onclick="swLevel(this,'encoding')">🌱 Beginner</button>
+    <button class="ltab" data-l="intermediate" onclick="swLevel(this,'encoding')">⚡ Intermediate</button>
+    <button class="ltab" data-l="advanced" onclick="swLevel(this,'encoding')">🔥 Advanced</button>
+  </div>
+
+  <!-- BEGINNER -->
+  <div class="lcontent active" id="encoding-beginner">
+
+    <div class="sec-hdr">
+      <div class="sec-num">01</div>
+      <div class="sec-info"><h2>What is Encoding?</h2><p>// Converting categorical data to numeric form for ML models</p></div>
+      <span class="sec-badge sb-beg">BEGINNER</span>
+    </div>
+
+    <div class="card">
+      <h3>🗂️ Why Encode Categorical Features?</h3>
+      <p>Most ML algorithms operate on <strong>numerical data</strong>. Categorical features (like <code>color = "Red"</code> or <code>city = "Mumbai"</code>) must be converted to numbers before feeding into models.</p>
+      <ul>
+        <li><strong>Nominal</strong> categories have no order — e.g., colors, cities, countries</li>
+        <li><strong>Ordinal</strong> categories have a meaningful order — e.g., Low / Medium / High</li>
+        <li>Choosing the wrong encoding can introduce false ordering or inflate dimensionality</li>
+      </ul>
+    </div>
+
+    <div class="sec-hdr">
+      <div class="sec-num">02</div>
+      <div class="sec-info"><h2>Label Encoding</h2><p>// Assign each category an integer</p></div>
+      <span class="sec-badge sb-beg">BEGINNER</span>
+    </div>
+
+    <div class="callout info">
+      <span class="ci">ℹ️</span>
+      <div><strong>When to Use</strong>
+        Best for <strong>ordinal</strong> categories where order matters (Small=0, Medium=1, Large=2) or for tree-based models (Decision Tree, Random Forest, XGBoost) that don't assume numeric order.</div>
+    </div>
+
+    <div class="codeblock">
+      <div class="cbhdr">
+        <div class="cbhdr-l">
+          <div class="cbtdots"><span></span><span></span><span></span></div>
+          <span class="cbfname">label_encoding.py</span>
+          <span class="cblang">Python</span>
+        </div>
+        <button class="copybtn" onclick="copyCode(this)">COPY</button>
+      </div>
+      <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> <span class="cl">LabelEncoder</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.<span class="fn">DataFrame</span>({
+    <span class="st">'size'</span>: [<span class="st">'Small'</span>, <span class="st">'Large'</span>, <span class="st">'Medium'</span>, <span class="st">'Small'</span>, <span class="st">'Large'</span>],
+    <span class="st">'color'</span>: [<span class="st">'Red'</span>, <span class="st">'Blue'</span>, <span class="st">'Green'</span>, <span class="st">'Blue'</span>, <span class="st">'Red'</span>]
+})
+
+<span class="cm"># ── sklearn LabelEncoder ─────────────────────────</span>
+le = <span class="cl">LabelEncoder</span>()
+df[<span class="st">'size_encoded'</span>] = le.fit_transform(df[<span class="st">'size'</span>])
+<span class="bi">print</span>(le.classes_)           <span class="cm"># ['Large' 'Medium' 'Small']</span>
+<span class="bi">print</span>(df[<span class="st">'size_encoded'</span>])   <span class="cm"># [2, 0, 1, 2, 0]</span>
+
+<span class="cm"># ── Manual mapping (more control) ────────────────</span>
+size_order = {<span class="st">'Small'</span>: <span class="nm">0</span>, <span class="st">'Medium'</span>: <span class="nm">1</span>, <span class="st">'Large'</span>: <span class="nm">2</span>}
+df[<span class="st">'size_ordinal'</span>] = df[<span class="st">'size'</span>].map(size_order)
+
+<span class="cm"># ── Pandas Categorical ───────────────────────────</span>
+df[<span class="st">'size_cat'</span>] = pd.<span class="fn">Categorical</span>(
+    df[<span class="st">'size'</span>],
+    categories=[<span class="st">'Small'</span>, <span class="st">'Medium'</span>, <span class="st">'Large'</span>],
+    ordered=<span class="kw">True</span>
+)
+df[<span class="st">'size_codes'</span>] = df[<span class="st">'size_cat'</span>].cat.codes
+
+<span class="cm"># ── Inverse transform ────────────────────────────</span>
+original = le.inverse_transform([<span class="nm">0</span>, <span class="nm">2</span>])   <span class="cm"># ['Large', 'Small']</span></pre>
+    </div>
+
+    <div class="sec-hdr">
+      <div class="sec-num">03</div>
+      <div class="sec-info"><h2>One-Hot Encoding</h2><p>// Create binary indicator columns for each category</p></div>
+      <span class="sec-badge sb-beg">BEGINNER</span>
+    </div>
+
+    <div class="callout warn">
+      <span class="ci">⚠️</span>
+      <div><strong>Dummy Variable Trap</strong>
+        Drop one column when using OHE with linear models (use <code>drop_first=True</code>) to avoid perfect multicollinearity. Tree-based models are immune to this.</div>
+    </div>
+
+    <div class="codeblock">
+      <div class="cbhdr">
+        <div class="cbhdr-l">
+          <div class="cbtdots"><span></span><span></span><span></span></div>
+          <span class="cbfname">one_hot_encoding.py</span>
+          <span class="cblang">Python</span>
+        </div>
+        <button class="copybtn" onclick="copyCode(this)">COPY</button>
+      </div>
+      <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> <span class="cl">OneHotEncoder</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.<span class="fn">DataFrame</span>({<span class="st">'city'</span>: [<span class="st">'Mumbai'</span>, <span class="st">'Delhi'</span>, <span class="st">'Pune'</span>, <span class="st">'Mumbai'</span>]})
+
+<span class="cm"># ── pandas get_dummies ───────────────────────────</span>
+dummies = pd.<span class="fn">get_dummies</span>(df[<span class="st">'city'</span>], drop_first=<span class="kw">True</span>)
+<span class="cm"># city_Mumbai  city_Pune  (Delhi dropped as reference)</span>
+
+<span class="cm"># ── sklearn OneHotEncoder ────────────────────────</span>
+ohe = <span class="cl">OneHotEncoder</span>(
+    sparse_output=<span class="kw">False</span>,   <span class="cm"># return dense array</span>
+    handle_unknown=<span class="st">'ignore'</span>, <span class="cm"># unknown categories → all 0s</span>
+    drop=<span class="st">'first'</span>            <span class="cm"># avoid multicollinearity</span>
+)
+encoded = ohe.fit_transform(df[[<span class="st">'city'</span>]])
+<span class="bi">print</span>(ohe.get_feature_names_out())  <span class="cm"># ['city_Mumbai' 'city_Pune']</span>
+
+<span class="cm"># ── ColumnTransformer for pipelines ──────────────</span>
+<span class="kw">from</span> sklearn.compose <span class="kw">import</span> <span class="cl">ColumnTransformer</span>
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> <span class="cl">Pipeline</span>
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> <span class="cl">LogisticRegression</span>
+
+preprocessor = <span class="cl">ColumnTransformer</span>([
+    (<span class="st">'ohe'</span>, <span class="cl">OneHotEncoder</span>(drop=<span class="st">'first'</span>), [<span class="st">'city'</span>]),
+])
+
+pipe = <span class="cl">Pipeline</span>([
+    (<span class="st">'prep'</span>, preprocessor),
+    (<span class="st">'model'</span>, <span class="cl">LogisticRegression</span>())
+])</pre>
+    </div>
+
+  </div><!-- end encoding-beginner -->
+
+  <!-- INTERMEDIATE -->
+  <div class="lcontent" id="encoding-intermediate">
+
+    <div class="sec-hdr">
+      <div class="sec-num">04</div>
+      <div class="sec-info"><h2>Target Encoding</h2><p>// Replace categories with target mean — but beware leakage</p></div>
+      <span class="sec-badge sb-mid">INTERMEDIATE</span>
+    </div>
+
+    <div class="callout warn">
+      <span class="ci">⚠️</span>
+      <div><strong>Data Leakage Risk</strong>
+        Always compute target encoding statistics on training data only. Use cross-fold target encoding or smoothing to prevent overfitting.</div>
+    </div>
+
+    <div class="codeblock">
+      <div class="cbhdr">
+        <div class="cbhdr-l">
+          <div class="cbtdots"><span></span><span></span><span></span></div>
+          <span class="cbfname">target_encoding.py</span>
+          <span class="cblang">Python</span>
+        </div>
+        <button class="copybtn" onclick="copyCode(this)">COPY</button>
+      </div>
+      <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> category_encoders <span class="kw">import</span> <span class="cl">TargetEncoder</span>
+
+df = pd.<span class="fn">DataFrame</span>({
+    <span class="st">'city'</span>:   [<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'C'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>],
+    <span class="st">'target'</span>: [<span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">0</span>]
+})
+
+<span class="cm"># ── Manual Target Encoding ───────────────────────</span>
+means = df.groupby(<span class="st">'city'</span>)[<span class="st">'target'</span>].mean()
+df[<span class="st">'city_target'</span>] = df[<span class="st">'city'</span>].map(means)
+
+<span class="cm"># ── Smoothed Target Encoding (reduces overfitting)</span>
+<span class="kw">def</span> <span class="fn">smooth_target_encode</span>(df, col, target, alpha=<span class="nm">10</span>):
+    global_mean = df[target].mean()
+    stats = df.groupby(col)[target].agg([<span class="st">'mean'</span>, <span class="st">'count'</span>])
+    <span class="cm"># λ controls how much to trust category mean vs global</span>
+    smoothed = ((stats[<span class="st">'count'</span>] * stats[<span class="st">'mean'</span>] +
+                 alpha * global_mean) /
+                (stats[<span class="st">'count'</span>] + alpha))
+    <span class="kw">return</span> df[col].map(smoothed)
+
+df[<span class="st">'city_smooth'</span>] = <span class="fn">smooth_target_encode</span>(df, <span class="st">'city'</span>, <span class="st">'target'</span>)
+
+<span class="cm"># ── Leave-One-Out Encoding (zero leakage) ────────</span>
+<span class="kw">from</span> category_encoders <span class="kw">import</span> <span class="cl">LeaveOneOutEncoder</span>
+loo = <span class="cl">LeaveOneOutEncoder</span>()
+df[<span class="st">'city_loo'</span>] = loo.fit_transform(df[[<span class="st">'city'</span>]], df[<span class="st">'target'</span>])</pre>
+    </div>
+
+    <div class="sec-hdr">
+      <div class="sec-num">05</div>
+      <div class="sec-info"><h2>Ordinal & Frequency Encoding</h2><p>// Ordered mapping and frequency-based encoding</p></div>
+      <span class="sec-badge sb-mid">INTERMEDIATE</span>
+    </div>
+
+    <div class="codeblock">
+      <div class="cbhdr">
+        <div class="cbhdr-l">
+          <div class="cbtdots"><span></span><span></span><span></span></div>
+          <span class="cbfname">ordinal_freq_encoding.py</span>
+          <span class="cblang">Python</span>
+        </div>
+        <button class="copybtn" onclick="copyCode(this)">COPY</button>
+      </div>
+      <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> category_encoders <span class="kw">import</span> <span class="cl">OrdinalEncoder</span>, <span class="cl">HashingEncoder</span>
+
+<span class="cm"># ── Ordinal Encoding with custom order ───────────</span>
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> <span class="cl">OrdinalEncoder</span>
+oe = <span class="cl">OrdinalEncoder</span>(
+    categories=[[<span class="st">'cold'</span>, <span class="st">'warm'</span>, <span class="st">'hot'</span>]]
+)
+df[<span class="st">'temp_ord'</span>] = oe.fit_transform(df[[<span class="st">'temperature'</span>]])
+
+<span class="cm"># ── Frequency / Count Encoding ───────────────────</span>
+<span class="cm"># Replace category with how often it appears</span>
+freq_map = df[<span class="st">'city'</span>].value_counts() / <span class="bi">len</span>(df)
+df[<span class="st">'city_freq'</span>] = df[<span class="st">'city'</span>].map(freq_map)
+
+<span class="cm"># ── Rank Encoding ────────────────────────────────</span>
+rank_map = df[<span class="st">'city'</span>].value_counts().rank(ascending=<span class="kw">False</span>)
+df[<span class="st">'city_rank'</span>] = df[<span class="st">'city'</span>].map(rank_map)
+
+<span class="cm"># ── Hashing Encoding (for very high cardinality) ─</span>
+he = <span class="cl">HashingEncoder</span>(cols=[<span class="st">'city'</span>], n_components=<span class="nm">8</span>)
+df_hashed = he.fit_transform(df[[<span class="st">'city'</span>]])
+<span class="cm"># Maps any category to 8 columns via hash function</span>
+<span class="cm"># No new categories at inference time — great for IDs</span></pre>
+    </div>
+  </div>
+
+  <!-- ADVANCED -->
+  <div class="lcontent" id="encoding-advanced">
+
+    <div class="sec-hdr">
+      <div class="sec-num">06</div>
+      <div class="sec-info"><h2>Embeddings & Binary Encoding</h2><p>// Neural-network-style representations for high-cardinality</p></div>
+      <span class="sec-badge sb-adv">ADVANCED</span>
+    </div>
+
+    <div class="codeblock">
+      <div class="cbhdr">
+        <div class="cbhdr-l">
+          <div class="cbtdots"><span></span><span></span><span></span></div>
+          <span class="cbfname">embeddings.py</span>
+          <span class="cblang">Python</span>
+        </div>
+        <button class="copybtn" onclick="copyCode(this)">COPY</button>
+      </div>
+      <pre><span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="cm"># ── PyTorch Embedding layer ──────────────────────</span>
+<span class="cm"># For 1000 unique cities, embed into 32-dim space</span>
+embedding = nn.<span class="cl">Embedding</span>(
+    num_embeddings=<span class="nm">1000</span>,  <span class="cm"># vocab size (n unique categories)</span>
+    embedding_dim=<span class="nm">32</span>      <span class="cm"># dimension of dense representation</span>
+)
+
+city_ids = torch.<span class="fn">tensor</span>([<span class="nm">0</span>, <span class="nm">5</span>, <span class="nm">42</span>])     <span class="cm"># encoded city indices</span>
+city_vecs = embedding(city_ids)           <span class="cm"># shape: [3, 32]</span>
+
+<span class="cm"># ── Entity Embedding in Keras ─────────────────────</span>
+<span class="kw">from</span> tensorflow.keras.layers <span class="kw">import</span> <span class="cl">Embedding</span>, <span class="cl">Flatten</span>, <span class="cl">Input</span>
+<span class="kw">from</span> tensorflow.keras.models <span class="kw">import</span> <span class="cl">Model</span>
+
+city_input = <span class="cl">Input</span>(shape=(<span class="nm">1</span>,), name=<span class="st">'city'</span>)
+city_emb   = <span class="cl">Embedding</span>(
+    input_dim=<span class="nm">1000</span>,   <span class="cm"># unique cities</span>
+    output_dim=<span class="nm">10</span>,    <span class="cm"># embedding size ≈ min(50, (n+1)//2)</span>
+    name=<span class="st">'city_emb'</span>
+)(city_input)
+city_flat = <span class="cl">Flatten</span>()(city_emb)
+
+<span class="cm"># ── Binary Encoding (category_encoders) ──────────</span>
+<span class="kw">from</span> category_encoders <span class="kw">import</span> <span class="cl">BinaryEncoder</span>
+be = <span class="cl">BinaryEncoder</span>(cols=[<span class="st">'city'</span>])
+df_binary = be.fit_transform(df[[<span class="st">'city'</span>]])
+<span class="cm"># Converts to integer index → binary bits → columns</span>
+<span class="cm"># 1000 cities → only 10 binary columns (log2(1000) ≈ 10)</span>
+<span class="cm"># Much less than OHE's 1000 columns!</span></pre>
+    </div>
+
+    <div class="card">
+      <h3>📊 Encoding Comparison</h3>
+      <table class="ctable">
+        <thead><tr><th>Method</th><th>Cardinality</th><th>Models</th><th>Data Leakage Risk</th></tr></thead>
+        <tbody>
+          <tr><td>Label Enc.</td><td>Any</td><td>Tree-based</td><td>None</td></tr>
+          <tr><td>One-Hot</td><td>Low (< 20)</td><td>All</td><td>None</td></tr>
+          <tr><td>Target Enc.</td><td>High</td><td>All</td><td>High (use CV)</td></tr>
+          <tr><td>Frequency</td><td>High</td><td>All</td><td>Low</td></tr>
+          <tr><td>Hashing</td><td>Very high</td><td>All</td><td>None</td></tr>
+          <tr><td>Binary</td><td>Medium–High</td><td>All</td><td>None</td></tr>
+          <tr><td>Embedding</td><td>Very high</td><td>Neural nets</td><td>None</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div><!-- end encoding page -->
+
+<!-- ══════════════════ SCALING PAGE ══════════════════ -->
+<div class="page" id="page-scaling">
+
+  <div class="hero">
+    <div class="hero-chip">📏 Scaling & Normalization</div>
+    <h1>Feature <em>Scaling</em><br>& Normalization</h1>
+    <p>// Ensure all features contribute equally. Min-Max, Z-score, Robust, L1/L2, and power transforms — when and how to use each.</p>
+    <div class="hero-stats">
+      <div><div class="hs-num">6</div><div class="hs-lbl">Techniques</div></div>
+      <div><div class="hs-num">3</div><div class="hs-lbl">Norm Types</div></div>
+      <div><div class="hs-num">∞</div><div class="hs-lbl">Impact</div></div>
+    </div>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">01</div>
+    <div class="sec-info"><h2>Why Scaling Matters</h2><p>// Algorithms sensitive to feature magnitude</p></div>
+    <span class="sec-badge sb-beg">BEGINNER</span>
+  </div>
+
+  <div class="card">
+    <h3>🧪 Impact of Unscaled Features</h3>
+    <ul>
+      <li><strong>KNN & SVM:</strong> Distance-based — large-scale features dominate distances</li>
+      <li><strong>Linear/Logistic Regression:</strong> Coefficient magnitudes become incomparable</li>
+      <li><strong>Neural Networks:</strong> Gradient descent converges much slower without scaling</li>
+      <li><strong>PCA:</strong> Components biased toward high-variance features</li>
+      <li><strong>Tree-based models:</strong> Not affected — splits are threshold-based, scale-invariant</li>
+    </ul>
+  </div>
+
+  <div class="bar-chart">
+    <h5>Sensitivity to Feature Scale</h5>
+    <div class="bar-row"><div class="bar-label">KNN</div><div class="bar-track"><div class="bar-fill" style="width:95%;background:linear-gradient(90deg,var(--coral),var(--coral));"><span>VERY HIGH</span></div></div></div>
+    <div class="bar-row"><div class="bar-label">SVM (RBF)</div><div class="bar-track"><div class="bar-fill" style="width:92%;background:var(--coral);"><span>VERY HIGH</span></div></div></div>
+    <div class="bar-row"><div class="bar-label">Neural Nets</div><div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--amber);"><span>HIGH</span></div></div></div>
+    <div class="bar-row"><div class="bar-label">Linear Reg.</div><div class="bar-track"><div class="bar-fill" style="width:75%;background:var(--amber);"><span>HIGH</span></div></div></div>
+    <div class="bar-row"><div class="bar-label">Lasso/Ridge</div><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--amber);"><span>HIGH</span></div></div></div>
+    <div class="bar-row"><div class="bar-label">PCA</div><div class="bar-track"><div class="bar-fill" style="width:88%;background:var(--coral);"><span>VERY HIGH</span></div></div></div>
+    <div class="bar-row"><div class="bar-label">Random Forest</div><div class="bar-track"><div class="bar-fill" style="width:8%;background:var(--teal-l);"><span>LOW</span></div></div></div>
+    <div class="bar-row"><div class="bar-label">XGBoost</div><div class="bar-track"><div class="bar-fill" style="width:5%;background:var(--teal-l);"><span>NONE</span></div></div></div>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">02</div>
+    <div class="sec-info"><h2>Min-Max Scaling</h2><p>// Scale features to [0,1] range</p></div>
+    <span class="sec-badge sb-beg">BEGINNER</span>
+  </div>
+
+  <div class="formula">
+    <div class="fname">Min-Max Normalization Formula</div>
+    <div class="feq">X_scaled = (X − X_min) / (X_max − X_min)</div>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">minmax_scaling.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> <span class="cl">MinMaxScaler</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+X = np.<span class="fn">array</span>([[<span class="nm">100</span>], [<span class="nm">200</span>], [<span class="nm">150</span>], [<span class="nm">300</span>], [<span class="nm">50</span>]])
+
+<span class="cm"># ── Standard Min-Max [0,1] ───────────────────────</span>
+scaler = <span class="cl">MinMaxScaler</span>()
+X_scaled = scaler.fit_transform(X)
+<span class="bi">print</span>(X_scaled.ravel())  <span class="cm"># [0.2, 0.6, 0.4, 1.0, 0.0]</span>
+
+<span class="cm"># ── Custom range [-1, 1] ─────────────────────────</span>
+scaler_custom = <span class="cl">MinMaxScaler</span>(feature_range=(-<span class="nm">1</span>, <span class="nm">1</span>))
+X_custom = scaler_custom.fit_transform(X)
+
+<span class="cm"># ── IMPORTANT: fit on train, transform on test ───</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> <span class="fn">train_test_split</span>
+X_train, X_test = <span class="fn">train_test_split</span>(X, test_size=<span class="nm">0.2</span>)
+
+scaler.<span class="fn">fit</span>(X_train)                 <span class="cm"># learn from train only</span>
+X_train_s = scaler.<span class="fn">transform</span>(X_train)
+X_test_s  = scaler.<span class="fn">transform</span>(X_test)  <span class="cm"># use same scaler!</span>
+
+<span class="cm"># Sensitive to outliers — one extreme value ruins scaling</span></pre>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">03</div>
+    <div class="sec-info"><h2>Standardization (Z-score)</h2><p>// Zero mean, unit variance</p></div>
+    <span class="sec-badge sb-beg">BEGINNER</span>
+  </div>
+
+  <div class="formula">
+    <div class="fname">Z-Score Standardization</div>
+    <div class="feq">X_std = (X − μ) / σ &nbsp;&nbsp; where μ = mean, σ = std dev</div>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">standardization.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> <span class="cl">StandardScaler</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+X = np.<span class="fn">array</span>([[<span class="nm">100</span>], [<span class="nm">200</span>], [<span class="nm">150</span>], [<span class="nm">300</span>], [<span class="nm">50</span>]])
+
+scaler = <span class="cl">StandardScaler</span>()
+X_std = scaler.fit_transform(X)
+
+<span class="bi">print</span>(<span class="st">f"Mean:  </span>{scaler.mean_[<span class="nm">0</span>]:.1f}<span class="st">"</span>)      <span class="cm"># 160.0</span>
+<span class="bi">print</span>(<span class="st">f"StdDev:</span>{scaler.scale_[<span class="nm">0</span>]:.2f}<span class="st">"</span>)    <span class="cm"># 87.75</span>
+<span class="bi">print</span>(X_std.ravel().round(<span class="nm">2</span>))
+<span class="cm"># [-0.68, 0.46, -0.11, 1.59, -1.25]</span>
+
+<span class="cm"># Check: mean ≈ 0, std ≈ 1 after scaling</span>
+<span class="bi">print</span>(X_std.mean().round(<span class="nm">10</span>))  <span class="cm"># 0.0</span>
+<span class="bi">print</span>(X_std.std().round(<span class="nm">10</span>))   <span class="cm"># 1.0</span></pre>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">04</div>
+    <div class="sec-info"><h2>Robust Scaler & L1/L2 Normalization</h2><p>// Outlier-resistant scaling and row-wise normalization</p></div>
+    <span class="sec-badge sb-mid">INTERMEDIATE</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">robust_norm.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> <span class="cl">RobustScaler</span>, <span class="cl">Normalizer</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+X = np.<span class="fn">array</span>([[<span class="nm">1</span>], [<span class="nm">2</span>], [<span class="nm">3</span>], [<span class="nm">100</span>], [<span class="nm">4</span>]])  <span class="cm"># 100 is outlier</span>
+
+<span class="cm"># ── Robust Scaler: uses median and IQR ───────────</span>
+<span class="cm"># Formula: X_rob = (X − median) / IQR</span>
+rs = <span class="cl">RobustScaler</span>(quantile_range=(<span class="nm">25.0</span>, <span class="nm">75.0</span>))
+X_rob = rs.fit_transform(X)
+<span class="cm"># Outlier 100 is compressed, not ignored</span>
+
+<span class="cm"># ── L2 Normalization (row-wise unit norm) ─────────</span>
+<span class="cm"># Each sample (row) scaled so its Euclidean norm = 1</span>
+X_rows = np.<span class="fn">array</span>([[<span class="nm">3</span>, <span class="nm">4</span>], [<span class="nm">1</span>, <span class="nm">0</span>], [<span class="nm">0</span>, <span class="nm">5</span>]])
+norm_l2 = <span class="cl">Normalizer</span>(norm=<span class="st">'l2'</span>).fit_transform(X_rows)
+<span class="cm"># [3,4] → [0.6, 0.8]  (3²+4²=25, √25=5; each/5)</span>
+
+<span class="cm"># ── L1 Normalization (each row sums to 1) ─────────</span>
+norm_l1 = <span class="cl">Normalizer</span>(norm=<span class="st">'l1'</span>).fit_transform(X_rows)
+<span class="cm"># [3,4] → [3/7, 4/7]  (|3|+|4|=7; each/7)</span>
+
+<span class="cm"># ── Power Transforms: Yeo-Johnson / Box-Cox ───────</span>
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> <span class="cl">PowerTransformer</span>
+
+pt = <span class="cl">PowerTransformer</span>(method=<span class="st">'yeo-johnson'</span>)  <span class="cm"># handles negatives</span>
+X_normal = pt.fit_transform(X)
+<span class="cm"># Transforms skewed data toward Gaussian distribution</span>
+<span class="cm"># box-cox requires all positive values</span></pre>
+  </div>
+
+</div><!-- end scaling page -->
+
+<!-- ══════════════════ PCA PAGE ══════════════════ -->
+<div class="page" id="page-pca">
+
+  <div class="hero">
+    <div class="hero-chip">🔵 Dimensionality Reduction</div>
+    <h1>PCA, t-SNE<br><em>& UMAP</em></h1>
+    <p>// Reduce dimensions, remove redundancy, visualize high-dimensional data. Principal Component Analysis from intuition to code.</p>
+    <div class="hero-stats">
+      <div><div class="hs-num">4</div><div class="hs-lbl">Methods</div></div>
+      <div><div class="hs-num">n→k</div><div class="hs-lbl">Dimensions</div></div>
+      <div><div class="hs-num">95%</div><div class="hs-lbl">Variance kept</div></div>
+    </div>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">01</div>
+    <div class="sec-info"><h2>PCA Intuition</h2><p>// Find directions of maximum variance in data</p></div>
+    <span class="sec-badge sb-mid">INTERMEDIATE</span>
+  </div>
+
+  <div class="card">
+    <h3>🧭 How PCA Works (Step by Step)</h3>
+    <div class="flow">
+      <div class="fstep"><div class="fi">📊</div><div class="fn">Center Data</div><div class="fd">Subtract mean</div></div>
+      <div class="farr">→</div>
+      <div class="fstep"><div class="fi">🔢</div><div class="fn">Covariance Matrix</div><div class="fd">Compute Σ</div></div>
+      <div class="farr">→</div>
+      <div class="fstep"><div class="fi">🔀</div><div class="fn">Eigenvectors</div><div class="fd">Decompose Σ</div></div>
+      <div class="farr">→</div>
+      <div class="fstep"><div class="fi">📉</div><div class="fn">Sort by Eigenvalue</div><div class="fd">Pick top k</div></div>
+      <div class="farr">→</div>
+      <div class="fstep"><div class="fi">✅</div><div class="fn">Project Data</div><div class="fd">X × W</div></div>
+    </div>
+    <ul>
+      <li><strong>Eigenvectors</strong> = principal components (directions of max variance)</li>
+      <li><strong>Eigenvalues</strong> = amount of variance explained by each component</li>
+      <li>Components are orthogonal (uncorrelated) to each other</li>
+      <li>PCA is unsupervised — it ignores class labels</li>
+    </ul>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">pca_complete.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.decomposition <span class="kw">import</span> <span class="cl">PCA</span>
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> <span class="cl">StandardScaler</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="cm"># ALWAYS scale before PCA!</span>
+X = np.random.<span class="fn">randn</span>(<span class="nm">200</span>, <span class="nm">10</span>)          <span class="cm"># 200 samples, 10 features</span>
+X_scaled = <span class="cl">StandardScaler</span>().<span class="fn">fit_transform</span>(X)
+
+<span class="cm"># ── Fit PCA ──────────────────────────────────────</span>
+pca = <span class="cl">PCA</span>()                             <span class="cm"># keep all components first</span>
+pca.<span class="fn">fit</span>(X_scaled)
+
+<span class="cm"># ── Explained variance ───────────────────────────</span>
+evr = pca.explained_variance_ratio_
+cumulative = np.<span class="fn">cumsum</span>(evr)
+<span class="bi">print</span>(<span class="st">"Explained variance per component:"</span>)
+<span class="bi">print</span>(evr.round(<span class="nm">3</span>))
+<span class="bi">print</span>(<span class="st">f"First 3 PCs explain: </span>{cumulative[<span class="nm">2</span>]:.1%}<span class="st">"</span>)
+
+<span class="cm"># ── Choose n_components to keep 95% variance ─────</span>
+pca_95 = <span class="cl">PCA</span>(n_components=<span class="nm">0.95</span>)        <span class="cm"># auto-select k</span>
+X_reduced = pca_95.<span class="fn">fit_transform</span>(X_scaled)
+<span class="bi">print</span>(<span class="st">f"Reduced from 10 → </span>{X_reduced.shape[<span class="nm">1</span>]}<span class="st"> features"</span>)
+
+<span class="cm"># ── 2D visualization ─────────────────────────────</span>
+pca_2d = <span class="cl">PCA</span>(n_components=<span class="nm">2</span>)
+X_2d = pca_2d.<span class="fn">fit_transform</span>(X_scaled)
+plt.<span class="fn">scatter</span>(X_2d[:, <span class="nm">0</span>], X_2d[:, <span class="nm">1</span>], alpha=<span class="nm">0.6</span>)
+plt.<span class="fn">xlabel</span>(<span class="st">'PC1'</span>); plt.<span class="fn">ylabel</span>(<span class="st">'PC2'</span>)
+
+<span class="cm"># ── Feature importance from loadings ─────────────</span>
+loadings = pca.<span class="fn">components_</span>             <span class="cm"># shape: (n_components, n_features)</span>
+feature_importance = np.<span class="fn">abs</span>(loadings[<span class="nm">0</span>])  <span class="cm"># first PC loadings</span></pre>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">02</div>
+    <div class="sec-info"><h2>t-SNE & UMAP</h2><p>// Non-linear methods for visualization and clustering</p></div>
+    <span class="sec-badge sb-adv">ADVANCED</span>
+  </div>
+
+  <div class="cgrid">
+    <div class="cbox">
+      <h5>t-SNE</h5>
+      <p>Preserves local structure. Great for visualization. Non-deterministic. Slow on large data. Different perplexity values change output drastically. <strong>Not for preprocessing — only visualization.</strong></p>
+    </div>
+    <div class="cbox">
+      <h5>UMAP</h5>
+      <p>Faster than t-SNE. Preserves both local AND global structure. Deterministic. Can be used as preprocessing step (unlike t-SNE). Hyperparams: <code>n_neighbors</code>, <code>min_dist</code>.</p>
+    </div>
+    <div class="cbox">
+      <h5>PCA vs t-SNE</h5>
+      <p>PCA is linear, global, fast, and reproducible. t-SNE/UMAP are non-linear, local-structure-preserving, slower. Use PCA first to reduce to ~50 dims, then t-SNE.</p>
+    </div>
+    <div class="cbox">
+      <h5>LDA (Supervised)</h5>
+      <p>Linear Discriminant Analysis uses class labels. Maximizes between-class separation. At most C-1 components (C = number of classes). Better for classification than PCA.</p>
+    </div>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">tsne_umap_lda.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.manifold <span class="kw">import</span> <span class="cl">TSNE</span>
+<span class="kw">from</span> sklearn.discriminant_analysis <span class="kw">import</span> <span class="cl">LinearDiscriminantAnalysis</span>
+<span class="kw">import</span> umap  <span class="cm"># pip install umap-learn</span>
+
+<span class="cm"># ── t-SNE ────────────────────────────────────────</span>
+tsne = <span class="cl">TSNE</span>(
+    n_components=<span class="nm">2</span>,
+    perplexity=<span class="nm">30</span>,       <span class="cm"># typical range: 5–50</span>
+    random_state=<span class="nm">42</span>,
+    n_iter=<span class="nm">1000</span>,
+    learning_rate=<span class="st">'auto'</span>
+)
+X_tsne = tsne.<span class="fn">fit_transform</span>(X_scaled)
+
+<span class="cm"># ── UMAP ─────────────────────────────────────────</span>
+reducer = umap.<span class="cl">UMAP</span>(
+    n_components=<span class="nm">2</span>,
+    n_neighbors=<span class="nm">15</span>,   <span class="cm"># local neighborhood size</span>
+    min_dist=<span class="nm">0.1</span>,     <span class="cm"># how tightly points cluster</span>
+    random_state=<span class="nm">42</span>
+)
+X_umap = reducer.<span class="fn">fit_transform</span>(X_scaled)
+
+<span class="cm"># ── LDA (supervised) ─────────────────────────────</span>
+lda = <span class="cl">LinearDiscriminantAnalysis</span>(n_components=<span class="nm">2</span>)
+X_lda = lda.<span class="fn">fit_transform</span>(X_scaled, y)    <span class="cm"># uses class labels!</span>
+<span class="bi">print</span>(<span class="st">f"Variance explained: </span>{lda.explained_variance_ratio_}<span class="st">"</span>)
+
+<span class="cm"># ── Best practice pipeline ────────────────────────</span>
+<span class="cm"># 1. StandardScaler → 2. PCA (50 dims) → 3. UMAP/t-SNE</span>
+pca50 = <span class="cl">PCA</span>(n_components=<span class="nm">50</span>, random_state=<span class="nm">42</span>)
+X_pca = pca50.<span class="fn">fit_transform</span>(X_scaled)
+X_vis = <span class="cl">TSNE</span>(n_components=<span class="nm">2</span>).<span class="fn">fit_transform</span>(X_pca)</pre>
+  </div>
+
+</div><!-- end pca page -->
+
+<!-- ══════════════════ SELECTION PAGE ══════════════════ -->
+<div class="page" id="page-selection">
+
+  <div class="hero">
+    <div class="hero-chip">🎯 Feature Selection</div>
+    <h1>Select the <em>Best</em><br>Features</h1>
+    <p>// Remove irrelevant and redundant features. Filter, Wrapper, and Embedded methods — plus SHAP for model-agnostic importance.</p>
+    <div class="hero-stats">
+      <div><div class="hs-num">3</div><div class="hs-lbl">Method Families</div></div>
+      <div><div class="hs-num">↓</div><div class="hs-lbl">Overfitting</div></div>
+      <div><div class="hs-num">↑</div><div class="hs-lbl">Accuracy</div></div>
+    </div>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">01</div>
+    <div class="sec-info"><h2>Filter Methods</h2><p>// Statistical tests — fast, model-independent</p></div>
+    <span class="sec-badge sb-beg">BEGINNER</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">filter_methods.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.feature_selection <span class="kw">import</span> (
+    <span class="cl">VarianceThreshold</span>, <span class="cl">SelectKBest</span>,
+    <span class="fn">f_classif</span>, <span class="fn">mutual_info_classif</span>,
+    <span class="fn">chi2</span>, <span class="fn">f_regression</span>
+)
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># ── 1. Variance Threshold ────────────────────────</span>
+<span class="cm"># Remove features with near-zero variance (constant/near-constant)</span>
+vt = <span class="cl">VarianceThreshold</span>(threshold=<span class="nm">0.01</span>)
+X_vt = vt.fit_transform(X)
+<span class="bi">print</span>(<span class="st">"Removed features:"</span>, X.shape[<span class="nm">1</span>] - X_vt.shape[<span class="nm">1</span>])
+
+<span class="cm"># ── 2. Correlation Filter ────────────────────────</span>
+corr_matrix = pd.<span class="cl">DataFrame</span>(X).<span class="fn">corr</span>().abs()
+upper = corr_matrix.where(
+    np.<span class="fn">triu</span>(np.<span class="fn">ones</span>(corr_matrix.shape), k=<span class="nm">1</span>).astype(<span class="bi">bool</span>))
+to_drop = [col <span class="kw">for</span> col <span class="kw">in</span> upper.columns <span class="kw">if</span> upper[col].max() > <span class="nm">0.95</span>]
+X_uncorr = pd.<span class="cl">DataFrame</span>(X).drop(columns=to_drop)
+
+<span class="cm"># ── 3. ANOVA F-test (classification) ─────────────</span>
+selector_f = <span class="cl">SelectKBest</span>(<span class="fn">f_classif</span>, k=<span class="nm">5</span>)
+X_f = selector_f.fit_transform(X, y)
+<span class="bi">print</span>(<span class="st">"F-scores:"</span>, selector_f.scores_.round(<span class="nm">2</span>))
+
+<span class="cm"># ── 4. Mutual Information ────────────────────────</span>
+<span class="cm"># Captures non-linear relationships too</span>
+selector_mi = <span class="cl">SelectKBest</span>(<span class="fn">mutual_info_classif</span>, k=<span class="nm">5</span>)
+X_mi = selector_mi.fit_transform(X, y)
+
+<span class="cm"># ── 5. Chi-squared (non-negative features only) ──</span>
+selector_chi = <span class="cl">SelectKBest</span>(<span class="fn">chi2</span>, k=<span class="nm">5</span>)
+X_chi = selector_chi.fit_transform(X_counts, y)   <span class="cm"># count data</span></pre>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">02</div>
+    <div class="sec-info"><h2>Wrapper & Embedded Methods</h2><p>// Model-driven feature selection</p></div>
+    <span class="sec-badge sb-mid">INTERMEDIATE</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">wrapper_embedded.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.feature_selection <span class="kw">import</span> (
+    <span class="cl">RFE</span>, <span class="cl">RFECV</span>, <span class="cl">SelectFromModel</span>
+)
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> <span class="cl">RandomForestClassifier</span>
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> <span class="cl">LassoCV</span>, <span class="cl">ElasticNet</span>
+
+<span class="cm"># ── Recursive Feature Elimination (RFE) ──────────</span>
+rf = <span class="cl">RandomForestClassifier</span>(n_estimators=<span class="nm">100</span>)
+rfe = <span class="cl">RFE</span>(estimator=rf, n_features_to_select=<span class="nm">5</span>)
+X_rfe = rfe.fit_transform(X, y)
+<span class="bi">print</span>(<span class="st">"Selected features:"</span>, rfe.support_)
+<span class="bi">print</span>(<span class="st">"Feature ranking:"</span>, rfe.ranking_)
+
+<span class="cm"># ── RFECV: automatically find optimal n_features ─</span>
+rfecv = <span class="cl">RFECV</span>(
+    estimator=rf, step=<span class="nm">1</span>, cv=<span class="nm">5</span>, scoring=<span class="st">'accuracy'</span>
+)
+rfecv.<span class="fn">fit</span>(X, y)
+<span class="bi">print</span>(<span class="st">f"Optimal features: </span>{rfecv.n_features_}<span class="st">"</span>)
+
+<span class="cm"># ── Embedded: Lasso (L1 shrinks to 0) ────────────</span>
+lasso = <span class="cl">LassoCV</span>(cv=<span class="nm">5</span>).<span class="fn">fit</span>(X, y)
+selector = <span class="cl">SelectFromModel</span>(lasso, prefit=<span class="kw">True</span>)
+X_lasso = selector.<span class="fn">transform</span>(X)
+<span class="bi">print</span>(<span class="st">"Lasso selected:"</span>, selector.<span class="fn">get_support</span>())
+
+<span class="cm"># ── Tree Feature Importances ─────────────────────</span>
+rf.<span class="fn">fit</span>(X, y)
+importances = pd.<span class="cl">Series</span>(
+    rf.feature_importances_,
+    index=[<span class="st">f'f</span>{i}<span class="st">'</span> <span class="kw">for</span> i <span class="kw">in</span> <span class="bi">range</span>(X.shape[<span class="nm">1</span>])]
+).<span class="fn">sort_values</span>(ascending=<span class="kw">False</span>)
+<span class="bi">print</span>(importances.head(<span class="nm">5</span>))</pre>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">03</div>
+    <div class="sec-info"><h2>SHAP & Permutation Importance</h2><p>// Model-agnostic, unbiased importance</p></div>
+    <span class="sec-badge sb-adv">ADVANCED</span>
+  </div>
+
+  <div class="callout tip">
+    <span class="ci">✅</span>
+    <div><strong>Why SHAP over Feature Importances?</strong>
+      Tree feature importances are biased toward high-cardinality features. SHAP gives each feature a fair Shapley value based on its actual contribution to individual predictions. Works for any model.</div>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">shap_permutation.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">import</span> shap  <span class="cm"># pip install shap</span>
+<span class="kw">from</span> sklearn.inspection <span class="kw">import</span> <span class="fn">permutation_importance</span>
+
+<span class="cm"># ── SHAP for tree models (fast TreeExplainer) ─────</span>
+explainer = shap.<span class="cl">TreeExplainer</span>(rf)
+shap_values = explainer.<span class="fn">shap_values</span>(X_test)
+
+<span class="cm"># Summary plot (global importance)</span>
+shap.<span class="fn">summary_plot</span>(shap_values[<span class="nm">1</span>], X_test, plot_type=<span class="st">"bar"</span>)
+
+<span class="cm"># Dependence plot (1 feature interaction)</span>
+shap.<span class="fn">dependence_plot</span>(<span class="st">"feature_0"</span>, shap_values[<span class="nm">1</span>], X_test)
+
+<span class="cm"># ── SHAP for any model ────────────────────────────</span>
+explainer_k = shap.<span class="cl">KernelExplainer</span>(model.predict, X_background)
+shap_vals_k = explainer_k.<span class="fn">shap_values</span>(X_test[:<span class="nm">50</span>])
+
+<span class="cm"># ── Permutation Importance ────────────────────────</span>
+<span class="cm"># Shuffles each feature, measures score drop</span>
+perm = <span class="fn">permutation_importance</span>(
+    rf, X_test, y_test,
+    n_repeats=<span class="nm">10</span>, random_state=<span class="nm">42</span>
+)
+sorted_idx = perm.importances_mean.argsort()[::-<span class="nm">1</span>]
+<span class="kw">for</span> i <span class="kw">in</span> sorted_idx[:<span class="nm">5</span>]:
+    <span class="bi">print</span>(<span class="st">f"f</span>{i}<span class="st">: </span>{perm.importances_mean[i]:.4f}<span class="st"> ± </span>{perm.importances_std[i]:.4f}<span class="st">"</span>)</pre>
+  </div>
+
+</div><!-- end selection page -->
+
+<!-- ══════════════════ EXTRACTION PAGE ══════════════════ -->
+<div class="page" id="page-extraction">
+
+  <div class="hero">
+    <div class="hero-chip">⚗️ Feature Extraction</div>
+    <h1>Extract Rich<br><em>Features</em> from Raw Data</h1>
+    <p>// Text (TF-IDF, Word2Vec), images (CNN features), time series (tsfresh), and polynomial/interaction features for tabular data.</p>
+    <div class="hero-stats">
+      <div><div class="hs-num">4</div><div class="hs-lbl">Data Types</div></div>
+      <div><div class="hs-num">NLP</div><div class="hs-lbl">Text Features</div></div>
+      <div><div class="hs-num">CNN</div><div class="hs-lbl">Image Features</div></div>
+    </div>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">01</div>
+    <div class="sec-info"><h2>Text Feature Extraction</h2><p>// Bag of Words, TF-IDF, Word Embeddings</p></div>
+    <span class="sec-badge sb-mid">INTERMEDIATE</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">text_features.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.feature_extraction.text <span class="kw">import</span> (
+    <span class="cl">CountVectorizer</span>, <span class="cl">TfidfVectorizer</span>, <span class="cl">HashingVectorizer</span>
+)
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+corpus = [
+    <span class="st">"machine learning is amazing"</span>,
+    <span class="st">"deep learning uses neural networks"</span>,
+    <span class="st">"feature engineering is the key to machine learning"</span>,
+]
+
+<span class="cm"># ── Bag of Words ─────────────────────────────────</span>
+cv = <span class="cl">CountVectorizer</span>(max_features=<span class="nm">100</span>, stop_words=<span class="st">'english'</span>)
+X_bow = cv.fit_transform(corpus)           <span class="cm"># sparse matrix</span>
+<span class="bi">print</span>(cv.get_feature_names_out())
+
+<span class="cm"># ── TF-IDF ───────────────────────────────────────</span>
+<span class="cm"># TF = term freq in doc, IDF = log(N/df) penalizes common words</span>
+tfidf = <span class="cl">TfidfVectorizer</span>(
+    max_features=<span class="nm">5000</span>,
+    ngram_range=(<span class="nm">1</span>, <span class="nm">2</span>),    <span class="cm"># unigrams + bigrams</span>
+    min_df=<span class="nm">2</span>,               <span class="cm"># ignore terms in < 2 docs</span>
+    sublinear_tf=<span class="kw">True</span>       <span class="cm"># use log(1+tf)</span>
+)
+X_tfidf = tfidf.fit_transform(corpus)
+
+<span class="cm"># ── Word Embeddings (sentence-level) ─────────────</span>
+<span class="kw">from</span> sentence_transformers <span class="kw">import</span> <span class="cl">SentenceTransformer</span>
+model = <span class="cl">SentenceTransformer</span>(<span class="st">'all-MiniLM-L6-v2'</span>)
+embeddings = model.<span class="fn">encode</span>(corpus)    <span class="cm"># shape: (3, 384)</span>
+
+<span class="cm"># ── spaCy word vectors ────────────────────────────</span>
+<span class="kw">import</span> spacy
+nlp = spacy.<span class="fn">load</span>(<span class="st">'en_core_web_md'</span>)
+doc = nlp(<span class="st">"machine learning"</span>)
+vector = doc.vector                   <span class="cm"># 300-dim word vector</span></pre>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">02</div>
+    <div class="sec-info"><h2>Time Series Features</h2><p>// Rolling statistics, lag features, frequency domain</p></div>
+    <span class="sec-badge sb-mid">INTERMEDIATE</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">time_series_features.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+df = pd.<span class="cl">DataFrame</span>({<span class="st">'value'</span>: np.random.<span class="fn">randn</span>(<span class="nm">200</span>)})
+
+<span class="cm"># ── Lag features ─────────────────────────────────</span>
+<span class="kw">for</span> lag <span class="kw">in</span> [<span class="nm">1</span>, <span class="nm">7</span>, <span class="nm">14</span>, <span class="nm">30</span>]:
+    df[<span class="st">f'lag_</span>{lag}<span class="st">'</span>] = df[<span class="st">'value'</span>].shift(lag)
+
+<span class="cm"># ── Rolling statistics ───────────────────────────</span>
+<span class="kw">for</span> window <span class="kw">in</span> [<span class="nm">7</span>, <span class="nm">30</span>]:
+    roll = df[<span class="st">'value'</span>].rolling(window)
+    df[<span class="st">f'roll_mean_</span>{window}<span class="st">'</span>] = roll.mean()
+    df[<span class="st">f'roll_std_</span>{window}<span class="st">'</span>]  = roll.std()
+    df[<span class="st">f'roll_min_</span>{window}<span class="st">'</span>]  = roll.min()
+    df[<span class="st">f'roll_max_</span>{window}<span class="st">'</span>]  = roll.max()
+
+<span class="cm"># ── Date/time features ───────────────────────────</span>
+df[<span class="st">'hour'</span>]       = df.index.hour
+df[<span class="st">'dayofweek'</span>]  = df.index.dayofweek
+df[<span class="st">'month'</span>]      = df.index.month
+df[<span class="st">'quarter'</span>]    = df.index.quarter
+df[<span class="st">'is_weekend'</span>] = df[<span class="st">'dayofweek'</span>] >= <span class="nm">5</span>
+
+<span class="cm"># ── Cyclical encoding (sin/cos) ───────────────────</span>
+<span class="cm"># Preserves circular nature: hour 23 is close to hour 0</span>
+df[<span class="st">'hour_sin'</span>] = np.<span class="fn">sin</span>(<span class="nm">2</span> * np.pi * df[<span class="st">'hour'</span>] / <span class="nm">24</span>)
+df[<span class="st">'hour_cos'</span>] = np.<span class="fn">cos</span>(<span class="nm">2</span> * np.pi * df[<span class="st">'hour'</span>] / <span class="nm">24</span>)
+
+<span class="cm"># ── tsfresh (automated feature extraction) ────────</span>
+<span class="kw">from</span> tsfresh <span class="kw">import</span> <span class="fn">extract_features</span>
+features = <span class="fn">extract_features</span>(df, column_id=<span class="st">'id'</span>, column_sort=<span class="st">'time'</span>)
+<span class="cm"># Extracts 700+ statistical features automatically</span></pre>
+  </div>
+
+  <div class="sec-hdr">
+    <div class="sec-num">03</div>
+    <div class="sec-info"><h2>Polynomial & Interaction Features</h2><p>// Create non-linear feature combinations</p></div>
+    <span class="sec-badge sb-adv">ADVANCED</span>
+  </div>
+
+  <div class="codeblock">
+    <div class="cbhdr">
+      <div class="cbhdr-l">
+        <div class="cbtdots"><span></span><span></span><span></span></div>
+        <span class="cbfname">interaction_features.py</span>
+        <span class="cblang">Python</span>
+      </div>
+      <button class="copybtn" onclick="copyCode(this)">COPY</button>
+    </div>
+    <pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> <span class="cl">PolynomialFeatures</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+X = np.<span class="fn">array</span>([[<span class="nm">2</span>, <span class="nm">3</span>], [<span class="nm">4</span>, <span class="nm">5</span>]])   <span class="cm"># [a, b]</span>
+
+<span class="cm"># ── Polynomial features ──────────────────────────</span>
+poly = <span class="cl">PolynomialFeatures</span>(degree=<span class="nm">2</span>, include_bias=<span class="kw">False</span>)
+X_poly = poly.fit_transform(X)
+<span class="cm"># Output: [a, b, a², a·b, b²]</span>
+<span class="bi">print</span>(poly.get_feature_names_out())
+
+<span class="cm"># ── Interaction only (no powers) ─────────────────</span>
+inter = <span class="cl">PolynomialFeatures</span>(
+    degree=<span class="nm">2</span>, interaction_only=<span class="kw">True</span>, include_bias=<span class="kw">False</span>
+)
+X_inter = inter.fit_transform(X)
+<span class="cm"># Output: [a, b, a·b] — only the cross term</span>
+
+<span class="cm"># ── Manual domain-specific features ──────────────</span>
+df[<span class="st">'bmi'</span>]            = df[<span class="st">'weight'</span>] / (df[<span class="st">'height'</span>] ** <span class="nm">2</span>)
+df[<span class="st">'price_per_sqft'</span>] = df[<span class="st">'price'</span>] / df[<span class="st">'area'</span>]
+df[<span class="st">'age_income'</span>]     = df[<span class="st">'age'</span>] * df[<span class="st">'income'</span>]   <span class="cm"># interaction</span>
+df[<span class="st">'debt_ratio'</span>]     = df[<span class="st">'debt'</span>] / (df[<span class="st">'income'</span>] + <span class="nm">1e-8</span>)
+
+<span class="cm"># ── Automated feature generation (featuretools) ──</span>
+<span class="kw">import</span> featuretools <span class="kw">as</span> ft
+es = ft.<span class="cl">EntitySet</span>(id=<span class="st">'data'</span>)
+es = es.<span class="fn">add_dataframe</span>(
+    dataframe_name=<span class="st">'orders'</span>, dataframe=df, index=<span class="st">'order_id'</span>
+)
+feature_matrix, features = ft.<span class="fn">dfs</span>(
+    entityset=es,
+    target_dataframe_name=<span class="st">'orders'</span>,
+    max_depth=<span class="nm">2</span>
+)</pre>
+  </div>
+
+</div><!-- end extraction page -->
+
+<!-- ══════════════════ INTERVIEW PAGE ══════════════════ -->
+<div class="page" id="page-interview">
+
+  <div class="hero">
+    <div class="hero-chip">🎯 Interview Preparation</div>
+    <h1>Feature Engineering<br><em>Interview Q&A</em></h1>
+    <p>// 30+ carefully selected questions covering encoding, scaling, PCA, normalization, feature selection, and extraction — with expert answers for data science interviews.</p>
+    <div class="hero-stats">
+      <div><div class="hs-num">30+</div><div class="hs-lbl">Questions</div></div>
+      <div><div class="hs-num">6</div><div class="hs-lbl">Topics</div></div>
+      <div><div class="hs-num">100%</div><div class="hs-lbl">With Answers</div></div>
+    </div>
+  </div>
+
+  <!-- ENCODING Q&A -->
+  <div class="sec-hdr">
+    <div class="sec-num">Q1</div>
+    <div class="sec-info"><h2>Encoding Questions</h2><p>// Categorical feature handling</p></div>
+    <span class="sec-badge sb-beg">BEGINNER–MID</span>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">01</div>
+      <div class="qa-text">What is the difference between Label Encoding and One-Hot Encoding? When would you use each?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">Label Encoding</span> assigns each category an integer (e.g., Red=0, Green=1, Blue=2). It implies a numerical ordering that doesn't actually exist for nominal variables. Use it for: (1) ordinal features where order is meaningful (Small&lt;Medium&lt;Large), and (2) tree-based models (Decision Tree, Random Forest, XGBoost) which don't interpret numeric order linearly.<br><br>
+      <span class="hl">One-Hot Encoding</span> creates a binary column per category. No ordinal relationship is implied. Use for nominal features with any linear model, SVM, KNN, or neural networks. Drawback: high-cardinality features explode dimensionality.<br><br>
+      Rule of thumb: &lt;10–15 categories → OHE; &gt;15 categories → Target/Frequency/Hashing encoding; ordinal data → manual ordinal mapping; tree models → label encoding is fine.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">02</div>
+      <div class="qa-text">What is the Dummy Variable Trap? How do you avoid it?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      The <span class="hl">Dummy Variable Trap</span> (perfect multicollinearity) occurs when one dummy variable can be perfectly predicted from the others. For example, OHE of [Red, Green, Blue] creates 3 columns where column3 = 1 − col1 − col2. This makes the design matrix singular (non-invertible), causing numerical issues in linear models and making coefficients non-unique.<br><br>
+      Solution: Drop one reference category using <code>drop='first'</code> in sklearn's <code>OneHotEncoder</code> or <code>drop_first=True</code> in pandas <code>get_dummies()</code>. This is also called using k-1 dummies for k categories.<br><br>
+      <span class="hla">Tree models are immune</span> because they use splits rather than matrix inversion. Neural networks have built-in redundancy handling. The trap only affects methods that solve normal equations (Linear/Logistic Regression, PCA).
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">03</div>
+      <div class="qa-text">What is Target Encoding and how do you prevent data leakage?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">Target Encoding</span> replaces each category with the mean of the target variable for that category (e.g., city Mumbai → average price in Mumbai). It handles high-cardinality well and captures target-feature relationships.<br><br>
+      <span class="hlr">Leakage risk:</span> If you compute the mean on the same data you're training on, the model sees the target during training through the encoding — overfitting severely.<br><br>
+      Prevention strategies:<br>
+      (1) <span class="hl">Cross-fold encoding</span>: compute mean for fold k using all other folds (like cross-validation)<br>
+      (2) <span class="hl">Smoothing</span>: blend category mean with global mean: <code>(count × cat_mean + α × global_mean) / (count + α)</code><br>
+      (3) <span class="hl">Leave-one-out encoding</span>: compute mean excluding current row<br>
+      (4) <span class="hl">Add Gaussian noise</span>: small random perturbation to encoded values<br>
+      Always compute encoding statistics on train set only, then apply to test set.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">04</div>
+      <div class="qa-text">How do you handle high-cardinality categorical features with thousands of unique values?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      High-cardinality (e.g., user IDs, product SKUs, zip codes) makes OHE impractical (thousands of sparse columns).<br><br>
+      Options by use case:<br>
+      <span class="hl">Hashing Encoding</span>: map categories to a fixed number of bins using a hash function. Fast, constant-memory, handles unseen categories. Some collision between categories.<br><br>
+      <span class="hl">Binary Encoding</span>: convert to integer → binary representation. 1000 categories → just 10 binary columns (log₂(1000)).<br><br>
+      <span class="hl">Target / Frequency Encoding</span>: works well for high-cardinality with sufficient data per category.<br><br>
+      <span class="hl">Entity Embeddings</span> (neural nets): learn a dense representation jointly with the task — often the best approach for very high cardinality.<br><br>
+      <span class="hl">Grouping rare categories</span>: bin infrequent values into an "Other" bucket before encoding.
+    </p></div>
+  </div>
+
+  <!-- SCALING Q&A -->
+  <div class="divider"></div>
+  <div class="sec-hdr">
+    <div class="sec-num">Q2</div>
+    <div class="sec-info"><h2>Scaling & Normalization Questions</h2><p>// When, why, and which method</p></div>
+    <span class="sec-badge sb-mid">INTERMEDIATE</span>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">05</div>
+      <div class="qa-text">What is the difference between Normalization and Standardization?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">Normalization</span> (Min-Max Scaling) rescales values to [0,1] (or a custom range): <code>X' = (X - min) / (max - min)</code>. Bounded output, sensitive to outliers. Best when: you need values in a specific range (neural networks with sigmoid/tanh), algorithm is not distance-based, data has no significant outliers.<br><br>
+      <span class="hl">Standardization</span> (Z-score) transforms to zero mean, unit variance: <code>X' = (X - μ) / σ</code>. Unbounded output, robust to extreme values on the scaling computation (though outliers remain). Best when: data is approximately Gaussian, using distance-based or gradient-based algorithms, you need to compare features.<br><br>
+      In practice: Standardization generally outperforms Normalization for SVM, Logistic Regression, Linear models, and PCA. Normalization preferred for neural networks and KNN on bounded data.<br><br>
+      <span class="hla">Critical rule:</span> Fit scaler on training data only. Apply the same fitted scaler to test/production data. Never refit on test data — that's leakage.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">06</div>
+      <div class="qa-text">When should you use Robust Scaler instead of StandardScaler?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">RobustScaler</span> uses the <strong>median and IQR</strong> instead of mean and std: <code>X' = (X - median) / IQR</code>. Since median and IQR are not affected by extreme outliers (they use the 25th and 75th percentiles), the scaler is robust to outliers.<br><br>
+      Use <code>RobustScaler</code> when:<br>
+      • Your data contains outliers that you cannot or don't want to remove<br>
+      • A few extreme values would heavily skew the mean/std in StandardScaler<br>
+      • Features follow skewed distributions<br><br>
+      StandardScaler is preferable when data is roughly Gaussian without extreme outliers. If outliers are genuine signal (not errors), you might want them to retain their relative distance — in which case StandardScaler is better since outliers will simply have large Z-scores.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">07</div>
+      <div class="qa-text">What is the difference between L1 and L2 normalization?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      Both normalize <strong>individual samples (rows)</strong>, not features — unlike StandardScaler which normalizes columns.<br><br>
+      <span class="hl">L1 (Manhattan)</span>: divides each feature value by the sum of absolute values. Result: each row sums to 1. Robust to outliers within a sample. Used in text analysis (term frequency normalization).<br><br>
+      <span class="hl">L2 (Euclidean)</span>: divides by the Euclidean norm. Result: each row vector has unit length (norm=1). Corresponds to projecting onto a unit hypersphere. Used most commonly in ML: cosine similarity, SVM, neural networks.<br><br>
+      <span class="hli">When to use:</span> TF-IDF already incorporates L2 normalization. Explicitly use <code>Normalizer</code> for comparing document similarity (cosine = dot product of L2-normalized vectors). Not appropriate when the scale/magnitude itself carries information.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">08</div>
+      <div class="qa-text">Why should you NEVER fit the scaler on test data?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      This is a fundamental form of <span class="hlr">data leakage</span>. Fitting a scaler on test data means the scaler learns the test set's distribution (min, max, mean, std). This "leaks" information about the test set into preprocessing, producing overly optimistic evaluation metrics that won't replicate in production.<br><br>
+      Correct approach:<br>
+      <code>scaler.fit(X_train)          # learn from train only<br>X_train_s = scaler.transform(X_train)<br>X_test_s  = scaler.transform(X_test)  # same scaler</code><br><br>
+      In real production: you fit the scaler once on training data, serialize it (joblib/pickle), and use it on all incoming data at inference time. Test set simulates production — it must be treated as unseen data.<br><br>
+      <span class="hl">Pipeline pattern</span>: sklearn <code>Pipeline</code> automatically ensures the scaler is fit-transformed on train and transform-only on test during cross-validation — use it to prevent accidental leakage.
+    </p></div>
+  </div>
+
+  <!-- PCA Q&A -->
+  <div class="divider"></div>
+  <div class="sec-hdr">
+    <div class="sec-num">Q3</div>
+    <div class="sec-info"><h2>PCA & Dimensionality Reduction</h2><p>// Understanding components and variance</p></div>
+    <span class="sec-badge sb-mid">INTERMEDIATE</span>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">09</div>
+      <div class="qa-text">Explain PCA. How do you choose the number of components?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">PCA</span> (Principal Component Analysis) finds a new coordinate system aligned with the directions of maximum variance in the data. Each principal component (PC) is a linear combination of the original features, and PCs are orthogonal to each other.<br><br>
+      Mathematically: compute the covariance matrix Σ, decompose into eigenvectors/eigenvalues. Eigenvectors = principal components (directions). Eigenvalues = variance explained per component. Project data onto top k eigenvectors.<br><br>
+      <span class="hl">Choosing number of components:</span><br>
+      (1) <strong>Explained variance threshold</strong>: pick k such that cumulative explained variance ≥ 95% (or 90%): <code>PCA(n_components=0.95)</code><br>
+      (2) <strong>Elbow plot (scree plot)</strong>: plot eigenvalues, find the "elbow" where additional components add little variance<br>
+      (3) <strong>Task performance</strong>: cross-validate downstream model with different k values<br>
+      (4) <strong>Visualization</strong>: always use 2 or 3 for plotting<br><br>
+      <span class="hla">Always scale before PCA!</span> PCA is variance-based — unscaled features with large ranges dominate all components.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">10</div>
+      <div class="qa-text">What are the limitations of PCA? When would you NOT use it?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hlr">Limitations of PCA:</span><br>
+      (1) <strong>Linear only</strong>: PCA only captures linear relationships. Non-linear structure is missed. Use kernel PCA, t-SNE, or UMAP for non-linear reduction.<br>
+      (2) <strong>Interpretability loss</strong>: Principal components are linear combinations of all original features — hard to explain to stakeholders. You lose the ability to say "feature X matters."<br>
+      (3) <strong>Unsupervised</strong>: PCA ignores class labels. Maximum variance direction may not be discriminative. Use LDA for supervised dimensionality reduction.<br>
+      (4) <strong>Assumes Gaussian</strong>: PCA is optimal for Gaussian-distributed features. Performs poorly on binary or count data.<br>
+      (5) <strong>Sensitive to scaling</strong>: Must standardize first.<br><br>
+      <span class="hl">Don't use PCA when:</span> interpretability is critical; data is non-linear; you have sparse data (use TruncatedSVD instead); features are categorical; you need feature selection (PCA creates new features, doesn't select original ones).
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">11</div>
+      <div class="qa-text">What is the difference between PCA and LDA?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">PCA</span> (unsupervised): maximizes variance in the projected space. Ignores class labels. Goal: preserve as much data variability as possible. Used for compression, noise reduction, visualization.<br><br>
+      <span class="hl">LDA</span> (Linear Discriminant Analysis, supervised): maximizes the ratio of between-class variance to within-class variance. Uses class labels to find directions that best separate classes. Maximum components = min(n_classes − 1, n_features).<br><br>
+      Example: If data has two overlapping clusters that don't differ in total variance (PCA gives useless components), but they're separated along a specific axis — LDA finds that axis while PCA misses it.<br><br>
+      <span class="hla">Choose LDA when</span> you're doing classification and need to reduce dimensions while preserving class separability. Choose PCA when you have no labels or want general-purpose compression. In practice, try both and let downstream classifier performance guide the choice.
+    </p></div>
+  </div>
+
+  <!-- FEATURE SELECTION Q&A -->
+  <div class="divider"></div>
+  <div class="sec-hdr">
+    <div class="sec-num">Q4</div>
+    <div class="sec-info"><h2>Feature Selection Questions</h2><p>// Filter, Wrapper, Embedded methods</p></div>
+    <span class="sec-badge sb-mid">INTERMEDIATE–ADV</span>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">12</div>
+      <div class="qa-text">What is the difference between Filter, Wrapper, and Embedded feature selection methods?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">Filter Methods</span>: Use statistical measures to score features independently of any model. Fast, scalable, no overfitting risk. Examples: Variance Threshold, Correlation, ANOVA F-test, Mutual Information, Chi-squared. Drawback: don't consider feature interactions; may select redundant features.<br><br>
+      <span class="hl">Wrapper Methods</span>: Use a model to evaluate subsets of features. Capture feature interactions. Examples: RFE (Recursive Feature Elimination), Forward/Backward Selection. Expensive — O(2^n) combinations. Risk of overfitting to training data.<br><br>
+      <span class="hl">Embedded Methods</span>: Feature selection happens during model training. Most efficient — one training run. Examples: Lasso (L1 regularization shrinks weights to 0), Tree feature importances (Gini/entropy gain), Elastic Net. Balance between filter speed and wrapper accuracy.<br><br>
+      <span class="hla">Best practice:</span> Start with filter methods to remove obviously irrelevant/constant features. Then use embedded methods (Lasso or tree importances) for a refined selection. Use wrapper only for small datasets where computational cost is acceptable.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">13</div>
+      <div class="qa-text">What is Mutual Information and how does it differ from correlation?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">Pearson Correlation</span> measures only <strong>linear relationships</strong> between two variables. If X and Y have a non-linear relationship (e.g., Y = X²), correlation ≈ 0 even though they're perfectly related.<br><br>
+      <span class="hl">Mutual Information (MI)</span> measures the <strong>reduction in uncertainty</strong> about one variable given knowledge of the other. MI = 0 means complete independence; MI &gt; 0 means knowing X tells you something about Y. Crucially, MI captures <strong>any relationship — linear or non-linear</strong>.<br><br>
+      Mathematically: MI(X,Y) = H(Y) − H(Y|X), where H is Shannon entropy.<br><br>
+      When to prefer MI: non-linear feature-target relationships, discrete/categorical features (use Chi-squared for purely discrete), when you suspect complex patterns. When to prefer correlation: interpretability, linear models, quickly checking for simple linear associations.<br><br>
+      <span class="hli">Note:</span> MI does not have an upper bound (unlike correlation which is [-1, 1]), making cross-feature comparisons tricky. Normalized MI (NMI) addresses this.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">14</div>
+      <div class="qa-text">Why are Random Forest feature importances sometimes misleading?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      Tree-based <span class="hlr">feature importances (Gini/entropy) are biased toward:</span><br><br>
+      (1) <strong>High-cardinality features</strong>: More unique values → more split opportunities → artificially higher importance. A random ID column can appear important.<br>
+      (2) <strong>Correlated features</strong>: Importance is split between correlated features arbitrarily. Remove one and the other gets all the importance.<br>
+      (3) <strong>Continuous vs discrete</strong>: Continuous features can split at many points — systematically preferred over binary features even if the binary feature is more informative.<br><br>
+      <span class="hl">Better alternatives:</span><br>
+      • <strong>Permutation Importance</strong>: shuffle feature values, measure score drop. Unbiased, model-agnostic, but expensive<br>
+      • <strong>SHAP values</strong>: Shapley game-theoretic approach. Fair allocation of feature contributions per prediction. Handles correlations better<br>
+      • <strong>Drop-column importance</strong>: retrain without each feature, measure performance change — most accurate but extremely slow
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">15</div>
+      <div class="qa-text">What is SHAP and how does it improve feature importance understanding?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">SHAP</span> (SHapley Additive exPlanations) applies cooperative game theory to ML. A SHAP value for a feature in a prediction represents the average marginal contribution of that feature across all possible orderings of features — ensuring a fair attribution that satisfies key axioms (efficiency, symmetry, dummy, additivity).<br><br>
+      Key advantage: SHAP provides <strong>local explanations</strong> (why did the model predict X for this specific sample?) and <strong>global importance</strong> (mean |SHAP values| across all samples).<br><br>
+      Types: <code>TreeExplainer</code> (fast, exact for trees), <code>LinearExplainer</code> (for linear models), <code>KernelExplainer</code> (model-agnostic, slow), <code>DeepExplainer</code> (neural nets).<br><br>
+      Compared to Gini importance: SHAP handles correlated features better, is consistent (a more impactful feature always gets higher SHAP), and provides directional information (positive/negative contribution). SHAP is now the gold standard for feature importance in production ML.
+    </p></div>
+  </div>
+
+  <!-- ADVANCED Q&A -->
+  <div class="divider"></div>
+  <div class="sec-hdr">
+    <div class="sec-num">Q5</div>
+    <div class="sec-info"><h2>Advanced Feature Engineering</h2><p>// Extraction, interaction, and practical questions</p></div>
+    <span class="sec-badge sb-adv">ADVANCED</span>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">16</div>
+      <div class="qa-text">What is TF-IDF and how does it improve over Bag of Words?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">Bag of Words (BoW)</span> counts word occurrences in each document. Problem: common words like "the," "is," "and" appear frequently in every document and dominate the feature space without carrying useful discriminative information.<br><br>
+      <span class="hl">TF-IDF</span> (Term Frequency – Inverse Document Frequency) addresses this:<br>
+      <code>TF-IDF(t, d) = TF(t, d) × IDF(t)</code><br>
+      <code>TF(t,d) = count(t in d) / total_terms(d)</code><br>
+      <code>IDF(t) = log(N / df(t))</code>, where N=total docs, df=docs containing term t<br><br>
+      Words appearing in many documents get low IDF (penalized). Rare but discriminative words get high IDF (rewarded). Common words like "the" appear in all docs → IDF ≈ 0 → TF-IDF ≈ 0.<br><br>
+      Improvements over BoW: document length normalization (TF divides by doc length), penalizes common words, rewards rare-but-informative terms. Sublinear TF (log(1+tf)) further prevents very frequent terms from dominating. TF-IDF + L2 normalization is the standard baseline for text classification.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">17</div>
+      <div class="qa-text">How do you handle missing values as part of feature engineering?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      Missing value handling is itself a feature engineering step:<br><br>
+      <span class="hl">Simple imputation:</span> Mean/median (numerical), mode (categorical). Fast but ignores relationships. Use <code>SimpleImputer</code>.<br><br>
+      <span class="hl">KNN imputation:</span> Replace missing value with weighted average of k nearest neighbors. Respects local structure but O(n²) — slow on large datasets.<br><br>
+      <span class="hl">Iterative imputation (MICE):</span> Model each feature as a function of others, iterating until convergence. Most accurate for MAR (Missing At Random) data.<br><br>
+      <span class="hl">Indicator features:</span> Create binary column <code>feature_X_missing</code> to signal that the value was imputed. This tells the model that missingness itself may be informative (e.g., income not reported might correlate with behavior).<br><br>
+      <span class="hla">Critical:</span> Fit imputer on training data only. For categorical: impute with mode or create "Unknown" category. For tree models: some support native NaN handling (XGBoost, LightGBM) — use it. Always document the missingness pattern and mechanism (MCAR/MAR/MNAR) before choosing strategy.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">18</div>
+      <div class="qa-text">What is the Curse of Dimensionality and how does feature engineering address it?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      The <span class="hl">Curse of Dimensionality</span> describes how data becomes increasingly sparse as the number of features grows. In high-dimensional spaces: (1) all points become approximately equidistant, making distance-based algorithms (KNN, SVM-RBF) fail; (2) the volume of space grows exponentially — you need exponentially more data to maintain the same density; (3) models overfit easily as there are more feature combinations to memorize than actual patterns.<br><br>
+      Feature engineering solutions:<br>
+      <span class="hl">Dimensionality reduction:</span> PCA, UMAP — reduce to intrinsic dimensionality<br>
+      <span class="hl">Feature selection:</span> Remove irrelevant/redundant features<br>
+      <span class="hl">Regularization:</span> L1 (Lasso) implicitly does feature selection by zeroing weights<br>
+      <span class="hl">Domain knowledge:</span> Hand-craft meaningful features from raw data — fewer but better features<br>
+      <span class="hl">Embeddings:</span> Learn compact dense representations (vs sparse high-dimensional representations)<br><br>
+      Rule: more features ≠ better model. Quality over quantity is the core principle of feature engineering.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">19</div>
+      <div class="qa-text">What are interaction features and when should you create them?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">Interaction features</span> are products (or other combinations) of two or more existing features, capturing effects that are only meaningful in combination. Example: <code>age × income</code> might predict loan default better than either feature alone (a young person with high income is different from an old person with high income).<br><br>
+      <span class="hl">When to create interaction features:</span><br>
+      • You're using a linear model that can't learn interactions natively<br>
+      • Domain knowledge suggests a multiplicative relationship (BMI = weight/height²)<br>
+      • Exploratory analysis shows correlation with target only when combined<br>
+      • Tree models already learn interactions internally — rarely needed there<br><br>
+      Types: polynomial features (x², x³, xy), ratios (price/area), differences (score_after - score_before), boolean combinations (is_senior AND is_premium_member).<br><br>
+      <span class="hlr">Warning:</span> Polynomial features grow combinatorially — degree-2 on 100 features → 5050 new features. Always combine with feature selection after generating interactions.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">20</div>
+      <div class="qa-text">How do you encode cyclical features like hour of day, month, or day of week?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      Cyclical features have a circular nature: hour 23 is close to hour 0, December is close to January. If you encode hour as a plain integer (0–23), the model sees 23 and 0 as far apart (difference of 23) when they're actually adjacent (difference of 1).<br><br>
+      <span class="hl">Solution: sin/cos encoding</span><br>
+      <code>hour_sin = sin(2π × hour / 24)</code><br>
+      <code>hour_cos = cos(2π × hour / 24)</code><br><br>
+      This maps each hour to a point on a unit circle. Hour 0 and hour 24 map to the same point. The distance between any two times is properly represented in (sin, cos) space.<br><br>
+      You need both sin AND cos — just sin alone has ambiguity (hours 3 and 9 have the same sin value). Together they uniquely identify each position in the cycle.<br><br>
+      Apply to: hour (period=24), day of week (period=7), month (period=12), day of year (period=365), wind direction (period=360°). This is always better than treating these as plain integers or OHE-encoding them.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">21</div>
+      <div class="qa-text">What is feature leakage and how do you detect it?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">Feature leakage</span> occurs when a feature contains information from the future (at prediction time) or directly encodes the target, making model performance deceptively perfect in evaluation but useless in production.<br><br>
+      <span class="hlr">Common forms:</span><br>
+      (1) <strong>Target leakage</strong>: feature computed after the target event (e.g., "days in hospital" to predict "will be readmitted")<br>
+      (2) <strong>Train-test contamination</strong>: scaling, imputation, encoding fitted on combined train+test data<br>
+      (3) <strong>Time leakage</strong>: using future data in rolling features (using tomorrow's price to predict today's)<br>
+      (4) <strong>Surrogate features</strong>: a proxy for the target (e.g., "discharge date" when predicting "hospitalized")<br><br>
+      <span class="hl">Detection signals:</span><br>
+      • Suspiciously high accuracy (AUC &gt; 0.99 on real-world data)<br>
+      • One feature overwhelmingly dominates importance<br>
+      • Performance collapses dramatically in production<br>
+      • Temporal: features have timestamps after prediction time<br><br>
+      <span class="hla">Prevention:</span> Strict train/validation/test split before any preprocessing. Use sklearn Pipelines. For time series: use time-based splits only.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">22</div>
+      <div class="qa-text">How do you handle skewed features? What transformations help?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      Skewed features (e.g., income, house prices, population) violate the normality assumption of linear models and can harm gradient descent convergence in neural networks.<br><br>
+      <span class="hl">Common transforms for right-skewed (long right tail):</span><br>
+      • <strong>Log transform:</strong> <code>log(x+1)</code> — most common, handles zeros<br>
+      • <strong>Square root:</strong> <code>√x</code> — milder compression<br>
+      • <strong>Box-Cox:</strong> family of transforms, finds optimal λ via MLE. Requires positive values.<br>
+      • <strong>Yeo-Johnson:</strong> generalization of Box-Cox, handles negative values<br><br>
+      <span class="hl">For bimodal / heavy-tailed distributions:</span><br>
+      • <strong>Quantile Transformer:</strong> maps to uniform or Gaussian distribution. Robust to outliers, handles any shape.<br>
+      • <strong>Rank transform:</strong> replace with rank order<br><br>
+      <span class="hla">When not needed:</span> Tree-based models (Random Forest, XGBoost, LightGBM) are completely invariant to monotonic transforms — skewness doesn't affect them. Transform primarily for linear models, neural networks, distance-based algorithms, and when features will be used in PCA.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">23</div>
+      <div class="qa-text">What is a Feature Store? Why is it important in production ML?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      A <span class="hl">Feature Store</span> is a centralized repository for storing, discovering, and serving ML features. It solves the "feature engineering at scale" problem in production systems.<br><br>
+      <span class="hl">Problems it solves:</span><br>
+      (1) <strong>Training-serving skew:</strong> features computed differently in training (batch on historical data) vs serving (real-time on new data) → model behaves differently in production<br>
+      (2) <strong>Duplication:</strong> multiple teams recomputing the same features independently → wasted compute, inconsistencies<br>
+      (3) <strong>Discovery:</strong> no way to find what features already exist across the organization<br>
+      (4) <strong>Point-in-time correctness:</strong> ensures features used for training reflect values that were actually available at prediction time (no future leakage)<br><br>
+      <span class="hl">Key capabilities:</span> offline store (historical features for training), online store (low-latency features for inference), feature definitions as code, versioning, monitoring for feature drift.<br><br>
+      Popular implementations: Feast, Tecton, Hopsworks, Databricks Feature Store, Vertex AI Feature Store. Essential for teams running &gt;5 models in production.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">24</div>
+      <div class="qa-text">What is feature drift and how do you monitor for it?</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      <span class="hl">Feature drift</span> (also called data drift or covariate shift) occurs when the statistical distribution of input features changes over time in production, causing model predictions to degrade even though the model parameters haven't changed.<br><br>
+      Example: A model trained on pre-pandemic user behavior starts drifting when behavior changes drastically post-pandemic.<br><br>
+      <span class="hl">Detection methods:</span><br>
+      • <strong>Population Stability Index (PSI)</strong>: measure distribution shift for a single feature. PSI &lt; 0.1 = stable, 0.1–0.25 = minor shift, &gt; 0.25 = major drift<br>
+      • <strong>KL Divergence / Jensen-Shannon Distance:</strong> information-theoretic drift measures<br>
+      • <strong>Kolmogorov-Smirnov test:</strong> statistical test for distribution equality (numerical features)<br>
+      • <strong>Chi-squared test:</strong> for categorical features<br>
+      • <strong>Wasserstein distance:</strong> "earth mover's distance" between distributions<br><br>
+      <span class="hl">Tools:</span> Evidently AI, WhyLabs, Arize, Great Expectations, MLflow.<br><br>
+      When drift is detected: retrain on recent data, investigate root cause, add the new patterns to the feature engineering pipeline.
+    </p></div>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q" onclick="tqa(this)">
+      <div class="qa-num">25</div>
+      <div class="qa-text">Explain the complete feature engineering pipeline you would build for a real ML project.</div>
+      <div class="qa-arr">▼</div>
+    </div>
+    <div class="qa-a"><p>
+      A production-grade feature engineering pipeline:<br><br>
+      <span class="hl">1. Data Profiling:</span> EDA — distributions, missing rates, cardinality, correlation matrix, outlier detection<br><br>
+      <span class="hl">2. Data Cleaning:</span> Remove constant/duplicate features, fix data types, handle obvious errors<br><br>
+      <span class="hl">3. Missing Value Handling:</span> Impute + create missingness indicators. Fit on train only.<br><br>
+      <span class="hl">4. Encoding:</span> OHE for low-cardinality nominals, ordinal encoding for ordered features, target encoding (with CV) for high-cardinality. Handle unseen categories.<br><br>
+      <span class="hl">5. Feature Creation:</span> Domain-specific features, time features (sin/cos cyclical, lags, rolling stats), interaction terms, ratio features<br><br>
+      <span class="hl">6. Skew Correction:</span> Log/Yeo-Johnson transforms for linear models / neural nets<br><br>
+      <span class="hl">7. Scaling:</span> StandardScaler or RobustScaler depending on outliers. Fit on train only.<br><br>
+      <span class="hl">8. Feature Selection:</span> Remove near-zero variance, correlated features (&gt;0.95), then SHAP or Lasso for final selection<br><br>
+      <span class="hl">9. Dimensionality Reduction (optional):</span> PCA if still too many features and model allows<br><br>
+      <span class="hla">Wrap everything in sklearn Pipeline</span> to prevent leakage during cross-validation. Version the pipeline. Monitor for drift in production.
+    </p></div>
+  </div>
+
+</div><!-- end interview page -->
+
+</main>
+</div><!-- end layout -->
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    const map = ['encoding','scaling','pca','selection','extraction','interview'];
+    document.querySelectorAll('nav button')[map.indexOf(id)].classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+    updateProgress();
+  }
+
+  function sba(el) {
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function swLevel(btn, page) {
+    btn.closest('.ltabs').querySelectorAll('.ltab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const lv = btn.dataset.l;
+    document.querySelectorAll(`#page-${page} .lcontent`).forEach(c => c.classList.remove('active'));
+    document.getElementById(`${page}-${lv}`).classList.add('active');
+  }
+
+  function tqa(el) {
+    const item = el.closest('.qa');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.qa').forEach(q => q.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+    updateProgress();
+  }
+
+  function copyCode(btn) {
+    const pre = btn.closest('.codeblock').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      const o = btn.textContent;
+      btn.textContent = 'COPIED!';
+      btn.style.borderColor = 'var(--teal-l)';
+      btn.style.color = 'var(--teal-l)';
+      setTimeout(() => { btn.textContent = o; btn.style.borderColor = ''; btn.style.color = ''; }, 1800);
+    });
+  }
+
+  const opened = new Set();
+  function updateProgress() {
+    document.querySelectorAll('.qa.open').forEach(q => opened.add(q));
+    const total = document.querySelectorAll('.qa').length;
+    const pct = Math.round((opened.size / total) * 100);
+    document.getElementById('ptxt').textContent = pct + '%';
+    document.getElementById('pfill').style.width = pct + '%';
+  }
+
+  // keyboard shortcuts
+  document.addEventListener('keydown', e => {
+    const m = {'1':'encoding','2':'scaling','3':'pca','4':'selection','5':'extraction','6':'interview'};
+    if (m[e.key]) showPage(m[e.key]);
+  });
+
+  // Animate bar chart on load
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.bar-fill').forEach(b => {
+      const w = b.style.width;
+      b.style.width = '0%';
+      setTimeout(() => b.style.width = w, 300);
+    });
+  });
+</script>
+</body>
+</html>

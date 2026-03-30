@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLOps — The Complete Operations Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080e14;
+  --panel:#0d1721;
+  --panel2:#121f2e;
+  --panel3:#162435;
+  --border:#1e3448;
+  --border2:#264560;
+  --teal:#00d4aa;
+  --teal2:#00a882;
+  --teal-dim:rgba(0,212,170,.12);
+  --orange:#ff7a35;
+  --orange-dim:rgba(255,122,53,.1);
+  --sky:#4ab8e8;
+  --sky-dim:rgba(74,184,232,.1);
+  --yellow:#f5c842;
+  --red:#e84a4a;
+  --text:#c8dae8;
+  --muted:#5a7a92;
+  --bright:#e8f4ff;
+  --code-bg:#060c12;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Crimson Pro',Georgia,serif;
+  font-size:16px;
+  line-height:1.72;
+  overflow-x:hidden;
+}
+
+/* SCAN LINE OVERLAY */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);
+  pointer-events:none;z-index:9998;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  position:fixed;left:0;top:0;bottom:0;width:262px;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  z-index:100;overflow-y:auto;
+  transition:transform .3s ease;
+}
+.sidebar::-webkit-scrollbar{width:2px}
+
+/* corner decorations */
+.sidebar::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--teal),var(--sky),transparent);
+}
+
+.brand{
+  padding:24px 20px 18px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+}
+.brand-sys{
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;color:var(--teal);
+  letter-spacing:3px;text-transform:uppercase;
+  display:flex;align-items:center;gap:6px;margin-bottom:10px;
+}
+.brand-sys::before{content:'■';font-size:7px;animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.brand-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:26px;font-weight:700;
+  color:var(--bright);letter-spacing:1px;
+  line-height:1.1;
+}
+.brand-title span{color:var(--teal)}
+.brand-sub{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--muted);margin-top:6px;
+}
+
+.nav-cat{
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;color:var(--muted);
+  letter-spacing:3px;text-transform:uppercase;
+  padding:14px 20px 5px;display:block;
+  border-top:1px solid var(--border);margin-top:4px;
+}
+.nav-cat:first-child{border-top:none;margin-top:0}
+.navl{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 20px;cursor:pointer;
+  color:var(--muted);font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:500;letter-spacing:.5px;
+  border-left:2px solid transparent;
+  transition:all .15s;text-decoration:none;
+}
+.navl:hover,.navl.active{
+  color:var(--teal);border-left-color:var(--teal);
+  background:var(--teal-dim);
+}
+.navl .idx{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--border2);width:24px;flex-shrink:0;
+  transition:color .15s;
+}
+.navl:hover .idx,.navl.active .idx{color:var(--teal)}
+
+/* ── MAIN ── */
+.main{margin-left:262px;min-height:100vh}
+
+/* ── HERO ── */
+.hero{
+  padding:64px 60px 52px;
+  background:var(--panel);
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.hero-circuit{
+  position:absolute;right:-40px;top:-40px;
+  width:480px;height:480px;opacity:.04;
+  background-image:
+    linear-gradient(var(--teal) 1px,transparent 1px),
+    linear-gradient(90deg,var(--teal) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+.hero-circuit::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 70% 30%,rgba(0,212,170,.3) 0%,transparent 60%);
+}
+.status-row{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:20px;flex-wrap:wrap;
+}
+.status-pill{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;padding:3px 10px;border-radius:2px;
+  border:1px solid;display:flex;align-items:center;gap:5px;
+}
+.status-pill.green{color:var(--teal);border-color:rgba(0,212,170,.3);background:var(--teal-dim)}
+.status-pill.orange{color:var(--orange);border-color:rgba(255,122,53,.3);background:var(--orange-dim)}
+.status-pill.sky{color:var(--sky);border-color:rgba(74,184,232,.3);background:var(--sky-dim)}
+.status-pill .dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(42px,5.5vw,76px);
+  font-weight:700;line-height:1.0;
+  color:var(--bright);letter-spacing:1px;
+  margin-bottom:16px;
+}
+.hero h1 .accent{color:var(--teal)}
+.hero h1 .accent2{color:var(--orange)}
+.hero-desc{
+  font-size:17px;color:var(--muted);max-width:580px;
+  font-weight:300;margin-bottom:32px;
+}
+.hero-metrics{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  max-width:600px;
+  background:var(--border);border:1px solid var(--border);
+}
+.metric{
+  background:var(--panel2);padding:16px 20px;text-align:center;
+}
+.metric-val{
+  font-family:'Rajdhani',sans-serif;
+  font-size:30px;font-weight:700;color:var(--teal);
+  display:block;line-height:1;
+}
+.metric-lbl{
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1px;
+}
+
+/* ── CONTENT ── */
+.content{padding:0 60px 80px}
+
+/* ── SECTION ── */
+.section{
+  padding:54px 0;border-bottom:1px solid var(--border);
+  opacity:0;transform:translateY(20px);
+  transition:opacity .5s ease,transform .5s ease;
+}
+.section.vis{opacity:1;transform:translateY(0)}
+
+.sec-hd{margin-bottom:32px}
+.sec-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--teal);
+  letter-spacing:3px;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
+}
+.sec-tag::before{content:'▶';font-size:8px}
+.sec-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:36px;font-weight:700;
+  color:var(--bright);letter-spacing:.5px;line-height:1.1;
+}
+.sec-sub{color:var(--muted);font-size:15px;margin-top:6px;font-weight:300}
+
+/* ── DEFINITION BOX ── */
+.defbox{
+  background:var(--panel2);border:1px solid var(--border2);
+  border-top:2px solid var(--teal);
+  padding:20px 24px;margin:18px 0;border-radius:0 0 4px 4px;
+  position:relative;
+}
+.defbox .deflabel{
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;color:var(--teal);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;
+}
+.defbox p{font-size:14px;line-height:1.7;color:var(--text)}
+
+/* ── EXAMPLE BOX ── */
+.egbox{
+  background:linear-gradient(135deg,rgba(0,168,130,.05),transparent);
+  border:1px solid rgba(0,212,170,.2);
+  border-left:3px solid var(--teal2);
+  padding:16px 20px;margin:16px 0;border-radius:0 4px 4px 0;
+}
+.eglabel{
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;color:var(--teal);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;
+}
+.egbox p{font-size:14px;color:var(--text)}
+.egbox strong{color:var(--teal)}
+
+/* ── WARNING / CALLOUT ── */
+.warn{
+  display:flex;gap:12px;align-items:flex-start;
+  background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.2);
+  border-left:3px solid var(--yellow);
+  padding:14px 18px;margin:14px 0;border-radius:0 4px 4px 0;
+}
+.warn-ico{font-size:16px;flex-shrink:0;margin-top:2px}
+.warn p{font-size:13px;color:var(--text)}
+.warn strong{color:var(--yellow)}
+
+/* ── CARDS ── */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;margin:20px 0}
+.card{
+  background:var(--panel2);border:1px solid var(--border);
+  padding:20px;border-radius:4px;
+  transition:border-color .2s,transform .2s,box-shadow .2s;
+  position:relative;overflow:hidden;
+}
+.card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--teal),transparent);
+  transform:scaleX(0);transition:transform .3s;
+}
+.card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.card:hover::after{transform:scaleX(1)}
+.card-ico{font-size:24px;margin-bottom:12px;display:block}
+.card h4{
+  font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;
+  color:var(--bright);margin-bottom:6px;letter-spacing:.3px;
+}
+.card p{font-size:13px;color:var(--muted);line-height:1.6}
+.card .tag{
+  margin-top:10px;display:inline-block;
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  background:var(--teal-dim);color:var(--teal);
+  border:1px solid rgba(0,212,170,.2);border-radius:2px;padding:2px 7px;
+}
+
+/* ── CODE ── */
+pre{
+  background:var(--code-bg);color:#8ecad8;
+  border:1px solid var(--border);border-left:2px solid var(--teal2);
+  border-radius:0 4px 4px 0;padding:20px 22px;margin:14px 0;
+  font-family:'Share Tech Mono',monospace;font-size:12.5px;
+  line-height:1.65;overflow-x:auto;
+}
+.k{color:#00d4aa}.fn{color:#f5c842}.s{color:#ff9955}
+.cm{color:#2a4a60}.cls{color:#4ab8e8}.n{color:#e84a4a}
+code{
+  font-family:'Share Tech Mono',monospace;
+  background:rgba(0,212,170,.1);color:var(--teal);
+  padding:1px 5px;border-radius:2px;font-size:13px;
+}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.tbl th{
+  font-family:'Rajdhani',sans-serif;font-size:12px;
+  text-transform:uppercase;letter-spacing:1px;
+  background:var(--panel3);color:var(--teal);
+  padding:10px 14px;text-align:left;
+  border-bottom:1px solid var(--border2);
+}
+.tbl td{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  vertical-align:top;color:var(--muted);
+}
+.tbl tr:hover td{background:var(--teal-dim);color:var(--text)}
+.tbl td:first-child{font-family:'Rajdhani',sans-serif;font-weight:600;color:var(--text);font-size:14px}
+
+/* ── PIPELINE VISUAL ── */
+.pipeline{
+  display:flex;align-items:center;flex-wrap:wrap;gap:0;
+  margin:20px 0;background:var(--panel2);
+  border:1px solid var(--border);padding:18px 20px;
+}
+.pipe-node{
+  background:var(--panel3);border:1px solid var(--border2);
+  border-bottom:2px solid var(--teal);
+  padding:10px 14px;font-family:'Share Tech Mono',monospace;
+  font-size:11px;color:var(--teal);text-align:center;min-width:100px;
+  flex-shrink:0;
+}
+.pipe-node small{display:block;color:var(--muted);font-size:9px;margin-top:2px}
+.pipe-arr{color:var(--border2);font-size:18px;padding:0 6px;flex-shrink:0}
+.pipe-loop{
+  font-family:'Share Tech Mono',monospace;font-size:9px;
+  color:var(--orange);border:1px dashed rgba(255,122,53,.4);
+  padding:3px 8px;border-radius:2px;margin:0 8px;
+}
+
+/* ── STEPS ── */
+.steps{margin:20px 0}
+.step{
+  display:flex;gap:16px;padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+.step:last-child{border-bottom:none}
+.step-n{
+  font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;
+  color:var(--border);flex-shrink:0;width:40px;line-height:1;
+  margin-top:2px;transition:color .2s;
+}
+.step:hover .step-n{color:var(--teal)}
+.step-b h5{
+  font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;
+  color:var(--bright);margin-bottom:4px;letter-spacing:.3px;
+}
+.step-b p{font-size:13px;color:var(--muted)}
+
+/* ── TIMELINE ── */
+.tline{padding-left:26px;margin:20px 0;position:relative}
+.tline::before{
+  content:'';position:absolute;left:7px;top:8px;bottom:8px;
+  width:1px;background:linear-gradient(to bottom,var(--teal),transparent);
+}
+.tl{position:relative;padding:0 0 24px 22px}
+.tl::before{
+  content:'';position:absolute;left:-9px;top:5px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--teal);border:2px solid var(--bg);
+  box-shadow:0 0 6px var(--teal);
+}
+.tl-yr{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--teal);margin-bottom:2px}
+.tl-nm{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;color:var(--bright);margin-bottom:2px}
+.tl-dc{font-size:13px;color:var(--muted)}
+
+/* ── COMPARISON MATRIX ── */
+.matrix{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.mx-panel{
+  background:var(--panel2);border:1px solid var(--border);padding:20px;
+}
+.mx-panel h4{
+  font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.mx-panel ul{list-style:none;padding:0}
+.mx-panel li{
+  font-size:13px;color:var(--muted);padding:5px 0;
+  border-bottom:1px solid var(--border);
+  display:flex;gap:8px;align-items:flex-start;
+}
+.mx-panel li::before{content:'→';color:var(--teal);flex-shrink:0}
+
+/* ── METRICS / KPI STRIP ── */
+.kpi-strip{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:1px;background:var(--border);margin:20px 0;
+  border:1px solid var(--border);
+}
+.kpi{background:var(--panel2);padding:14px 16px;text-align:center}
+.kpi-val{
+  font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;
+  color:var(--orange);display:block;
+}
+.kpi-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);display:block;margin-top:2px}
+
+/* ── ACCORDION QA ── */
+.qa-wrap{margin-top:20px}
+.qa-grp-title{
+  font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;
+  color:var(--bright);margin:30px 0 14px;
+  display:flex;align-items:center;gap:12px;letter-spacing:.5px;
+}
+.qa-grp-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.qa{border:1px solid var(--border);margin-bottom:8px;background:var(--panel)}
+.qa:hover{border-color:var(--border2)}
+.qa-q{
+  padding:13px 18px;cursor:pointer;
+  display:flex;align-items:flex-start;gap:12px;
+  font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:500;
+  color:var(--text);user-select:none;
+  background:var(--panel2);transition:background .15s;
+}
+.qa:hover .qa-q{background:var(--panel3)}
+.qa-q .qb{
+  font-family:'Share Tech Mono',monospace;font-size:9px;
+  background:var(--teal);color:var(--bg);
+  padding:2px 6px;flex-shrink:0;margin-top:2px;letter-spacing:1px;
+}
+.qa-q .ch{margin-left:auto;color:var(--teal);transition:transform .2s;flex-shrink:0}
+.qa.open .qa-q .ch{transform:rotate(180deg)}
+.qa-a{
+  max-height:0;overflow:hidden;
+  transition:max-height .35s ease,padding .3s;
+  font-size:14px;color:var(--muted);line-height:1.75;
+  padding:0 18px 0 44px;
+}
+.qa.open .qa-a{max-height:1000px;padding:14px 18px 16px 44px}
+.qa-a strong{color:var(--text)}
+.qa-a code{font-size:12px}
+
+/* ── ARCH DIAGRAM ── */
+.arch{
+  background:var(--code-bg);border:1px solid var(--border);
+  padding:24px;margin:16px 0;font-family:'Share Tech Mono',monospace;
+}
+.arch-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.abox{
+  border:1px solid;padding:7px 12px;font-size:11px;
+  border-radius:2px;text-align:center;
+}
+.abox.t{border-color:var(--teal);color:var(--teal);background:var(--teal-dim)}
+.abox.o{border-color:var(--orange);color:var(--orange);background:var(--orange-dim)}
+.abox.s{border-color:var(--sky);color:var(--sky);background:var(--sky-dim)}
+.abox.y{border-color:var(--yellow);color:var(--yellow);background:rgba(245,200,66,.08)}
+.arch-lbl{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;min-width:60px}
+.arch-arr{color:var(--border2);font-size:14px;padding:0 4px}
+
+/* ── PILLS ── */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.pill{
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  padding:4px 10px;border:1px solid var(--border2);color:var(--muted);
+  border-radius:1px;transition:all .15s;cursor:default;
+}
+.pill:hover{border-color:var(--teal);color:var(--teal)}
+.pill.on{background:var(--teal-dim);border-color:var(--teal);color:var(--teal)}
+
+/* ── MOBILE ── */
+.mbtn{
+  display:none;position:fixed;top:12px;left:12px;z-index:200;
+  background:var(--panel);border:1px solid var(--border2);
+  width:38px;height:38px;cursor:pointer;
+  align-items:center;justify-content:center;font-size:18px;color:var(--teal);
+}
+.ovl{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hero,.content{padding-left:22px;padding-right:22px}
+  .mbtn{display:flex}
+  .ovl.show{display:block}
+  .hero-metrics{grid-template-columns:repeat(2,1fr)}
+  .matrix{grid-template-columns:1fr}
+}
+
+h3{font-family:'Rajdhani',sans-serif;font-size:21px;font-weight:600;color:var(--bright);margin:26px 0 10px;letter-spacing:.3px}
+p{margin-bottom:10px}
+ul,ol{padding-left:18px;color:var(--muted);font-size:14px}
+li{margin-bottom:5px}
+strong{color:var(--text)}
+</style>
+</head>
+<body>
+
+<button class="mbtn" onclick="toggleMenu()">☰</button>
+<div class="ovl" id="ovl" onclick="toggleMenu()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-sys"><span>SYS</span> MLOPS CONSOLE</div>
+    <div class="brand-title">ML<span>Ops</span><br>Operations</div>
+    <div class="brand-sub">// complete_guide_v2.0</div>
+  </div>
+  <nav>
+    <span class="nav-cat">Foundations</span>
+    <a class="navl active" onclick="go('intro')"><span class="idx">01</span>What is MLOps?</a>
+    <a class="navl" onclick="go('why')"><span class="idx">02</span>Why MLOps Matters</a>
+    <a class="navl" onclick="go('lifecycle')"><span class="idx">03</span>ML Lifecycle</a>
+    <a class="navl" onclick="go('maturity')"><span class="idx">04</span>Maturity Levels</a>
+
+    <span class="nav-cat">Core Pillars</span>
+    <a class="navl" onclick="go('versioning')"><span class="idx">05</span>Data & Model Versioning</a>
+    <a class="navl" onclick="go('pipelines')"><span class="idx">06</span>ML Pipelines</a>
+    <a class="navl" onclick="go('training')"><span class="idx">07</span>Training Infrastructure</a>
+    <a class="navl" onclick="go('serving')"><span class="idx">08</span>Model Serving</a>
+
+    <span class="nav-cat">Operations</span>
+    <a class="navl" onclick="go('monitoring')"><span class="idx">09</span>Monitoring & Drift</a>
+    <a class="navl" onclick="go('cicd')"><span class="idx">10</span>CI/CD for ML</a>
+    <a class="navl" onclick="go('experiment')"><span class="idx">11</span>Experiment Tracking</a>
+    <a class="navl" onclick="go('feature')"><span class="idx">12</span>Feature Stores</a>
+
+    <span class="nav-cat">Advanced</span>
+    <a class="navl" onclick="go('registry')"><span class="idx">13</span>Model Registry</a>
+    <a class="navl" onclick="go('governance')"><span class="idx">14</span>Governance & Security</a>
+    <a class="navl" onclick="go('tools')"><span class="idx">15</span>Tools Landscape</a>
+    <a class="navl" onclick="go('llmops')"><span class="idx">16</span>LLMOps</a>
+
+    <span class="nav-cat">Interview Prep</span>
+    <a class="navl" onclick="go('interview')"><span class="idx">★</span>Interview Q&A (55+)</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-circuit"></div>
+  <div class="status-row">
+    <span class="status-pill green"><span class="dot"></span>SYSTEM ONLINE</span>
+    <span class="status-pill orange"><span class="dot"></span>16 MODULES</span>
+    <span class="status-pill sky"><span class="dot"></span>55+ Q&amp;A</span>
+  </div>
+  <h1>ML<span class="accent">Ops</span><br><span class="accent2">Operations</span><br>Guide</h1>
+  <p class="hero-desc">The complete reference for operationalizing machine learning — from pipeline design to production monitoring, governance to LLMOps.</p>
+  <div class="hero-metrics">
+    <div class="metric"><span class="metric-val">16</span><span class="metric-lbl">Modules</span></div>
+    <div class="metric"><span class="metric-val">55+</span><span class="metric-lbl">Interview Q&amp;A</span></div>
+    <div class="metric"><span class="metric-val">30+</span><span class="metric-lbl">Code Snippets</span></div>
+    <div class="metric"><span class="metric-val">∞</span><span class="metric-lbl">Production Value</span></div>
+  </div>
+</header>
+
+<div class="content">
+
+<!-- ═══════════ 01 INTRO ═══════════ -->
+<section class="section" id="intro">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 01 // FOUNDATIONS</div>
+    <div class="sec-title">What is MLOps?</div>
+    <div class="sec-sub">Machine Learning + DevOps + Data Engineering = MLOps</div>
+  </div>
+
+  <div class="defbox">
+    <div class="deflabel">Definition</div>
+    <p><strong>MLOps</strong> (Machine Learning Operations) is a set of practices that combines ML, DevOps, and Data Engineering to reliably and efficiently build, deploy, monitor, and maintain ML systems in production. It aims to shorten the development cycle, reduce failure, and automate the end-to-end ML lifecycle — from data ingestion to model retirement.</p>
+  </div>
+
+  <p>The core problem MLOps solves: <strong>only 22% of ML models ever make it to production</strong>, and of those, most degrade quickly without proper monitoring. MLOps builds the engineering discipline to close this gap.</p>
+
+  <div class="egbox">
+    <div class="eglabel">🌍 Real-World Example</div>
+    <p><strong>Netflix</strong> uses MLOps to manage 1,000+ ML models powering recommendations, search ranking, and content quality scoring. Their MLOps platform (Metaflow) enables data scientists to run experiments with a few lines of Python while the infrastructure handles distributed training, versioning, and deployment automatically — reducing time-to-production from months to days.</p>
+  </div>
+
+  <h3>The Three Pillars</h3>
+  <div class="cards">
+    <div class="card"><span class="card-ico">🔬</span><h4>ML Engineering</h4><p>Feature engineering, model training, evaluation, hyperparameter optimization. The experimental science side of the lifecycle.</p><span class="tag">Data Science</span></div>
+    <div class="card"><span class="card-ico">⚙️</span><h4>DevOps Practices</h4><p>CI/CD pipelines, version control, testing, containerization, infrastructure-as-code. Automation and reliability engineering applied to ML.</p><span class="tag">Engineering</span></div>
+    <div class="card"><span class="card-ico">📊</span><h4>Data Engineering</h4><p>Data pipelines, feature stores, data quality monitoring, lineage tracking. The foundation every model is built on.</p><span class="tag">Data Infra</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 02 WHY ═══════════ -->
+<section class="section" id="why">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 02 // MOTIVATION</div>
+    <div class="sec-title">Why MLOps Matters</div>
+    <div class="sec-sub">The gap between notebooks and production</div>
+  </div>
+
+  <div class="kpi-strip">
+    <div class="kpi"><span class="kpi-val">87%</span><span class="kpi-lbl">ML projects fail to reach prod</span></div>
+    <div class="kpi"><span class="kpi-val">91</span><span class="kpi-lbl">Days avg model deployment time</span></div>
+    <div class="kpi"><span class="kpi-val">40%</span><span class="kpi-lbl">Model accuracy drop in 6 months</span></div>
+    <div class="kpi"><span class="kpi-val">10x</span><span class="kpi-lbl">Engineering time vs. data science</span></div>
+  </div>
+
+  <h3>The "Last Mile" Problem</h3>
+  <p>A data scientist can train a model with 95% accuracy in a Jupyter notebook. But getting it to run reliably at scale, handle real traffic, maintain accuracy over time, pass compliance audits, and retrain automatically when data drifts — that's the last mile. MLOps is the engineering discipline that closes this gap.</p>
+
+  <div class="matrix">
+    <div class="mx-panel">
+      <h4 style="color:var(--red)">❌ Without MLOps</h4>
+      <ul>
+        <li>Models decay silently — no one knows accuracy dropped</li>
+        <li>Months to deploy — manual steps, knowledge siloed</li>
+        <li>No reproducibility — "it worked on my laptop"</li>
+        <li>Training/serving skew causes silent failures</li>
+        <li>Compliance impossible — no audit trail</li>
+        <li>Rollback is manual and terrifying</li>
+      </ul>
+    </div>
+    <div class="mx-panel">
+      <h4 style="color:var(--teal)">✅ With MLOps</h4>
+      <ul>
+        <li>Automated monitoring catches drift in real-time</li>
+        <li>CI/CD deploys validated models in hours</li>
+        <li>Full reproducibility via versioning and metadata</li>
+        <li>Feature stores eliminate train/serve skew</li>
+        <li>Model registry + lineage = complete audit trail</li>
+        <li>Instant rollback to any previous model version</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 03 LIFECYCLE ═══════════ -->
+<section class="section" id="lifecycle">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 03 // LIFECYCLE</div>
+    <div class="sec-title">The ML Lifecycle</div>
+    <div class="sec-sub">End-to-end from business problem to production model</div>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-node">Business Problem<small>Define KPIs</small></div>
+    <div class="pipe-arr">→</div>
+    <div class="pipe-node">Data Collection<small>Ingest + Label</small></div>
+    <div class="pipe-arr">→</div>
+    <div class="pipe-node">EDA + Features<small>Transform</small></div>
+    <div class="pipe-arr">→</div>
+    <div class="pipe-node">Model Training<small>Experiment</small></div>
+    <div class="pipe-arr">→</div>
+    <div class="pipe-node">Evaluation<small>Validate</small></div>
+    <div class="pipe-arr">→</div>
+    <div class="pipe-node">Deploy<small>Serve + Monitor</small></div>
+    <div class="pipe-loop">↺ Retrain on drift</div>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-b"><h5>Problem Framing & Data Discovery</h5><p>Define success metrics (not just accuracy — business KPIs). Audit available data, assess labeling feasibility, establish data access patterns and privacy constraints.</p></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-b"><h5>Data Engineering & Feature Engineering</h5><p>Build reliable data pipelines (batch or streaming). Create a feature store so training and serving use identical transformations. Document data lineage meticulously.</p></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-b"><h5>Experimentation & Training</h5><p>Run tracked experiments (MLflow, W&B). Version datasets and code. Use distributed training for large models. Track all hyperparameters, metrics, and artifacts.</p></div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-b"><h5>Evaluation & Validation</h5><p>Evaluate on held-out test sets, across demographic slices (fairness), and against baseline models. Gate deployment on predefined quality thresholds.</p></div></div>
+    <div class="step"><div class="step-n">5</div><div class="step-b"><h5>Deployment & Serving</h5><p>Package model as a container. Deploy via CI/CD to staging → canary → production. Instrument with logging, metrics, and tracing from day one.</p></div></div>
+    <div class="step"><div class="step-n">6</div><div class="step-b"><h5>Monitoring & Feedback Loop</h5><p>Monitor prediction distribution, feature drift, model accuracy (when labels available), and system metrics. Trigger retraining pipelines automatically on drift.</p></div></div>
+  </div>
+</section>
+
+<!-- ═══════════ 04 MATURITY ═══════════ -->
+<section class="section" id="maturity">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 04 // MATURITY MODEL</div>
+    <div class="sec-title">MLOps Maturity Levels</div>
+    <div class="sec-sub">Google's 3-level framework for assessing MLOps capability</div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <span class="card-ico">🔵</span>
+      <h4>Level 0 — Manual</h4>
+      <p>Scripts and notebooks. Manual training, manual deployment. No reproducibility. Data scientists hand off model files to engineers. Most organizations start here.</p>
+      <span class="tag">MVP / Prototype</span>
+    </div>
+    <div class="card">
+      <span class="card-ico">🟡</span>
+      <h4>Level 1 — ML Pipeline Automation</h4>
+      <p>Automated training pipelines. Continuous training on new data. Feature store adoption. Model validation gates. Still some manual steps in deployment.</p>
+      <span class="tag">Production-Ready</span>
+    </div>
+    <div class="card">
+      <span class="card-ico">🟢</span>
+      <h4>Level 2 — Full CI/CD Automation</h4>
+      <p>Full CI/CD for ML pipelines themselves. Automated testing of data, models, and serving code. Automatic retraining + deployment on drift. Complete observability.</p>
+      <span class="tag">Elite / Google-Scale</span>
+    </div>
+  </div>
+
+  <div class="egbox">
+    <div class="eglabel">🌍 Real-World Example — Spotify</div>
+    <p>Spotify's <strong>Hendrix</strong> platform exemplifies Level 2. When a feature's distribution shifts (e.g., listening patterns change during holidays), automated monitors trigger a retraining pipeline, new model passes quality gates, gets deployed via canary release — zero human intervention. Their recommendation models retrain daily, automatically.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 05 VERSIONING ═══════════ -->
+<section class="section" id="versioning">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 05 // DATA & MODEL VERSIONING</div>
+    <div class="sec-title">Data & Model Versioning</div>
+    <div class="sec-sub">Reproducibility as a first-class requirement</div>
+  </div>
+
+  <p>In software, <code>git</code> solves reproducibility. In ML, you also need to version <strong>data</strong> (which can be terabytes), <strong>models</strong> (binary artifacts), <strong>pipelines</strong> (DAG definitions), and <strong>environments</strong> (conda/pip specs). Without all four, experiments are not reproducible.</p>
+
+  <h3>Data Versioning with DVC</h3>
+  <pre><span class="cm"># DVC: Git for data — tracks large files via pointers</span>
+dvc init
+dvc add data/train.csv          <span class="cm"># creates data/train.csv.dvc (tracked by git)</span>
+git add data/train.csv.dvc .gitignore
+git commit -m <span class="s">"Add training dataset v1"</span>
+dvc push                        <span class="cm"># pushes actual data to S3/GCS/Azure</span>
+
+<span class="cm"># Reproduce exact experiment</span>
+git checkout experiment-v3
+dvc checkout                    <span class="cm"># restores the exact data for that commit</span>
+dvc repro                       <span class="cm"># reruns the full pipeline with that data</span></pre>
+
+  <h3>Model Versioning with MLflow</h3>
+  <pre><span class="k">import</span> mlflow
+<span class="k">import</span> mlflow.sklearn
+
+<span class="k">with</span> mlflow.start_run() <span class="k">as</span> run:
+    <span class="cm"># Log parameters</span>
+    mlflow.log_params({<span class="s">"n_estimators"</span>: <span class="n">200</span>, <span class="s">"max_depth"</span>: <span class="n">8</span>})
+
+    <span class="cm"># Log metrics during training</span>
+    mlflow.log_metric(<span class="s">"accuracy"</span>, <span class="n">0.942</span>)
+    mlflow.log_metric(<span class="s">"f1_score"</span>, <span class="n">0.938</span>)
+
+    <span class="cm"># Log model artifact</span>
+    mlflow.sklearn.log_model(
+        model,
+        artifact_path=<span class="s">"random_forest"</span>,
+        registered_model_name=<span class="s">"fraud_detector"</span>,
+        input_example=X_train[:3],
+        signature=mlflow.models.infer_signature(X_train, y_train)
+    )
+
+    <span class="cm"># Log dataset info for full lineage</span>
+    mlflow.log_param(<span class="s">"dataset_version"</span>, <span class="s">"git:abc1234"</span>)
+    mlflow.log_param(<span class="s">"training_date"</span>, <span class="s">"2025-01-15"</span>)</pre>
+
+  <div class="egbox">
+    <div class="eglabel">🌍 Real-World Example</div>
+    <p><strong>Stripe's fraud detection team</strong> maintains versioned datasets going back 3 years. When regulators ask "why was transaction X flagged in March 2023?", they reproduce the exact model (version 2.1.4), the exact data snapshot, and replay the prediction — providing full auditability. Without DVC + MLflow, this would be impossible.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 06 PIPELINES ═══════════ -->
+<section class="section" id="pipelines">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 06 // ML PIPELINES</div>
+    <div class="sec-title">ML Pipeline Orchestration</div>
+    <div class="sec-sub">Automating the path from raw data to deployed model</div>
+  </div>
+
+  <p>ML Pipelines are <strong>DAGs (Directed Acyclic Graphs)</strong> of steps that transform data and produce artifacts. They replace manual notebook workflows with reproducible, schedulable, and monitored automation.</p>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>Tool</th><th>Best For</th><th>Language</th><th>Execution</th></tr></thead>
+      <tbody>
+        <tr><td>Kubeflow Pipelines</td><td>Kubernetes-native ML, large orgs</td><td>Python SDK</td><td>Kubernetes pods</td></tr>
+        <tr><td>Metaflow</td><td>Data science UX, AWS-native</td><td>Python decorators</td><td>AWS Batch/Step Fn</td></tr>
+        <tr><td>Apache Airflow</td><td>Complex scheduling, data+ML</td><td>Python DAGs</td><td>Celery/Kubernetes</td></tr>
+        <tr><td>Prefect</td><td>Modern orchestration, dynamic</td><td>Python decorators</td><td>Cloud + on-prem</td></tr>
+        <tr><td>Vertex AI Pipelines</td><td>GCP-native, MLOps suite</td><td>KFP SDK</td><td>Google Cloud</td></tr>
+        <tr><td>SageMaker Pipelines</td><td>AWS-native, managed infra</td><td>Python SDK</td><td>AWS managed</td></tr>
+        <tr><td>ZenML</td><td>Framework-agnostic, portable</td><td>Python decorators</td><td>Stack-agnostic</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Kubeflow Pipeline Example</h3>
+  <pre><span class="k">from</span> kfp <span class="k">import</span> dsl, components
+
+<span class="k">@dsl</span>.component
+<span class="k">def</span> <span class="fn">preprocess</span>(data_path: str, output_path: <span class="cls">dsl.Output</span>[<span class="cls">dsl.Dataset</span>]):
+    <span class="cm"># Data validation + feature engineering</span>
+    df = pd.read_parquet(data_path)
+    df = validate_and_transform(df)
+    df.to_parquet(output_path.path)
+
+<span class="k">@dsl</span>.component
+<span class="k">def</span> <span class="fn">train</span>(dataset: <span class="cls">dsl.Input</span>[<span class="cls">dsl.Dataset</span>], model: <span class="cls">dsl.Output</span>[<span class="cls">dsl.Model</span>],
+          n_estimators: int = <span class="n">200</span>):
+    clf = RandomForestClassifier(n_estimators=n_estimators)
+    clf.fit(X_train, y_train)
+    joblib.dump(clf, model.path)
+
+<span class="k">@dsl</span>.pipeline(name=<span class="s">"fraud-detection-pipeline"</span>)
+<span class="k">def</span> <span class="fn">ml_pipeline</span>(data_path: str):
+    prep_task = <span class="fn">preprocess</span>(data_path=data_path)
+    train_task = <span class="fn">train</span>(dataset=prep_task.outputs[<span class="s">"output_path"</span>])
+    <span class="cm"># Steps run as isolated containers — fully reproducible</span></pre>
+
+  <div class="egbox">
+    <div class="eglabel">🌍 Real-World Example</div>
+    <p><strong>Airbnb</strong> runs 500+ ML pipelines daily via Airflow. Their pricing model pipeline ingests booking data → engineers 200+ features → trains gradient boosting → evaluates against holdout → if accuracy &gt; threshold, registers to model registry and triggers deployment. The entire pipeline is monitored, logged, and alerting is in place for any step failure.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 07 TRAINING INFRA ═══════════ -->
+<section class="section" id="training">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 07 // TRAINING INFRASTRUCTURE</div>
+    <div class="sec-title">Training Infrastructure</div>
+    <div class="sec-sub">Scaling model training from single GPU to multi-cluster</div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-ico">💻</span><h4>Single Node Training</h4><p>Standard for models &lt;1B params. Optimize with mixed-precision (FP16/BF16), gradient accumulation, efficient data loaders with multiple workers.</p><span class="tag">sklearn, XGBoost, small DL</span></div>
+    <div class="card"><span class="card-ico">🔀</span><h4>Data Parallelism</h4><p>Replicate model across N GPUs, split batches. PyTorch DDP (DistributedDataParallel) or Horovod. Linear scaling up to 8-16 GPUs, then communication overhead dominates.</p><span class="tag">DDP / Horovod</span></div>
+    <div class="card"><span class="card-ico">📦</span><h4>Model Parallelism</h4><p>Split model layers across GPUs when model doesn't fit in one GPU's memory. Pipeline parallelism (GPipe) or tensor parallelism (Megatron-LM).</p><span class="tag">Large Models</span></div>
+    <div class="card"><span class="card-ico">☁️</span><h4>Managed Training</h4><p>SageMaker Training Jobs, Vertex AI Training, Azure ML Compute. Managed spot instances (70% cost savings), auto-scaling, built-in job monitoring.</p><span class="tag">Cloud-Native</span></div>
+    <div class="card"><span class="card-ico">⚡</span><h4>Hyperparameter Tuning</h4><p>Optuna, Ray Tune, SageMaker Automatic Model Tuning. Bayesian optimization finds optimal hyperparameters 10× more efficiently than grid search.</p><span class="tag">AutoML</span></div>
+    <div class="card"><span class="card-ico">🏎️</span><h4>Training Optimization</h4><p>Mixed precision (2× speed), gradient checkpointing (memory), FlashAttention (transformer speed), DeepSpeed ZeRO (memory scaling).</p><span class="tag">Performance</span></div>
+  </div>
+
+  <pre><span class="cm"># PyTorch DDP — distributed training across multiple GPUs</span>
+<span class="k">import</span> torch.distributed <span class="k">as</span> dist
+<span class="k">from</span> torch.nn.parallel <span class="k">import</span> DistributedDataParallel <span class="k">as</span> DDP
+
+<span class="k">def</span> <span class="fn">train</span>(rank, world_size):
+    dist.init_process_group(<span class="s">"nccl"</span>, rank=rank, world_size=world_size)
+    model = MyModel().to(rank)
+    model = <span class="cls">DDP</span>(model, device_ids=[rank])
+    <span class="cm"># Each GPU processes batch/world_size samples</span>
+    <span class="cm"># Gradients are averaged across all GPUs automatically</span>
+    optimizer = torch.optim.Adam(model.parameters())
+    <span class="k">for</span> batch <span class="k">in</span> dataloader:
+        loss = model(batch)
+        loss.backward()   <span class="cm"># gradient sync happens here via AllReduce</span>
+        optimizer.step()</pre>
+</section>
+
+<!-- ═══════════ 08 SERVING ═══════════ -->
+<section class="section" id="serving">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 08 // MODEL SERVING</div>
+    <div class="sec-title">Model Serving & Deployment</div>
+    <div class="sec-sub">Getting predictions to users — patterns, tradeoffs, and implementation</div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-ico">🌐</span><h4>REST API Serving</h4><p>Model wrapped in FastAPI/Flask. Synchronous request-response. Best for interactive, low-latency use cases. Deploy on Kubernetes with HPA for auto-scaling.</p><span class="tag">FastAPI + K8s</span></div>
+    <div class="card"><span class="card-ico">🔄</span><h4>Batch Prediction</h4><p>Score millions of records asynchronously. Run on schedule (nightly) or triggered by new data. No latency constraints — optimize for throughput. Spark MLlib, SageMaker Batch Transform.</p><span class="tag">Offline Scoring</span></div>
+    <div class="card"><span class="card-ico">⚡</span><h4>Streaming Prediction</h4><p>Kafka → Flink/Spark Streaming → model → output stream. Real-time scoring without synchronous API overhead. Used for fraud detection, recommendation updates.</p><span class="tag">Kafka + Flink</span></div>
+    <div class="card"><span class="card-ico">📱</span><h4>Edge / On-Device</h4><p>ONNX / TFLite / CoreML. Model runs on device — no network latency, works offline, privacy-preserving. Used in mobile apps, IoT sensors, autonomous vehicles.</p><span class="tag">ONNX / TFLite</span></div>
+    <div class="card"><span class="card-ico">🚀</span><h4>GPU Inference</h4><p>NVIDIA Triton Inference Server, TensorRT, vLLM (LLMs). Batching multiple requests on GPU, dynamic batching, model concurrency for maximum throughput.</p><span class="tag">NVIDIA Triton</span></div>
+    <div class="card"><span class="card-ico">🔵</span><h4>Shadow / Canary Deploy</h4><p>Send % of traffic to new model without affecting users (shadow) or gradually shift traffic (canary). Compare metrics before full rollout. Essential for safe deployments.</p><span class="tag">Deployment Strategy</span></div>
+  </div>
+
+  <h3>FastAPI Model Server Pattern</h3>
+  <pre><span class="k">from</span> fastapi <span class="k">import</span> FastAPI
+<span class="k">from</span> pydantic <span class="k">import</span> BaseModel
+<span class="k">import</span> mlflow.pyfunc, pandas <span class="k">as</span> pd
+
+app = <span class="cls">FastAPI</span>()
+model = mlflow.pyfunc.load_model(<span class="s">"models:/fraud_detector/Production"</span>)
+
+<span class="k">class</span> <span class="cls">PredictRequest</span>(BaseModel):
+    amount: float; merchant_category: str; hour: int; user_age_days: int
+
+<span class="k">class</span> <span class="cls">PredictResponse</span>(BaseModel):
+    fraud_probability: float; risk_tier: str
+
+<span class="k">@app</span>.post(<span class="s">"/predict"</span>, response_model=<span class="cls">PredictResponse</span>)
+<span class="k">async def</span> <span class="fn">predict</span>(req: <span class="cls">PredictRequest</span>):
+    df = pd.DataFrame([req.dict()])
+    prob = model.predict(df)[<span class="n">0</span>]
+    <span class="k">return</span> <span class="cls">PredictResponse</span>(
+        fraud_probability=<span class="fn">float</span>(prob),
+        risk_tier=<span class="s">"HIGH"</span> <span class="k">if</span> prob > <span class="n">0.7</span> <span class="k">else</span> <span class="s">"MEDIUM"</span> <span class="k">if</span> prob > <span class="n">0.3</span> <span class="k">else</span> <span class="s">"LOW"</span>
+    )
+<span class="cm"># Dockerize → push to ECR → deploy on EKS with HPA</span></pre>
+</section>
+
+<!-- ═══════════ 09 MONITORING ═══════════ -->
+<section class="section" id="monitoring">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 09 // MONITORING & DRIFT</div>
+    <div class="sec-title">Model Monitoring & Drift Detection</div>
+    <div class="sec-sub">Models decay — here's how to catch it before users do</div>
+  </div>
+
+  <div class="defbox">
+    <div class="deflabel">Model Drift</div>
+    <p><strong>Model drift</strong> occurs when model performance degrades in production because the real-world data distribution has shifted from the training distribution. Unlike software bugs, drift is gradual, silent, and dangerous. A fraud model trained in 2023 may fail on 2025 fraud patterns.</p>
+  </div>
+
+  <h3>Types of Drift</h3>
+  <div class="cards">
+    <div class="card"><span class="card-ico">📉</span><h4>Data Drift (Covariate Shift)</h4><p>Input feature distribution changes. P(X_prod) ≠ P(X_train). Example: a model trained on summer data deployed in winter — temperature features now have completely different distributions.</p><span class="tag">Most Common</span></div>
+    <div class="card"><span class="card-ico">🔄</span><h4>Concept Drift</h4><p>The relationship between X and Y changes. P(Y|X) changes. Example: sentiment model trained before COVID on restaurant reviews — "outdoor seating" was positive. Post-COVID meaning shifted.</p><span class="tag">Hardest to Detect</span></div>
+    <div class="card"><span class="card-ico">🎯</span><h4>Label Drift</h4><p>Distribution of targets changes. P(Y) changes. Example: fraud detection — fraud rate spikes from 1% to 3% due to new attack pattern. Model never sees these new patterns.</p><span class="tag">Upstream Cause</span></div>
+    <div class="card"><span class="card-ico">📊</span><h4>Prediction Drift</h4><p>Distribution of model outputs changes. Often the first observable signal — can be detected without ground truth labels, unlike accuracy-based metrics.</p><span class="tag">Early Warning</span></div>
+  </div>
+
+  <h3>Drift Detection Methods</h3>
+  <pre><span class="k">from</span> evidently <span class="k">import</span> ColumnMapping
+<span class="k">from</span> evidently.report <span class="k">import</span> Report
+<span class="k">from</span> evidently.metric_preset <span class="k">import</span> DataDriftPreset, ModelPerformancePreset
+
+<span class="cm"># Compare reference (training) vs current (production) data</span>
+report = <span class="cls">Report</span>(metrics=[
+    <span class="cls">DataDriftPreset</span>(),           <span class="cm"># KS test, PSI, chi-squared per feature</span>
+    <span class="cls">ModelPerformancePreset</span>(),    <span class="cm"># accuracy, precision, recall if labels exist</span>
+])
+report.run(
+    reference_data=training_df,
+    current_data=last_7days_prod_df,
+    column_mapping=<span class="cls">ColumnMapping</span>(target=<span class="s">"label"</span>, prediction=<span class="s">"fraud_score"</span>)
+)
+report.save_html(<span class="s">"drift_report.html"</span>)
+
+<span class="cm"># Statistical tests used:</span>
+<span class="cm"># KS test (continuous), chi-squared (categorical)</span>
+<span class="cm"># PSI (Population Stability Index) > 0.2 = significant drift</span>
+<span class="cm"># Jensen-Shannon divergence for distributions</span></pre>
+
+  <h3>What to Monitor</h3>
+  <div class="cards">
+    <div class="card"><span class="card-ico">📊</span><h4>Feature Statistics</h4><p>Mean, std, min/max, null rate, value distributions for each feature. Alert when any statistic deviates &gt;3σ from training baseline.</p></div>
+    <div class="card"><span class="card-ico">🎯</span><h4>Prediction Distribution</h4><p>Score distribution, class probabilities. A fraud model's average score shifting from 0.12 to 0.28 is a red flag even before you see accuracy degradation.</p></div>
+    <div class="card"><span class="card-ico">⚡</span><h4>System Performance</h4><p>Latency p50/p95/p99, throughput (RPS), error rate (5xx), memory/GPU utilization. Standard SRE monitoring applies to ML serving.</p></div>
+    <div class="card"><span class="card-ico">✅</span><h4>Business Metrics</h4><p>Conversion rate, click-through, fraud loss rate, customer satisfaction. The ultimate ground truth — when business metrics degrade, the model is failing.</p></div>
+  </div>
+
+  <div class="egbox">
+    <div class="eglabel">🌍 Real-World Example — LinkedIn</div>
+    <p>LinkedIn's job recommendation model monitors 50+ features per day. When engineers at LinkedIn noticed that <strong>remote_work</strong> feature distribution shifted dramatically in March 2020, automated alerts fired within 6 hours. A retrained model was deployed within 48 hours — instead of letting the model silently serve poor recommendations for weeks.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 10 CI/CD ═══════════ -->
+<section class="section" id="cicd">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 10 // CI/CD FOR ML</div>
+    <div class="sec-title">CI/CD for Machine Learning</div>
+    <div class="sec-sub">Automating quality gates from commit to production</div>
+  </div>
+
+  <p>ML CI/CD extends traditional software CI/CD to handle the three-way testing problem: you must test <strong>code</strong> (unit/integration tests), <strong>data</strong> (schema, statistics, completeness), and <strong>models</strong> (accuracy, fairness, latency).</p>
+
+  <div class="arch">
+    <div class="arch-row">
+      <span class="arch-lbl">Code Push</span>
+      <div class="abox t">Git Commit</div>
+      <div class="arch-arr">→</div>
+      <div class="abox t">Lint + Unit Tests</div>
+      <div class="arch-arr">→</div>
+      <div class="abox t">Data Validation</div>
+      <div class="arch-arr">→</div>
+      <div class="abox o">Train Pipeline</div>
+    </div>
+    <div class="arch-row">
+      <span class="arch-lbl">Model Gate</span>
+      <div class="abox o">Model Evaluation</div>
+      <div class="arch-arr">→</div>
+      <div class="abox o">Fairness Check</div>
+      <div class="arch-arr">→</div>
+      <div class="abox o">Perf Benchmark</div>
+      <div class="arch-arr">→</div>
+      <div class="abox s">Registry Push</div>
+    </div>
+    <div class="arch-row">
+      <span class="arch-lbl">Deploy</span>
+      <div class="abox s">Staging Deploy</div>
+      <div class="arch-arr">→</div>
+      <div class="abox s">Integration Tests</div>
+      <div class="arch-arr">→</div>
+      <div class="abox s">Canary 5%</div>
+      <div class="arch-arr">→</div>
+      <div class="abox y">Production 100%</div>
+    </div>
+  </div>
+
+  <pre><span class="cm"># GitHub Actions ML pipeline</span>
+name: ML CI/CD
+on: [push, pull_request]
+jobs:
+  ml-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Data Validation
+        run: python validate_data.py --schema schema.json --data data/train.parquet
+
+      - name: Train Model
+        run: |
+          python train.py --config config.yaml
+          <span class="cm"># Outputs: model.pkl, metrics.json</span>
+
+      - name: <span class="fn">Quality Gate</span>
+        run: |
+          ACCURACY=$(cat metrics.json | jq '.accuracy')
+          if (( $(echo "$ACCURACY < 0.92" | bc -l) )); then
+            echo <span class="s">"Accuracy $ACCURACY below threshold 0.92 — blocking deploy"</span>
+            exit 1
+          fi
+
+      - name: Register Model
+        if: github.ref == 'refs/heads/main'
+        run: python register_model.py --stage Staging
+
+      - name: Deploy Canary
+        run: kubectl set image deployment/fraud-api model=registry/fraud:$GITHUB_SHA</pre>
+
+  <div class="warn">
+    <span class="warn-ico">⚠️</span>
+    <p><strong>Data Testing is Non-Negotiable:</strong> Great Expectations or Pandera for data validation. Test data schema, null rates, value ranges, referential integrity, and statistical distributions before every training run. A model trained on corrupt data is worse than no model.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 11 EXPERIMENT TRACKING ═══════════ -->
+<section class="section" id="experiment">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 11 // EXPERIMENT TRACKING</div>
+    <div class="sec-title">Experiment Tracking</div>
+    <div class="sec-sub">Scientific rigor for the ML development process</div>
+  </div>
+
+  <p>Experiment tracking records every model training run — hyperparameters, metrics, artifacts, code version, and environment. Without it, you can't answer "which model was our best?" or "what changed between v1 and v2?"</p>
+
+  <div class="cards">
+    <div class="card"><span class="card-ico">📊</span><h4>MLflow</h4><p>Open-source, self-hostable. Tracks experiments, registers models, serves models. The most widely used. Works with any ML framework.</p><span class="tag">Open Source</span></div>
+    <div class="card"><span class="card-ico">🔭</span><h4>Weights & Biases (W&B)</h4><p>Rich visualizations, team collaboration, automatic environment capture, artifact tracking. Preferred for deep learning teams. SaaS with on-prem option.</p><span class="tag">DL Teams</span></div>
+    <div class="card"><span class="card-ico">🧊</span><h4>Neptune.ai</h4><p>Metadata store for ML. More flexible than MLflow, better UX. Strong comparison views and custom dashboards.</p><span class="tag">Metadata Store</span></div>
+    <div class="card"><span class="card-ico">🏔️</span><h4>Comet ML</h4><p>Automatic logging, code capture, diff viewer between experiments. Strong integrations with all major frameworks.</p><span class="tag">Auto-Logging</span></div>
+  </div>
+
+  <pre><span class="k">import</span> wandb
+<span class="k">import</span> torch
+
+<span class="cm"># Initialize run with config</span>
+run = wandb.init(project=<span class="s">"image-classifier"</span>, config={
+    <span class="s">"learning_rate"</span>: <span class="n">3e-4</span>, <span class="s">"epochs"</span>: <span class="n">50</span>,
+    <span class="s">"architecture"</span>: <span class="s">"ResNet50"</span>, <span class="s">"dataset"</span>: <span class="s">"imagenet-subset-v2"</span>
+})
+
+<span class="k">for</span> epoch <span class="k">in</span> range(config.epochs):
+    train_loss, val_acc = train_epoch(model, loader)
+
+    <span class="cm"># Log metrics to W&B dashboard</span>
+    wandb.log({
+        <span class="s">"train_loss"</span>: train_loss,
+        <span class="s">"val_accuracy"</span>: val_acc,
+        <span class="s">"epoch"</span>: epoch,
+        <span class="s">"sample_images"</span>: [wandb.Image(img) <span class="k">for</span> img <span class="k">in</span> sample_batch]
+    })
+
+<span class="cm"># Save model artifact with metadata</span>
+artifact = wandb.Artifact(<span class="s">"resnet50-classifier"</span>, type=<span class="s">"model"</span>)
+artifact.add_file(<span class="s">"model.pth"</span>)
+run.log_artifact(artifact)
+wandb.finish()</pre>
+</section>
+
+<!-- ═══════════ 12 FEATURE STORES ═══════════ -->
+<section class="section" id="feature">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 12 // FEATURE STORES</div>
+    <div class="sec-title">Feature Stores</div>
+    <div class="sec-sub">Eliminating train/serve skew — the silent killer</div>
+  </div>
+
+  <div class="defbox">
+    <div class="deflabel">Training/Serving Skew</div>
+    <p><strong>Train/serve skew</strong> is when the features used during training are computed differently than during serving. Example: training uses 30-day average transaction amount; serving accidentally uses 7-day average. The model is calibrated on one distribution but receives another — causing silent degradation. Feature stores solve this by computing features <em>once</em> and serving them to both.</p>
+  </div>
+
+  <div class="matrix">
+    <div class="mx-panel">
+      <h4 style="color:var(--sky)">🏪 Feature Store Architecture</h4>
+      <ul>
+        <li><strong>Offline Store:</strong> Historical features in data warehouse (S3 + Parquet). Used for model training.</li>
+        <li><strong>Online Store:</strong> Latest features in low-latency store (Redis, DynamoDB). Used for serving, &lt;10ms lookup.</li>
+        <li><strong>Feature Registry:</strong> Catalog of all features — definitions, owners, lineage, statistics.</li>
+        <li><strong>Feature Pipeline:</strong> Compute features once; materialize to both stores.</li>
+      </ul>
+    </div>
+    <div class="mx-panel">
+      <h4 style="color:var(--teal)">🛠️ Popular Feature Stores</h4>
+      <ul>
+        <li><strong>Feast</strong> — Open source, framework-agnostic, popular baseline</li>
+        <li><strong>Tecton</strong> — Enterprise, managed, real-time + batch</li>
+        <li><strong>Vertex AI Feature Store</strong> — GCP-native, managed</li>
+        <li><strong>SageMaker Feature Store</strong> — AWS-native, offline+online</li>
+        <li><strong>Hopsworks</strong> — Open source, Spark-native, Python SDK</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="egbox">
+    <div class="eglabel">🌍 Real-World Example — Uber</div>
+    <p>Uber's <strong>Michelangelo</strong> feature store powers 1000+ ML features across 200+ models. A feature like <strong>driver_avg_rating_last_30_trips</strong> is computed once — materialized to the offline store for training and to Redis for real-time serving. When a new driver-matching model needs this feature, it's ready in minutes, not weeks of engineering.</p>
+  </div>
+</section>
+
+<!-- ═══════════ 13 MODEL REGISTRY ═══════════ -->
+<section class="section" id="registry">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 13 // MODEL REGISTRY</div>
+    <div class="sec-title">Model Registry</div>
+    <div class="sec-sub">The single source of truth for model lifecycle management</div>
+  </div>
+
+  <p>A <strong>Model Registry</strong> is a centralized catalog that tracks model artifacts, their metadata, lifecycle stage (Staging/Production/Archived), and deployment history. It's the governance layer between experiment and production.</p>
+
+  <div class="pipeline">
+    <div class="pipe-node">Experiment<small>Train + Evaluate</small></div>
+    <div class="pipe-arr">→</div>
+    <div class="pipe-node">Register<small>Push artifact</small></div>
+    <div class="pipe-arr">→</div>
+    <div class="pipe-node">Staging<small>Integration test</small></div>
+    <div class="pipe-arr">→</div>
+    <div class="pipe-node">Production<small>Live traffic</small></div>
+    <div class="pipe-arr">→</div>
+    <div class="pipe-node">Archived<small>Retired</small></div>
+  </div>
+
+  <pre><span class="k">import</span> mlflow
+<span class="k">from</span> mlflow.tracking <span class="k">import</span> MlflowClient
+
+client = <span class="cls">MlflowClient</span>()
+
+<span class="cm"># Promote model from Staging to Production after QA approval</span>
+client.transition_model_version_stage(
+    name=<span class="s">"fraud_detector"</span>,
+    version=<span class="n">7</span>,
+    stage=<span class="s">"Production"</span>,
+    archive_existing_versions=<span class="k">True</span>  <span class="cm"># auto-archive old production model</span>
+)
+
+<span class="cm"># Load production model in serving code (always gets the current prod version)</span>
+model = mlflow.pyfunc.load_model(<span class="s">"models:/fraud_detector/Production"</span>)
+
+<span class="cm"># Instant rollback — just transition the previous version back</span>
+client.transition_model_version_stage(<span class="s">"fraud_detector"</span>, version=<span class="n">6</span>, stage=<span class="s">"Production"</span>)
+<span class="cm"># Serving code auto-picks up v6 on next health check restart</span></pre>
+</section>
+
+<!-- ═══════════ 14 GOVERNANCE ═══════════ -->
+<section class="section" id="governance">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 14 // GOVERNANCE</div>
+    <div class="sec-title">ML Governance & Security</div>
+    <div class="sec-sub">Compliance, fairness, and auditability at scale</div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="card-ico">⚖️</span><h4>Fairness & Bias</h4><p>Evaluate model performance across demographic groups. Use Fairlearn, IBM AI Fairness 360. Mandate fairness metrics in deployment gates. Document training data diversity.</p><span class="tag">AI Act / ECOA</span></div>
+    <div class="card"><span class="card-ico">📋</span><h4>Model Cards</h4><p>Standardized documentation (Google's Model Card Toolkit) covering: intended use, out-of-scope uses, evaluation data, bias considerations, training data description.</p><span class="tag">Transparency</span></div>
+    <div class="card"><span class="card-ico">🔍</span><h4>Explainability</h4><p>SHAP, LIME for local explanations. Mandatory for regulated industries (credit, healthcare). Log SHAP values per prediction for post-hoc auditing.</p><span class="tag">SHAP / LIME</span></div>
+    <div class="card"><span class="card-ico">🔐</span><h4>Data Privacy</h4><p>Differential privacy during training, PII detection in features, model memorization testing. GDPR "right to explanation" compliance for automated decisions.</p><span class="tag">GDPR / CCPA</span></div>
+    <div class="card"><span class="card-ico">📜</span><h4>Audit Trail</h4><p>Full lineage: which data, which code, which environment produced which model. Required for financial models (SR 11-7), healthcare (FDA), and the EU AI Act (2024).</p><span class="tag">Regulatory</span></div>
+    <div class="card"><span class="card-ico">🛡️</span><h4>Adversarial Robustness</h4><p>Test models against adversarial inputs, data poisoning, model inversion attacks. Use ART (Adversarial Robustness Toolbox) for automated adversarial testing in CI.</p><span class="tag">Security</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 15 TOOLS ═══════════ -->
+<section class="section" id="tools">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 15 // TOOLS LANDSCAPE</div>
+    <div class="sec-title">MLOps Tools Landscape</div>
+    <div class="sec-sub">The ecosystem mapped by category</div>
+  </div>
+
+  <table class="tbl">
+    <thead><tr><th>Category</th><th>Open Source</th><th>Managed / Cloud</th><th>Enterprise</th></tr></thead>
+    <tbody>
+      <tr><td>Experiment Tracking</td><td>MLflow, Sacred</td><td>W&B, Comet, Neptune</td><td>SageMaker Experiments</td></tr>
+      <tr><td>Pipeline Orchestration</td><td>Airflow, Prefect, ZenML</td><td>Vertex AI, SageMaker</td><td>Kubeflow, Metaflow</td></tr>
+      <tr><td>Model Serving</td><td>BentoML, Seldon, Ray Serve</td><td>SageMaker Endpoints, Vertex</td><td>NVIDIA Triton</td></tr>
+      <tr><td>Feature Store</td><td>Feast, Hopsworks</td><td>Vertex FS, SageMaker FS</td><td>Tecton, Databricks FS</td></tr>
+      <tr><td>Model Registry</td><td>MLflow Registry</td><td>W&B Registry, SageMaker</td><td>Databricks Unity Catalog</td></tr>
+      <tr><td>Monitoring</td><td>Evidently, WhyLabs (free)</td><td>Arize, Fiddler, WhyLabs</td><td>DataRobot MLOps</td></tr>
+      <tr><td>Data Versioning</td><td>DVC, LakeFS</td><td>Pachyderm</td><td>Databricks Delta Lake</td></tr>
+      <tr><td>Container Platform</td><td>Kubernetes, Helm</td><td>EKS, GKE, AKS</td><td>Kubeflow, OpenShift</td></tr>
+      <tr><td>Full Platform</td><td>Open MLOps stack</td><td>SageMaker Studio, Vertex AI</td><td>Databricks, DataRobot</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════ 16 LLMOPS ═══════════ -->
+<section class="section" id="llmops">
+  <div class="sec-hd">
+    <div class="sec-tag">MODULE 16 // LLMOPS</div>
+    <div class="sec-title">LLMOps — MLOps for Large Language Models</div>
+    <div class="sec-sub">The new operational challenges introduced by foundation models</div>
+  </div>
+
+  <p>LLMOps extends traditional MLOps with new concerns specific to foundation models: <strong>prompt management, evaluation without ground truth, cost at token-level, hallucination monitoring, and the complexity of fine-tuning vs. prompting</strong>.</p>
+
+  <div class="matrix">
+    <div class="mx-panel">
+      <h4 style="color:var(--muted)">🔵 Traditional MLOps</h4>
+      <ul>
+        <li>Train from scratch on labeled data</li>
+        <li>Single model per use case</li>
+        <li>Versioning: weights + code</li>
+        <li>Latency: 5–50ms typical</li>
+        <li>Cost: GPU hours for training</li>
+        <li>Evaluation: accuracy on test set</li>
+      </ul>
+    </div>
+    <div class="mx-panel">
+      <h4 style="color:var(--teal)">🟢 LLMOps (New Challenges)</h4>
+      <ul>
+        <li>Prompt engineering + RAG as primary dev loop</li>
+        <li>Foundation model + adapter/prompt per use case</li>
+        <li>Versioning: prompt templates + RAG indexes</li>
+        <li>Latency: 500ms–5s, token streaming critical</li>
+        <li>Cost: $0.01–$0.10 per request at scale</li>
+        <li>Evaluation: LLM-as-judge, human feedback, RAGAS</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>LLMOps Stack</h3>
+  <div class="cards">
+    <div class="card"><span class="card-ico">📝</span><h4>Prompt Management</h4><p>Version and test prompt templates like code. LangSmith, PromptLayer, Humanloop track prompt versions, A/B test variants, and measure performance over time.</p><span class="tag">LangSmith</span></div>
+    <div class="card"><span class="card-ico">🔭</span><h4>LLM Observability</h4><p>Log every prompt + completion, token usage, cost, latency. Detect hallucinations, toxicity, off-topic responses. LangSmith, Arize Phoenix, Helicone.</p><span class="tag">Tracing</span></div>
+    <div class="card"><span class="card-ico">📊</span><h4>RAG Evaluation</h4><p>RAGAS framework: faithfulness (no hallucination), answer relevance, context precision, context recall. Automated quality scoring for RAG pipelines.</p><span class="tag">RAGAS</span></div>
+    <div class="card"><span class="card-ico">💰</span><h4>Cost Management</h4><p>Token-level cost tracking per user/request type. Set rate limits, use cheaper models for simple tasks (GPT-4o-mini vs GPT-4o). Semantic caching for repeated queries.</p><span class="tag">LLMOps</span></div>
+    <div class="card"><span class="card-ico">🎛️</span><h4>Fine-Tuning Pipeline</h4><p>LoRA/QLoRA for efficient fine-tuning. Dataset curation → training → evaluation → RLHF/DPO alignment → serving with adapter hot-swapping.</p><span class="tag">PEFT</span></div>
+    <div class="card"><span class="card-ico">🔒</span><h4>LLM Security</h4><p>Prompt injection detection, output filtering, PII detection in completions. Guardrails AI, LlamaGuard for content safety. Monitor for jailbreak attempts.</p><span class="tag">Security</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ INTERVIEW ═══════════ -->
+<section class="section" id="interview">
+  <div class="sec-hd">
+    <div class="sec-tag">★ INTERVIEW PREPARATION</div>
+    <div class="sec-title">MLOps Interview Q&A</div>
+    <div class="sec-sub">55+ questions from fundamentals to system design</div>
+  </div>
+
+  <div class="qa-wrap">
+
+    <div class="qa-grp-title">🟢 Fundamentals</div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is MLOps and how does it differ from DevOps?<span class="ch">▾</span></div>
+    <div class="qa-a">MLOps is the discipline of operationalizing machine learning systems reliably and at scale. It extends DevOps with three additional concerns unique to ML: (1) <strong>Data versioning</strong> — you must version not just code but datasets (often terabytes), because the same code with different data produces a different model. (2) <strong>Model validation</strong> — beyond unit tests, you need statistical quality gates (accuracy, fairness, latency benchmarks) before deployment. (3) <strong>Continuous training</strong> — unlike software, ML models degrade over time as data distributions shift, requiring automated retraining pipelines triggered by drift. DevOps asks "did the deploy succeed?" MLOps adds "is the model still accurate on today's data distribution?"</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is model drift? Describe the different types.<span class="ch">▾</span></div>
+    <div class="qa-a"><strong>Model drift</strong> is when production performance degrades because something has changed since training. Types: (1) <strong>Data drift (covariate shift)</strong>: input feature distributions change — P(X_prod) ≠ P(X_train). Example: a model trained before a recession sees different income distributions afterward. Detected with KS test, PSI. (2) <strong>Concept drift</strong>: the X→Y relationship changes — P(Y|X) changes. The hardest to detect without labels. Example: "work from home" sentiment shifting post-COVID. (3) <strong>Label drift</strong>: target variable distribution changes — P(Y) changes. Example: fraud rate spikes. (4) <strong>Prediction drift</strong>: model output distribution shifts — detectable without ground truth. Usually the first observable signal. Monitor all four continuously with tools like Evidently, Arize, or WhyLabs.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is training/serving skew? How do feature stores solve it?<span class="ch">▾</span></div>
+    <div class="qa-a"><strong>Training/serving skew</strong> occurs when features are computed differently at training time vs. serving time. Classic example: training uses `avg_spend_last_30d` computed from a data warehouse; serving computes it from a different query or uses different time windows. The model was optimized for one distribution but receives another — causing silent degradation that's hard to diagnose. <strong>Feature stores</strong> solve this by: defining features once (as declarative feature definitions), computing them once (the same code path), and materializing to both an <strong>offline store</strong> (S3/Parquet for training) and an <strong>online store</strong> (Redis/DynamoDB for &lt;10ms serving). Training and serving both read from the feature store API — guaranteed consistency. Uber's Michelangelo, LinkedIn's Frame, and Airbnb's Zipline were early internal implementations of this pattern.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What are the MLOps maturity levels? Where is your current organization?<span class="ch">▾</span></div>
+    <div class="qa-a">Google defines three levels: <strong>Level 0</strong> — manual everything. Data scientists run notebooks, hand off pickle files to engineers, no reproducibility. Most teams start here. <strong>Level 1</strong> — automated training pipelines. Models retrain continuously on new data, feature store in use, model validation gates before deployment, but CI/CD for the pipeline itself is still manual. <strong>Level 2</strong> — full CI/CD automation. Any change to data, model code, or pipeline definition triggers automated testing and redeployment. Monitoring auto-triggers retraining on drift. Complete observability. When asked about your org, be honest: most production orgs are at L1 working toward L2. Describe specific gaps (e.g., "we have training pipelines but our monitoring doesn't auto-trigger retraining yet") and your plan to close them. L2 is aspirational for most orgs — even strong ML teams at large companies.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is a model registry and why is it important?<span class="ch">▾</span></div>
+    <div class="qa-a">A model registry is a centralized catalog that stores trained model artifacts along with metadata (training data version, metrics, environment, lineage) and manages lifecycle stages (Staging → Production → Archived). Importance: (1) <strong>Single source of truth</strong> — serving code always loads from the registry, never from someone's local filesystem. (2) <strong>Instant rollback</strong> — promoting a previous version takes seconds. (3) <strong>Audit trail</strong> — regulators can see exactly which model version served which decisions on what date. (4) <strong>Governance gate</strong> — promotion requires approval (human or automated quality gate). MLflow Registry is the most common open-source option. In production: serving code uses `mlflow.pyfunc.load_model("models:/fraud_detector/Production")` — decoupled from the training process entirely. When a new model is promoted, serving picks it up on next restart or hot-reload.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is the difference between batch inference and real-time inference?<span class="ch">▾</span></div>
+    <div class="qa-a"><strong>Batch inference</strong>: score a large dataset offline, store results, serve pre-computed predictions. Advantages: no latency constraint, optimized for throughput (vectorized operations, Spark), cheap compute (spot instances). Use when: predictions can be pre-computed ahead of need (e.g., nightly churn scores, product recommendations refreshed daily). <strong>Real-time inference</strong>: score individual requests on-demand, sub-100ms response required. Advantages: always uses the latest model and features, personalized per-request context. Use when: decision must react to real-time inputs (fraud detection, search ranking, dynamic pricing). Tradeoff: real-time is 10–100× more expensive due to always-on infrastructure. Some architectures use <strong>near-real-time</strong> (streaming via Kafka/Flink) — a middle ground where predictions update every few minutes rather than synchronously or nightly.</div></div>
+
+    <div class="qa-grp-title">🟡 Architecture & Engineering</div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How would you design a CI/CD pipeline for an ML model?<span class="ch">▾</span></div>
+    <div class="qa-a">A robust ML CI/CD has three quality gates: (1) <strong>Code Gate</strong>: unit tests, linting, type checking — same as software CI. Test feature engineering functions, custom model wrappers, preprocessing code. (2) <strong>Data Gate</strong>: schema validation (Great Expectations, Pandera), statistical tests (null rate, distribution checks), referential integrity. Block pipeline if data quality fails. (3) <strong>Model Gate</strong>: train on current data, evaluate on held-out test set. Check: accuracy vs. threshold, fairness across slices (gender, age groups), latency benchmark (&lt;50ms p95), comparison against current production model (must beat champion by X%). If all gates pass: register to staging, deploy to staging environment, run integration tests, canary deploy to 5% production traffic, monitor for 24h, promote to 100%. Use GitHub Actions / Jenkins / CircleCI to orchestrate. Key insight: treat pipeline code changes with the same rigor as model changes — a broken pipeline is as bad as a broken model.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is a feature store? When would you build one vs. use a managed solution?<span class="ch">▾</span></div>
+    <div class="qa-a">A feature store has three components: (1) <strong>Feature registry</strong> — definitions, owners, documentation, lineage, statistics for every feature. (2) <strong>Offline store</strong> — historical feature values in data warehouse (S3+Parquet, BigQuery) for training. (3) <strong>Online store</strong> — latest feature values in low-latency store (Redis, DynamoDB) for serving. When to build vs. buy: <strong>Build</strong> if you have very specific requirements (custom compute engines, unusual data sources) and a dedicated platform team. Takes 6–18 months to build properly. <strong>Managed (Feast + Redis)</strong> if you're a mid-size team — open source with reasonable operational burden, good community. <strong>Fully managed (Tecton, Databricks FS, Vertex FS)</strong> if you're an enterprise with compliance requirements and want zero infrastructure management. Key insight: the feature store is most valuable when multiple teams share features — a fraud team's transaction features can be reused by the credit team without rebuilding them.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>Explain the champion-challenger model deployment pattern.<span class="ch">▾</span></div>
+    <div class="qa-a">Champion-challenger is a controlled A/B testing pattern for model deployment. The <strong>champion</strong> is the current production model. The <strong>challenger</strong> is a new candidate model. A traffic-splitting layer routes X% of production traffic to the challenger while keeping (100-X)% on the champion. Both models' predictions are logged. After sufficient traffic (statistical power), compare their business metrics (CTR, conversion, loss rate) and ML metrics (precision, recall). If the challenger wins statistically significantly, promote it to champion. Key implementation details: ensure cohort assignment is consistent (same user always hits the same model during the test), log all predictions from both models with experiment ID, use proper statistical tests (t-test for continuous metrics, chi-squared for conversions, Bayesian methods for faster decisions). This is safer than full canary because the champion always handles most traffic, and rollback is instant — just set traffic split to 0%/100%.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How do you handle data validation in ML pipelines?<span class="ch">▾</span></div>
+    <div class="qa-a">Three layers: (1) <strong>Schema validation</strong>: check data types, required columns, expected value ranges. TensorFlow Data Validation (TFDV) or Great Expectations. Block the pipeline if schema mismatches. (2) <strong>Statistical validation</strong>: compare feature distributions against a reference baseline (usually training data). Alert if PSI &gt; 0.2, null rate increases &gt;5%, mean shifts &gt;3σ. Run automatically before every training run. (3) <strong>Semantic validation</strong>: business logic checks — e.g., `age` must be &gt;18, transaction amounts must be positive, event timestamps must be monotonically increasing. Great Expectations example: <code>expect_column_values_to_be_between("age", 0, 120)</code>. Treat data tests like unit tests — check into version control, run in CI, fail loudly. The cost of training on corrupt data (wasted compute, bad model in production) is 100× the cost of writing the tests.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is shadow deployment and when would you use it?<span class="ch">▾</span></div>
+    <div class="qa-a">In shadow deployment, 100% of production requests are sent to the current production model <em>and</em> also to the new shadow model. The shadow model's predictions are logged but <strong>never returned to users</strong>. This lets you: (1) Validate that the new model produces sensible predictions on real traffic before any user impact, (2) Measure latency in real production conditions, (3) Compare predictions of old vs. new model — flag cases where they disagree significantly for human review, (4) Test infrastructure stability (new container, new endpoint) under real load. Use shadow deployment when: the new model uses a fundamentally different architecture, the cost of a bad prediction is very high (medical, financial), or when you want production-scale traffic validation before canary. Downside: doubles serving costs during the shadow period. Duration: typically 24h–7 days depending on traffic volume and confidence requirements.</div></div>
+
+    <div class="qa-grp-title">🟠 Monitoring & Operations</div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What metrics would you monitor for a production ML model?<span class="ch">▾</span></div>
+    <div class="qa-a">Four categories: (1) <strong>ML metrics</strong> (when labels are available): accuracy, precision, recall, AUC, RMSE. Monitor on a rolling window (7d, 30d). Alert on &gt;2% drop. (2) <strong>Data/Drift metrics</strong>: feature distribution statistics (mean, std, quantiles, null rate) vs. training baseline. Prediction distribution. PSI per feature. No labels required. (3) <strong>System metrics</strong>: request latency (p50, p95, p99), error rate (4xx, 5xx), throughput (RPS), GPU/CPU utilization, memory usage, queue depth. Standard SRE metrics. (4) <strong>Business metrics</strong>: this is the gold standard — conversion rate, click-through, fraud loss rate, customer satisfaction. A model that passes all ML metrics but fails business metrics is still failing. Set SLOs on business metrics and alert the data science team when they degrade. Use a monitoring tool (Evidently, Arize, Fiddler) for ML metrics, Prometheus/Grafana for system metrics, and Amplitude/Looker for business metrics.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How would you handle a model that has degraded in production?<span class="ch">▾</span></div>
+    <div class="qa-a">Incident response playbook: (1) <strong>Triage</strong>: is this a model problem or a data problem? Check feature distributions — if inputs look normal, it's the model. If features look abnormal, it's a data pipeline issue. (2) <strong>Immediate mitigation</strong>: if severity is high, rollback to the previous model version immediately (take seconds if you have a model registry). Better to serve a stale-but-working model than an accurate-on-paper-but-failing model. (3) <strong>Root cause analysis</strong>: use LangSmith-style traces or MLflow runs to compare current predictions vs. 30 days ago. Identify which features or segments changed most. (4) <strong>Fix strategy</strong>: if data drift, retrain on recent data — does retraining fix it? If concept drift, may need new feature engineering or architectural changes. (5) <strong>Prevention</strong>: update monitoring thresholds, add the specific failure mode to your monitoring suite, consider adding the triggering scenario to your evaluation test suite so it's caught in CI next time.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is PSI (Population Stability Index) and how do you use it for drift detection?<span class="ch">▾</span></div>
+    <div class="qa-a">PSI measures how much the distribution of a variable has shifted between a reference period (usually training) and the current period. Formula: <code>PSI = Σ ((%current - %expected) × ln(%current / %expected))</code> calculated over buckets/bins of the variable. Interpretation: PSI &lt; 0.1 = no significant shift, no action needed. PSI 0.1–0.2 = moderate shift, monitor closely. PSI &gt; 0.2 = major shift, investigate and likely retrain. Advantages over simpler tests (like just comparing means): it captures the full shape of the distribution, is sensitive to both tails, and is easy to explain to non-statisticians. Implemented easily with Evidently or custom code. Apply PSI to: each input feature, the model's prediction score distribution, and target variable distribution. In practice, set PSI &gt; 0.2 on prediction distribution as an automatic alert that triggers retraining evaluation. PSI is widely used in financial services model validation frameworks (SR 11-7 guidance).</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How do you debug a model that works well offline but fails in production?<span class="ch">▾</span></div>
+    <div class="qa-a">Systematic debugging checklist: (1) <strong>Training/serving skew first</strong>: compare feature statistics logged at serving time vs. training data. Any feature with significantly different distribution is suspect. Even small differences (different normalization, different imputation for nulls) can cause large performance gaps. (2) <strong>Label leakage</strong>: did any training features use future information? A common bug: using `account_closed` as a feature when predicting churn — this leaks the label itself. (3) <strong>Data pipeline bugs</strong>: trace a specific production example end-to-end. What raw inputs come in? After preprocessing, what does the feature vector look like? Compare with a training example. (4) <strong>Model loading issues</strong>: verify the serialized model loads correctly — sometimes sklearn version differences cause silent discrepancies. Test with saved model artifacts, not the in-memory object. (5) <strong>Population mismatch</strong>: your test set may not represent production traffic. If model was evaluated on random 20% split but production gets a specific user segment, performance can differ dramatically. Use time-based splits for time-series data.</div></div>
+
+    <div class="qa-grp-title">🔴 System Design</div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>Design a complete MLOps platform for a fraud detection system.<span class="ch">▾</span></div>
+    <div class="qa-a"><strong>Architecture:</strong><br><br>
+    <strong>Data Layer</strong>: Raw transactions → Kafka → Flink (real-time features) + Spark (batch features) → Feature Store (Tecton: Redis for online, S3/Delta for offline). Feature catalog tracks 500+ features with owners and SLAs.<br><br>
+    <strong>Training Pipeline</strong>: Airflow DAG runs nightly. Steps: (1) Pull training data from offline feature store (point-in-time correct to avoid leakage), (2) Great Expectations validation, (3) Train XGBoost + LightGBM + Neural Net ensemble, (4) Evaluate: accuracy, AUC, FPR@1% threshold, fairness across merchant categories, latency benchmark, (5) Compare vs. champion model — must improve AUC by ≥0.3% to promote, (6) Register to MLflow Model Registry.<br><br>
+    <strong>Serving</strong>: FastAPI + NVIDIA Triton on EKS. 2ms p95 latency SLO. Real-time feature lookup from Redis. Horizontal auto-scaling. Blue-green deployment.<br><br>
+    <strong>Monitoring</strong>: Evidently for feature drift (hourly), Arize for prediction drift, Prometheus/Grafana for system metrics. Alert on PSI &gt; 0.2, p99 latency &gt; 10ms, error rate &gt; 0.1%. Automatic retraining trigger on sustained drift. Human approval required before production promotion.<br><br>
+    <strong>Governance</strong>: Every prediction logged with SHAP values for explainability. Quarterly fairness audits. Full lineage in MLflow — can reproduce any prediction from 3 years ago.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How do you scale ML training to handle 1TB+ datasets?<span class="ch">▾</span></div>
+    <div class="qa-a">Multi-strategy approach: (1) <strong>Distributed data loading</strong>: partition data across workers. Use Parquet format (efficient columnar reads), multiple workers in PyTorch DataLoader, prefetch next batch while GPU trains on current. (2) <strong>Data parallelism</strong>: PyTorch DDP or Horovod — each GPU gets a different batch shard, gradients averaged via AllReduce. Linear speedup up to ~16 GPUs, then communication overhead. (3) <strong>Approximate training</strong>: for traditional ML (XGBoost), use Dask-ML or Spark MLlib for distributed training on commodity clusters. Can handle 10TB+ with enough nodes. (4) <strong>Streaming training</strong>: train incrementally on data chunks — online learning or mini-batch gradient descent. Never loads full dataset into memory. Vowpal Wabbit for large-scale linear models. (5) <strong>Smart sampling</strong>: often 10% of data gives 95% of the model quality. Use stratified sampling, then train on full data only for the final champion model. (6) <strong>Managed compute</strong>: SageMaker Training with P3/P4 instances, Spot instances (70% savings with checkpointing), automatic job retry on spot interruption.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>Design a model monitoring system for 200 production models.<span class="ch">▾</span></div>
+    <div class="qa-a"><strong>Core Components:</strong><br><br>
+    (1) <strong>Unified logging</strong>: all models emit predictions + features to Kafka. Standard schema: {model_id, version, timestamp, features, prediction, confidence, request_id}. Flink consumer materializes to data warehouse + real-time aggregations.<br><br>
+    (2) <strong>Metric computation</strong>: nightly batch job computes PSI for each feature × each model (200 models × 50 features avg = 10K PSI scores/day). Streaming job computes rolling 1h/6h/24h prediction distribution shifts.<br><br>
+    (3) <strong>Alerting tiers</strong>: Yellow (PSI 0.1–0.2) → email to model owner. Red (PSI &gt;0.2 or accuracy drop &gt;3%) → PagerDuty on-call + auto-create retraining run. Sev1 (latency SLO breach) → immediate rollback + incident.<br><br>
+    (4) <strong>Dashboard</strong>: Grafana showing model health across the fleet. Red/yellow/green per model. Trend lines. Filter by team, business domain, deployment date.<br><br>
+    (5) <strong>Self-service</strong>: model owners can configure their own drift thresholds and alert channels. Default thresholds applied if not configured.<br><br>
+    (6) <strong>Label collection</strong>: delayed label join — when ground truth arrives (fraud confirmed, churn happened), automatically join to predictions for accuracy tracking. Different models have different label delay (fraud: hours, churn: 30 days).</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is the difference between online learning and continual/continuous training?<span class="ch">▾</span></div>
+    <div class="qa-a"><strong>Online learning</strong>: the model updates its weights incrementally with every incoming data point or mini-batch — no periodic retraining. Algorithms: SGD with streaming data, Vowpal Wabbit, river (Python library). Pros: always uses the most recent data, no training/serving gap. Cons: catastrophic forgetting (new data overwrites old patterns), hard to debug (model is always changing), no stable checkpoint to roll back to. Best for: high-volume, fast-changing streams where currency matters more than stability (ad CTR prediction, real-time bidding). <strong>Continuous/continual training</strong>: periodic full retraining triggered by schedule, data volume thresholds, or drift detection. Model is retrained from scratch (or from checkpoint) on a sliding or expanding window of data. The model is stationary between retrain cycles. Pros: reproducible, debuggable, easy rollback. Cons: latency between drift detection and model update (could be hours to days). Best for: most production ML systems. These are different architectures — choose based on how fast your data distribution changes and your tolerance for model instability vs. data currency.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How do you handle model versioning and rollback in production?<span class="ch">▾</span></div>
+    <div class="qa-a">Complete versioning strategy: (1) <strong>Model registry</strong>: every trained model is registered with a semantic version (e.g., fraud_detector v7.2.1), along with: training data version hash (DVC), training code git SHA, evaluation metrics, environment (conda/pip lockfile), training date. (2) <strong>Lifecycle stages</strong>: Candidate → Staging → Production → Archived. Transitions require: automated quality gates + human approval for Production promotion. (3) <strong>Serving decoupling</strong>: serving code references `models:/fraud_detector/Production` — never a specific version. Promoting a new version is changing a registry pointer, not redeploying infrastructure. (4) <strong>Rollback procedure</strong>: if P99 latency spikes or accuracy degrades, on-call engineer runs: <code>client.transition_model_version_stage("fraud_detector", version=6, stage="Production")</code>. Serving picks up the previous version on next health check cycle (~60s). (5) <strong>Dark rollback</strong>: if even rollback is risky, use the feature flag system to re-route traffic to a simpler rule-based fallback while the ML team investigates.</div></div>
+
+    <div class="qa-grp-title">💼 Conceptual & Behavioral</div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>Explain the ML model lifecycle from a compliance perspective.<span class="ch">▾</span></div>
+    <div class="qa-a">For regulated industries (finance, healthcare), compliance requires a documented lifecycle: (1) <strong>Scope and purpose</strong>: documented intended use, business owner, risk tier (high-risk models need more oversight). (2) <strong>Data governance</strong>: data lineage (where did training data come from, how was it collected, was consent obtained), PII handling, data retention policies. (3) <strong>Model development</strong>: documented methodology, hyperparameter selection rationale, model card with limitations and assumptions. (4) <strong>Validation</strong>: independent validation (not by the team that built it), performance across segments, stress testing, sensitivity analysis. (5) <strong>Deployment approval</strong>: sign-off from risk management, legal, and compliance. Change management documentation. (6) <strong>Ongoing monitoring</strong>: regular performance reports (quarterly for high-risk models), drift monitoring with documented thresholds, annual independent validation. (7) <strong>Retirement</strong>: documented decommission, data retention per regulation. For EU AI Act high-risk systems: conformity assessment, CE marking, registration in EU database. SR 11-7 (US banking): effective challenge, independent review, ongoing performance monitoring.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>What is LLMOps and how does it differ from traditional MLOps?<span class="ch">▾</span></div>
+    <div class="qa-a">LLMOps extends MLOps for foundation model-based systems. Key differences: (1) <strong>Development loop</strong>: traditional MLOps focuses on model training; LLMOps focuses on prompt engineering and RAG as primary optimization levers — fine-tuning is expensive and often unnecessary. (2) <strong>Versioning</strong>: version prompt templates and RAG index configurations, not just model weights. LangSmith tracks prompt versions like git for code. (3) <strong>Evaluation</strong>: without ground truth labels, use LLM-as-judge, human preference data, and task-specific metrics (RAGAS for RAG: faithfulness, relevance, context recall). (4) <strong>Cost management</strong>: token-level cost tracking is critical — $0.01–0.10 per request × millions of users = real money. Optimize with semantic caching, model routing (cheap model for simple tasks), response streaming. (5) <strong>Observability</strong>: every prompt + completion logged, hallucination detection, toxicity monitoring, latency at the token generation level. (6) <strong>Security</strong>: prompt injection detection, output filtering, PII detection in completions. Traditional MLOps security was mostly access control; LLMOps security is a runtime adversarial problem.</div></div>
+
+    <div class="qa"><div class="qa-q" onclick="toggle(this)"><span class="qb">Q</span>How would you prioritize what to monitor when you have limited resources?<span class="ch">▾</span></div>
+    <div class="qa-a">Prioritization framework: (1) <strong>Monitor business impact first</strong>: the metric that matters most is the business metric the model drives. Conversion rate, fraud loss, churn. If you can only monitor one thing, monitor the downstream business KPI. (2) <strong>Prediction distribution second</strong>: requires no labels, detectable immediately, and is usually the first signal of drift. If prediction score distribution shifts significantly, something has changed. (3) <strong>Key features third</strong>: not all features are equal. Use SHAP values from training to identify the top 5–10 most impactful features — focus drift monitoring there. A drift in a low-importance feature rarely matters; a drift in the #1 feature always does. (4) <strong>System health always</strong>: latency, error rate. Non-negotiable regardless of resources. (5) <strong>Skip last</strong>: monitoring every feature equally, computing full accuracy without labels, extensive fairness reporting for low-risk models. Start minimal, add coverage as incidents teach you what matters. Each production incident should add a new monitor to prevent recurrence.</div></div>
+
+  </div><!-- /qa-wrap -->
+</section>
+
+</div><!-- /content -->
+</main>
+
+<script>
+// Intersection observer for sections
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis') });
+}, {threshold:0.05});
+document.querySelectorAll('.section').forEach(s => io.observe(s));
+
+// Active nav tracking
+const navItems = document.querySelectorAll('.navl');
+const sio = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if(e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const a = document.querySelector(`.navl[onclick*="${e.target.id}"]`);
+      if(a) a.classList.add('active');
+    }
+  });
+}, {threshold:0.25});
+document.querySelectorAll('.section').forEach(s => sio.observe(s));
+
+function go(id) {
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  if(window.innerWidth<=900) toggleMenu();
+}
+
+function toggle(el) {
+  const item = el.closest('.qa');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.qa.open').forEach(q=>q.classList.remove('open'));
+  if(!open) item.classList.add('open');
+}
+
+function toggleMenu() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('ovl').classList.toggle('show');
+}
+</script>
+</body>
+</html>

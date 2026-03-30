@@ -1,0 +1,3087 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Git Roadmap — From Beginner to Expert</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ============================================================
+   CSS CUSTOM PROPERTIES & THEMING
+   ============================================================ */
+:root {
+  --accent: #f05033;
+  --accent2: #f7931e;
+  --accent-glow: rgba(240,80,51,0.3);
+  --font-head: 'Sora', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+[data-theme="dark"] {
+  --bg: #0d0f14;
+  --bg2: #141720;
+  --bg3: #1a1e2a;
+  --bg4: #21263a;
+  --border: rgba(255,255,255,0.07);
+  --text: #e8eaf2;
+  --text2: #8892aa;
+  --text3: #5a6278;
+  --glass: rgba(20,23,32,0.85);
+  --glass-border: rgba(255,255,255,0.08);
+  --code-bg: #0a0c12;
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --card-hover: #1e2336;
+}
+
+[data-theme="light"] {
+  --bg: #f0f2f8;
+  --bg2: #ffffff;
+  --bg3: #e8ebf5;
+  --bg4: #dde0f0;
+  --border: rgba(0,0,0,0.08);
+  --text: #1a1d2e;
+  --text2: #4a5070;
+  --text3: #8892aa;
+  --glass: rgba(255,255,255,0.85);
+  --glass-border: rgba(0,0,0,0.08);
+  --code-bg: #1a1e2a;
+  --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --card-hover: #e8ebf7;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font-head);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
+
+/* ============================================================
+   SCROLL PROGRESS
+   ============================================================ */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  z-index: 9999;
+  transition: width 0.1s;
+  border-radius: 0 99px 99px 0;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+#header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+}
+
+#menu-toggle {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+  flex-shrink: 0;
+}
+#menu-toggle:hover { background: var(--bg3); }
+
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 1.1rem; font-weight: 700; letter-spacing: -0.5px;
+  flex-shrink: 0;
+  text-decoration: none; color: var(--text);
+}
+.logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #fff;
+}
+
+#search-wrap {
+  flex: 1;
+  max-width: 420px;
+  position: relative;
+}
+#search-input {
+  width: 100%;
+  padding: 9px 16px 9px 40px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 0.875rem;
+  outline: none;
+  transition: all var(--transition);
+}
+#search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: var(--bg2);
+}
+#search-input::placeholder { color: var(--text3); }
+.search-icon {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text3);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+#search-results {
+  position: absolute;
+  top: calc(100% + 8px); left: 0; right: 0;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  max-height: 320px;
+  overflow-y: auto;
+  display: none;
+  z-index: 200;
+}
+#search-results.show { display: block; }
+.search-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  display: flex; align-items: center; gap: 10px;
+  transition: background var(--transition);
+  border-bottom: 1px solid var(--border);
+}
+.search-item:last-child { border-bottom: none; }
+.search-item:hover { background: var(--bg3); }
+.search-item i { color: var(--accent); width: 16px; }
+
+.header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; }
+
+#theme-toggle, .header-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 36px; height: 36px;
+  border-radius: 99px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all var(--transition);
+}
+#theme-toggle:hover, .header-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+#progress-badge {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+#progress-badge:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+#sidebar {
+  position: fixed;
+  top: var(--header-h); left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 500;
+  transition: transform var(--transition);
+  padding: 20px 0 40px;
+}
+#sidebar.collapsed { transform: translateX(calc(-1 * var(--sidebar-w))); }
+
+.sidebar-section-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 16px 20px 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text2);
+  border-left: 3px solid transparent;
+  transition: all var(--transition);
+  position: relative;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active {
+  background: var(--bg3);
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+.nav-item i { width: 18px; text-align: center; font-size: 13px; }
+.nav-item .nav-check {
+  margin-left: auto;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.nav-item.done .nav-check {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
+}
+
+/* Overall progress in sidebar */
+.sidebar-progress {
+  margin: 12px 20px 4px;
+  background: var(--bg3);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.sidebar-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text2);
+  margin-bottom: 8px;
+}
+.sidebar-progress-bar {
+  height: 6px;
+  background: var(--bg4);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.sidebar-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 99px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* ============================================================
+   MAIN CONTENT AREA
+   ============================================================ */
+#main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  transition: margin-left var(--transition);
+  min-height: calc(100vh - var(--header-h));
+}
+#main.full { margin-left: 0; }
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+#home {
+  position: relative;
+  min-height: 95vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px 60px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(240,80,51,0.12), transparent),
+              radial-gradient(ellipse 60% 40% at 80% 80%, rgba(247,147,30,0.08), transparent);
+  pointer-events: none;
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 6px 16px;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  color: var(--text2);
+  margin-bottom: 24px;
+  animation: fadeInDown 0.6s ease both;
+}
+.hero-badge span { color: var(--accent); font-weight: 600; }
+
+.hero-title {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+.hero-title .git-word {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--text2);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  animation: fadeInUp 0.6s ease 0.2s both;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin-bottom: 50px;
+  animation: fadeInUp 0.6s ease 0.3s both;
+}
+.stat { text-align: center; }
+.stat-num {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-size: 0.78rem; color: var(--text3); margin-top: 2px; font-weight: 500; }
+
+/* Quick nav cards */
+.quick-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  max-width: 900px;
+  width: 100%;
+  animation: fadeInUp 0.6s ease 0.4s both;
+}
+.quick-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: left;
+  text-decoration: none;
+  color: var(--text);
+  display: flex; flex-direction: column; gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.quick-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.quick-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 40px var(--accent-glow);
+}
+.quick-card:hover::before { opacity: 0.05; }
+.qc-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; color: #fff;
+  position: relative;
+}
+.qc-title { font-size: 0.85rem; font-weight: 700; position: relative; }
+.qc-desc { font-size: 0.75rem; color: var(--text3); position: relative; line-height: 1.4; }
+.qc-level {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  position: relative;
+  width: fit-content;
+}
+.level-beginner { background: rgba(34,197,94,0.15); color: #22c55e; }
+.level-intermediate { background: rgba(247,147,30,0.15); color: var(--accent2); }
+.level-advanced { background: rgba(240,80,51,0.15); color: var(--accent); }
+.level-expert { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+
+/* ============================================================
+   CONTENT SECTIONS
+   ============================================================ */
+.content-section {
+  padding: 60px 48px;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.content-section.visible { opacity: 1; transform: none; }
+
+.section-header {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 32px;
+}
+.section-icon {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+.section-meta { flex: 1; }
+.section-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.section-subtitle {
+  font-size: 0.875rem;
+  color: var(--text2);
+  margin-top: 4px;
+}
+
+/* Mark complete button */
+.mark-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 8px 18px;
+  border-radius: 99px;
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.mark-btn:hover { border-color: #22c55e; color: #22c55e; }
+.mark-btn.completed {
+  background: rgba(34,197,94,0.1);
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
+/* Content cards */
+.content-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+.content-card:hover { border-color: rgba(240,80,51,0.3); }
+
+.card-header {
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.card-header h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  flex: 1;
+}
+.card-header i:first-child { color: var(--accent); font-size: 14px; }
+.card-toggle {
+  color: var(--text3);
+  font-size: 13px;
+  transition: transform var(--transition);
+}
+.card-body {
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+.card-body.open {
+  max-height: 2000px;
+  padding: 0 20px 20px;
+}
+.card-toggle.open { transform: rotate(180deg); }
+
+/* Text styles */
+p { color: var(--text2); line-height: 1.75; font-size: 0.9rem; margin-bottom: 12px; }
+p:last-child { margin-bottom: 0; }
+ul, ol { color: var(--text2); line-height: 1.75; font-size: 0.9rem; padding-left: 20px; }
+li { margin-bottom: 6px; }
+strong { color: var(--text); font-weight: 600; }
+
+/* ============================================================
+   CODE BLOCKS
+   ============================================================ */
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin: 14px 0;
+  position: relative;
+  overflow: hidden;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+}
+.code-lang {
+  font-family: var(--font-code);
+  font-size: 0.7rem;
+  color: var(--text3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.copy-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text3);
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-code);
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all var(--transition);
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { border-color: #22c55e; color: #22c55e; }
+pre {
+  padding: 16px;
+  overflow-x: auto;
+  font-family: var(--font-code);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: #e8eaf2;
+}
+.kw { color: #c792ea; }
+.cmd { color: #82aaff; }
+.str { color: #c3e88d; }
+.cmt { color: #546e7a; font-style: italic; }
+.flag { color: #ffcb6b; }
+.var { color: #f07178; }
+.num { color: #f78c6c; }
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.tab {
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text2);
+  transition: all var(--transition);
+  border: none;
+  background: none;
+  font-family: var(--font-head);
+}
+.tab.active {
+  background: var(--bg2);
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+.quiz-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 20px;
+}
+.quiz-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.quiz-q {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text2);
+  transition: all var(--transition);
+  display: flex; align-items: center; gap: 10px;
+}
+.quiz-opt:hover { border-color: var(--accent); color: var(--text); }
+.quiz-opt.correct { border-color: #22c55e; background: rgba(34,197,94,0.08); color: #22c55e; }
+.quiz-opt.wrong { border-color: #ef4444; background: rgba(239,68,68,0.08); color: #ef4444; }
+.quiz-feedback {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: rgba(34,197,94,0.1); color: #22c55e; border: 1px solid rgba(34,197,94,0.2); }
+.quiz-feedback.fail { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+
+/* ============================================================
+   INTERVIEW Q&A
+   ============================================================ */
+.iq-block {
+  background: var(--bg3);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 16px;
+  margin: 10px 0;
+}
+.iq-q {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.iq-q::before {
+  content: 'Q';
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.iq-a {
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.65;
+  display: none;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.iq-a.show { display: block; }
+.iq-toggle {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-head);
+  display: flex; align-items: center; gap: 4px;
+  transition: opacity var(--transition);
+}
+.iq-toggle:hover { opacity: 0.8; }
+
+/* ============================================================
+   DIAGRAMS
+   ============================================================ */
+.diagram {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin: 16px 0;
+  overflow-x: auto;
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+  color: #8892aa;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* SVG diagram for branching */
+.branch-diagram svg { max-width: 100%; height: auto; }
+
+/* ============================================================
+   CHEAT SHEET
+   ============================================================ */
+.cheat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.cheat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.cheat-card-head {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  padding: 10px 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex; align-items: center; gap: 8px;
+}
+.cheat-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.cheat-row:last-child { border-bottom: none; }
+.cheat-cmd {
+  font-family: var(--font-code);
+  font-size: 0.78rem;
+  color: #82aaff;
+  background: var(--bg3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.cheat-desc { font-size: 0.8rem; color: var(--text2); }
+
+/* ============================================================
+   ROADMAP TIMELINE
+   ============================================================ */
+.roadmap {
+  position: relative;
+  padding-left: 32px;
+  margin: 20px 0;
+}
+.roadmap::before {
+  content: '';
+  position: absolute;
+  left: 10px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2), #8b5cf6);
+  border-radius: 99px;
+}
+.roadmap-item {
+  position: relative;
+  margin-bottom: 28px;
+}
+.roadmap-dot {
+  position: absolute;
+  left: -28px; top: 4px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.roadmap-week {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.roadmap-item-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.roadmap-topics {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.roadmap-tag {
+  font-size: 0.73rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 3px 10px;
+  color: var(--text2);
+}
+
+/* ============================================================
+   PROGRESS DASHBOARD MODAL
+   ============================================================ */
+#progress-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+#progress-modal.show { opacity: 1; pointer-events: all; }
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+}
+.modal-box {
+  position: relative;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 540px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  transform: scale(0.96);
+  transition: transform var(--transition);
+}
+#progress-modal.show .modal-box { transform: scale(1); }
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all var(--transition);
+}
+.modal-close:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.modal-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.modal-sub { font-size: 0.875rem; color: var(--text2); margin-bottom: 24px; }
+
+.big-progress-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+.ring-wrap { position: relative; }
+.ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.ring-pct { font-size: 2rem; font-weight: 800; }
+.ring-sub { font-size: 0.75rem; color: var(--text3); }
+
+.progress-list { display: flex; flex-direction: column; gap: 8px; }
+.progress-list-item {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.875rem;
+}
+.pli-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.pli-check.done { background: #22c55e; border-color: #22c55e; color: #fff; }
+.pli-name { flex: 1; color: var(--text2); }
+.pli-done { font-size: 0.75rem; color: var(--text3); }
+.pli-done.yes { color: #22c55e; font-weight: 600; }
+
+/* ============================================================
+   BACK TO TOP
+   ============================================================ */
+#back-top {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 800;
+  box-shadow: 0 4px 16px var(--accent-glow);
+  transform: translateY(80px);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+#back-top.show { transform: translateY(0); }
+#back-top:hover { box-shadow: 0 8px 24px var(--accent-glow); }
+
+/* ============================================================
+   BENEFIT CARDS
+   ============================================================ */
+.benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+.benefit-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: all var(--transition);
+}
+.benefit-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--accent-glow);
+}
+.benefit-icon { font-size: 24px; margin-bottom: 10px; }
+.benefit-title { font-size: 0.875rem; font-weight: 700; margin-bottom: 4px; }
+.benefit-desc { font-size: 0.8rem; color: var(--text2); line-height: 1.5; }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  50% { box-shadow: 0 0 0 8px transparent; }
+}
+
+/* ============================================================
+   SIDEBAR OVERLAY (mobile)
+   ============================================================ */
+#sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 490;
+  display: none;
+  backdrop-filter: blur(4px);
+}
+#sidebar-overlay.show { display: block; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 260px; }
+  #main { margin-left: 0 !important; }
+  #sidebar { transform: translateX(calc(-1 * var(--sidebar-w))); }
+  #sidebar.open { transform: translateX(0); }
+  .content-section { padding: 40px 20px; }
+  #home { padding: 60px 20px 40px; }
+  .hero-stats { gap: 24px; }
+  .quick-cards { grid-template-columns: repeat(2, 1fr); }
+  #search-wrap { max-width: 200px; }
+}
+
+@media (max-width: 480px) {
+  .quick-cards { grid-template-columns: 1fr 1fr; }
+  .hero-title { font-size: 2.2rem; }
+  .hero-stats { gap: 16px; }
+  .stat-num { font-size: 1.5rem; }
+  #progress-badge { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Scroll Progress -->
+<div id="scroll-progress"></div>
+
+<!-- Header -->
+<header id="header">
+  <button id="menu-toggle" aria-label="Toggle Sidebar">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+  <a class="logo" href="#home">
+    <div class="logo-icon"><i class="fa-brands fa-git-alt"></i></div>
+    <span>GitRoadmap</span>
+  </a>
+  <div id="search-wrap">
+    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+    <input type="text" id="search-input" placeholder="Search commands, topics…">
+    <div id="search-results"></div>
+  </div>
+  <div class="header-actions">
+    <button id="theme-toggle" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+    <button id="progress-badge" onclick="openModal()">0% Complete</button>
+  </div>
+</header>
+
+<!-- Sidebar Overlay -->
+<div id="sidebar-overlay"></div>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div class="sidebar-progress">
+    <div class="sidebar-progress-label">
+      <span>Your Progress</span>
+      <span id="progress-text">0 / 12</span>
+    </div>
+    <div class="sidebar-progress-bar">
+      <div class="sidebar-progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
+
+  <div class="sidebar-section-title">Navigation</div>
+
+  <div class="nav-item active" data-section="home" onclick="scrollToSection('home')">
+    <i class="fa-solid fa-house"></i>
+    <span>Home</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+  
+  <div class="nav-item" onclick="openPage('git_github_guide.html')">
+    <i class="fa-solid fa-house"></i>
+    <span>Git Github Guide</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+
+  <div class="sidebar-section-title">Beginner</div>
+
+  <div class="nav-item" data-section="basics" data-id="0" onclick="scrollToSection('basics')">
+    <i class="fa-solid fa-seedling"></i>
+    <span>Git Basics</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+  <div class="nav-item" data-section="changes" data-id="1" onclick="scrollToSection('changes')">
+    <i class="fa-solid fa-code-compare"></i>
+    <span>Working with Changes</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+  <div class="nav-item" data-section="branching" data-id="2" onclick="scrollToSection('branching')">
+    <i class="fa-solid fa-code-branch"></i>
+    <span>Branching</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+
+  <div class="sidebar-section-title">Intermediate</div>
+
+  <div class="nav-item" data-section="remote" data-id="3" onclick="scrollToSection('remote')">
+    <i class="fa-brands fa-github"></i>
+    <span>Remote Repositories</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+  <div class="nav-item" data-section="collab" data-id="4" onclick="scrollToSection('collab')">
+    <i class="fa-solid fa-people-group"></i>
+    <span>Collaboration Workflow</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+  <div class="nav-item" data-section="undo" data-id="5" onclick="scrollToSection('undo')">
+    <i class="fa-solid fa-rotate-left"></i>
+    <span>Undo & Fix Mistakes</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+
+  <div class="sidebar-section-title">Advanced</div>
+
+  <div class="nav-item" data-section="adv-branch" data-id="6" onclick="scrollToSection('adv-branch')">
+    <i class="fa-solid fa-diagram-project"></i>
+    <span>Advanced Branching</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+  <div class="nav-item" data-section="stashing" data-id="7" onclick="scrollToSection('stashing')">
+    <i class="fa-solid fa-box-archive"></i>
+    <span>Stashing</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+  <div class="nav-item" data-section="tags" data-id="8" onclick="scrollToSection('tags')">
+    <i class="fa-solid fa-tag"></i>
+    <span>Tags & Releases</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+
+  <div class="sidebar-section-title">Expert</div>
+
+  <div class="nav-item" data-section="internals" data-id="9" onclick="scrollToSection('internals')">
+    <i class="fa-solid fa-microchip"></i>
+    <span>Git Internals</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+  <div class="nav-item" data-section="expert" data-id="10" onclick="scrollToSection('expert')">
+    <i class="fa-solid fa-star"></i>
+    <span>Expert Level</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+  <div class="nav-item" data-section="cheatsheet" data-id="11" onclick="scrollToSection('cheatsheet')">
+    <i class="fa-solid fa-scroll"></i>
+    <span>Cheat Sheet</span>
+    <span class="nav-check"><i class="fa-solid fa-check"></i></span>
+  </div>
+</nav>
+
+<!-- Main -->
+<main id="main">
+
+  <!-- ===== HOME ===== -->
+  <section id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-badge">
+      <i class="fa-brands fa-git-alt" style="color:var(--accent)"></i>
+      <span>2025 Edition</span> &nbsp;·&nbsp; Beginner to Expert
+    </div>
+    <h1 class="hero-title">Complete <span class="git-word">Git</span><br>Roadmap</h1>
+    <p class="hero-sub">Master version control from zero to hero. Learn every Git concept with real examples, interactive exercises, and interview-ready answers.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Modules</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">80+</div>
+        <div class="stat-label">Commands</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">40+</div>
+        <div class="stat-label">Interview Q&As</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Examples</div>
+      </div>
+    </div>
+
+    <div class="quick-cards">
+      <a class="quick-card" onclick="scrollToSection('basics')">
+        <div class="qc-icon"><i class="fa-solid fa-seedling"></i></div>
+        <div class="qc-title">Git Basics</div>
+        <div class="qc-desc">Installation, init, clone, commit</div>
+        <div class="qc-level level-beginner">Beginner</div>
+      </a>
+      <a class="quick-card" onclick="scrollToSection('branching')">
+        <div class="qc-icon"><i class="fa-solid fa-code-branch"></i></div>
+        <div class="qc-title">Branching</div>
+        <div class="qc-desc">Create, merge, switch branches</div>
+        <div class="qc-level level-beginner">Beginner</div>
+      </a>
+      <a class="quick-card" onclick="scrollToSection('remote')">
+        <div class="qc-icon"><i class="fa-brands fa-github"></i></div>
+        <div class="qc-title">Remote Repos</div>
+        <div class="qc-desc">Push, pull, fetch, GitHub</div>
+        <div class="qc-level level-intermediate">Intermediate</div>
+      </a>
+      <a class="quick-card" onclick="scrollToSection('collab')">
+        <div class="qc-icon"><i class="fa-solid fa-people-group"></i></div>
+        <div class="qc-title">Collaboration</div>
+        <div class="qc-desc">PRs, forks, code review</div>
+        <div class="qc-level level-intermediate">Intermediate</div>
+      </a>
+      <a class="quick-card" onclick="scrollToSection('adv-branch')">
+        <div class="qc-icon"><i class="fa-solid fa-diagram-project"></i></div>
+        <div class="qc-title">Advanced</div>
+        <div class="qc-desc">Rebase, cherry-pick, squash</div>
+        <div class="qc-level level-advanced">Advanced</div>
+      </a>
+      <a class="quick-card" onclick="scrollToSection('expert')">
+        <div class="qc-icon"><i class="fa-solid fa-star"></i></div>
+        <div class="qc-title">Expert Level</div>
+        <div class="qc-desc">Git Flow, monorepo, conflicts</div>
+        <div class="qc-level level-expert">Expert</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== 1. GIT BASICS ===== -->
+  <section id="basics" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-seedling"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 01</div>
+        <h2 class="section-title">Git Basics</h2>
+        <div class="section-subtitle">Installation, setup & fundamental commands</div>
+      </div>
+      <button class="mark-btn" data-id="0" onclick="toggleComplete(0, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <!-- What is Git -->
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-circle-info"></i>
+        <h3>What is Git?</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <p>Git is a <strong>distributed version control system (DVCS)</strong> created by Linus Torvalds in 2005. It tracks changes in source code and allows multiple developers to collaborate without overwriting each other's work.</p>
+        <div class="benefit-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">🔀</div>
+            <div class="benefit-title">Version Control</div>
+            <div class="benefit-desc">Track every change ever made to your codebase</div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🤝</div>
+            <div class="benefit-title">Collaboration</div>
+            <div class="benefit-desc">Multiple developers working simultaneously</div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🔄</div>
+            <div class="benefit-title">Branching</div>
+            <div class="benefit-desc">Experiment without breaking main code</div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🛡️</div>
+            <div class="benefit-title">Backup</div>
+            <div class="benefit-desc">Distributed — every clone is a full backup</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Installation -->
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-download"></i>
+        <h3>Installation & Setup</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab(this, 'install-win')">Windows</button>
+          <button class="tab" onclick="switchTab(this, 'install-mac')">macOS</button>
+          <button class="tab" onclick="switchTab(this, 'install-linux')">Linux</button>
+          <button class="tab" onclick="switchTab(this, 'install-config')">Config</button>
+        </div>
+        <div id="install-win" class="tab-content active">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+            <pre><span class="cmt"># Download from https://git-scm.com/download/win</span>
+<span class="cmt"># Or using winget:</span>
+<span class="cmd">winget install</span> <span class="str">--id Git.Git -e --source winget</span></pre>
+          </div>
+        </div>
+        <div id="install-mac" class="tab-content">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+            <pre><span class="cmt"># Using Homebrew</span>
+<span class="cmd">brew install</span> git
+
+<span class="cmt"># Or using Xcode Command Line Tools</span>
+<span class="cmd">xcode-select</span> <span class="flag">--install</span></pre>
+          </div>
+        </div>
+        <div id="install-linux" class="tab-content">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+            <pre><span class="cmt"># Ubuntu/Debian</span>
+<span class="cmd">sudo apt-get install</span> git
+
+<span class="cmt"># Fedora/RHEL</span>
+<span class="cmd">sudo dnf install</span> git</pre>
+          </div>
+        </div>
+        <div id="install-config" class="tab-content">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+            <pre><span class="cmt"># Set your identity (required)</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> user.name <span class="str">"Your Name"</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> user.email <span class="str">"you@example.com"</span>
+
+<span class="cmt"># Set default branch name</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> init.defaultBranch main
+
+<span class="cmt"># Verify settings</span>
+<span class="cmd">git config</span> <span class="flag">--list</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Basic Commands -->
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-terminal"></i>
+        <h3>Core Commands</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmd">git init</span>               <span class="cmt"># Initialize new repo</span>
+<span class="cmd">git clone</span> <span class="str">&lt;url&gt;</span>        <span class="cmt"># Clone remote repository</span>
+<span class="cmd">git status</span>             <span class="cmt"># Show working tree status</span>
+<span class="cmd">git add</span> <span class="str">&lt;file&gt;</span>         <span class="cmt"># Stage a file</span>
+<span class="cmd">git add</span> <span class="flag">.</span>             <span class="cmt"># Stage all changes</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"message"</span> <span class="cmt"># Commit staged changes</span>
+<span class="cmd">git commit</span> <span class="flag">-am</span> <span class="str">"msg"</span>  <span class="cmt"># Stage tracked + commit</span></pre>
+        </div>
+
+        <p><strong>Example: Initialize a repo and make your first commit</strong></p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash — step by step</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># 1. Create project directory</span>
+<span class="cmd">mkdir</span> my-project && <span class="cmd">cd</span> my-project
+
+<span class="cmt"># 2. Initialize git repository</span>
+<span class="cmd">git init</span>
+<span class="cmt"># Output: Initialized empty Git repository in .git/</span>
+
+<span class="cmt"># 3. Create a file</span>
+<span class="cmd">echo</span> <span class="str">"# My Project"</span> > README.md
+
+<span class="cmt"># 4. Check status</span>
+<span class="cmd">git status</span>
+<span class="cmt"># Output: Untracked files: README.md</span>
+
+<span class="cmt"># 5. Stage the file</span>
+<span class="cmd">git add</span> README.md
+
+<span class="cmt"># 6. Make first commit</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"Initial commit: add README"</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interview Questions -->
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Interview Questions</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="iq-block">
+          <div class="iq-q">What is Git and how does it differ from other VCS?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">Git is a distributed version control system (DVCS). Unlike centralized VCS (SVN, CVS), every developer has a full copy of the repository including its history. This enables offline work, faster operations (most are local), and no single point of failure. Git uses snapshots rather than delta-based storage.</div>
+        </div>
+        <div class="iq-block">
+          <div class="iq-q">What is the difference between Git and GitHub?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">Git is the version control system — the tool installed on your computer. GitHub is a cloud-based hosting service for Git repositories. GitHub adds collaboration features (pull requests, issues, CI/CD, GitHub Actions) on top of Git. Alternatives to GitHub include GitLab and Bitbucket.</div>
+        </div>
+        <div class="iq-block">
+          <div class="iq-q">What does git init do vs git clone?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a"><strong>git init</strong> creates a brand-new empty repository in the current directory (creates a .git folder). <strong>git clone &lt;url&gt;</strong> copies an existing repository from a remote server including all history, branches, and files.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Git Basics</div>
+      <div class="quiz-q">Which command stages ALL changed files for the next commit?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git commit .</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> git add .</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git stage all</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git push .</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 2. WORKING WITH CHANGES ===== -->
+  <section id="changes" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-code-compare"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 02</div>
+        <h2 class="section-title">Working with Changes</h2>
+        <div class="section-subtitle">Staging, diffs, logs and history</div>
+      </div>
+      <button class="mark-btn" data-id="1" onclick="toggleComplete(1, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-layer-group"></i>
+        <h3>The Three Trees</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="diagram">
+┌──────────────────┐    git add    ┌──────────────────┐   git commit  ┌──────────────────┐
+│  Working Directory│  ──────────► │   Staging Area    │  ──────────► │   Repository     │
+│  (your files)    │              │   (Index)         │              │   (.git folder)  │
+│                  │ ◄──────────  │                   │ ◄──────────  │                  │
+└──────────────────┘  git restore └──────────────────┘ git restore  └──────────────────┘
+                                                         --staged
+        </div>
+        <ul>
+          <li><strong>Working Directory</strong> — Your actual project files. Files can be modified, untracked, or ignored.</li>
+          <li><strong>Staging Area (Index)</strong> — A preview of your next commit. You selectively add changes here.</li>
+          <li><strong>Repository</strong> — The .git database. Committed history lives here permanently.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-terminal"></i>
+        <h3>Viewing Changes: diff, log, show</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># Show unstaged changes</span>
+<span class="cmd">git diff</span>
+
+<span class="cmt"># Show staged changes (ready to commit)</span>
+<span class="cmd">git diff</span> <span class="flag">--staged</span>
+
+<span class="cmt"># Show commit history</span>
+<span class="cmd">git log</span>
+
+<span class="cmt"># Compact one-line log</span>
+<span class="cmd">git log</span> <span class="flag">--oneline --graph --all</span>
+
+<span class="cmt"># Show specific commit details</span>
+<span class="cmd">git show</span> <span class="str">&lt;commit-hash&gt;</span>
+
+<span class="cmt"># Who changed what and when</span>
+<span class="cmd">git blame</span> <span class="str">filename.js</span></pre>
+        </div>
+
+        <p><strong>Example: Track file changes step-by-step</strong></p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># Modify a file</span>
+<span class="cmd">echo</span> <span class="str">"New feature"</span> >> app.js
+
+<span class="cmt"># See what changed (unstaged)</span>
+<span class="cmd">git diff</span>
+<span class="cmt"># Output: + New feature</span>
+
+<span class="cmt"># Stage the change</span>
+<span class="cmd">git add</span> app.js
+
+<span class="cmt"># See what's staged</span>
+<span class="cmd">git diff</span> <span class="flag">--staged</span>
+
+<span class="cmt"># Commit it</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"feat: add new feature"</span>
+
+<span class="cmt"># View history</span>
+<span class="cmd">git log</span> <span class="flag">--oneline</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Interview Questions</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body">
+        <div class="iq-block">
+          <div class="iq-q">What is the staging area in Git?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">The staging area (also called the Index) is an intermediate zone between the working directory and the repository. It lets you selectively choose which changes to include in your next commit. This is powerful because you can work on multiple things and only commit related changes together.</div>
+        </div>
+        <div class="iq-block">
+          <div class="iq-q">What does git diff do and what are its variants?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a"><strong>git diff</strong> shows changes between working directory and staging area (unstaged changes). <strong>git diff --staged</strong> shows changes between staging area and last commit. <strong>git diff HEAD</strong> shows all changes since last commit. <strong>git diff branch1 branch2</strong> compares two branches.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Changes</div>
+      <div class="quiz-q">Which command shows changes that are staged (ready to commit)?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git diff</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> git diff --staged</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git status --diff</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git log --changes</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 3. BRANCHING ===== -->
+  <section id="branching" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-code-branch"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 03</div>
+        <h2 class="section-title">Branching</h2>
+        <div class="section-subtitle">Create, switch, merge branches like a pro</div>
+      </div>
+      <button class="mark-btn" data-id="2" onclick="toggleComplete(2, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-diagram-project"></i>
+        <h3>What Are Branches?</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <p>A branch is a lightweight, movable pointer to a commit. Branching lets you diverge from the main line of development and work independently without affecting others.</p>
+        <!-- SVG Branch Diagram -->
+        <div class="branch-diagram" style="margin:16px 0;">
+          <svg viewBox="0 0 600 180" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#f05033"/>
+              </marker>
+            </defs>
+            <!-- Main branch line -->
+            <line x1="40" y1="90" x2="560" y2="90" stroke="#5a6278" stroke-width="2" stroke-dasharray="4"/>
+            <!-- Commits on main -->
+            <circle cx="80" cy="90" r="12" fill="#f05033" stroke="#f05033" stroke-width="2"/>
+            <text x="80" y="94" text-anchor="middle" fill="#fff" font-size="9" font-family="JetBrains Mono">A</text>
+            <circle cx="180" cy="90" r="12" fill="#f05033" stroke="#f05033" stroke-width="2"/>
+            <text x="180" y="94" text-anchor="middle" fill="#fff" font-size="9" font-family="JetBrains Mono">B</text>
+            <circle cx="280" cy="90" r="12" fill="#546e7a" stroke="#546e7a" stroke-width="2"/>
+            <text x="280" y="94" text-anchor="middle" fill="#fff" font-size="9" font-family="JetBrains Mono">C</text>
+            <!-- Feature branch -->
+            <line x1="280" y1="90" x2="380" y2="40" stroke="#82aaff" stroke-width="2"/>
+            <line x1="380" y1="40" x2="480" y2="40" stroke="#82aaff" stroke-width="2"/>
+            <circle cx="380" cy="40" r="12" fill="#82aaff" stroke="#82aaff" stroke-width="2"/>
+            <text x="380" y="44" text-anchor="middle" fill="#fff" font-size="9" font-family="JetBrains Mono">D</text>
+            <circle cx="480" cy="40" r="12" fill="#82aaff" stroke="#82aaff" stroke-width="2"/>
+            <text x="480" y="44" text-anchor="middle" fill="#fff" font-size="9" font-family="JetBrains Mono">E</text>
+            <!-- Merge back -->
+            <line x1="480" y1="40" x2="540" y2="90" stroke="#22c55e" stroke-width="2"/>
+            <circle cx="540" cy="90" r="12" fill="#22c55e" stroke="#22c55e" stroke-width="2"/>
+            <text x="540" y="94" text-anchor="middle" fill="#fff" font-size="9" font-family="JetBrains Mono">M</text>
+            <!-- Labels -->
+            <text x="140" y="115" fill="#8892aa" font-size="10" font-family="Sora">main</text>
+            <text x="420" y="25" fill="#82aaff" font-size="10" font-family="Sora">feature/login</text>
+            <text x="510" y="115" fill="#22c55e" font-size="10" font-family="Sora">merge</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-terminal"></i>
+        <h3>Branch Commands</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># List all branches</span>
+<span class="cmd">git branch</span>
+
+<span class="cmt"># Create a new branch</span>
+<span class="cmd">git branch</span> <span class="str">feature/login</span>
+
+<span class="cmt"># Switch to branch (old way)</span>
+<span class="cmd">git checkout</span> <span class="str">feature/login</span>
+
+<span class="cmt"># Switch to branch (modern way)</span>
+<span class="cmd">git switch</span> <span class="str">feature/login</span>
+
+<span class="cmt"># Create AND switch in one command</span>
+<span class="cmd">git switch</span> <span class="flag">-c</span> <span class="str">feature/login</span>
+
+<span class="cmt"># Merge branch into current branch</span>
+<span class="cmd">git merge</span> <span class="str">feature/login</span>
+
+<span class="cmt"># Delete a merged branch</span>
+<span class="cmd">git branch</span> <span class="flag">-d</span> <span class="str">feature/login</span>
+
+<span class="cmt"># Force delete unmerged branch</span>
+<span class="cmd">git branch</span> <span class="flag">-D</span> <span class="str">feature/login</span></pre>
+        </div>
+
+        <p><strong>Example: Create a feature branch and merge it</strong></p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># 1. Create and switch to feature branch</span>
+<span class="cmd">git switch</span> <span class="flag">-c</span> <span class="str">feature/user-auth</span>
+
+<span class="cmt"># 2. Make your changes and commit</span>
+<span class="cmd">git add</span> <span class="flag">.</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"feat: add user authentication"</span>
+
+<span class="cmt"># 3. Switch back to main</span>
+<span class="cmd">git switch</span> main
+
+<span class="cmt"># 4. Merge feature branch</span>
+<span class="cmd">git merge</span> <span class="str">feature/user-auth</span>
+
+<span class="cmt"># 5. Delete the feature branch</span>
+<span class="cmd">git branch</span> <span class="flag">-d</span> <span class="str">feature/user-auth</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Interview Questions</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body">
+        <div class="iq-block">
+          <div class="iq-q">What is a branch in Git?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">A branch in Git is a lightweight movable pointer to a specific commit. When you create a new branch, Git creates a new pointer — it doesn't copy files. The default branch is typically called "main" (or "master" in older repos). HEAD is a special pointer that tells Git which branch you're currently on.</div>
+        </div>
+        <div class="iq-block">
+          <div class="iq-q">What is the difference between merge and rebase?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a"><strong>Merge</strong> integrates two branches by creating a new "merge commit," preserving full history. <strong>Rebase</strong> replays your commits on top of another branch, creating a linear history. Merge is safer for shared branches; rebase is preferred for feature branches to keep history clean. Never rebase public/shared branches.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Branching</div>
+      <div class="quiz-q">Which command creates a new branch AND switches to it in one step?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git branch -new feature</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git checkout --branch feature</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> git switch -c feature</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git create feature</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 4. REMOTE REPOSITORIES ===== -->
+  <section id="remote" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-brands fa-github"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 04</div>
+        <h2 class="section-title">Remote Repositories</h2>
+        <div class="section-subtitle">Push, pull, fetch — collaborate via GitHub/GitLab</div>
+      </div>
+      <button class="mark-btn" data-id="3" onclick="toggleComplete(3, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-terminal"></i>
+        <h3>Remote Commands</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># Add a remote</span>
+<span class="cmd">git remote add</span> origin <span class="str">https://github.com/user/repo.git</span>
+
+<span class="cmt"># List remotes</span>
+<span class="cmd">git remote</span> <span class="flag">-v</span>
+
+<span class="cmt"># Push to remote (first time)</span>
+<span class="cmd">git push</span> <span class="flag">-u</span> origin main
+
+<span class="cmt"># Push to remote (after tracking is set)</span>
+<span class="cmd">git push</span>
+
+<span class="cmt"># Fetch without merging</span>
+<span class="cmd">git fetch</span> origin
+
+<span class="cmt"># Pull (fetch + merge)</span>
+<span class="cmd">git pull</span> origin main
+
+<span class="cmt"># Pull with rebase</span>
+<span class="cmd">git pull</span> <span class="flag">--rebase</span> origin main</pre>
+        </div>
+
+        <p><strong>Example: Push a local repo to GitHub</strong></p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># 1. Create repo on GitHub (via website), then:</span>
+<span class="cmd">git remote add</span> origin <span class="str">https://github.com/youruser/project.git</span>
+
+<span class="cmt"># 2. Rename branch to main (if needed)</span>
+<span class="cmd">git branch</span> <span class="flag">-M</span> main
+
+<span class="cmt"># 3. Push and set upstream tracking</span>
+<span class="cmd">git push</span> <span class="flag">-u</span> origin main
+
+<span class="cmt"># 4. Future pushes are just:</span>
+<span class="cmd">git push</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Interview Questions</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body">
+        <div class="iq-block">
+          <div class="iq-q">What is the difference between git fetch and git pull?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a"><strong>git fetch</strong> downloads changes from the remote but does NOT integrate them into your working branch. Your local work is untouched. <strong>git pull</strong> is essentially git fetch + git merge — it downloads AND merges remote changes into your current branch. Use fetch when you want to review changes before merging.</div>
+        </div>
+        <div class="iq-block">
+          <div class="iq-q">What does git push -u origin main do?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">The -u flag sets the upstream tracking reference. This means future git push and git pull commands will automatically know which remote branch to use without specifying origin main each time. It links your local main branch to origin/main.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Remote</div>
+      <div class="quiz-q">git pull is equivalent to which two commands?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git push + git merge</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> git fetch + git merge</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git clone + git merge</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git fetch + git rebase</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 5. COLLABORATION ===== -->
+  <section id="collab" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-people-group"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 05</div>
+        <h2 class="section-title">Collaboration Workflow</h2>
+        <div class="section-subtitle">Pull requests, forks, code reviews</div>
+      </div>
+      <button class="mark-btn" data-id="4" onclick="toggleComplete(4, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-code-pull-request"></i>
+        <h3>Pull Requests & Forking</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <p>A <strong>Pull Request (PR)</strong> is a GitHub/GitLab feature to propose changes. It enables code review before merging into the main branch. A <strong>Fork</strong> is a personal copy of someone else's repository — standard for open source contributions.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash — fork-based workflow</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># 1. Fork on GitHub UI, then clone your fork</span>
+<span class="cmd">git clone</span> <span class="str">https://github.com/YOU/project.git</span>
+<span class="cmd">cd</span> project
+
+<span class="cmt"># 2. Add the original as upstream</span>
+<span class="cmd">git remote add</span> upstream <span class="str">https://github.com/ORIGINAL/project.git</span>
+
+<span class="cmt"># 3. Create your feature branch</span>
+<span class="cmd">git switch</span> <span class="flag">-c</span> <span class="str">fix/typo-in-readme</span>
+
+<span class="cmt"># 4. Make changes, commit, push to your fork</span>
+<span class="cmd">git add</span> <span class="flag">.</span> && <span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"fix: correct typo"</span>
+<span class="cmd">git push</span> origin <span class="str">fix/typo-in-readme</span>
+
+<span class="cmt"># 5. Open a Pull Request on GitHub UI</span>
+<span class="cmt"># 6. Keep your fork in sync with upstream</span>
+<span class="cmd">git fetch</span> upstream
+<span class="cmd">git merge</span> upstream/main</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Interview Questions</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body">
+        <div class="iq-block">
+          <div class="iq-q">What is a pull request and why is it important?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">A pull request is a way to propose changes to a codebase. It notifies team members of pushed changes and allows them to review, discuss, and request modifications before the code is merged. PRs are fundamental to modern collaborative development — they catch bugs, enforce standards, and share knowledge. Despite the name, it's really a request to "merge" not to "pull."</div>
+        </div>
+        <div class="iq-block">
+          <div class="iq-q">What is the difference between a fork and a branch?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">A <strong>branch</strong> exists within the same repository. A <strong>fork</strong> is a complete copy of the repository under your own account. Branches are used within a team on the same repo; forks are used when contributing to projects you don't have write access to (open source). Both ultimately use PRs to integrate changes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Collaboration</div>
+      <div class="quiz-q">What is a fork in Git/GitHub?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> A type of merge conflict</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Another name for a branch</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> A personal copy of someone else's repository</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> A special commit type</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 6. UNDO & FIX ===== -->
+  <section id="undo" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-rotate-left"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 06</div>
+        <h2 class="section-title">Undo & Fix Mistakes</h2>
+        <div class="section-subtitle">reset, revert, restore — never lose your work</div>
+      </div>
+      <button class="mark-btn" data-id="5" onclick="toggleComplete(5, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-terminal"></i>
+        <h3>Reset, Revert, Restore</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># --- RESTORE (safe, no history change) ---</span>
+<span class="cmt"># Discard working directory changes</span>
+<span class="cmd">git restore</span> <span class="str">filename.js</span>
+
+<span class="cmt"># Unstage a file (keep changes)</span>
+<span class="cmd">git restore</span> <span class="flag">--staged</span> <span class="str">filename.js</span>
+
+<span class="cmt"># --- REVERT (safe, creates new commit) ---</span>
+<span class="cmt"># Undo a commit by creating a new "undo" commit</span>
+<span class="cmd">git revert</span> <span class="str">HEAD</span>
+<span class="cmd">git revert</span> <span class="str">&lt;commit-hash&gt;</span>
+
+<span class="cmt"># --- RESET (destructive!) ---</span>
+<span class="cmt"># Soft: moves HEAD, keeps staging + files</span>
+<span class="cmd">git reset</span> <span class="flag">--soft</span> HEAD~1
+
+<span class="cmt"># Mixed (default): unstages, keeps files</span>
+<span class="cmd">git reset</span> HEAD~1
+
+<span class="cmt"># Hard: DESTROYS changes — use with caution!</span>
+<span class="cmd">git reset</span> <span class="flag">--hard</span> HEAD~1</pre>
+        </div>
+
+        <p><strong>Example: Undo last commit safely</strong></p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># Option 1: Keep changes, unstage them</span>
+<span class="cmd">git reset</span> <span class="flag">--soft</span> HEAD~1
+<span class="cmt"># Changes are still staged — re-commit when ready</span>
+
+<span class="cmt"># Option 2: Keep files, unstage everything</span>
+<span class="cmd">git reset</span> HEAD~1
+<span class="cmt"># Files are modified but unstaged</span>
+
+<span class="cmt"># Option 3: Create a safe "undo" commit (for pushed commits)</span>
+<span class="cmd">git revert</span> HEAD
+<span class="cmt"># Creates a new commit that undoes the last one</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Interview Questions</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body">
+        <div class="iq-block">
+          <div class="iq-q">What is the difference between git reset and git revert?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a"><strong>git reset</strong> rewrites commit history by moving the HEAD pointer backward — it modifies history, making it dangerous for shared branches. <strong>git revert</strong> creates a NEW commit that is the inverse of the target commit, preserving history. Always use revert on shared/public branches, and reset only on local/private branches.</div>
+        </div>
+        <div class="iq-block">
+          <div class="iq-q">What is the difference between --soft, --mixed, and --hard reset?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a"><strong>--soft</strong>: moves HEAD only. Changes remain staged. <strong>--mixed</strong> (default): moves HEAD and unstages changes. Files are unmodified. <strong>--hard</strong>: moves HEAD, unstages, AND discards all changes. Files are reset to match the commit. Hard reset is the most destructive.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Undo</div>
+      <div class="quiz-q">Which is the SAFE way to undo a commit that has been pushed to a shared remote?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git reset --hard HEAD~1</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git reset --soft HEAD~1</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> git revert HEAD</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git restore HEAD</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 7. ADVANCED BRANCHING ===== -->
+  <section id="adv-branch" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-diagram-project"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 07</div>
+        <h2 class="section-title">Advanced Branching</h2>
+        <div class="section-subtitle">Rebase, cherry-pick, squash commits</div>
+      </div>
+      <button class="mark-btn" data-id="6" onclick="toggleComplete(6, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-terminal"></i>
+        <h3>Rebase, Cherry-pick & Squash</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># --- REBASE ---</span>
+<span class="cmt"># Rebase current branch onto main</span>
+<span class="cmd">git rebase</span> main
+
+<span class="cmt"># Interactive rebase — edit last 3 commits</span>
+<span class="cmd">git rebase</span> <span class="flag">-i</span> HEAD~3
+
+<span class="cmt"># --- CHERRY-PICK ---</span>
+<span class="cmt"># Apply a specific commit from another branch</span>
+<span class="cmd">git cherry-pick</span> <span class="str">&lt;commit-hash&gt;</span>
+
+<span class="cmt"># Cherry-pick a range of commits</span>
+<span class="cmd">git cherry-pick</span> <span class="str">abc123..def456</span>
+
+<span class="cmt"># --- SQUASH (via interactive rebase) ---</span>
+<span class="cmt"># Opens editor: change 'pick' to 'squash' (s)</span>
+<span class="cmd">git rebase</span> <span class="flag">-i</span> HEAD~4
+<span class="cmt"># In editor: pick, squash, squash, squash</span>
+<span class="cmt"># This combines 4 commits into 1</span></pre>
+        </div>
+
+        <p><strong>Example: Rebase a feature branch onto main</strong></p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># 1. Make sure main is up to date</span>
+<span class="cmd">git switch</span> main && <span class="cmd">git pull</span>
+
+<span class="cmt"># 2. Switch to your feature branch</span>
+<span class="cmd">git switch</span> <span class="str">feature/my-feature</span>
+
+<span class="cmt"># 3. Rebase onto main</span>
+<span class="cmd">git rebase</span> main
+<span class="cmt"># Your commits are now "replayed" on top of main</span>
+
+<span class="cmt"># 4. Resolve any conflicts if they arise</span>
+<span class="cmt"># Then: git add . && git rebase --continue</span>
+
+<span class="cmt"># 5. Force push (ONLY if this is YOUR branch)</span>
+<span class="cmd">git push</span> <span class="flag">--force-with-lease</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Interview Questions</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body">
+        <div class="iq-block">
+          <div class="iq-q">When should you use rebase vs merge?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">Use <strong>merge</strong> when integrating feature branches into main — it preserves the historical context of when branches diverged. Use <strong>rebase</strong> on your own local feature branch to incorporate upstream changes, keeping history linear and clean. Golden rule: never rebase a branch that others are working on.</div>
+        </div>
+        <div class="iq-block">
+          <div class="iq-q">What is cherry-pick used for?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">Cherry-pick applies a specific commit from one branch to another without merging the whole branch. Use cases: applying a hotfix to multiple release branches, pulling a specific bug fix without taking all other changes from a feature branch, or rescuing work from a branch that's been abandoned.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Advanced Branching</div>
+      <div class="quiz-q">What does git cherry-pick do?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Merges an entire branch</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> Applies a specific commit to the current branch</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Deletes unwanted commits</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Picks files to stage</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 8. STASHING ===== -->
+  <section id="stashing" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-box-archive"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 08</div>
+        <h2 class="section-title">Stashing</h2>
+        <div class="section-subtitle">Save work temporarily without committing</div>
+      </div>
+      <button class="mark-btn" data-id="7" onclick="toggleComplete(7, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-terminal"></i>
+        <h3>Stash Commands</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># Stash current changes</span>
+<span class="cmd">git stash</span>
+
+<span class="cmt"># Stash with a description</span>
+<span class="cmd">git stash push</span> <span class="flag">-m</span> <span class="str">"WIP: user profile page"</span>
+
+<span class="cmt"># Also stash untracked files</span>
+<span class="cmd">git stash</span> <span class="flag">-u</span>
+
+<span class="cmt"># List all stashes</span>
+<span class="cmd">git stash list</span>
+
+<span class="cmt"># Apply most recent stash (keeps it in list)</span>
+<span class="cmd">git stash apply</span>
+
+<span class="cmt"># Apply AND remove from stash list</span>
+<span class="cmd">git stash pop</span>
+
+<span class="cmt"># Apply a specific stash</span>
+<span class="cmd">git stash apply</span> <span class="str">stash@{2}</span>
+
+<span class="cmt"># Drop a stash</span>
+<span class="cmd">git stash drop</span> <span class="str">stash@{0}</span>
+
+<span class="cmt"># Clear all stashes</span>
+<span class="cmd">git stash clear</span></pre>
+        </div>
+
+        <p><strong>Example: Switch branches without losing work</strong></p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># You're mid-work on feature branch when urgent bug comes in</span>
+<span class="cmd">git stash push</span> <span class="flag">-m</span> <span class="str">"WIP: dashboard redesign"</span>
+
+<span class="cmt"># Switch to main, fix the bug</span>
+<span class="cmd">git switch</span> main
+<span class="cmt"># ...fix bug, commit...</span>
+
+<span class="cmt"># Return to feature branch</span>
+<span class="cmd">git switch</span> <span class="str">feature/dashboard</span>
+
+<span class="cmt"># Restore your stashed work</span>
+<span class="cmd">git stash pop</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Interview Questions</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body">
+        <div class="iq-block">
+          <div class="iq-q">What is git stash and when would you use it?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">git stash temporarily shelves (stashes) changes you've made to your working directory so you can switch context without committing incomplete work. Common scenarios: you need to switch branches to fix an urgent bug, pull new changes (to avoid conflicts), or test something on a clean state. The stash is a stack, so you can have multiple stashes.</div>
+        </div>
+        <div class="iq-block">
+          <div class="iq-q">What is the difference between git stash pop and git stash apply?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">Both apply the stash to the working directory. <strong>git stash pop</strong> applies AND removes it from the stash list. <strong>git stash apply</strong> applies it but keeps it in the stash list. Use apply when you want to apply the same stash to multiple branches.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Stashing</div>
+      <div class="quiz-q">Which command applies the most recent stash AND removes it from the stash list?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git stash apply</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> git stash pop</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git stash get</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git stash restore</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 9. TAGS ===== -->
+  <section id="tags" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-tag"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 09</div>
+        <h2 class="section-title">Tags & Releases</h2>
+        <div class="section-subtitle">Version your software with semantic tagging</div>
+      </div>
+      <button class="mark-btn" data-id="8" onclick="toggleComplete(8, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-terminal"></i>
+        <h3>Tag Commands</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <p>Tags mark specific commits as important — typically release points (v1.0.0). There are two types: <strong>lightweight</strong> (just a pointer) and <strong>annotated</strong> (with metadata — preferred for releases).</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># Create annotated tag (recommended)</span>
+<span class="cmd">git tag</span> <span class="flag">-a</span> v1.0.0 <span class="flag">-m</span> <span class="str">"Release version 1.0.0"</span>
+
+<span class="cmt"># Lightweight tag (no metadata)</span>
+<span class="cmd">git tag</span> v1.0.0-lw
+
+<span class="cmt"># Tag a specific past commit</span>
+<span class="cmd">git tag</span> <span class="flag">-a</span> v0.9.0 <span class="str">&lt;commit-hash&gt;</span> <span class="flag">-m</span> <span class="str">"Beta release"</span>
+
+<span class="cmt"># List all tags</span>
+<span class="cmd">git tag</span>
+
+<span class="cmt"># Show tag details</span>
+<span class="cmd">git show</span> v1.0.0
+
+<span class="cmt"># Push a tag to remote</span>
+<span class="cmd">git push</span> origin v1.0.0
+
+<span class="cmt"># Push ALL tags</span>
+<span class="cmd">git push</span> origin <span class="flag">--tags</span>
+
+<span class="cmt"># Delete a tag locally</span>
+<span class="cmd">git tag</span> <span class="flag">-d</span> v1.0.0
+
+<span class="cmt"># Delete remote tag</span>
+<span class="cmd">git push</span> origin <span class="flag">--delete</span> v1.0.0</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-briefcase"></i>
+        <h3>Interview Questions</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body">
+        <div class="iq-block">
+          <div class="iq-q">What are tags in Git and what are the two types?</div>
+          <button class="iq-toggle" onclick="toggleIQ(this)"><i class="fa-solid fa-eye"></i> Show Answer</button>
+          <div class="iq-a">Tags are references pointing to specific commits, used to mark release points. <strong>Lightweight tags</strong> are just a name pointing to a commit (like a branch that doesn't move). <strong>Annotated tags</strong> are stored as full objects in the Git database and contain tagger name, email, date, and a message. Annotated tags are recommended for releases as they include more metadata and can be signed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Tags</div>
+      <div class="quiz-q">Which command creates an annotated tag for v2.0.0?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git tag v2.0.0</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> git tag -a v2.0.0 -m "Release"</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git release v2.0.0</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> git annotate v2.0.0</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 10. INTERNALS ===== -->
+  <section id="internals" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-microchip"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 10</div>
+        <h2 class="section-title">Git Internals</h2>
+        <div class="section-subtitle">Blobs, trees, commits and the HEAD pointer</div>
+      </div>
+      <button class="mark-btn" data-id="9" onclick="toggleComplete(9, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-database"></i>
+        <h3>Git Object Model</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <p>Git is fundamentally a content-addressable filesystem. Everything is an <strong>object</strong> stored in <code>.git/objects/</code>, identified by a SHA-1 hash.</p>
+        <div class="benefit-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">📄</div>
+            <div class="benefit-title">Blob</div>
+            <div class="benefit-desc">Stores file content. No filename, just content. Two identical files share one blob.</div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🌳</div>
+            <div class="benefit-title">Tree</div>
+            <div class="benefit-desc">Represents a directory. Points to blobs and other trees with filenames.</div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">📦</div>
+            <div class="benefit-title">Commit</div>
+            <div class="benefit-desc">Points to a tree (snapshot), parent commits, author, and message.</div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">🏷️</div>
+            <div class="benefit-title">Tag Object</div>
+            <div class="benefit-desc">Annotated tag — points to a commit with metadata.</div>
+          </div>
+        </div>
+
+        <div class="diagram">
+HEAD → main → Commit [abc123]
+                  │
+                  ├── tree [def456]  (root directory)
+                  │       ├── blob [aaa111] → README.md
+                  │       ├── blob [bbb222] → app.js
+                  │       └── tree [ccc333] → src/
+                  │               └── blob [ddd444] → index.js
+                  │
+                  └── parent: [prev-commit]
+        </div>
+
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash — inspect internals</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># See HEAD position</span>
+<span class="cmd">cat</span> .git/HEAD
+
+<span class="cmt"># Show object type</span>
+<span class="cmd">git cat-file</span> <span class="flag">-t</span> <span class="str">&lt;hash&gt;</span>
+
+<span class="cmt"># Show object contents</span>
+<span class="cmd">git cat-file</span> <span class="flag">-p</span> <span class="str">&lt;hash&gt;</span>
+
+<span class="cmt"># List tree contents</span>
+<span class="cmd">git ls-tree</span> HEAD</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Internals</div>
+      <div class="quiz-q">What type of Git object stores raw file content?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Tree</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> Blob</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Commit</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Tag</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 11. EXPERT ===== -->
+  <section id="expert" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-star"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Module 11</div>
+        <h2 class="section-title">Expert Level</h2>
+        <div class="section-subtitle">Merge conflicts, Git workflows, best practices</div>
+      </div>
+      <button class="mark-btn" data-id="10" onclick="toggleComplete(10, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <h3>Merge Conflict Resolution</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <p>Merge conflicts occur when two branches modify the same line of a file. Git marks the conflicting sections and you must resolve manually.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">conflict markers</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"><<<<<<< HEAD (current branch)</span>
+<span class="str">const greeting = "Hello, World!";</span>
+<span class="cmt">======= (separator)</span>
+<span class="var">const greeting = "Hi there!";</span>
+<span class="cmt">>>>>>>> feature/greeting (incoming branch)</span></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash — resolve flow</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+          <pre><span class="cmt"># 1. Attempt merge</span>
+<span class="cmd">git merge</span> feature/greeting
+<span class="cmt"># CONFLICT! Open file and resolve markers manually</span>
+
+<span class="cmt"># 2. Edit file to keep the right version, then:</span>
+<span class="cmd">git add</span> <span class="str">filename.js</span>
+
+<span class="cmt"># 3. Complete the merge</span>
+<span class="cmd">git commit</span>
+<span class="cmt"># Git auto-generates a merge commit message</span>
+
+<span class="cmt"># Abort a merge in progress</span>
+<span class="cmd">git merge</span> <span class="flag">--abort</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-sitemap"></i>
+        <h3>Git Workflows</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab(this, 'wf-gitflow')">Git Flow</button>
+          <button class="tab" onclick="switchTab(this, 'wf-trunk')">Trunk-Based</button>
+          <button class="tab" onclick="switchTab(this, 'wf-monorepo')">Monorepo</button>
+        </div>
+        <div id="wf-gitflow" class="tab-content active">
+          <p><strong>Git Flow</strong> uses two main branches: <code>main</code> (production) and <code>develop</code> (integration). Feature, release, and hotfix branches serve specific purposes.</p>
+          <div class="diagram">Branches: main, develop, feature/*, release/*, hotfix/*
+
+main ──────────────────────────────────► v1.0 ── v1.1
+       ↑                                    ↑
+develop ──── feature/A ──────────────► release/1.1
+                  └── feature/B ──┘         │
+                                       hotfix/bug ──┘</div>
+          <ul>
+            <li>Feature branches from <code>develop</code></li>
+            <li>Release branches for stabilization</li>
+            <li>Hotfix branches from <code>main</code></li>
+            <li>Best for scheduled release cycles</li>
+          </ul>
+        </div>
+        <div id="wf-trunk" class="tab-content">
+          <p><strong>Trunk-Based Development</strong> — everyone commits to a single main branch (trunk) with very short-lived branches. Relies heavily on feature flags.</p>
+          <div class="diagram">main ─── A ─── B ─── C ─── D ─── E ──►
+                   └─ feat ─┘
+                        (max 1-2 days)</div>
+          <ul>
+            <li>Continuous integration is mandatory</li>
+            <li>Feature flags control unfinished features</li>
+            <li>Small, frequent commits reduce conflicts</li>
+            <li>Best for high-velocity CI/CD teams</li>
+          </ul>
+        </div>
+        <div id="wf-monorepo" class="tab-content">
+          <p><strong>Monorepo</strong> — all projects in a single repository. Used by Google, Facebook, Microsoft.</p>
+          <ul>
+            <li>Easier cross-project refactoring</li>
+            <li>Shared build/lint/test configs</li>
+            <li>Requires tooling: Nx, Turborepo, Bazel</li>
+            <li>Challenges: large repo size, complex CI</li>
+          </ul>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">structure</span><button class="copy-btn" onclick="copyCode(this)"><i class="fa-solid fa-copy"></i> Copy</button></div>
+            <pre>my-monorepo/
+├── apps/
+│   ├── web/
+│   └── mobile/
+├── packages/
+│   ├── ui/
+│   └── utils/
+└── package.json</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <i class="fa-solid fa-list-check"></i>
+        <h3>Git Best Practices</h3>
+        <i class="fa-solid fa-chevron-down card-toggle"></i>
+      </div>
+      <div class="card-body open">
+        <ul>
+          <li>✅ Write <strong>clear, concise commit messages</strong> (use Conventional Commits: feat:, fix:, chore:)</li>
+          <li>✅ Make <strong>small, atomic commits</strong> — one logical change per commit</li>
+          <li>✅ Always <strong>pull before pushing</strong> to avoid conflicts</li>
+          <li>✅ Use <strong>.gitignore</strong> from the start — never commit secrets or build artifacts</li>
+          <li>✅ <strong>Never force-push</strong> to shared/protected branches</li>
+          <li>✅ Use <strong>branch protection rules</strong> on main/production branches</li>
+          <li>✅ Prefer <strong>revert over reset</strong> for public commits</li>
+          <li>✅ Review diffs before every commit: <code>git diff --staged</code></li>
+          <li>✅ Use <strong>SSH keys</strong> instead of passwords for authentication</li>
+          <li>✅ Sign commits with <strong>GPG</strong> for verified identity</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="quiz-block">
+      <div class="quiz-title"><i class="fa-solid fa-bolt"></i> Quick Quiz — Expert</div>
+      <div class="quiz-q">In a merge conflict, what do the ======= markers separate?</div>
+      <div class="quiz-options">
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Two files</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, true)"><i class="fa-solid fa-circle"></i> Current branch changes vs incoming branch changes</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Old commits vs new commits</div>
+        <div class="quiz-opt" onclick="checkAnswer(this, false)"><i class="fa-solid fa-circle"></i> Staged vs unstaged changes</div>
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== 12. CHEAT SHEET ===== -->
+  <section id="cheatsheet" class="content-section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-scroll"></i></div>
+      <div class="section-meta">
+        <div class="section-num">Bonus</div>
+        <h2 class="section-title">Git Command Cheat Sheet</h2>
+        <div class="section-subtitle">Quick reference for every stage of your workflow</div>
+      </div>
+      <button class="mark-btn" data-id="11" onclick="toggleComplete(11, this)">
+        <i class="fa-solid fa-circle-check"></i> Mark Complete
+      </button>
+    </div>
+
+    <div class="cheat-grid">
+      <div class="cheat-card">
+        <div class="cheat-card-head"><i class="fa-solid fa-play"></i> Setup & Init</div>
+        <div class="cheat-row"><span class="cheat-cmd">git init</span><span class="cheat-desc">Create local repo</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git clone &lt;url&gt;</span><span class="cheat-desc">Clone remote repo</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git config --global</span><span class="cheat-desc">Set global config</span></div>
+      </div>
+
+      <div class="cheat-card">
+        <div class="cheat-card-head"><i class="fa-solid fa-layer-group"></i> Stage & Commit</div>
+        <div class="cheat-row"><span class="cheat-cmd">git add .</span><span class="cheat-desc">Stage all changes</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git commit -m ""</span><span class="cheat-desc">Commit with message</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git commit --amend</span><span class="cheat-desc">Modify last commit</span></div>
+      </div>
+
+      <div class="cheat-card">
+        <div class="cheat-card-head"><i class="fa-solid fa-code-branch"></i> Branches</div>
+        <div class="cheat-row"><span class="cheat-cmd">git branch</span><span class="cheat-desc">List branches</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git switch -c name</span><span class="cheat-desc">Create & switch</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git merge &lt;branch&gt;</span><span class="cheat-desc">Merge into current</span></div>
+      </div>
+
+      <div class="cheat-card">
+        <div class="cheat-card-head"><i class="fa-brands fa-github"></i> Remote</div>
+        <div class="cheat-row"><span class="cheat-cmd">git remote add</span><span class="cheat-desc">Add remote</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git push -u origin</span><span class="cheat-desc">Push & track</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git pull --rebase</span><span class="cheat-desc">Pull cleanly</span></div>
+      </div>
+
+      <div class="cheat-card">
+        <div class="cheat-card-head"><i class="fa-solid fa-rotate-left"></i> Undo</div>
+        <div class="cheat-row"><span class="cheat-cmd">git restore &lt;file&gt;</span><span class="cheat-desc">Discard changes</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git revert HEAD</span><span class="cheat-desc">Safe undo commit</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git reset --soft</span><span class="cheat-desc">Undo, keep staged</span></div>
+      </div>
+
+      <div class="cheat-card">
+        <div class="cheat-card-head"><i class="fa-solid fa-magnifying-glass"></i> Inspect</div>
+        <div class="cheat-row"><span class="cheat-cmd">git status</span><span class="cheat-desc">Working tree status</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git log --oneline</span><span class="cheat-desc">Compact history</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git diff --staged</span><span class="cheat-desc">Staged changes</span></div>
+      </div>
+
+      <div class="cheat-card">
+        <div class="cheat-card-head"><i class="fa-solid fa-box-archive"></i> Stash</div>
+        <div class="cheat-row"><span class="cheat-cmd">git stash</span><span class="cheat-desc">Save work</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git stash pop</span><span class="cheat-desc">Restore & remove</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git stash list</span><span class="cheat-desc">Show all stashes</span></div>
+      </div>
+
+      <div class="cheat-card">
+        <div class="cheat-card-head"><i class="fa-solid fa-star"></i> Advanced</div>
+        <div class="cheat-row"><span class="cheat-cmd">git rebase -i HEAD~3</span><span class="cheat-desc">Interactive rebase</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git cherry-pick</span><span class="cheat-desc">Apply single commit</span></div>
+        <div class="cheat-row"><span class="cheat-cmd">git bisect</span><span class="cheat-desc">Find bad commit</span></div>
+      </div>
+    </div>
+
+    <!-- Learning Roadmap -->
+    <h3 style="font-size:1.2rem;font-weight:700;margin:40px 0 20px;letter-spacing:-0.3px;">📍 Learning Roadmap</h3>
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-week">Week 1</div>
+        <div class="roadmap-item-title">Git Fundamentals</div>
+        <div class="roadmap-topics">
+          <span class="roadmap-tag">init</span>
+          <span class="roadmap-tag">add</span>
+          <span class="roadmap-tag">commit</span>
+          <span class="roadmap-tag">status</span>
+          <span class="roadmap-tag">log</span>
+          <span class="roadmap-tag">config</span>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:var(--accent2)"></div>
+        <div class="roadmap-week">Week 2</div>
+        <div class="roadmap-item-title">Branching & Remote</div>
+        <div class="roadmap-topics">
+          <span class="roadmap-tag">branch</span>
+          <span class="roadmap-tag">merge</span>
+          <span class="roadmap-tag">push</span>
+          <span class="roadmap-tag">pull</span>
+          <span class="roadmap-tag">fetch</span>
+          <span class="roadmap-tag">GitHub</span>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:#82aaff"></div>
+        <div class="roadmap-week">Week 3</div>
+        <div class="roadmap-item-title">Collaboration & Undo</div>
+        <div class="roadmap-topics">
+          <span class="roadmap-tag">PRs</span>
+          <span class="roadmap-tag">fork</span>
+          <span class="roadmap-tag">revert</span>
+          <span class="roadmap-tag">reset</span>
+          <span class="roadmap-tag">stash</span>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:#8b5cf6"></div>
+        <div class="roadmap-week">Week 4+</div>
+        <div class="roadmap-item-title">Advanced & Expert</div>
+        <div class="roadmap-topics">
+          <span class="roadmap-tag">rebase</span>
+          <span class="roadmap-tag">cherry-pick</span>
+          <span class="roadmap-tag">tags</span>
+          <span class="roadmap-tag">Git Flow</span>
+          <span class="roadmap-tag">internals</span>
+          <span class="roadmap-tag">CI/CD</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Progress Modal -->
+<div id="progress-modal">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-title">Your Progress</div>
+    <div class="modal-sub">Track your journey from beginner to expert</div>
+
+    <div class="big-progress-ring">
+      <div class="ring-wrap">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--bg3)" stroke-width="10"/>
+          <circle id="ring-progress" cx="60" cy="60" r="52" fill="none" stroke="url(#ringGrad)" stroke-width="10"
+            stroke-dasharray="326.7" stroke-dashoffset="326.7"
+            stroke-linecap="round" transform="rotate(-90 60 60)"
+            style="transition: stroke-dashoffset 0.6s ease"/>
+          <defs>
+            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#f05033"/>
+              <stop offset="100%" stop-color="#f7931e"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="ring-label">
+          <span class="ring-pct" id="modal-pct">0%</span>
+          <span class="ring-sub">Complete</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-list" id="modal-list"></div>
+  </div>
+</div>
+
+<!-- Back to Top -->
+<button id="back-top" onclick="window.scrollToSection({top:0,behavior:'smooth'})" title="Back to top">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script>
+/* ============================================================
+   STATE
+   ============================================================ */
+const SECTIONS = [
+  { id: 'basics',    label: 'Git Basics' },
+  { id: 'changes',   label: 'Working with Changes' },
+  { id: 'branching', label: 'Branching' },
+  { id: 'remote',    label: 'Remote Repositories' },
+  { id: 'collab',    label: 'Collaboration Workflow' },
+  { id: 'undo',      label: 'Undo & Fix Mistakes' },
+  { id: 'adv-branch',label: 'Advanced Branching' },
+  { id: 'stashing',  label: 'Stashing' },
+  { id: 'tags',      label: 'Tags & Releases' },
+  { id: 'internals', label: 'Git Internals' },
+  { id: 'expert',    label: 'Expert Level' },
+  { id: 'cheatsheet',label: 'Cheat Sheet' }
+];
+
+let completed = JSON.parse(localStorage.getItem('git-completed') || '[]');
+
+/* ============================================================
+   THEME TOGGLE
+   ============================================================ */
+const themeBtn = document.getElementById('theme-toggle');
+let isDark = localStorage.getItem('git-theme') !== 'light';
+
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  themeBtn.querySelector('i').className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+  localStorage.setItem('git-theme', isDark ? 'dark' : 'light');
+}
+applyTheme();
+
+themeBtn.addEventListener('click', () => {
+  isDark = !isDark;
+  applyTheme();
+});
+
+/* ============================================================
+   SIDEBAR TOGGLE
+   ============================================================ */
+const sidebar = document.getElementById('sidebar');
+const main = document.getElementById('main');
+const overlay = document.getElementById('sidebar-overlay');
+let sidebarOpen = true;
+
+function isMobile() { return window.innerWidth <= 768; }
+
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  if (isMobile()) {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  } else {
+    sidebarOpen = !sidebarOpen;
+    sidebar.classList.toggle('collapsed', !sidebarOpen);
+    main.classList.toggle('full', !sidebarOpen);
+  }
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+});
+
+/* ============================================================
+   SCROLL TO SECTION
+   ============================================================ */
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    const offset = el.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top: offset, behavior: 'smooth' });
+  }
+  if (isMobile()) {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  }
+}
+
+function openPage(url) {
+  window.open(url, "_blank");
+}
+
+/* ============================================================
+   SCROLL PROGRESS + ACTIVE NAV + FADE IN
+   ============================================================ */
+const progressBar = document.getElementById('scroll-progress');
+const backTop = document.getElementById('back-top');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const id = entry.target.id;
+      document.querySelectorAll('.nav-item').forEach(n => {
+        n.classList.toggle('active', n.dataset.section === id);
+      });
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.content-section').forEach(s => observer.observe(s));
+
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrolled / total * 100) + '%';
+  backTop.classList.toggle('show', scrolled > 400);
+});
+
+/* ============================================================
+   CARD TOGGLE (accordion)
+   ============================================================ */
+function toggleCard(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.card-toggle');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+function switchTab(btn, targetId) {
+  const container = btn.closest('.card-body, .content-section');
+  container.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  container.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const target = document.getElementById(targetId);
+  if (target) target.classList.add('active');
+}
+
+/* ============================================================
+   COPY TO CLIPBOARD
+   ============================================================ */
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy';
+    }, 2000);
+  });
+}
+
+/* ============================================================
+   INTERVIEW Q TOGGLE
+   ============================================================ */
+function toggleIQ(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = answer.classList.contains('show');
+  answer.classList.toggle('show', !isOpen);
+  btn.innerHTML = isOpen
+    ? '<i class="fa-solid fa-eye"></i> Show Answer'
+    : '<i class="fa-solid fa-eye-slash"></i> Hide Answer';
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function checkAnswer(opt, correct) {
+  const quiz = opt.closest('.quiz-block');
+  if (quiz.dataset.answered) return;
+  quiz.dataset.answered = 'true';
+
+  const opts = quiz.querySelectorAll('.quiz-opt');
+  opts.forEach(o => {
+    o.style.pointerEvents = 'none';
+    o.querySelector('i').className = 'fa-regular fa-circle';
+  });
+
+  const feedback = quiz.querySelector('.quiz-feedback');
+  if (correct) {
+    opt.classList.add('correct');
+    opt.querySelector('i').className = 'fa-solid fa-circle-check';
+    feedback.textContent = '✅ Correct! Great job!';
+    feedback.className = 'quiz-feedback show ok';
+  } else {
+    opt.classList.add('wrong');
+    opt.querySelector('i').className = 'fa-solid fa-circle-xmark';
+    feedback.textContent = '❌ Not quite — review the section and try again!';
+    feedback.className = 'quiz-feedback show fail';
+    // highlight correct
+    opts.forEach(o => {
+      if (o.dataset.correct === 'true') o.classList.add('correct');
+    });
+  }
+}
+
+/* ============================================================
+   PROGRESS TRACKING
+   ============================================================ */
+function toggleComplete(id, btn) {
+  const idx = completed.indexOf(id);
+  if (idx === -1) {
+    completed.push(id);
+    btn.classList.add('completed');
+    btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Completed!';
+  } else {
+    completed.splice(idx, 1);
+    btn.classList.remove('completed');
+    btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Mark Complete';
+  }
+  localStorage.setItem('git-completed', JSON.stringify(completed));
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = SECTIONS.length;
+  const done = completed.length;
+  const pct = Math.round((done / total) * 100);
+
+  // Sidebar
+  document.getElementById('progress-text').textContent = `${done} / ${total}`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-badge').textContent = pct + '% Complete';
+
+  // Nav items
+  SECTIONS.forEach((s, i) => {
+    const navEl = document.querySelector(`.nav-item[data-id="${i}"]`);
+    if (navEl) navEl.classList.toggle('done', completed.includes(i));
+  });
+
+  // Mark buttons
+  document.querySelectorAll('.mark-btn').forEach(btn => {
+    const id = parseInt(btn.dataset.id);
+    const done = completed.includes(id);
+    btn.classList.toggle('completed', done);
+    btn.innerHTML = done
+      ? '<i class="fa-solid fa-circle-check"></i> Completed!'
+      : '<i class="fa-solid fa-circle-check"></i> Mark Complete';
+  });
+
+  // Ring
+  const ring = document.getElementById('ring-progress');
+  if (ring) {
+    const circumference = 326.7;
+    ring.style.strokeDashoffset = circumference - (pct / 100) * circumference;
+  }
+  const pctEl = document.getElementById('modal-pct');
+  if (pctEl) pctEl.textContent = pct + '%';
+}
+
+/* ============================================================
+   PROGRESS MODAL
+   ============================================================ */
+function openModal() {
+  const modal = document.getElementById('progress-modal');
+  modal.classList.add('show');
+
+  const list = document.getElementById('modal-list');
+  list.innerHTML = SECTIONS.map((s, i) => {
+    const done = completed.includes(i);
+    return `
+      <div class="progress-list-item">
+        <div class="pli-check ${done ? 'done' : ''}">
+          ${done ? '<i class="fa-solid fa-check"></i>' : ''}
+        </div>
+        <span class="pli-name">${s.label}</span>
+        <span class="pli-done ${done ? 'yes' : ''}">${done ? 'Done ✓' : 'Pending'}</span>
+      </div>`;
+  }).join('');
+
+  updateProgress();
+}
+
+function closeModal() {
+  document.getElementById('progress-modal').classList.remove('show');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+const searchData = [
+  { text: 'git init — Initialize repository', section: 'basics', icon: 'fa-terminal' },
+  { text: 'git clone — Clone remote repo', section: 'basics', icon: 'fa-terminal' },
+  { text: 'git add — Stage changes', section: 'basics', icon: 'fa-terminal' },
+  { text: 'git commit — Save snapshot', section: 'basics', icon: 'fa-terminal' },
+  { text: 'git status — Working tree status', section: 'basics', icon: 'fa-terminal' },
+  { text: 'git diff — View changes', section: 'changes', icon: 'fa-code-compare' },
+  { text: 'git log — View history', section: 'changes', icon: 'fa-code-compare' },
+  { text: 'git show — Show commit details', section: 'changes', icon: 'fa-code-compare' },
+  { text: 'git branch — List/create branches', section: 'branching', icon: 'fa-code-branch' },
+  { text: 'git switch — Switch branches', section: 'branching', icon: 'fa-code-branch' },
+  { text: 'git merge — Merge branches', section: 'branching', icon: 'fa-code-branch' },
+  { text: 'git push — Push to remote', section: 'remote', icon: 'fa-cloud-arrow-up' },
+  { text: 'git pull — Fetch and merge', section: 'remote', icon: 'fa-cloud-arrow-down' },
+  { text: 'git fetch — Download changes', section: 'remote', icon: 'fa-cloud-arrow-down' },
+  { text: 'git remote — Manage remotes', section: 'remote', icon: 'fa-server' },
+  { text: 'Pull Request — Propose changes', section: 'collab', icon: 'fa-code-pull-request' },
+  { text: 'Fork — Copy repository', section: 'collab', icon: 'fa-code-fork' },
+  { text: 'git reset — Move HEAD pointer', section: 'undo', icon: 'fa-rotate-left' },
+  { text: 'git revert — Safe undo commit', section: 'undo', icon: 'fa-rotate-left' },
+  { text: 'git restore — Discard file changes', section: 'undo', icon: 'fa-rotate-left' },
+  { text: 'git rebase — Reapply commits', section: 'adv-branch', icon: 'fa-diagram-project' },
+  { text: 'git cherry-pick — Apply single commit', section: 'adv-branch', icon: 'fa-diagram-project' },
+  { text: 'git stash — Save temporary work', section: 'stashing', icon: 'fa-box-archive' },
+  { text: 'git stash pop — Restore stash', section: 'stashing', icon: 'fa-box-archive' },
+  { text: 'git tag — Create version tag', section: 'tags', icon: 'fa-tag' },
+  { text: 'Merge conflict resolution', section: 'expert', icon: 'fa-triangle-exclamation' },
+  { text: 'Git Flow workflow', section: 'expert', icon: 'fa-sitemap' },
+  { text: 'Trunk-based development', section: 'expert', icon: 'fa-sitemap' },
+];
+
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase().trim();
+  if (!query) { searchResults.classList.remove('show'); return; }
+
+  const matches = searchData.filter(d => d.text.toLowerCase().includes(query)).slice(0, 8);
+  if (!matches.length) { searchResults.classList.remove('show'); return; }
+
+  searchResults.innerHTML = matches.map(m => `
+    <div class="search-item" onclick="scrollTo('${m.section}'); searchInput.value=''; searchResults.classList.remove('show');">
+      <i class="fa-solid ${m.icon}"></i>
+      <span>${highlight(m.text, query)}</span>
+    </div>`).join('');
+  searchResults.classList.add('show');
+});
+
+function highlight(text, query) {
+  const idx = text.toLowerCase().indexOf(query);
+  if (idx === -1) return text;
+  return text.slice(0, idx) +
+    `<strong style="color:var(--accent)">${text.slice(idx, idx + query.length)}</strong>` +
+    text.slice(idx + query.length);
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#search-wrap')) {
+    searchResults.classList.remove('show');
+  }
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+updateProgress();
+
+// Check mobile on load
+if (isMobile()) {
+  sidebar.classList.remove('open');
+} else {
+  sidebar.classList.remove('collapsed');
+}
+
+window.addEventListener('resize', () => {
+  if (!isMobile()) {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+    if (sidebarOpen) sidebar.classList.remove('collapsed');
+  }
+});
+</script>
+</body>
+</html>

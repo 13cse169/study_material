@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.08 — Modern DL | NN Guide</title>
+<link rel="stylesheet" href="shared.css">
+<style>:root{--neon:#00b8ff}</style>
+</head>
+<body>
+<nav class="topnav"><a href="index.html" class="topnav-logo">NN<span>.GUIDE</span></a>
+<div class="topnav-links"><a href="01-math.html">01 Math</a><a href="02-fundamentals.html">02 Fundamentals</a><a href="03-python.html">03 Python</a><a href="04-workflow.html">04 Workflow</a><a href="05-cnn.html">05 CNN</a><a href="06-rnn.html">06 RNN</a><a href="07-nlp.html">07 NLP</a><a href="08-transformers.html" class="active">08 Transformers</a><a href="09-advanced.html">09 Advanced</a><a href="10-specializations.html">10 Specs</a><a href="11-projects.html">11 Projects</a></div></nav>
+<div class="hero"><div class="hero-grid"></div>
+<div class="chapter-num">Chapter 08 — Modern DL</div>
+<h1><span style="color:#00b8ff">TRANSFORMERS</span><br>MODERN DEEP LEARNING</h1>
+<p class="hero-sub">Self-attention, BERT, GPT, T5, Vision Transformers, LoRA fine-tuning — the architecture that changed everything.</p>
+<div class="hero-meta"><div class="hero-stat"><div class="hero-stat-val" style="color:#00b8ff">4</div><div class="hero-stat-label">Architectures</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#00b8ff">12</div><div class="hero-stat-label">Code Examples</div></div><div class="hero-stat"><div class="hero-stat-val" style="color:#00b8ff">10</div><div class="hero-stat-label">Interview Q&A</div></div></div></div>
+<div class="page-layout">
+<aside class="sidebar"><div class="sidebar-header">Contents</div><a class="sb-link active" onclick="show('attention')"><span class="sb-icon">⚡</span>Self-Attention</a>
+<a class="sb-link" onclick="show('bert-gpt')"><span class="sb-icon">🤖</span>BERT & GPT</a>
+<a class="sb-link" onclick="show('lora')"><span class="sb-icon">🔧</span>Fine-Tuning/LoRA</a>
+<a class="sb-link" onclick="show('interview')"><span class="sb-icon">🎯</span>Interview Q&A</a>
+
+<div class="sb-chapters"><div class="sb-ch-label">Navigate</div><a class="sb-ch-link" href="07-nlp.html">← 07 · NLP</a><a class="sb-ch-link" href="09-advanced.html">→ 09 · Advanced</a></div></aside>
+<div class="content"><div class="section active" id="s-attention"><div class="sec-head"><span class="sec-tag tag-a">Advanced</span><h2 class="sec-head h2">SELF-ATTENTION</h2><div class="sec-meta">The core of every modern language model</div></div><div class="card"><div class="card-title"><span class="icon" style="background:rgba(0,184,255,.1)">🔹</span>Scaled Dot-Product Attention</div><p>Every token attends to every other token simultaneously. Q, K, V projections of the input let the model selectively aggregate information.</p><div class="formula">Attention(Q,K,V) = softmax(QKᵀ/√dₖ)·V
+MultiHead = Concat(head₁...headₕ)·Wᴼ</div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · Multi-Head Attention from Scratch</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">import</span> torch, math
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="kw">class</span> <span class="cls">MultiHeadAttention</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, d_model=<span class="num">512</span>, heads=<span class="num">8</span>):
+        <span class="fn">super</span>().__init__()
+        self.h, self.d = heads, d_model//heads
+        self.qkv = nn.<span class="cls">Linear</span>(d_model, d_model*<span class="num">3</span>)
+        self.out = nn.<span class="cls">Linear</span>(d_model, d_model)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x, mask=<span class="kw">None</span>):
+        B,T,C = x.shape
+        q,k,v = self.<span class="fn">qkv</span>(x).<span class="fn">chunk</span>(<span class="num">3</span>,dim=-<span class="num">1</span>)
+        q,k,v = [t.<span class="fn">view</span>(B,T,self.h,self.d).<span class="fn">transpose</span>(<span class="num">1</span>,<span class="num">2</span>) <span class="kw">for</span> t <span class="kw">in</span> (q,k,v)]
+        sc = (q@k.<span class="fn">transpose</span>(-<span class="num">2</span>,-<span class="num">1</span>))/math.<span class="fn">sqrt</span>(self.d)
+        <span class="kw">if</span> mask <span class="kw">is not None</span>: sc = sc.<span class="fn">masked_fill</span>(mask==<span class="num">0</span>,-<span class="num">1e9</span>)
+        out = (sc.<span class="fn">softmax</span>(-<span class="num">1</span>)@v).<span class="fn">transpose</span>(<span class="num">1</span>,<span class="num">2</span>).<span class="fn">contiguous</span>().<span class="fn">view</span>(B,T,-<span class="num">1</span>)
+        <span class="kw">return</span> self.<span class="fn">out</span>(out)</pre></div></div><div class="section" id="s-bert-gpt"><div class="sec-head"><span class="sec-tag tag-a">Advanced</span><h2 class="sec-head h2">BERT & GPT</h2><div class="sec-meta">Encoder vs Decoder — Understanding the two paradigms</div></div><div class="tbl"><table><tr><th>Property</th><th>BERT</th><th>GPT</th></tr><tr><td>Architecture</td><td>Encoder</td><td>Decoder</td></tr><tr><td>Attention</td><td>Bidirectional</td><td>Causal (left-to-right)</td></tr><tr><td>Pretraining</td><td>Masked LM</td><td>Next token prediction</td></tr><tr><td>Best for</td><td>Classification, NER, QA</td><td>Generation, chat, code</td></tr><tr><td>Fine-tune</td><td>Add task head</td><td>Prompt / instruction tune</td></tr></table></div><div class="code-box"><div class="code-top"><span class="code-label">Python · BERT + GPT Quick Start</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+
+<span class="cm"># BERT: fill-mask (understanding)</span>
+bert = <span class="fn">pipeline</span>(<span class="str">'fill-mask'</span>, model=<span class="str">'bert-base-uncased'</span>)
+<span class="fn">print</span>(<span class="fn">bert</span>(<span class="str">'Deep learning is [MASK].'</span>))
+
+<span class="cm"># GPT-2: text generation</span>
+gpt = <span class="fn">pipeline</span>(<span class="str">'text-generation'</span>, model=<span class="str">'gpt2'</span>)
+<span class="fn">print</span>(<span class="fn">gpt</span>(<span class="str">'Neural networks learn by'</span>, max_new_tokens=<span class="num">50</span>, temperature=<span class="num">0.7</span>))</pre></div></div><div class="section" id="s-lora"><div class="sec-head"><span class="sec-tag tag-a">Advanced</span><h2 class="sec-head h2">FINE-TUNING & LoRA</h2><div class="sec-meta">Adapt pretrained models to custom tasks efficiently</div></div><div class="card"><div class="card-title"><span class="icon" style="background:rgba(178,75,255,.1)">🔹</span>LoRA — Low-Rank Adaptation</div><div class="formula">W = W₀ + BA  where B∈ℝ^(d×r), A∈ℝ^(r×k), r << min(d,k)
+Only B and A are trained — 0.1-1% of original parameters</div></div><div class="code-box"><div class="code-top"><span class="code-label">Python · QLoRA Fine-tuning</span><div class="code-dots"><i></i><i></i><i></i></div></div><pre><span class="kw">from</span> peft <span class="kw">import</span> LoraConfig, get_peft_model
+<span class="kw">from</span> transformers <span class="kw">import</span> AutoModelForCausalLM, BitsAndBytesConfig
+<span class="kw">import</span> torch
+
+bnb = <span class="cls">BitsAndBytesConfig</span>(load_in_4bit=<span class="kw">True</span>,
+    bnb_4bit_quant_type=<span class="str">'nf4'</span>, bnb_4bit_compute_dtype=torch.bfloat16)
+
+model = AutoModelForCausalLM.<span class="fn">from_pretrained</span>(
+    <span class="str">'meta-llama/Llama-3.2-3B'</span>, quantization_config=bnb, device_map=<span class="str">'auto'</span>)
+
+config = <span class="cls">LoraConfig</span>(r=<span class="num">16</span>, lora_alpha=<span class="num">32</span>,
+    target_modules=[<span class="str">'q_proj'</span>,<span class="str">'v_proj'</span>], task_type=<span class="str">'CAUSAL_LM'</span>)
+model = <span class="fn">get_peft_model</span>(model, config)
+model.<span class="fn">print_trainable_parameters</span>()  <span class="cm"># ~0.1%</span></pre></div></div><div class="section" id="s-interview"><div class="sec-head"><span class="sec-tag tag-q">Interview</span><h2 class="sec-head h2">INTERVIEW Q&A</h2><div class="sec-meta">Transformers · 10 Questions</div></div><div class="qa-level">Intermediate</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q01</span><span class="qa-text">Why do we scale by √dₖ in attention?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a">For large dₖ, dot products QKᵀ grow in magnitude (variance scales with dₖ if Q,K have unit variance). Large values push softmax into saturation regions where gradients are tiny. Scaling by 1/√dₖ keeps variance ≈1 regardless of dimension, stabilising gradients through softmax. Example: dₖ=64 → scale by 1/8.</div></div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q02</span><span class="qa-text">What is the difference between encoder-only, decoder-only, and encoder-decoder models?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-mid">mid</span><span class="qa-toggle">+</span></div></div><div class="qa-a"><strong>Encoder-only (BERT):</strong> Bidirectional attention, sees full sequence. Best for understanding: classification, NER, QA. <strong>Decoder-only (GPT):</strong> Causal attention, sees only past tokens. Best for generation: completion, chat, code. <strong>Encoder-Decoder (T5, BART):</strong> Encoder reads input bidirectionally, decoder generates output attending to encoder. Best for seq2seq: translation, summarisation. Rule of thumb: encoder for discriminative tasks, decoder for generative tasks, enc-dec for transformation tasks.</div></div><div class="qa-level">Advanced</div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q03</span><span class="qa-text">Explain LoRA and how it reduces trainable parameters.</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div><div class="qa-a">LoRA injects low-rank matrices into each attention projection. Instead of updating W₀∈ℝ^(d×k) (d×k params), it learns B∈ℝ^(d×r) and A∈ℝ^(r×k) where r<<min(d,k). B is zero-init (so ΔW=0 at start), A is random-init. Only B,A are trained. For d=k=4096, r=16: 16M→131K params (99.2% reduction). During inference, BA is merged into W₀ — zero overhead. Applied to Q,V projections typically. Rank r controls expressiveness: r=4 for simple adaptation, r=64 for complex tasks.</div></div><div class="qa-item" onclick="toggleQA(this)"><div class="qa-q"><div class="qa-q-left"><span class="qa-num">Q04</span><span class="qa-text">What is Flash Attention and why is it important?</span></div><div style="display:flex;gap:.4rem;align-items:center"><span class="qa-diff qd-hard">hard</span><span class="qa-toggle">+</span></div></div><div class="qa-a">Standard attention materialises the full n×n attention matrix in HBM memory — O(n²) space. For n=8192 tokens: 8192² × 2 bytes = 128MB per head per layer. FlashAttention rewrites the CUDA kernel to tile computation in SRAM: processes blocks of Q,K,V that fit in fast on-chip memory, uses online softmax normalisation (log-sum-exp trick) to avoid materialising full matrix. Result: O(n) HBM reads/writes, 2-4x wall-clock speedup, enables much longer context lengths. Flash Attention 2/3 add further optimisations (work partitioning, warp specialisation).</div></div></div></div></div>
+<script>
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.sb-link').forEach(s=>s.classList.remove('active'));document.getElementById('s-'+id).classList.add('active');event.currentTarget.classList.add('active');}
+function toggleQA(el){const o=el.classList.contains('open');document.querySelectorAll('.qa-item.open').forEach(e=>e.classList.remove('open'));if(!o)el.classList.add('open');}
+</script></body></html>
