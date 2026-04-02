@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Evaluation – ML Roadmap</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="bg-canvas"></div>
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><i class="fa-solid fa-brain"></i> ML Roadmap</a>
+  <div class="nav-links">
+    <a class="nav-link" href="prerequisites.html">Prerequisites</a>
+    <a class="nav-link" href="programming.html">Programming</a>
+    <a class="nav-link" href="data.html">Data</a>
+    <a class="nav-link" href="core-ml.html">Core ML</a>
+    <a class="nav-link" href="evaluation.html">Evaluation</a>
+    <a class="nav-link" href="intermediate.html">Intermediate</a>
+    <a class="nav-link" href="advanced.html">Advanced</a>
+    <a class="nav-link" href="projects.html">Projects</a>
+    <a class="nav-link" href="mlops.html">MLOps</a>
+  </div>
+  <div class="nav-actions"><button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button></div>
+</nav>
+<div class="progress-bar-global"><div class="progress-fill"></div></div>
+<div class="page-wrap">
+  <div class="page-hero fade-up">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <span>Evaluation</span></div>
+    <h1>📈 <span class="gradient-text">Model Evaluation</span></h1>
+    <p>Know if your model is actually good — metrics, validation strategies, and tuning.</p>
+  </div>
+  <div class="content-area">
+    <div class="progress-overview">
+      <div class="progress-stat"><div class="num" id="doneCount">0</div><div class="lbl">Done</div></div>
+      <div class="progress-track">
+        <div class="progress-track-label"><span>Module Progress</span><span class="progress-pct">0%</span></div>
+        <div class="progress-track-bar"><div class="progress-track-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="section-block fade-up-d1">
+      <div class="section-title"><div class="icon" style="background:rgba(244,114,182,0.1)">📐</div>Classification Metrics</div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <h3>Accuracy</h3>
+          <p>Correct / Total. Misleading for imbalanced classes — avoid using alone.</p>
+          <span class="tag badge badge-pink">Basic</span>
+        </div>
+        <div class="topic-card">
+          <h3>Precision & Recall</h3>
+          <p>Precision = TP/(TP+FP). Recall = TP/(TP+FN). Trade-off depends on use case.</p>
+          <span class="tag badge badge-blue">Core</span>
+        </div>
+        <div class="topic-card">
+          <h3>F1 Score</h3>
+          <p>Harmonic mean of Precision & Recall. Best for imbalanced datasets.</p>
+          <span class="tag badge badge-green">Imbalanced</span>
+        </div>
+        <div class="topic-card">
+          <h3>ROC-AUC</h3>
+          <p>Area Under ROC Curve. Model's ability to discriminate between classes. 0.5 = random, 1.0 = perfect.</p>
+          <span class="tag badge badge-purple">Ranking</span>
+        </div>
+        <div class="topic-card">
+          <h3>Confusion Matrix</h3>
+          <p>True/False Positives/Negatives grid. Visualizes all classification outcomes at once.</p>
+          <span class="tag badge badge-orange">Visual</span>
+        </div>
+        <div class="topic-card">
+          <h3>Log Loss</h3>
+          <p>Penalizes confident wrong predictions. Used when probability outputs matter.</p>
+          <span class="tag badge badge-pink">Probabilistic</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block fade-up-d2">
+      <div class="section-title"><div class="icon" style="background:rgba(56,189,248,0.1)">📏</div>Regression Metrics</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div><strong>MAE</strong> — Mean Absolute Error. Robust to outliers, easy to interpret.</li>
+        <li><div class="check">✓</div><strong>MSE / RMSE</strong> — Penalizes large errors more. RMSE in same units as target.</li>
+        <li><div class="check">✓</div><strong>R² Score</strong> — Proportion of variance explained. 1.0 = perfect, can be negative.</li>
+        <li><div class="check">✓</div><strong>MAPE</strong> — Mean Absolute Percentage Error. Good for business reporting.</li>
+      </ul>
+    </div>
+
+    <div class="section-block fade-up-d3">
+      <div class="section-title"><div class="icon" style="background:rgba(129,140,248,0.1)">🔄</div>Cross-Validation & Overfitting</div>
+      <div class="collapsible open">
+        <div class="collapsible-header">Cross-Validation Strategies <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>K-Fold CV — split data into K folds, rotate train/val</li>
+            <li><div class="check">✓</div>Stratified K-Fold — preserve class distribution in each fold</li>
+            <li><div class="check">✓</div>Leave-One-Out (LOO) — extreme case, useful for small datasets</li>
+            <li><div class="check">✓</div>Time Series Split — respect temporal order, no future leakage</li>
+          </ul>
+          <div class="code-block" style="margin-top:12px">
+            <div class="code-header">Python · Cross Validation</div>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score, StratifiedKFold
+
+<span class="var">cv</span> = StratifiedKFold(n_splits=<span class="num">5</span>, shuffle=<span class="kw">True</span>, random_state=<span class="num">42</span>)
+<span class="var">scores</span> = <span class="fn">cross_val_score</span>(model, X, y, cv=cv, scoring=<span class="str">'f1_macro'</span>)
+<span class="fn">print</span>(<span class="str">f"CV F1: {scores.mean():.3f} ± {scores.std():.3f}"</span>)
+          </div>
+        </div></div>
+      </div>
+      <div class="collapsible">
+        <div class="collapsible-header">Bias-Variance Tradeoff <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>High Bias = Underfitting — model too simple, poor training score</li>
+            <li><div class="check">✓</div>High Variance = Overfitting — great training score, poor test score</li>
+            <li><div class="check">✓</div>Learning curves — diagnose bias vs variance visually</li>
+            <li><div class="check">✓</div>Regularization — adds penalty to reduce overfitting</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="section-block fade-up-d4">
+      <div class="section-title"><div class="icon" style="background:rgba(52,211,153,0.1)">🎛️</div>Hyperparameter Tuning</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>GridSearchCV — exhaustive search over param grid</li>
+        <li><div class="check">✓</div>RandomizedSearchCV — random sampling, faster for large grids</li>
+        <li><div class="check">✓</div>Bayesian Optimization — Optuna, Hyperopt — smarter search</li>
+        <li><div class="check">✓</div>Early stopping — stop training when validation loss plateaus</li>
+      </ul>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;gap:12px;flex-wrap:wrap">
+      <a href="core-ml.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600"><i class="fa-solid fa-arrow-left"></i> Core ML</a>
+      <a href="intermediate.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600">Next: Intermediate <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+  <footer class="page-footer"><span><a href="index.html">← Dashboard</a></span><div class="footer-nav"><a href="core-ml.html">← Core ML</a><a href="intermediate.html">Intermediate →</a></div></footer>
+</div>
+<script src="shared.js"></script>
+<script>
+function updateDoneCount() {
+  const total = document.querySelectorAll('.checklist li').length;
+  const done = document.querySelectorAll('.checklist li.done').length;
+  document.getElementById('doneCount').textContent = done;
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.querySelector('.progress-pct').textContent = pct + '%';
+  document.querySelector('.progress-track-fill').style.width = pct + '%';
+}
+document.querySelectorAll('.checklist li').forEach(li => li.addEventListener('click', () => setTimeout(updateDoneCount, 50)));
+setTimeout(updateDoneCount, 100);
+</script>
+</body>
+</html>

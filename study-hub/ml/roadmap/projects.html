@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects – ML Roadmap</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.project-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+}
+.project-card .level {
+  position: absolute;
+  top: 16px; right: 16px;
+}
+.project-card h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  margin-right: 70px;
+}
+.project-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+.project-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+</style>
+</head>
+<body>
+<div class="bg-canvas"></div>
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><i class="fa-solid fa-brain"></i> ML Roadmap</a>
+  <div class="nav-links">
+    <a class="nav-link" href="prerequisites.html">Prerequisites</a>
+    <a class="nav-link" href="programming.html">Programming</a>
+    <a class="nav-link" href="data.html">Data</a>
+    <a class="nav-link" href="core-ml.html">Core ML</a>
+    <a class="nav-link" href="evaluation.html">Evaluation</a>
+    <a class="nav-link" href="intermediate.html">Intermediate</a>
+    <a class="nav-link" href="advanced.html">Advanced</a>
+    <a class="nav-link" href="projects.html">Projects</a>
+    <a class="nav-link" href="mlops.html">MLOps</a>
+  </div>
+  <div class="nav-actions"><button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button></div>
+</nav>
+<div class="progress-bar-global"><div class="progress-fill"></div></div>
+<div class="page-wrap">
+  <div class="page-hero fade-up">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <span>Projects</span></div>
+    <h1>🚀 <span class="gradient-text">Projects</span></h1>
+    <p>Build your portfolio with real-world projects. Employers look at GitHub, not grades.</p>
+  </div>
+  <div class="content-area">
+
+    <!-- BEGINNER -->
+    <div class="section-block fade-up-d1">
+      <div class="section-title"><div class="icon" style="background:rgba(52,211,153,0.1)">🌱</div>Beginner Projects <span class="badge badge-green">0–3 months</span></div>
+      <div class="project-grid">
+        <div class="project-card">
+          <div class="level"><span class="badge badge-green">Beginner</span></div>
+          <h3>🏠 House Price Prediction</h3>
+          <p>Predict Boston/Ames housing prices using regression. Practice EDA, feature engineering, Ridge/Lasso.</p>
+          <div class="project-meta">
+            <span class="badge badge-blue">sklearn</span><span class="badge badge-blue">Pandas</span><span class="badge badge-blue">Matplotlib</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="level"><span class="badge badge-green">Beginner</span></div>
+          <h3>🚢 Titanic Survival</h3>
+          <p>Classic Kaggle binary classification. Feature engineering, missing value imputation, ensemble models.</p>
+          <div class="project-meta">
+            <span class="badge badge-orange">Classification</span><span class="badge badge-blue">Kaggle</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="level"><span class="badge badge-green">Beginner</span></div>
+          <h3>🌸 Iris Flower Classification</h3>
+          <p>Multiclass classification with decision trees, SVM, and visualization of decision boundaries.</p>
+          <div class="project-meta">
+            <span class="badge badge-purple">Multiclass</span><span class="badge badge-green">EDA</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="level"><span class="badge badge-green">Beginner</span></div>
+          <h3>💳 Credit Card Fraud Detection</h3>
+          <p>Imbalanced classification. SMOTE, precision-recall tradeoff, anomaly detection techniques.</p>
+          <div class="project-meta">
+            <span class="badge badge-pink">Imbalanced</span><span class="badge badge-orange">Anomaly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERMEDIATE -->
+    <div class="section-block fade-up-d2">
+      <div class="section-title"><div class="icon" style="background:rgba(56,189,248,0.1)">⚡</div>Intermediate Projects <span class="badge badge-blue">3–9 months</span></div>
+      <div class="project-grid">
+        <div class="project-card">
+          <div class="level"><span class="badge badge-blue">Intermediate</span></div>
+          <h3>🛒 Customer Churn Prediction</h3>
+          <p>Predict which customers will leave. XGBoost, SHAP values for explainability, business impact analysis.</p>
+          <div class="project-meta">
+            <span class="badge badge-orange">XGBoost</span><span class="badge badge-purple">SHAP</span><span class="badge badge-blue">Business</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="level"><span class="badge badge-blue">Intermediate</span></div>
+          <h3>📊 Stock Price Forecasting</h3>
+          <p>Time series with LSTM/GRU networks. Feature engineering from OHLCV data, walk-forward validation.</p>
+          <div class="project-meta">
+            <span class="badge badge-purple">LSTM</span><span class="badge badge-blue">Time Series</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="level"><span class="badge badge-blue">Intermediate</span></div>
+          <h3>🎬 Movie Recommendation System</h3>
+          <p>Collaborative filtering, matrix factorization, content-based + hybrid approaches. Surprise/LightFM.</p>
+          <div class="project-meta">
+            <span class="badge badge-green">RecSys</span><span class="badge badge-blue">Collaborative</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="level"><span class="badge badge-blue">Intermediate</span></div>
+          <h3>💬 Sentiment Analysis App</h3>
+          <p>Fine-tune BERT on product reviews. Build a Gradio/Streamlit UI. Deploy to Hugging Face Spaces.</p>
+          <div class="project-meta">
+            <span class="badge badge-purple">NLP</span><span class="badge badge-orange">BERT</span><span class="badge badge-green">Deploy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVANCED -->
+    <div class="section-block fade-up-d3">
+      <div class="section-title"><div class="icon" style="background:rgba(167,139,250,0.1)">🧠</div>Advanced Projects <span class="badge badge-purple">9+ months</span></div>
+      <div class="project-grid">
+        <div class="project-card">
+          <div class="level"><span class="badge badge-purple">Advanced</span></div>
+          <h3>🩺 Medical Image Diagnosis</h3>
+          <p>Chest X-ray pneumonia detection. CNN + transfer learning (DenseNet). Class activation maps. HIPAA data handling.</p>
+          <div class="project-meta">
+            <span class="badge badge-blue">CNN</span><span class="badge badge-orange">Transfer</span><span class="badge badge-pink">Healthcare</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="level"><span class="badge badge-purple">Advanced</span></div>
+          <h3>🤖 LLM-Powered QA Bot</h3>
+          <p>RAG pipeline with LangChain, vector store (Pinecone/Chroma), document ingestion, conversational memory.</p>
+          <div class="project-meta">
+            <span class="badge badge-purple">LLM</span><span class="badge badge-blue">RAG</span><span class="badge badge-green">LangChain</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="level"><span class="badge badge-purple">Advanced</span></div>
+          <h3>🚗 Real-Time Object Detection</h3>
+          <p>YOLOv8 on custom dataset. Data labeling with Roboflow. FastAPI + OpenCV inference server.</p>
+          <div class="project-meta">
+            <span class="badge badge-orange">YOLO</span><span class="badge badge-blue">FastAPI</span><span class="badge badge-green">Real-time</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="level"><span class="badge badge-purple">Advanced</span></div>
+          <h3>📈 End-to-End ML Platform</h3>
+          <p>Full MLOps pipeline: data versioning (DVC), experiment tracking (MLflow), CI/CD, Docker, Kubernetes.</p>
+          <div class="project-meta">
+            <span class="badge badge-blue">MLOps</span><span class="badge badge-orange">Docker</span><span class="badge badge-purple">K8s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATASETS -->
+    <div class="section-block fade-up-d4">
+      <div class="section-title"><div class="icon" style="background:rgba(251,146,60,0.1)">📦</div>Essential Datasets & Platforms</div>
+      <div class="topic-grid">
+        <div class="topic-card"><h3>Kaggle</h3><p>Competitions, datasets, free GPU notebooks. Best place to practice on real problems with leaderboards.</p><span class="tag badge badge-orange">kaggle.com</span></div>
+        <div class="topic-card"><h3>UCI ML Repository</h3><p>Classic benchmark datasets. Great for algorithm comparison and research papers.</p><span class="tag badge badge-blue">archive.ics.uci.edu</span></div>
+        <div class="topic-card"><h3>Hugging Face Datasets</h3><p>NLP, vision, audio datasets. Seamless integration with Transformers library.</p><span class="tag badge badge-purple">huggingface.co</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;gap:12px;flex-wrap:wrap">
+      <a href="advanced.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600"><i class="fa-solid fa-arrow-left"></i> Advanced</a>
+      <a href="mlops.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600">Next: MLOps <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+  <footer class="page-footer"><span><a href="index.html">← Dashboard</a></span><div class="footer-nav"><a href="advanced.html">← Advanced</a><a href="mlops.html">MLOps →</a></div></footer>
+</div>
+<script src="shared.js"></script>
+</body>
+</html>

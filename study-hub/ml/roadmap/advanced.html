@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Topics – ML Roadmap</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="bg-canvas"></div>
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><i class="fa-solid fa-brain"></i> ML Roadmap</a>
+  <div class="nav-links">
+    <a class="nav-link" href="prerequisites.html">Prerequisites</a>
+    <a class="nav-link" href="programming.html">Programming</a>
+    <a class="nav-link" href="data.html">Data</a>
+    <a class="nav-link" href="core-ml.html">Core ML</a>
+    <a class="nav-link" href="evaluation.html">Evaluation</a>
+    <a class="nav-link" href="intermediate.html">Intermediate</a>
+    <a class="nav-link" href="advanced.html">Advanced</a>
+    <a class="nav-link" href="projects.html">Projects</a>
+    <a class="nav-link" href="mlops.html">MLOps</a>
+  </div>
+  <div class="nav-actions"><button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button></div>
+</nav>
+<div class="progress-bar-global"><div class="progress-fill"></div></div>
+<div class="page-wrap">
+  <div class="page-hero fade-up">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <span>Advanced Topics</span></div>
+    <h1>🧠 <span class="gradient-text">Advanced Topics</span></h1>
+    <p>Deep learning architectures, NLP, computer vision, and the frontier of AI.</p>
+  </div>
+  <div class="content-area">
+    <div class="progress-overview">
+      <div class="progress-stat"><div class="num" id="doneCount">0</div><div class="lbl">Done</div></div>
+      <div class="progress-track">
+        <div class="progress-track-label"><span>Module Progress</span><span class="progress-pct">0%</span></div>
+        <div class="progress-track-bar"><div class="progress-track-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="section-block fade-up-d1">
+      <div class="section-title"><div class="icon" style="background:rgba(56,189,248,0.1)">🖼️</div>Computer Vision (CNNs)</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>Convolution, pooling, padding, stride — spatial feature extraction</li>
+        <li><div class="check">✓</div>CNN architectures — LeNet, AlexNet, VGG, ResNet, EfficientNet</li>
+        <li><div class="check">✓</div>Transfer Learning — fine-tune pretrained models (ImageNet)</li>
+        <li><div class="check">✓</div>Object Detection — YOLO, Faster R-CNN, SSD</li>
+        <li><div class="check">✓</div>Image Segmentation — U-Net, Mask R-CNN</li>
+        <li><div class="check">✓</div>Data Augmentation — flipping, rotation, cutout, mixup</li>
+      </ul>
+      <div class="code-block" style="margin-top:16px">
+        <div class="code-header">Python · Transfer Learning with PyTorch</div>
+<span class="kw">import</span> torchvision.models <span class="kw">as</span> <span class="var">models</span>
+<span class="kw">import</span> torch.nn <span class="kw">as</span> <span class="var">nn</span>
+
+<span class="cm"># Load pretrained ResNet50</span>
+<span class="var">model</span> = models.<span class="fn">resnet50</span>(pretrained=<span class="kw">True</span>)
+
+<span class="cm"># Freeze all layers</span>
+<span class="kw">for</span> <span class="var">param</span> <span class="kw">in</span> model.<span class="fn">parameters</span>():
+    param.requires_grad = <span class="kw">False</span>
+
+<span class="cm"># Replace final layer for our classes</span>
+<span class="var">model</span>.fc = nn.<span class="fn">Linear</span>(model.fc.in_features, <span class="num">10</span>)
+      </div>
+    </div>
+
+    <div class="section-block fade-up-d2">
+      <div class="section-title"><div class="icon" style="background:rgba(129,140,248,0.1)">📝</div>Natural Language Processing (NLP)</div>
+      <div class="collapsible open">
+        <div class="collapsible-header">Classical NLP <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Tokenization, stemming, lemmatization</li>
+            <li><div class="check">✓</div>Bag of Words, TF-IDF representations</li>
+            <li><div class="check">✓</div>Word embeddings — Word2Vec, GloVe, FastText</li>
+            <li><div class="check">✓</div>Named Entity Recognition (NER), POS tagging</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="collapsible open">
+        <div class="collapsible-header">Transformers & LLMs <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Attention mechanism — self-attention, multi-head attention</li>
+            <li><div class="check">✓</div>Transformer architecture — encoder, decoder, positional encoding</li>
+            <li><div class="check">✓</div>BERT — bidirectional, masked language modeling</li>
+            <li><div class="check">✓</div>GPT series — autoregressive generation</li>
+            <li><div class="check">✓</div>HuggingFace Transformers — fine-tuning pretrained models</li>
+            <li><div class="check">✓</div>RAG, PEFT, LoRA — efficient adaptation techniques</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="section-block fade-up-d3">
+      <div class="section-title"><div class="icon" style="background:rgba(52,211,153,0.1)">🎮</div>Reinforcement Learning</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>Agent, environment, state, action, reward — core framework</li>
+        <li><div class="check">✓</div>Markov Decision Processes (MDP)</li>
+        <li><div class="check">✓</div>Q-Learning, Deep Q-Network (DQN)</li>
+        <li><div class="check">✓</div>Policy Gradient methods — REINFORCE, PPO, A3C</li>
+        <li><div class="check">✓</div>OpenAI Gymnasium — standard RL environment interface</li>
+      </ul>
+    </div>
+
+    <div class="section-block fade-up-d4">
+      <div class="section-title"><div class="icon" style="background:rgba(251,146,60,0.1)">🎨</div>Generative Models</div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <h3>GANs</h3>
+          <p>Generator vs Discriminator adversarial training. StyleGAN, CycleGAN, DCGAN. Mode collapse challenges.</p>
+          <span class="tag badge badge-orange">Generative</span>
+        </div>
+        <div class="topic-card">
+          <h3>VAEs</h3>
+          <p>Variational Autoencoders — learn latent space distributions. Smooth interpolation in latent space.</p>
+          <span class="tag badge badge-purple">Latent Space</span>
+        </div>
+        <div class="topic-card">
+          <h3>Diffusion Models</h3>
+          <p>Stable Diffusion, DALL-E — add/remove noise iteratively. State of the art for image generation.</p>
+          <span class="tag badge badge-blue">SOTA</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box tip fade-up-d5">
+      <strong>🎯 Focus Advice:</strong> Pick ONE specialization — CV, NLP, or Tabular ML — and go deep. Generalist knowledge is fine for interviews, but depth in one area makes you hireable.
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;gap:12px;flex-wrap:wrap">
+      <a href="intermediate.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600"><i class="fa-solid fa-arrow-left"></i> Intermediate</a>
+      <a href="projects.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600">Next: Projects <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+  <footer class="page-footer"><span><a href="index.html">← Dashboard</a></span><div class="footer-nav"><a href="intermediate.html">← Intermediate</a><a href="projects.html">Projects →</a></div></footer>
+</div>
+<script src="shared.js"></script>
+<script>
+function updateDoneCount() {
+  const total = document.querySelectorAll('.checklist li').length;
+  const done = document.querySelectorAll('.checklist li.done').length;
+  document.getElementById('doneCount').textContent = done;
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.querySelector('.progress-pct').textContent = pct + '%';
+  document.querySelector('.progress-track-fill').style.width = pct + '%';
+}
+document.querySelectorAll('.checklist li').forEach(li => li.addEventListener('click', () => setTimeout(updateDoneCount, 50)));
+setTimeout(updateDoneCount, 100);
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intermediate ML – ML Roadmap</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="bg-canvas"></div>
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><i class="fa-solid fa-brain"></i> ML Roadmap</a>
+  <div class="nav-links">
+    <a class="nav-link" href="prerequisites.html">Prerequisites</a>
+    <a class="nav-link" href="programming.html">Programming</a>
+    <a class="nav-link" href="data.html">Data</a>
+    <a class="nav-link" href="core-ml.html">Core ML</a>
+    <a class="nav-link" href="evaluation.html">Evaluation</a>
+    <a class="nav-link" href="intermediate.html">Intermediate</a>
+    <a class="nav-link" href="advanced.html">Advanced</a>
+    <a class="nav-link" href="projects.html">Projects</a>
+    <a class="nav-link" href="mlops.html">MLOps</a>
+  </div>
+  <div class="nav-actions"><button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button></div>
+</nav>
+<div class="progress-bar-global"><div class="progress-fill"></div></div>
+<div class="page-wrap">
+  <div class="page-hero fade-up">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <span>Intermediate ML</span></div>
+    <h1>⚡ <span class="gradient-text">Intermediate ML</span></h1>
+    <p>Ensemble methods, boosting algorithms, SVMs, and the gateway to deep learning.</p>
+  </div>
+  <div class="content-area">
+    <div class="progress-overview">
+      <div class="progress-stat"><div class="num" id="doneCount">0</div><div class="lbl">Done</div></div>
+      <div class="progress-track">
+        <div class="progress-track-label"><span>Module Progress</span><span class="progress-pct">0%</span></div>
+        <div class="progress-track-bar"><div class="progress-track-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="section-block fade-up-d1">
+      <div class="section-title"><div class="icon" style="background:rgba(251,191,36,0.1)">🌲</div>Ensemble Methods</div>
+      <div class="two-col">
+        <div>
+          <div class="collapsible open">
+            <div class="collapsible-header">Bagging <span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="collapsible-body-inner">
+              <ul class="checklist">
+                <li><div class="check">✓</div><strong>Random Forest</strong> — Bagging + random feature subsets. Reduces variance.</li>
+                <li><div class="check">✓</div>Feature importance via impurity decrease</li>
+                <li><div class="check">✓</div>n_estimators, max_depth, min_samples_split tuning</li>
+                <li><div class="check">✓</div>Out-of-bag (OOB) evaluation</li>
+              </ul>
+            </div></div>
+          </div>
+        </div>
+        <div>
+          <div class="collapsible open">
+            <div class="collapsible-header">Boosting <span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="collapsible-body-inner">
+              <ul class="checklist">
+                <li><div class="check">✓</div><strong>AdaBoost</strong> — Adaptive boosting, focuses on misclassified samples</li>
+                <li><div class="check">✓</div><strong>Gradient Boosting</strong> — GBM, sequential residual fitting</li>
+                <li><div class="check">✓</div><strong>XGBoost</strong> — Regularized, fast, industry standard</li>
+                <li><div class="check">✓</div><strong>LightGBM</strong> — Leaf-wise growth, faster than XGBoost</li>
+                <li><div class="check">✓</div><strong>CatBoost</strong> — Handles categoricals natively</li>
+              </ul>
+            </div></div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block" style="margin-top:16px">
+        <div class="code-header">Python · XGBoost with Early Stopping</div>
+<span class="kw">import</span> xgboost <span class="kw">as</span> <span class="var">xgb</span>
+
+<span class="var">model</span> = xgb.<span class="fn">XGBClassifier</span>(
+    n_estimators=<span class="num">1000</span>, learning_rate=<span class="num">0.05</span>,
+    max_depth=<span class="num">6</span>, subsample=<span class="num">0.8</span>,
+    colsample_bytree=<span class="num">0.8</span>, reg_alpha=<span class="num">0.1</span>,
+    early_stopping_rounds=<span class="num">50</span>, eval_metric=<span class="str">'logloss'</span>
+)
+<span class="var">model</span>.<span class="fn">fit</span>(X_train, y_train,
+         eval_set=[(X_val, y_val)], verbose=<span class="num">100</span>)
+      </div>
+    </div>
+
+    <div class="section-block fade-up-d2">
+      <div class="section-title"><div class="icon" style="background:rgba(167,139,250,0.1)">📐</div>Support Vector Machines (SVM)</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>Hyperplane, margin, support vectors — core concepts</li>
+        <li><div class="check">✓</div>Kernel trick — RBF, polynomial, sigmoid for non-linear data</li>
+        <li><div class="check">✓</div>C parameter — regularization (soft vs hard margin)</li>
+        <li><div class="check">✓</div>SVR — Support Vector Regression</li>
+        <li><div class="check">✓</div>When to use — high-dimensional text, image classification (before deep learning)</li>
+      </ul>
+    </div>
+
+    <div class="section-block fade-up-d3">
+      <div class="section-title"><div class="icon" style="background:rgba(56,189,248,0.1)">🧠</div>Neural Networks — Introduction</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Perceptron</h4>
+          <p>Single neuron: weighted inputs → activation. The building block of everything.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Multilayer Perceptron (MLP)</h4>
+          <p>Fully connected layers, activation functions (ReLU, sigmoid, tanh). Forward pass.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Backpropagation</h4>
+          <p>Chain rule applied end-to-end. Compute gradients, update weights with optimizer.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Optimizers</h4>
+          <p>SGD, Adam, AdaGrad, RMSprop — how learning rate adapts during training.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Regularization</h4>
+          <p>Dropout, L1/L2 weight decay, batch normalization — prevent overfitting in deep nets.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block fade-up-d4">
+      <div class="section-title"><div class="icon" style="background:rgba(52,211,153,0.1)">🔥</div>PyTorch & TensorFlow Basics</div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <h3>PyTorch</h3>
+          <p>Dynamic computation graphs, Pythonic API, dominant in research. nn.Module, DataLoader, autograd.</p>
+          <span class="tag badge badge-orange">Research Favorite</span>
+        </div>
+        <div class="topic-card">
+          <h3>TensorFlow / Keras</h3>
+          <p>Production-ready, Sequential API, model.fit() workflow. Great for beginners getting into deep learning.</p>
+          <span class="tag badge badge-green">Production Ready</span>
+        </div>
+        <div class="topic-card">
+          <h3>Stacking & Voting</h3>
+          <p>Combine multiple models — VotingClassifier, StackingClassifier. Often 1-2% better than single best.</p>
+          <span class="tag badge badge-purple">Meta-Learning</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;gap:12px;flex-wrap:wrap">
+      <a href="evaluation.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600"><i class="fa-solid fa-arrow-left"></i> Evaluation</a>
+      <a href="advanced.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600">Next: Advanced <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+  <footer class="page-footer"><span><a href="index.html">← Dashboard</a></span><div class="footer-nav"><a href="evaluation.html">← Evaluation</a><a href="advanced.html">Advanced →</a></div></footer>
+</div>
+<script src="shared.js"></script>
+<script>
+function updateDoneCount() {
+  const total = document.querySelectorAll('.checklist li').length;
+  const done = document.querySelectorAll('.checklist li.done').length;
+  document.getElementById('doneCount').textContent = done;
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.querySelector('.progress-pct').textContent = pct + '%';
+  document.querySelector('.progress-track-fill').style.width = pct + '%';
+}
+document.querySelectorAll('.checklist li').forEach(li => li.addEventListener('click', () => setTimeout(updateDoneCount, 50)));
+setTimeout(updateDoneCount, 100);
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLOps & Deployment – ML Roadmap</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="bg-canvas"></div>
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><i class="fa-solid fa-brain"></i> ML Roadmap</a>
+  <div class="nav-links">
+    <a class="nav-link" href="prerequisites.html">Prerequisites</a>
+    <a class="nav-link" href="programming.html">Programming</a>
+    <a class="nav-link" href="data.html">Data</a>
+    <a class="nav-link" href="core-ml.html">Core ML</a>
+    <a class="nav-link" href="evaluation.html">Evaluation</a>
+    <a class="nav-link" href="intermediate.html">Intermediate</a>
+    <a class="nav-link" href="advanced.html">Advanced</a>
+    <a class="nav-link" href="projects.html">Projects</a>
+    <a class="nav-link" href="mlops.html">MLOps</a>
+  </div>
+  <div class="nav-actions"><button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button></div>
+</nav>
+<div class="progress-bar-global"><div class="progress-fill"></div></div>
+<div class="page-wrap">
+  <div class="page-hero fade-up">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <span>MLOps & Deployment</span></div>
+    <h1>🛠️ <span class="gradient-text">MLOps & Deployment</span></h1>
+    <p>From Jupyter notebook to production API — shipping ML models that actually work in the real world.</p>
+  </div>
+  <div class="content-area">
+    <div class="progress-overview">
+      <div class="progress-stat"><div class="num" id="doneCount">0</div><div class="lbl">Done</div></div>
+      <div class="progress-track">
+        <div class="progress-track-label"><span>Module Progress</span><span class="progress-pct">0%</span></div>
+        <div class="progress-track-bar"><div class="progress-track-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- MODEL SERVING -->
+    <div class="section-block fade-up-d1">
+      <div class="section-title"><div class="icon" style="background:rgba(248,113,113,0.1)">🚀</div>Model Serving APIs</div>
+      <div class="collapsible open">
+        <div class="collapsible-header">FastAPI — Build a Prediction API <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Install FastAPI and Uvicorn — async Python web framework</li>
+            <li><div class="check">✓</div>Pydantic models for request/response validation</li>
+            <li><div class="check">✓</div>Load model at startup, predict at /predict endpoint</li>
+            <li><div class="check">✓</div>Health check endpoint, logging, error handling</li>
+          </ul>
+          <div class="code-block" style="margin-top:12px">
+            <div class="code-header">Python · FastAPI ML Endpoint</div>
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+<span class="kw">import</span> joblib, numpy <span class="kw">as</span> <span class="var">np</span>
+
+<span class="var">app</span> = <span class="fn">FastAPI</span>(title=<span class="str">"ML Model API"</span>)
+<span class="var">model</span> = joblib.<span class="fn">load</span>(<span class="str">"model.pkl"</span>)
+
+<span class="kw">class</span> <span class="fn">PredictRequest</span>(BaseModel):
+    features: list[float]
+
+@app.<span class="fn">post</span>(<span class="str">"/predict"</span>)
+<span class="kw">async def</span> <span class="fn">predict</span>(req: PredictRequest):
+    <span class="var">X</span> = np.<span class="fn">array</span>(req.features).<span class="fn">reshape</span>(<span class="num">1</span>, -<span class="num">1</span>)
+    <span class="var">pred</span> = model.<span class="fn">predict</span>(X)[<span class="num">0</span>]
+    <span class="kw">return</span> {<span class="str">"prediction"</span>: <span class="fn">float</span>(pred)}
+          </div>
+        </div></div>
+      </div>
+      <div class="collapsible">
+        <div class="collapsible-header">Flask & Streamlit Alternatives <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Flask — lightweight, mature, good for simple APIs</li>
+            <li><div class="check">✓</div>Streamlit — instant ML demo apps in pure Python</li>
+            <li><div class="check">✓</div>Gradio — ML demo UIs, automatic HuggingFace Spaces deploy</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- DOCKER -->
+    <div class="section-block fade-up-d2">
+      <div class="section-title"><div class="icon" style="background:rgba(56,189,248,0.1)">🐳</div>Docker & Containerization</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>Docker fundamentals — images, containers, layers, volumes</li>
+        <li><div class="check">✓</div>Writing a Dockerfile for ML applications</li>
+        <li><div class="check">✓</div>docker-compose for multi-service setups</li>
+        <li><div class="check">✓</div>Multi-stage builds to reduce image size</li>
+      </ul>
+      <div class="code-block" style="margin-top:16px">
+        <div class="code-header">Dockerfile · ML API Container</div>
+<span class="kw">FROM</span> <span class="str">python:3.11-slim</span>
+<span class="kw">WORKDIR</span> /app
+<span class="kw">COPY</span> requirements.txt .
+<span class="kw">RUN</span> pip install --no-cache-dir -r requirements.txt
+<span class="kw">COPY</span> . .
+<span class="kw">EXPOSE</span> <span class="num">8000</span>
+<span class="kw">CMD</span> [<span class="str">"uvicorn"</span>, <span class="str">"main:app"</span>, <span class="str">"--host"</span>, <span class="str">"0.0.0.0"</span>, <span class="str">"--port"</span>, <span class="str">"8000"</span>]
+      </div>
+    </div>
+
+    <!-- EXPERIMENT TRACKING -->
+    <div class="section-block fade-up-d3">
+      <div class="section-title"><div class="icon" style="background:rgba(129,140,248,0.1)">🔬</div>Experiment Tracking</div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <h3>MLflow</h3>
+          <p>Track parameters, metrics, artifacts. Model registry, model versioning. Open source, self-hostable.</p>
+          <span class="tag badge badge-blue">mlflow.org</span>
+        </div>
+        <div class="topic-card">
+          <h3>Weights & Biases</h3>
+          <p>W&B — beautiful dashboards, sweep hyperparameter optimization, collaboration features.</p>
+          <span class="tag badge badge-purple">wandb.ai</span>
+        </div>
+        <div class="topic-card">
+          <h3>DVC</h3>
+          <p>Data Version Control — version datasets alongside code in Git. Reproduce experiments exactly.</p>
+          <span class="tag badge badge-green">dvc.org</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOUD -->
+    <div class="section-block fade-up-d4">
+      <div class="section-title"><div class="icon" style="background:rgba(251,146,60,0.1)">☁️</div>Cloud Deployment</div>
+      <div class="collapsible open">
+        <div class="collapsible-header">AWS ML Stack <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>SageMaker — managed training, deployment, endpoints</li>
+            <li><div class="check">✓</div>Lambda + API Gateway — serverless ML inference</li>
+            <li><div class="check">✓</div>ECR — container registry for Docker images</li>
+            <li><div class="check">✓</div>S3 — data lake, model artifact storage</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="collapsible">
+        <div class="collapsible-header">GCP & Azure <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>GCP — Vertex AI, Cloud Run, BigQuery ML</li>
+            <li><div class="check">✓</div>Azure — Azure ML, ACI, AKS for Kubernetes deployments</li>
+            <li><div class="check">✓</div>HuggingFace Spaces — free quick deployment for demos</li>
+            <li><div class="check">✓</div>Railway / Render — easy Python API deployment</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- MONITORING -->
+    <div class="section-block fade-up-d5">
+      <div class="section-title"><div class="icon" style="background:rgba(52,211,153,0.1)">📡</div>Model Monitoring</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>Data drift detection — Evidently AI, Alibi Detect</li>
+        <li><div class="check">✓</div>Model performance degradation — tracking prediction quality over time</li>
+        <li><div class="check">✓</div>Prometheus + Grafana — infrastructure and latency monitoring</li>
+        <li><div class="check">✓</div>Retraining triggers — when to retrain, automated pipelines</li>
+      </ul>
+      <div class="info-box tip" style="margin-top:16px">
+        <strong>🎯 MLOps Maturity:</strong> Level 0 = manual notebooks. Level 1 = automated training pipelines. Level 2 = CI/CD for ML — automated retraining, testing, deployment. Aim for Level 2 in production systems.
+      </div>
+    </div>
+
+    <!-- FINAL CTA -->
+    <div style="background:linear-gradient(135deg,rgba(56,189,248,0.08),rgba(129,140,248,0.08));border:1px solid rgba(56,189,248,0.2);border-radius:18px;padding:40px;text-align:center;margin-top:40px" class="fade-up">
+      <div style="font-size:40px;margin-bottom:16px">🎉</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:12px">You've Reached the End!</h2>
+      <p style="color:var(--text-muted);max-width:480px;margin:0 auto 24px;line-height:1.7">You now have the complete roadmap from math fundamentals to production ML systems. The journey doesn't end here — it just gets more exciting.</p>
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:'Syne',sans-serif;font-weight:700;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:15px">
+        <i class="fa-solid fa-home"></i> Back to Dashboard
+      </a>
+    </div>
+
+    <div style="display:flex;justify-content:flex-start;margin-top:32px">
+      <a href="projects.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600"><i class="fa-solid fa-arrow-left"></i> Projects</a>
+    </div>
+  </div>
+  <footer class="page-footer"><span><a href="index.html">← Dashboard</a></span><div class="footer-nav"><a href="projects.html">← Projects</a><a href="index.html">Dashboard →</a></div></footer>
+</div>
+<script src="shared.js"></script>
+<script>
+function updateDoneCount() {
+  const total = document.querySelectorAll('.checklist li').length;
+  const done = document.querySelectorAll('.checklist li.done').length;
+  document.getElementById('doneCount').textContent = done;
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.querySelector('.progress-pct').textContent = pct + '%';
+  document.querySelector('.progress-track-fill').style.width = pct + '%';
+}
+document.querySelectorAll('.checklist li').forEach(li => li.addEventListener('click', () => setTimeout(updateDoneCount, 50)));
+setTimeout(updateDoneCount, 100);
+</script>
+</body>
+</html>

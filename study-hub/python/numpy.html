@@ -28,6 +28,78 @@
   --grid-line: rgba(0,212,255,0.04);
 }
 
+/* LIGHT MODE */
+[data-theme="light"] {
+  --bg: #f0f4ff;
+  --bg2: #e8edf8;
+  --surface: #ffffff;
+  --surface2: #eef2fc;
+  --border: #c8d4ec;
+  --border2: #b0c0e0;
+  --ink: #0d1630;
+  --ink2: #3a4a6a;
+  --muted: #7a8aaa;
+  --accent: #0077bb;
+  --accent-dim: rgba(0,119,187,0.12);
+  --accent2: #e05020;
+  --accent3: #007a40;
+  --accent4: #b08000;
+  --accent5: #7c40cc;
+  --code-bg: #e4eaf8;
+  --grid-line: rgba(0,119,187,0.06);
+}
+[data-theme="light"] .h1-sub {
+  background: linear-gradient(90deg, #0077bb 0%, #7c40cc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+[data-theme="light"] header {
+  background: linear-gradient(180deg, #dde6ff 0%, var(--bg) 100%);
+}
+[data-theme="light"] .header-glow {
+  background: radial-gradient(ellipse, rgba(0,119,187,0.10) 0%, transparent 70%);
+}
+[data-theme="light"] .version-badge {
+  background: rgba(0,119,187,0.08);
+  border-color: rgba(0,119,187,0.25);
+  color: var(--accent);
+}
+[data-theme="light"] .version-badge::before { background: var(--accent); }
+[data-theme="light"] .kw  { color: #7c40cc; }
+[data-theme="light"] .fn  { color: #1a6ad6; }
+[data-theme="light"] .st  { color: #007a40; }
+[data-theme="light"] .cm  { color: #8090b0; }
+[data-theme="light"] .nm  { color: #b06000; }
+[data-theme="light"] .cl  { color: #c02020; }
+[data-theme="light"] .op  { color: #007aa0; }
+[data-theme="light"] .dc  { color: #6030b0; }
+[data-theme="light"] .at  { color: #0077bb; }
+[data-theme="light"] pre { color: #1a2a4a; }
+[data-theme="light"] .callout.tip { background: rgba(0,122,64,0.05); border-color: rgba(0,122,64,0.2); border-left-color: var(--accent3); }
+[data-theme="light"] .callout.warn { background: rgba(176,128,0,0.05); border-color: rgba(176,128,0,0.2); border-left-color: var(--accent4); }
+[data-theme="light"] .callout.info { background: rgba(0,119,187,0.05); border-color: rgba(0,119,187,0.18); border-left-color: var(--accent); }
+[data-theme="light"] .callout.pro { background: rgba(224,80,32,0.05); border-color: rgba(224,80,32,0.18); border-left-color: var(--accent2); }
+[data-theme="light"] .nb-g { background: rgba(0,122,64,0.12); color: var(--accent3); }
+[data-theme="light"] .nb-y { background: rgba(176,128,0,0.12); color: var(--accent4); }
+[data-theme="light"] .nb-r { background: rgba(224,80,32,0.12); color: var(--accent2); }
+[data-theme="light"] .lv-b { background: rgba(0,122,64,0.08); color: var(--accent3); border-color: rgba(0,122,64,0.2); }
+[data-theme="light"] .lv-i { background: rgba(176,128,0,0.08); color: var(--accent4); border-color: rgba(176,128,0,0.2); }
+[data-theme="light"] .lv-a { background: rgba(224,80,32,0.08); color: var(--accent2); border-color: rgba(224,80,32,0.2); }
+[data-theme="light"] .shape-tag { background: rgba(124,64,204,0.08); border-color: rgba(124,64,204,0.2); }
+[data-theme="light"] .s-icon::before { background: linear-gradient(135deg, rgba(0,119,187,0.15), transparent 60%); }
+[data-theme="light"] .card::before { background: linear-gradient(90deg, var(--accent), transparent); }
+[data-theme="light"] .formula { background: var(--surface2); border-color: var(--border2); }
+[data-theme="light"] hr.div::before { background: var(--bg); color: var(--border2); }
+[data-theme="light"] .interview-badge { background: rgba(0,119,187,0.08); border-color: rgba(0,119,187,0.25); color: var(--accent); }
+[data-theme="light"] .qa-item { background: var(--surface); border-color: var(--border); }
+[data-theme="light"] .qa-item:hover { border-color: var(--accent); }
+[data-theme="light"] .qa-q { color: var(--ink); }
+[data-theme="light"] .qa-a { background: var(--surface2); border-left-color: var(--accent); }
+[data-theme="light"] .diff-badge.easy { background: rgba(0,122,64,0.1); color: var(--accent3); border-color: rgba(0,122,64,0.2); }
+[data-theme="light"] .diff-badge.medium { background: rgba(176,128,0,0.1); color: var(--accent4); border-color: rgba(176,128,0,0.2); }
+[data-theme="light"] .diff-badge.hard { background: rgba(224,80,32,0.1); color: var(--accent2); border-color: rgba(224,80,32,0.2); }
+
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
@@ -37,7 +109,129 @@ body {
   line-height: 1.75;
   font-size: 15px;
   cursor: default;
+  transition: background 0.35s ease, color 0.35s ease;
 }
+
+/* Global transition for smooth theme switching */
+*, *::before, *::after {
+  transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* THEME TOGGLE */
+.theme-toggle {
+  position: fixed;
+  top: 18px; right: 24px;
+  z-index: 1000;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 7px 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  cursor: pointer;
+  user-select: none;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--ink); }
+.toggle-track {
+  width: 40px; height: 20px;
+  background: var(--border2);
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.3s ease;
+}
+.toggle-track.on { background: var(--accent); }
+.toggle-thumb {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle-thumb.on { transform: translateX(20px); }
+.toggle-icon { font-size: 14px; }
+
+/* INTERVIEW SECTION */
+.interview-section { margin-bottom: 80px; }
+.interview-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.2);
+  padding: 5px 14px;
+  border-radius: 3px;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px; color: var(--accent);
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.qa-list { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
+.qa-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.qa-item:hover { border-color: var(--border2); }
+.qa-toggle {
+  width: 100%;
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  background: none; border: none; cursor: pointer;
+  text-align: left; color: var(--ink);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 500;
+}
+.qa-num {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px; color: var(--muted);
+  min-width: 24px;
+}
+.qa-q { flex: 1; color: var(--ink); font-size: 14px; font-weight: 500; text-align: left; line-height: 1.5; }
+.diff-badge {
+  font-family: 'Fira Code', monospace;
+  font-size: 9px; padding: 2px 7px;
+  border-radius: 2px; letter-spacing: 1px;
+  text-transform: uppercase; border: 1px solid;
+  white-space: nowrap;
+}
+.diff-badge.easy { background: rgba(0,255,136,0.1); color: var(--accent3); border-color: rgba(0,255,136,0.2); }
+.diff-badge.medium { background: rgba(255,215,0,0.1); color: var(--accent4); border-color: rgba(255,215,0,0.2); }
+.diff-badge.hard { background: rgba(255,107,53,0.1); color: var(--accent2); border-color: rgba(255,107,53,0.2); }
+.qa-chevron {
+  font-size: 12px; color: var(--muted);
+  transition: transform 0.25s ease;
+  min-width: 18px; text-align: center;
+}
+.qa-chevron.open { transform: rotate(180deg); }
+.qa-a {
+  padding: 0 20px 18px 56px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  font-size: 13.5px; color: var(--ink2);
+  line-height: 1.8; font-weight: 300;
+  border-left: 3px solid var(--accent);
+  display: none;
+}
+.qa-a.open { display: block; }
+.qa-a code {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--accent);
+}
+.qa-a ul { padding-left: 18px; margin: 8px 0; }
+.qa-a li { margin-bottom: 4px; color: var(--ink2); }
+.qa-a strong { color: var(--ink); }
 
 /* Grid background */
 body::before {
@@ -528,6 +722,15 @@ hr.div::before {
 </head>
 <body>
 
+<!-- THEME TOGGLE -->
+<div class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark / Light Mode">
+  <span class="toggle-icon" id="toggle-icon">☀️</span>
+  <div class="toggle-track" id="toggle-track">
+    <div class="toggle-thumb" id="toggle-thumb"></div>
+  </div>
+  <span id="toggle-label">LIGHT</span>
+</div>
+
 <!-- HEADER -->
 <header>
   <div class="header-glow"></div>
@@ -574,6 +777,9 @@ hr.div::before {
   <a href="#io"><span class="ni">💾</span> File I/O</a>
   <a href="#performance"><span class="ni">⚡</span> Performance & Memory</a>
   <a href="#practical"><span class="ni">🚀</span> Practical Patterns</a>
+
+  <div class="nav-group">🎙️ Interview</div>
+  <a href="#interview"><span class="ni">🎯</span> Interview Q&A <span class="nb nb-r">new</span></a>
 </nav>
 
 <!-- MAIN CONTENT -->
@@ -2099,6 +2305,377 @@ np.savez(<span class="st">'f.npz'</span>, a=a, b=b)    np.savetxt(<span class="s
   </div>
 </section>
 
+<hr class="div">
+
+<!-- ==================== INTERVIEW Q&A ==================== -->
+<section class="section interview-section" id="interview">
+  <div class="section-header">
+    <div class="s-icon">🎙️</div>
+    <div class="s-meta">
+      <span class="s-level lv-a">Interview Prep</span>
+      <h2>NumPy Interview Questions & Answers</h2>
+      <p>Top questions asked in data science and ML engineering interviews — with detailed answers</p>
+    </div>
+  </div>
+
+  <div class="interview-badge">🎯 Click any question to reveal the answer</div>
+
+  <div class="qa-list">
+
+    <!-- Q1 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">01</span>
+        <span class="qa-q">What is the difference between a NumPy array and a Python list?</span>
+        <span class="diff-badge easy">Easy</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <strong>Key differences:</strong>
+        <ul>
+          <li><strong>Speed:</strong> NumPy arrays are 50–100× faster for numerical operations because they're stored in contiguous memory and operations run in compiled C code.</li>
+          <li><strong>Type homogeneity:</strong> All elements in a NumPy array must be the same dtype. Python lists can mix any types.</li>
+          <li><strong>Memory:</strong> NumPy arrays are far more memory-efficient — a list of 1M integers takes ~8MB, the equivalent <code>int64</code> NumPy array takes exactly 8MB with no overhead.</li>
+          <li><strong>Vectorization:</strong> <code>arr * 2</code> applies the operation to every element at once. A list requires an explicit loop.</li>
+          <li><strong>Multi-dimensional:</strong> NumPy natively supports N-D arrays with proper shape semantics. Lists of lists are ragged by default.</li>
+        </ul>
+        Use Python lists when you have mixed types or small collections. Use NumPy for any numerical computation.
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">02</span>
+        <span class="qa-q">Explain NumPy broadcasting. When does it work and when does it fail?</span>
+        <span class="diff-badge medium">Medium</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <strong>Broadcasting</strong> allows NumPy to perform operations on arrays with different shapes by virtually expanding the smaller array to match the larger one — without copying data.
+        <br><br>
+        <strong>Rules (applied right-to-left on shape tuples):</strong>
+        <ul>
+          <li>Dimensions are compatible if they are <strong>equal</strong>, or one of them is <strong>1</strong>.</li>
+          <li>If arrays have different numbers of dims, the smaller one is padded with <code>1</code>s on the left.</li>
+        </ul>
+        <strong>Works:</strong> <code>(3,4) + (4,)</code> → (4,) becomes (1,4) → broadcast to (3,4) ✅<br>
+        <strong>Fails:</strong> <code>(3,4) + (3,)</code> → (3,) becomes (1,3) → 4 ≠ 3 and neither is 1 ❌
+        <br><br>
+        Broadcasting is zero-copy — it's memory-efficient but can be confusing. Always verify with <code>np.broadcast_shapes(a.shape, b.shape)</code>.
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">03</span>
+        <span class="qa-q">What is the difference between a view and a copy in NumPy?</span>
+        <span class="diff-badge medium">Medium</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <strong>View:</strong> A new array object that points to the <em>same memory</em> as the original. Modifying the view modifies the original.
+        <br><strong>Copy:</strong> An independent array with its own memory. Changes don't affect the original.
+        <br><br>
+        <strong>Views are created by:</strong> basic slicing (<code>a[1:3]</code>), <code>reshape()</code>, <code>.T</code>, <code>np.squeeze()</code>.
+        <br><strong>Copies are created by:</strong> fancy/boolean indexing, <code>.copy()</code>, <code>.flatten()</code> (vs <code>.ravel()</code> which may be a view).
+        <br><br>
+        Check with <code>np.shares_memory(a, b)</code> or inspect <code>a.base</code> — if it's not <code>None</code>, <code>a</code> is a view.
+        <br><br>
+        <strong>Interview tip:</strong> Views are free (no memory allocation). Unintended copies inside loops are a common performance bug.
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">04</span>
+        <span class="qa-q">How would you implement a vectorized sigmoid function without any Python loops?</span>
+        <span class="diff-badge easy">Easy</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <code>sigmoid(x) = 1 / (1 + e^(-x))</code>
+        <br><br>
+        <strong>NumPy implementation:</strong><br>
+        <code>def sigmoid(x): return 1 / (1 + np.exp(-x))</code>
+        <br><br>
+        This works on scalars, 1-D arrays, or any N-D array via broadcasting.
+        <br><br>
+        <strong>Numerically stable version</strong> (avoids overflow for large negative x):<br>
+        <code>def sigmoid(x): return np.where(x >= 0, 1 / (1 + np.exp(-x)), np.exp(x) / (1 + np.exp(x)))</code>
+        <br><br>
+        <strong>Why avoid loops?</strong> Python loops have interpreter overhead per iteration. NumPy's vectorized ops execute the entire array operation in a single C call — orders of magnitude faster.
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">05</span>
+        <span class="qa-q">What does <code>axis</code> mean in NumPy? Explain with an example for a 2D array.</span>
+        <span class="diff-badge easy">Easy</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <code>axis</code> specifies <strong>which dimension to collapse</strong> when reducing an array.
+        <br><br>
+        For a 2D array with shape <code>(rows, cols)</code>:
+        <ul>
+          <li><code>axis=0</code> → collapse <em>rows</em> → result shape is <code>(cols,)</code> — you get one value <em>per column</em></li>
+          <li><code>axis=1</code> → collapse <em>columns</em> → result shape is <code>(rows,)</code> — you get one value <em>per row</em></li>
+          <li><code>axis=None</code> → collapse everything → single scalar</li>
+        </ul>
+        <strong>Memory trick:</strong> "axis=0 means the operation goes <em>down</em> (across rows)". Think of the axis as the dimension being consumed.
+        <br><br>
+        Example: For a matrix of exam scores where each row is a student and each column is a subject — <code>scores.mean(axis=1)</code> gives each student's average; <code>scores.mean(axis=0)</code> gives each subject's class average.
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">06</span>
+        <span class="qa-q">How does <code>np.where</code> work? What are its two forms?</span>
+        <span class="diff-badge medium">Medium</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <strong>Form 1 — Single argument:</strong> <code>np.where(condition)</code><br>
+        Equivalent to <code>np.nonzero(condition)</code> — returns a tuple of index arrays for where the condition is True.
+        <br><br>
+        <strong>Form 2 — Three arguments (most common):</strong> <code>np.where(condition, x, y)</code><br>
+        Returns a new array: elements from <code>x</code> where condition is True, from <code>y</code> elsewhere. Both <code>x</code> and <code>y</code> can be arrays or scalars (broadcasting applies).
+        <br><br>
+        Example: Clamp negatives to zero: <code>np.where(a &gt; 0, a, 0)</code> — equivalent to <code>np.clip(a, 0, None)</code>.<br>
+        Apply different functions by region: <code>np.where(x &lt; 0, np.exp(x), 1 + x)</code>
+        <br><br>
+        <strong>Important:</strong> Both branches are <em>always evaluated</em> before the selection — use carefully with functions that have side-effects or errors (e.g., division by zero in the "else" branch still executes).
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">07</span>
+        <span class="qa-q">What is <code>np.einsum</code> and when would you use it over standard operations?</span>
+        <span class="diff-badge hard">Hard</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <code>np.einsum</code> implements <strong>Einstein summation notation</strong> — a compact way to express multi-dimensional contractions.
+        <br><br>
+        <strong>Syntax:</strong> <code>np.einsum('ij,jk->ik', A, B)</code> — subscripts describe input/output indices; repeated indices (here <code>j</code>) are summed over.
+        <br><br>
+        <strong>Common translations:</strong>
+        <ul>
+          <li><code>'ij,jk->ik'</code> → matrix multiply <code>A @ B</code></li>
+          <li><code>'ij->i'</code> → row sums <code>A.sum(axis=1)</code></li>
+          <li><code>'ii->'</code> → trace <code>np.trace(A)</code></li>
+          <li><code>'ij,ij->'</code> → element-wise product then sum (Frobenius inner product)</li>
+          <li><code>'bij,bjk->bik'</code> → batched matrix multiply</li>
+        </ul>
+        <strong>When to prefer einsum:</strong> Complex multi-array contractions (attention scores in transformers, tensor networks), batched operations without explicit reshape, or when intermediate shapes are hard to reason about.
+        <br><br>
+        Use <code>optimize=True</code> to let NumPy find the optimal contraction order for chains of operations.
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">08</span>
+        <span class="qa-q">Explain the memory layout of NumPy arrays (C-order vs Fortran-order). Why does it matter?</span>
+        <span class="diff-badge hard">Hard</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <strong>C-order (row-major, default):</strong> Elements of the same row are stored contiguously in memory. The last index changes fastest.
+        <br><strong>Fortran-order (column-major):</strong> Elements of the same column are stored contiguously. The first index changes fastest.
+        <br><br>
+        <strong>Why it matters — cache locality:</strong> CPUs load memory in cache lines. Accessing contiguous memory is fast; scattered access causes cache misses (10–100× slower).
+        <ul>
+          <li>On a C-order array: iterating <em>rows</em> is cache-friendly; iterating <em>columns</em> is not.</li>
+          <li>On an F-order array: the opposite.</li>
+        </ul>
+        Check with <code>a.flags['C_CONTIGUOUS']</code> or <code>a.flags['F_CONTIGUOUS']</code>.
+        <br><br>
+        <strong>Practical impact:</strong> BLAS/LAPACK (used by <code>np.linalg</code>) often expects specific layouts. Transposing a C-order array returns an F-order view — cheap, but can slow subsequent operations. Use <code>np.ascontiguousarray(A.T)</code> to force C-layout after a transpose for repeated operations.
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">09</span>
+        <span class="qa-q">How would you find the top-k largest values in a NumPy array efficiently?</span>
+        <span class="diff-badge medium">Medium</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <strong>Method 1 — <code>np.argsort</code> (simple, O(n log n)):</strong><br>
+        <code>idx = np.argsort(arr)[-k:][::-1]</code> → indices of top-k in descending order<br>
+        <code>vals = arr[idx]</code>
+        <br><br>
+        <strong>Method 2 — <code>np.argpartition</code> (faster, O(n)):</strong><br>
+        <code>idx = np.argpartition(arr, -k)[-k:]</code> → unordered top-k indices<br>
+        <code>idx = idx[np.argsort(arr[idx])[::-1]]</code> → sort just those k elements
+        <br><br>
+        <strong>When k ≪ n, use argpartition</strong> — it's O(n) via introselect vs O(n log n) for full sort.
+        <br><br>
+        <strong>For 2D:</strong> <code>np.argpartition(arr, -k, axis=1)[:, -k:]</code> — top-k per row without sorting all columns.
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">10</span>
+        <span class="qa-q">What causes a "shape mismatch" error in broadcasting, and how do you debug it?</span>
+        <span class="diff-badge medium">Medium</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        A shape mismatch occurs when two arrays have incompatible shapes that can't be broadcast together.
+        <br><br>
+        <strong>Debugging steps:</strong>
+        <ul>
+          <li>Print <code>a.shape</code> and <code>b.shape</code> immediately before the failing operation.</li>
+          <li>Use <code>np.broadcast_shapes(a.shape, b.shape)</code> to predict the result or see the error clearly.</li>
+          <li>Check if you accidentally collapsed a needed dimension — e.g., <code>a.sum(axis=1)</code> produces shape <code>(n,)</code> but you needed <code>(n,1)</code> for column-wise broadcasting. Fix: <code>a.sum(axis=1, keepdims=True)</code>.</li>
+          <li>Use <code>np.expand_dims(a, axis=1)</code> or <code>a[:, np.newaxis]</code> to insert dimensions.</li>
+        </ul>
+        <strong>Common gotcha:</strong> <code>(n,)</code> and <code>(n,1)</code> and <code>(1,n)</code> are all different! Shape <code>(n,)</code> treated as <code>(1,n)</code> in 2D ops — often not what you want. Be explicit about your dimensions.
+      </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">11</span>
+        <span class="qa-q">How do you compute pairwise Euclidean distances between two sets of points using only NumPy?</span>
+        <span class="diff-badge hard">Hard</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        Given A of shape <code>(m, d)</code> and B of shape <code>(n, d)</code>, compute the <code>(m, n)</code> distance matrix.
+        <br><br>
+        <strong>Naive (readable but memory-heavy):</strong><br>
+        <code>diff = A[:, np.newaxis, :] - B[np.newaxis, :, :]  # (m,n,d)</code><br>
+        <code>D = np.sqrt((diff**2).sum(axis=2))  # (m,n)</code>
+        <br><br>
+        <strong>Efficient using the identity ‖a-b‖² = ‖a‖² - 2a·bᵀ + ‖b‖²:</strong><br>
+        <code>D_sq = (A**2).sum(1)[:,None] - 2*(A @ B.T) + (B**2).sum(1)[None,:]</code><br>
+        <code>D = np.sqrt(np.maximum(D_sq, 0))  # clip negatives from float errors</code>
+        <br><br>
+        The second approach avoids the <code>(m,n,d)</code> intermediate tensor — critical when m, n, d are large (GPU-style optimization). For production, <code>scipy.spatial.distance.cdist</code> is even faster via BLAS.
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">12</span>
+        <span class="qa-q">What is the difference between <code>np.dot</code>, <code>np.matmul</code>, and the <code>@</code> operator?</span>
+        <span class="diff-badge medium">Medium</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <strong><code>np.dot(a, b)</code>:</strong>
+        <ul>
+          <li>For 1-D arrays: dot product (scalar result).</li>
+          <li>For 2-D arrays: matrix multiplication.</li>
+          <li>For N-D: sum product over last axis of <code>a</code> and second-to-last of <code>b</code> — confusing for batched ops.</li>
+          <li>Accepts scalars.</li>
+        </ul>
+        <strong><code>np.matmul(a, b)</code> / <code>a @ b</code>:</strong>
+        <ul>
+          <li>For 2-D: identical to <code>np.dot</code>.</li>
+          <li>For N-D: treats as a <em>stack of matrices</em> — broadcasts over leading batch dimensions. This is what you want for batched matrix operations.</li>
+          <li>Does <strong>not</strong> accept scalars.</li>
+        </ul>
+        <strong>Rule of thumb:</strong> Prefer <code>@</code> for matrix multiplications. It's unambiguous, readable, and handles batched ops correctly. Use <code>np.dot</code> only for explicit 1-D dot products.
+      </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">13</span>
+        <span class="qa-q">How would you normalize each row of a 2D matrix to unit norm without a loop?</span>
+        <span class="diff-badge easy">Easy</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <code>norms = np.linalg.norm(A, axis=1, keepdims=True)  # shape (n, 1)</code><br>
+        <code>A_normalized = A / norms</code>
+        <br><br>
+        <code>keepdims=True</code> is the key — it preserves the <code>(n, 1)</code> shape so that broadcasting divides each row by its own norm.
+        <br><br>
+        Without <code>keepdims</code>, <code>norms</code> has shape <code>(n,)</code> which is treated as <code>(1, n)</code> — broadcasting would divide wrong!
+        <br><br>
+        <strong>Handle zero norms safely:</strong><br>
+        <code>A_normalized = A / np.maximum(norms, 1e-10)</code>
+        <br><br>
+        This is the first step in cosine similarity computation, and it appears constantly in NLP embeddings and recommendation systems.
+      </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">14</span>
+        <span class="qa-q">Explain structured arrays in NumPy. When are they useful?</span>
+        <span class="diff-badge hard">Hard</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        A <strong>structured array</strong> is a NumPy array where each element is a compound record — like a row in a database table — with named fields of potentially different dtypes.
+        <br><br>
+        <code>dt = np.dtype([('name', 'U20'), ('age', 'i4'), ('score', 'f8')])</code><br>
+        <code>arr = np.array([('Alice', 30, 9.5), ('Bob', 25, 8.1)], dtype=dt)</code><br>
+        <code>arr['name']  # array(['Alice', 'Bob'])</code><br>
+        <code>arr['score'].mean()  # 8.8</code>
+        <br><br>
+        <strong>When useful:</strong>
+        <ul>
+          <li>Reading binary files with fixed record formats (e.g., sensor logs, HDF5 slices).</li>
+          <li>Processing CSV files with <code>np.genfromtxt(..., names=True)</code>.</li>
+          <li>Before Pandas existed — structured arrays were the go-to. Today Pandas DataFrames are usually preferred for tabular data.</li>
+        </ul>
+        <strong>Interview tip:</strong> Mention that structured arrays are memory-contiguous (efficient), but pandas offers much richer API for tabular analysis.
+      </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="qa-item">
+      <button class="qa-toggle" onclick="toggleQA(this)">
+        <span class="qa-num">15</span>
+        <span class="qa-q">What are some common performance pitfalls in NumPy code, and how do you avoid them?</span>
+        <span class="diff-badge hard">Hard</span>
+        <span class="qa-chevron">▼</span>
+      </button>
+      <div class="qa-a">
+        <strong>1. Python loops over array elements</strong> — replace with vectorized operations or <code>np.vectorize</code> (still slow) or Numba.
+        <br><br>
+        <strong>2. Unnecessary copies</strong> — fancy/boolean indexing always copies. Use views where possible. Check with <code>np.shares_memory()</code>.
+        <br><br>
+        <strong>3. Temporary arrays in chained ops</strong> — <code>a * 2 + 1</code> creates a temporary for <code>a * 2</code>. Use <code>out=</code> parameter: <code>np.multiply(a, 2, out=out); np.add(out, 1, out=out)</code>.
+        <br><br>
+        <strong>4. Wrong dtype</strong> — <code>float64</code> uses 2× memory and cache vs <code>float32</code>. For ML, prefer <code>float32</code> unless precision is critical.
+        <br><br>
+        <strong>5. Ignoring memory layout</strong> — accessing columns of a C-order array is cache-unfriendly. Transpose and use <code>np.ascontiguousarray</code> for hot loops.
+        <br><br>
+        <strong>6. Recreating arrays in loops</strong> — pre-allocate with <code>np.empty()</code> or <code>np.zeros()</code> outside the loop.
+        <br><br>
+        <strong>7. Not using BLAS for linalg</strong> — operations like matrix multiply automatically use optimized BLAS. Avoid reimplementing them manually.
+      </div>
+    </div>
+
+  </div><!-- .qa-list -->
+</section>
+
 </main>
 </div>
 
@@ -2110,6 +2687,37 @@ function cp(btn) {
     btn.style.color = '#00ff88';
     setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 2000);
   });
+}
+
+// THEME TOGGLE
+let isDark = true;
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  const track = document.getElementById('toggle-track');
+  const thumb = document.getElementById('toggle-thumb');
+  const icon = document.getElementById('toggle-icon');
+  const label = document.getElementById('toggle-label');
+  if (isDark) {
+    track.classList.remove('on');
+    thumb.classList.remove('on');
+    icon.textContent = '☀️';
+    label.textContent = 'LIGHT';
+  } else {
+    track.classList.add('on');
+    thumb.classList.add('on');
+    icon.textContent = '🌙';
+    label.textContent = 'DARK';
+  }
+}
+
+// Q&A ACCORDION
+function toggleQA(btn) {
+  const answer = btn.nextElementSibling;
+  const chevron = btn.querySelector('.qa-chevron');
+  const isOpen = answer.classList.contains('open');
+  answer.classList.toggle('open', !isOpen);
+  chevron.classList.toggle('open', !isOpen);
 }
 
 const sections = document.querySelectorAll('section[id]');

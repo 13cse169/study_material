@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Roadmap – Beginner to Expert</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ── HERO ── */
+.hero-section {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px 40px;
+  position: relative;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 28px;
+  animation: fadeUp 0.5s ease both;
+}
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(42px, 7vw, 80px);
+  font-weight: 800;
+  line-height: 1.05;
+  margin-bottom: 24px;
+  animation: fadeUp 0.5s 0.1s ease both;
+}
+.hero-subtitle {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--text-muted);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 44px;
+  animation: fadeUp 0.5s 0.2s ease both;
+}
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin-bottom: 64px;
+  animation: fadeUp 0.5s 0.3s ease both;
+}
+.hero-stat { text-align: center; }
+.hero-stat .value {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.hero-stat .label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+
+/* ── SEARCH ── */
+.hero-search {
+  margin-bottom: 16px;
+  animation: fadeUp 0.5s 0.35s ease both;
+}
+.hero-search .search-wrap { max-width: 480px; margin: 0 auto; }
+.hero-search .search-input { font-size: 15px; padding: 14px 16px 14px 46px; border-radius: 14px; }
+.hero-search .search-icon { font-size: 16px; left: 16px; }
+
+/* ── PROGRESS OVERVIEW ── */
+.overview-bar {
+  width: 100%;
+  max-width: 600px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 24px;
+  margin-bottom: 0;
+  animation: fadeUp 0.5s 0.4s ease both;
+}
+.overview-bar .label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.overview-bar .label-row strong { color: var(--text); font-family: 'Syne', sans-serif; }
+.overview-bar .bar { height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+.overview-bar .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; transition: width 1s ease; }
+
+/* ── ROADMAP SECTION ── */
+.roadmap-section {
+  padding: 0 24px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  animation: fadeUp 0.5s 0.45s ease both;
+}
+.section-header h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+}
+.section-header p { font-size: 14px; color: var(--text-muted); }
+
+/* ── CARDS GRID ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.roadmap-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  animation: fadeUp 0.5s ease both;
+}
+.roadmap-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, var(--card-glow, rgba(56,189,248,0.06)), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.roadmap-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--card-accent, rgba(56,189,248,0.4));
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+.roadmap-card:hover::after { opacity: 1; }
+
+.card-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  background: var(--card-bg, rgba(56,189,248,0.1));
+  border: 1px solid var(--card-border, rgba(56,189,248,0.2));
+}
+.card-step {
+  position: absolute;
+  top: 20px; right: 20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+.card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.card-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+.card-arrow {
+  position: absolute;
+  bottom: 24px; right: 24px;
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  color: var(--text-dim);
+  transition: all 0.3s;
+}
+.roadmap-card:hover .card-arrow {
+  background: var(--card-accent, rgba(56,189,248,0.2));
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+/* CARD COLORS */
+.card-1 { --card-accent: rgba(56,189,248,0.35); --card-glow: rgba(56,189,248,0.08); --card-bg: rgba(56,189,248,0.08); --card-border: rgba(56,189,248,0.15); }
+.card-2 { --card-accent: rgba(129,140,248,0.35); --card-glow: rgba(129,140,248,0.08); --card-bg: rgba(129,140,248,0.08); --card-border: rgba(129,140,248,0.15); }
+.card-3 { --card-accent: rgba(52,211,153,0.35); --card-glow: rgba(52,211,153,0.08); --card-bg: rgba(52,211,153,0.08); --card-border: rgba(52,211,153,0.15); }
+.card-4 { --card-accent: rgba(251,146,60,0.35); --card-glow: rgba(251,146,60,0.08); --card-bg: rgba(251,146,60,0.08); --card-border: rgba(251,146,60,0.15); }
+.card-5 { --card-accent: rgba(244,114,182,0.35); --card-glow: rgba(244,114,182,0.08); --card-bg: rgba(244,114,182,0.08); --card-border: rgba(244,114,182,0.15); }
+.card-6 { --card-accent: rgba(251,191,36,0.35); --card-glow: rgba(251,191,36,0.08); --card-bg: rgba(251,191,36,0.08); --card-border: rgba(251,191,36,0.15); }
+.card-7 { --card-accent: rgba(167,139,250,0.35); --card-glow: rgba(167,139,250,0.08); --card-bg: rgba(167,139,250,0.08); --card-border: rgba(167,139,250,0.15); }
+.card-8 { --card-accent: rgba(52,211,153,0.35); --card-glow: rgba(52,211,153,0.08); --card-bg: rgba(52,211,153,0.08); --card-border: rgba(52,211,153,0.15); }
+.card-9 { --card-accent: rgba(248,113,113,0.35); --card-glow: rgba(248,113,113,0.08); --card-bg: rgba(248,113,113,0.08); --card-border: rgba(248,113,113,0.15); }
+
+@media (max-width: 600px) {
+  .hero-stats { gap: 24px; }
+  .cards-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bg-canvas"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><i class="fa-solid fa-brain"></i> ML Roadmap</a>
+  <div class="nav-links">
+    <a class="nav-link" href="prerequisites.html">Prerequisites</a>
+    <a class="nav-link" href="programming.html">Programming</a>
+    <a class="nav-link" href="data.html">Data</a>
+    <a class="nav-link" href="core-ml.html">Core ML</a>
+    <a class="nav-link" href="evaluation.html">Evaluation</a>
+    <a class="nav-link" href="intermediate.html">Intermediate</a>
+    <a class="nav-link" href="advanced.html">Advanced</a>
+    <a class="nav-link" href="projects.html">Projects</a>
+    <a class="nav-link" href="mlops.html">MLOps</a>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">☀️</button>
+  </div>
+</nav>
+<div class="progress-bar-global"><div class="progress-fill"></div></div>
+
+<div class="page-wrap">
+  <!-- HERO -->
+  <section class="hero-section">
+    <div class="hero-eyebrow"><i class="fa-solid fa-rocket"></i> Structured Learning Path</div>
+    <h1 class="hero-title">
+      Machine Learning<br>
+      <span class="gradient-text">Roadmap</span>
+    </h1>
+    <p class="hero-subtitle">A comprehensive, structured guide from zero to ML engineer. Track your progress, explore topics, and master every concept.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="value">9</div><div class="label">Modules</div></div>
+      <div class="hero-stat"><div class="value">80+</div><div class="label">Topics</div></div>
+      <div class="hero-stat"><div class="value">∞</div><div class="label">Projects</div></div>
+    </div>
+    <div class="hero-search">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input class="search-input" placeholder="Search topics, concepts, algorithms…" />
+      </div>
+    </div>
+    <div class="overview-bar">
+      <div class="label-row"><strong>Overall Progress</strong><span class="progress-pct">0%</span></div>
+      <div class="bar"><div class="bar-fill progress-track-fill" style="width:0%"></div></div>
+    </div>
+  </section>
+
+  <!-- ROADMAP CARDS -->
+  <section class="roadmap-section">
+    <div class="section-header">
+      <div>
+        <h2>Learning Modules</h2>
+        <p>Click a card to begin exploring</p>
+      </div>
+    </div>
+
+    <div class="cards-grid" id="cardsGrid">
+
+      <a href="prerequisites.html" class="roadmap-card card-1" style="animation-delay:0.05s">
+        <span class="card-step">01</span>
+        <div class="card-icon">🧮</div>
+        <div class="card-title">Prerequisites</div>
+        <div class="card-desc">Math foundations — linear algebra, calculus, statistics and probability theory essential for ML.</div>
+        <div class="card-tags">
+          <span class="badge badge-blue">Linear Algebra</span>
+          <span class="badge badge-blue">Calculus</span>
+          <span class="badge badge-blue">Stats</span>
+        </div>
+        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <a href="programming.html" class="roadmap-card card-2" style="animation-delay:0.1s">
+        <span class="card-step">02</span>
+        <div class="card-icon">🐍</div>
+        <div class="card-title">Programming</div>
+        <div class="card-desc">Python essentials, NumPy, Pandas, Matplotlib — the toolkit every ML engineer relies on daily.</div>
+        <div class="card-tags">
+          <span class="badge badge-purple">Python</span>
+          <span class="badge badge-purple">NumPy</span>
+          <span class="badge badge-purple">Pandas</span>
+        </div>
+        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <a href="data.html" class="roadmap-card card-3" style="animation-delay:0.15s">
+        <span class="card-step">03</span>
+        <div class="card-icon">📊</div>
+        <div class="card-title">Data Handling & Preprocessing</div>
+        <div class="card-desc">EDA, feature engineering, cleaning, normalization — turning raw data into model-ready inputs.</div>
+        <div class="card-tags">
+          <span class="badge badge-green">EDA</span>
+          <span class="badge badge-green">Feature Eng.</span>
+          <span class="badge badge-green">Cleaning</span>
+        </div>
+        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <a href="core-ml.html" class="roadmap-card card-4" style="animation-delay:0.2s">
+        <span class="card-step">04</span>
+        <div class="card-icon">🤖</div>
+        <div class="card-title">Core Machine Learning</div>
+        <div class="card-desc">Supervised & unsupervised learning — regression, classification, clustering, and the theory behind them.</div>
+        <div class="card-tags">
+          <span class="badge badge-orange">Supervised</span>
+          <span class="badge badge-orange">Unsupervised</span>
+          <span class="badge badge-orange">Sklearn</span>
+        </div>
+        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <a href="evaluation.html" class="roadmap-card card-5" style="animation-delay:0.25s">
+        <span class="card-step">05</span>
+        <div class="card-icon">📈</div>
+        <div class="card-title">Model Evaluation</div>
+        <div class="card-desc">Metrics, cross-validation, overfitting/underfitting, bias-variance tradeoff, and hyperparameter tuning.</div>
+        <div class="card-tags">
+          <span class="badge badge-pink">Metrics</span>
+          <span class="badge badge-pink">CV</span>
+          <span class="badge badge-pink">Tuning</span>
+        </div>
+        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <a href="intermediate.html" class="roadmap-card card-6" style="animation-delay:0.3s">
+        <span class="card-step">06</span>
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Intermediate ML</div>
+        <div class="card-desc">Ensemble methods, boosting, SVMs, neural network fundamentals and deep learning introduction.</div>
+        <div class="card-tags">
+          <span class="badge badge-orange">Ensembles</span>
+          <span class="badge badge-orange">XGBoost</span>
+          <span class="badge badge-orange">Neural Nets</span>
+        </div>
+        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <a href="advanced.html" class="roadmap-card card-7" style="animation-delay:0.35s">
+        <span class="card-step">07</span>
+        <div class="card-icon">🧠</div>
+        <div class="card-title">Advanced Topics</div>
+        <div class="card-desc">CNNs, RNNs, Transformers, NLP, computer vision, reinforcement learning and generative models.</div>
+        <div class="card-tags">
+          <span class="badge badge-purple">Deep Learning</span>
+          <span class="badge badge-purple">NLP</span>
+          <span class="badge badge-purple">CV</span>
+        </div>
+        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <a href="projects.html" class="roadmap-card card-8" style="animation-delay:0.4s">
+        <span class="card-step">08</span>
+        <div class="card-icon">🚀</div>
+        <div class="card-title">Projects</div>
+        <div class="card-desc">Portfolio-worthy beginner to advanced project ideas with datasets, guidance, and tech stack recommendations.</div>
+        <div class="card-tags">
+          <span class="badge badge-green">Beginner</span>
+          <span class="badge badge-green">Intermediate</span>
+          <span class="badge badge-green">Advanced</span>
+        </div>
+        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <a href="mlops.html" class="roadmap-card card-9" style="animation-delay:0.45s">
+        <span class="card-step">09</span>
+        <div class="card-icon">🛠️</div>
+        <div class="card-title">MLOps & Deployment</div>
+        <div class="card-desc">Docker, FastAPI, model serving, monitoring, CI/CD pipelines, and cloud deployment strategies.</div>
+        <div class="card-tags">
+          <span class="badge badge-pink">Docker</span>
+          <span class="badge badge-pink">FastAPI</span>
+          <span class="badge badge-pink">Cloud</span>
+        </div>
+        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <span>ML Roadmap © 2026 — Beginner to Expert</span>
+    <div class="footer-nav">
+      <a href="prerequisites.html">Start Learning →</a>
+    </div>
+  </footer>
+</div>
+
+<script src="shared.js"></script>
+<script>
+// Search in cards
+document.querySelector('.search-input').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.roadmap-card').forEach(card => {
+    card.style.opacity = !q || card.textContent.toLowerCase().includes(q) ? '1' : '0.2';
+    card.style.pointerEvents = !q || card.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+</script>
+</body>
+</html>

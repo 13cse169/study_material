@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programming – ML Roadmap</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="bg-canvas"></div>
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><i class="fa-solid fa-brain"></i> ML Roadmap</a>
+  <div class="nav-links">
+    <a class="nav-link" href="prerequisites.html">Prerequisites</a>
+    <a class="nav-link" href="programming.html">Programming</a>
+    <a class="nav-link" href="data.html">Data</a>
+    <a class="nav-link" href="core-ml.html">Core ML</a>
+    <a class="nav-link" href="evaluation.html">Evaluation</a>
+    <a class="nav-link" href="intermediate.html">Intermediate</a>
+    <a class="nav-link" href="advanced.html">Advanced</a>
+    <a class="nav-link" href="projects.html">Projects</a>
+    <a class="nav-link" href="mlops.html">MLOps</a>
+  </div>
+  <div class="nav-actions"><button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button></div>
+</nav>
+<div class="progress-bar-global"><div class="progress-fill"></div></div>
+
+<div class="page-wrap">
+  <div class="page-hero fade-up">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <span>Programming</span></div>
+    <h1>🐍 <span class="gradient-text">Programming</span></h1>
+    <p>Python and its ML ecosystem — the tools you'll use every single day.</p>
+  </div>
+
+  <div class="content-area">
+
+    <div class="progress-overview">
+      <div class="progress-stat"><div class="num" id="doneCount">0</div><div class="lbl">Done</div></div>
+      <div class="progress-track">
+        <div class="progress-track-label"><span>Module Progress</span><span class="progress-pct">0%</span></div>
+        <div class="progress-track-bar"><div class="progress-track-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- PYTHON BASICS -->
+    <div class="section-block fade-up-d1">
+      <div class="section-title"><div class="icon" style="background:rgba(129,140,248,0.1)">🐍</div>Python Fundamentals</div>
+      <div class="collapsible open">
+        <div class="collapsible-header">Core Python <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Data types — int, float, str, list, dict, set, tuple</li>
+            <li><div class="check">✓</div>Control flow — if/else, for/while loops, comprehensions</li>
+            <li><div class="check">✓</div>Functions — args, kwargs, lambda, decorators</li>
+            <li><div class="check">✓</div>OOP — classes, inheritance, dunder methods</li>
+            <li><div class="check">✓</div>File I/O, exceptions, context managers</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="collapsible">
+        <div class="collapsible-header">Advanced Python for ML <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Generators and iterators</li>
+            <li><div class="check">✓</div>Multiprocessing & threading basics</li>
+            <li><div class="check">✓</div>Type hints and dataclasses</li>
+            <li><div class="check">✓</div>Virtual environments, pip, poetry</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- NUMPY -->
+    <div class="section-block fade-up-d2">
+      <div class="section-title"><div class="icon" style="background:rgba(56,189,248,0.1)">🔢</div>NumPy</div>
+      <div class="info-box note"><strong>NumPy</strong> is the backbone of scientific computing in Python. All ML libraries use NumPy arrays internally.</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>ndarray creation — zeros, ones, arange, linspace, random</li>
+        <li><div class="check">✓</div>Array operations — broadcasting, slicing, indexing</li>
+        <li><div class="check">✓</div>Mathematical functions — sum, mean, std, argmax</li>
+        <li><div class="check">✓</div>Shape manipulation — reshape, flatten, squeeze, expand_dims</li>
+        <li><div class="check">✓</div>Linear algebra — dot, matmul, linalg module</li>
+      </ul>
+      <div class="code-block" style="margin-top:16px">
+        <div class="code-header">Python · NumPy Essentials</div>
+<span class="kw">import</span> numpy <span class="kw">as</span> <span class="var">np</span>
+
+<span class="cm"># Create arrays</span>
+<span class="var">a</span> = np.<span class="fn">array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>])
+<span class="var">mat</span> = np.<span class="fn">zeros</span>((<span class="num">3</span>, <span class="num">4</span>))
+<span class="var">rand</span> = np.random.<span class="fn">randn</span>(<span class="num">100</span>, <span class="num">10</span>)  <span class="cm"># 100 samples, 10 features</span>
+
+<span class="cm"># Broadcasting — no loops needed!</span>
+<span class="var">normalized</span> = (rand - rand.<span class="fn">mean</span>(axis=<span class="num">0</span>)) / rand.<span class="fn">std</span>(axis=<span class="num">0</span>)
+
+<span class="cm"># Boolean indexing</span>
+<span class="var">positives</span> = rand[rand > <span class="num">0</span>]
+      </div>
+    </div>
+
+    <!-- PANDAS -->
+    <div class="section-block fade-up-d3">
+      <div class="section-title"><div class="icon" style="background:rgba(52,211,153,0.1)">🐼</div>Pandas</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>DataFrame & Series — creation, indexing (loc, iloc)</li>
+        <li><div class="check">✓</div>Reading data — CSV, JSON, Excel, SQL</li>
+        <li><div class="check">✓</div>Data manipulation — merge, join, groupby, pivot</li>
+        <li><div class="check">✓</div>Handling missing values — fillna, dropna, interpolate</li>
+        <li><div class="check">✓</div>Apply, map, lambda operations</li>
+        <li><div class="check">✓</div>Time series — date parsing, resampling</li>
+      </ul>
+      <div class="code-block" style="margin-top:16px">
+        <div class="code-header">Python · Pandas Workflow</div>
+<span class="kw">import</span> pandas <span class="kw">as</span> <span class="var">pd</span>
+
+<span class="var">df</span> = pd.<span class="fn">read_csv</span>(<span class="str">'data.csv'</span>)
+
+<span class="cm"># Quick overview</span>
+<span class="fn">print</span>(df.<span class="fn">info</span>())
+<span class="fn">print</span>(df.<span class="fn">describe</span>())
+<span class="fn">print</span>(df.<span class="fn">isnull</span>().<span class="fn">sum</span>())
+
+<span class="cm"># Feature engineering</span>
+<span class="var">df</span>[<span class="str">'age_group'</span>] = pd.<span class="fn">cut</span>(df[<span class="str">'age'</span>], bins=[<span class="num">0</span>,<span class="num">18</span>,<span class="num">35</span>,<span class="num">60</span>,<span class="num">100</span>],
+                         labels=[<span class="str">'teen'</span>,<span class="str">'adult'</span>,<span class="str">'middle'</span>,<span class="str">'senior'</span>])
+
+<span class="cm"># GroupBy</span>
+<span class="var">summary</span> = df.<span class="fn">groupby</span>(<span class="str">'category'</span>)[<span class="str">'value'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>,<span class="str">'std'</span>,<span class="str">'count'</span>])
+      </div>
+    </div>
+
+    <!-- VISUALIZATION -->
+    <div class="section-block fade-up-d4">
+      <div class="section-title"><div class="icon" style="background:rgba(251,146,60,0.1)">📊</div>Data Visualization</div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <h3>Matplotlib</h3>
+          <p>Foundation of Python plotting. Line, bar, scatter, histogram, subplots, figure styling.</p>
+          <span class="tag badge badge-orange">Core Library</span>
+        </div>
+        <div class="topic-card">
+          <h3>Seaborn</h3>
+          <p>Statistical visualization built on Matplotlib. Heatmaps, pairplots, violin plots, correlation matrices.</p>
+          <span class="tag badge badge-blue">Statistical</span>
+        </div>
+        <div class="topic-card">
+          <h3>Plotly</h3>
+          <p>Interactive visualizations for dashboards, 3D plots, and web-ready outputs.</p>
+          <span class="tag badge badge-purple">Interactive</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUPYTER -->
+    <div class="section-block fade-up-d5">
+      <div class="section-title"><div class="icon" style="background:rgba(244,114,182,0.1)">📓</div>Jupyter & Tooling</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>Jupyter Notebook & JupyterLab — the ML standard IDE</li>
+        <li><div class="check">✓</div>Google Colab — free GPU access for training</li>
+        <li><div class="check">✓</div>Magic commands — %timeit, %matplotlib inline, %%time</li>
+        <li><div class="check">✓</div>Git basics — commits, branches, GitHub workflow</li>
+      </ul>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;gap:12px;flex-wrap:wrap">
+      <a href="prerequisites.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600;transition:all 0.25s">
+        <i class="fa-solid fa-arrow-left"></i> Prerequisites
+      </a>
+      <a href="data.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600;transition:all 0.25s">
+        Next: Data Handling <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+  <footer class="page-footer">
+    <span><a href="index.html">← Dashboard</a></span>
+    <div class="footer-nav"><a href="prerequisites.html">← Prerequisites</a><a href="data.html">Data →</a></div>
+  </footer>
+</div>
+<script src="shared.js"></script>
+<script>
+function updateDoneCount() {
+  const total = document.querySelectorAll('.checklist li').length;
+  const done = document.querySelectorAll('.checklist li.done').length;
+  document.getElementById('doneCount').textContent = done;
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.querySelector('.progress-pct').textContent = pct + '%';
+  document.querySelector('.progress-track-fill').style.width = pct + '%';
+}
+document.querySelectorAll('.checklist li').forEach(li => li.addEventListener('click', () => setTimeout(updateDoneCount, 50)));
+setTimeout(updateDoneCount, 100);
+</script>
+</body>
+</html>

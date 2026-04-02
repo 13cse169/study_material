@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TypeScript Roadmap — Beginner to Expert</title>
+  <meta name="description" content="Complete TypeScript learning roadmap with explanations, code examples, and interview Q&A for all levels." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     LOADING SCREEN
+════════════════════════════════════════ -->
+<div id="loader" role="status" aria-label="Loading">
+  <div class="loader-logo">TS</div>
+  <div class="loader-bar">
+    <div class="loader-bar-fill"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     MOBILE OVERLAY
+════════════════════════════════════════ -->
+<div id="overlay" aria-hidden="true"></div>
+
+<!-- ════════════════════════════════════════
+     TOPBAR
+════════════════════════════════════════ -->
+<header id="topbar" role="banner">
+  <!-- Hamburger (mobile) -->
+  <button id="hamburger" class="hamburger" aria-label="Toggle sidebar">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Brand -->
+  <a href="#" class="topbar-brand">
+    <i class="fas fa-code"></i>
+    TypeScript Roadmap
+    <span class="brand-badge">2024</span>
+  </a>
+
+  <!-- Search -->
+  <div class="search-wrap" role="search">
+    <i class="fas fa-search" aria-hidden="true"></i>
+    <input
+      type="search"
+      id="search-input"
+      placeholder="Search topics, concepts, keywords…"
+      autocomplete="off"
+      aria-label="Search topics"
+    />
+  </div>
+
+  <!-- Actions -->
+  <div class="topbar-actions">
+    <button id="timeline-btn" class="topbar-btn" title="Switch to timeline view">
+      <i class="fas fa-timeline"></i>
+      <span>Timeline</span>
+    </button>
+    <button id="theme-toggle" class="topbar-btn" title="Toggle light/dark theme">
+      <i class="fas fa-sun"></i>
+      <span>Light</span>
+    </button>
+    <div class="progress-pill" id="global-pct" title="Overall completion">0%</div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════
+     SEARCH RESULTS DROPDOWN
+════════════════════════════════════════ -->
+<div id="search-results" role="listbox" aria-label="Search results"></div>
+
+<!-- ════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════ -->
+<nav id="sidebar" role="navigation" aria-label="Roadmap sections">
+  <!-- Overall progress -->
+  <div class="sidebar-progress-wrap">
+    <div class="sidebar-progress-label">
+      <span>Overall Progress</span>
+      <span id="sidebar-pct">0%</span>
+    </div>
+    <div class="sidebar-progress-bar">
+      <div class="sidebar-progress-fill" id="sidebar-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">Roadmap Sections</div>
+
+  <!-- Nav items are injected by JS -->
+  <div id="nav-list"></div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════ -->
+<main id="main" role="main">
+  <div id="content">
+
+    <!-- ── SECTIONS VIEW ───────────────────── -->
+    <div id="main-view">
+
+      <!-- Hero Banner -->
+      <div class="hero">
+        <div class="hero-badge">
+          <i class="fas fa-rocket"></i>
+          Complete Roadmap · Beginner → Expert
+        </div>
+        <h1>TypeScript Mastery Guide</h1>
+        <p>
+          A comprehensive, structured guide covering everything from JavaScript prerequisites
+          to advanced TypeScript patterns. Each section includes explanations, code examples,
+          real-world use cases, and interview Q&amp;A.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="val">21</div>
+            <div class="lbl">Sections</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val">100+</div>
+            <div class="lbl">Code Examples</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val">100+</div>
+            <div class="lbl">Interview Q&amp;As</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val">∞</div>
+            <div class="lbl">Free Forever</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sections are injected by JS -->
+      <div id="sections-container"></div>
+
+    </div><!-- /#main-view -->
+
+    <!-- ── TIMELINE VIEW ───────────────────── -->
+    <div id="timeline-view">
+      <div class="hero" style="margin-bottom:2rem">
+        <div class="hero-badge"><i class="fas fa-timeline"></i> Visual Progress</div>
+        <h1>Roadmap Timeline</h1>
+        <p>Your learning journey at a glance. Click any section to jump to its content.</p>
+      </div>
+      <div id="timeline-container"></div>
+    </div>
+
+  </div><!-- /#content -->
+</main>
+
+<!-- Back to Top -->
+<button id="back-top" title="Back to top" aria-label="Scroll to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- ════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════ -->
+<script src="app.js" defer></script>
+
+</body>
+</html>

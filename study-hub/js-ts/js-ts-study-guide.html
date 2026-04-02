@@ -992,6 +992,11 @@ h2.sub { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; 
     <nav class="sidebar-inner">
 
       <div class="sidebar-group-label">Overview</div>
+      <div class="sidebar-item" data-section="home" onclick="openPage('../type-script/index.html');">
+        <i class="fa fa-house icon"></i> TypeScript
+        <span class="check" id="check-home"></span>
+      </div>
+      
       <div class="sidebar-item active" data-section="home" onclick="navigate('home')">
         <i class="fa fa-house icon"></i> Home & Roadmap
         <span class="check" id="check-home"></span>
@@ -2404,6 +2409,9 @@ function renderProgressDashboard() {
    NAVIGATION
    ============================================================ */
 let currentSection = "home";
+function openPage(url) {
+  window.open(url, "_blank");
+}
 function navigate(id) {
   // Hide all
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));

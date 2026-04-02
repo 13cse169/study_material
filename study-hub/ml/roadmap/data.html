@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Handling – ML Roadmap</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="bg-canvas"></div>
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><i class="fa-solid fa-brain"></i> ML Roadmap</a>
+  <div class="nav-links">
+    <a class="nav-link" href="prerequisites.html">Prerequisites</a>
+    <a class="nav-link" href="programming.html">Programming</a>
+    <a class="nav-link" href="data.html">Data</a>
+    <a class="nav-link" href="core-ml.html">Core ML</a>
+    <a class="nav-link" href="evaluation.html">Evaluation</a>
+    <a class="nav-link" href="intermediate.html">Intermediate</a>
+    <a class="nav-link" href="advanced.html">Advanced</a>
+    <a class="nav-link" href="projects.html">Projects</a>
+    <a class="nav-link" href="mlops.html">MLOps</a>
+  </div>
+  <div class="nav-actions"><button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button></div>
+</nav>
+<div class="progress-bar-global"><div class="progress-fill"></div></div>
+
+<div class="page-wrap">
+  <div class="page-hero fade-up">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <span>Data Handling</span></div>
+    <h1>📊 <span class="gradient-text">Data Handling & Preprocessing</span></h1>
+    <p>Turn messy raw data into clean, feature-rich inputs that fuel accurate models.</p>
+  </div>
+
+  <div class="content-area">
+    <div class="progress-overview">
+      <div class="progress-stat"><div class="num" id="doneCount">0</div><div class="lbl">Done</div></div>
+      <div class="progress-track">
+        <div class="progress-track-label"><span>Module Progress</span><span class="progress-pct">0%</span></div>
+        <div class="progress-track-bar"><div class="progress-track-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- EDA -->
+    <div class="section-block fade-up-d1">
+      <div class="section-title"><div class="icon" style="background:rgba(56,189,248,0.1)">🔍</div>Exploratory Data Analysis (EDA)</div>
+      <div class="info-box note"><strong>EDA is the first thing you do with any dataset.</strong> Understand distributions, spot anomalies, find correlations before building anything.</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>Shape, dtypes, head/tail inspection</li>
+        <li><div class="check">✓</div>Distribution analysis — histograms, density plots, box plots</li>
+        <li><div class="check">✓</div>Correlation matrix & heatmaps</li>
+        <li><div class="check">✓</div>Outlier detection — IQR method, Z-score, visual inspection</li>
+        <li><div class="check">✓</div>Class imbalance detection — value_counts, bar charts</li>
+        <li><div class="check">✓</div>Pairplots for feature relationships</li>
+      </ul>
+      <div class="code-block" style="margin-top:16px">
+        <div class="code-header">Python · EDA Workflow</div>
+<span class="kw">import</span> pandas <span class="kw">as</span> <span class="var">pd</span>
+<span class="kw">import</span> seaborn <span class="kw">as</span> <span class="var">sns</span>
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> <span class="var">plt</span>
+
+<span class="cm"># Load & inspect</span>
+<span class="var">df</span> = pd.<span class="fn">read_csv</span>(<span class="str">'titanic.csv'</span>)
+<span class="fn">print</span>(df.<span class="fn">info</span>(), df.<span class="fn">describe</span>())
+
+<span class="cm"># Missing values heatmap</span>
+sns.<span class="fn">heatmap</span>(df.<span class="fn">isnull</span>(), cbar=<span class="kw">False</span>, cmap=<span class="str">'viridis'</span>)
+
+<span class="cm"># Correlation</span>
+<span class="var">corr</span> = df.<span class="fn">corr</span>(numeric_only=<span class="kw">True</span>)
+sns.<span class="fn">heatmap</span>(corr, annot=<span class="kw">True</span>, fmt=<span class="str">'.2f'</span>, cmap=<span class="str">'coolwarm'</span>)
+plt.<span class="fn">show</span>()
+      </div>
+    </div>
+
+    <!-- DATA CLEANING -->
+    <div class="section-block fade-up-d2">
+      <div class="section-title"><div class="icon" style="background:rgba(52,211,153,0.1)">🧹</div>Data Cleaning</div>
+      <div class="collapsible open">
+        <div class="collapsible-header">Handling Missing Values <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Drop rows/columns — dropna() with thresholds</li>
+            <li><div class="check">✓</div>Mean/Median/Mode imputation — SimpleImputer</li>
+            <li><div class="check">✓</div>KNN imputation — for correlated features</li>
+            <li><div class="check">✓</div>Forward fill / backward fill — for time series</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="collapsible">
+        <div class="collapsible-header">Outlier Treatment <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Z-score capping (|z| > 3 → outlier)</li>
+            <li><div class="check">✓</div>IQR fencing — Q1 - 1.5*IQR, Q3 + 1.5*IQR</li>
+            <li><div class="check">✓</div>Log transformation to reduce skew</li>
+            <li><div class="check">✓</div>Winsorization — clip at percentiles</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- FEATURE ENGINEERING -->
+    <div class="section-block fade-up-d3">
+      <div class="section-title"><div class="icon" style="background:rgba(251,146,60,0.1)">⚗️</div>Feature Engineering</div>
+      <div class="two-col">
+        <div>
+          <ul class="checklist">
+            <li><div class="check">✓</div>One-Hot Encoding — pd.get_dummies, OneHotEncoder</li>
+            <li><div class="check">✓</div>Label Encoding — ordinal categories</li>
+            <li><div class="check">✓</div>Target Encoding — mean encoding for high cardinality</li>
+            <li><div class="check">✓</div>Binning — pd.cut, pd.qcut</li>
+          </ul>
+        </div>
+        <div>
+          <ul class="checklist">
+            <li><div class="check">✓</div>Polynomial features — interactions, squares</li>
+            <li><div class="check">✓</div>Date/time feature extraction — year, month, weekday</li>
+            <li><div class="check">✓</div>Text features — length, word count, TF-IDF</li>
+            <li><div class="check">✓</div>Aggregation features — rolling mean, lag features</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCALING -->
+    <div class="section-block fade-up-d4">
+      <div class="section-title"><div class="icon" style="background:rgba(129,140,248,0.1)">⚖️</div>Scaling & Normalization</div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <h3>StandardScaler</h3>
+          <p>z = (x - μ) / σ. Zero mean, unit variance. Best for normally distributed features, SVMs, neural nets.</p>
+          <span class="tag badge badge-purple">sklearn.preprocessing</span>
+        </div>
+        <div class="topic-card">
+          <h3>MinMaxScaler</h3>
+          <p>Scales to [0,1]. Good for neural networks and image pixel values. Sensitive to outliers.</p>
+          <span class="tag badge badge-blue">sklearn.preprocessing</span>
+        </div>
+        <div class="topic-card">
+          <h3>RobustScaler</h3>
+          <p>Uses median and IQR. Best when data has outliers that shouldn't be removed.</p>
+          <span class="tag badge badge-green">sklearn.preprocessing</span>
+        </div>
+      </div>
+      <div class="code-block" style="margin-top:16px">
+        <div class="code-header">Python · Preprocessing Pipeline</div>
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler, OneHotEncoder
+<span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer
+<span class="kw">from</span> sklearn.compose <span class="kw">import</span> ColumnTransformer
+
+<span class="var">num_pipe</span> = Pipeline([
+    (<span class="str">'impute'</span>, SimpleImputer(strategy=<span class="str">'median'</span>)),
+    (<span class="str">'scale'</span>,  StandardScaler())
+])
+<span class="var">cat_pipe</span> = Pipeline([
+    (<span class="str">'impute'</span>, SimpleImputer(strategy=<span class="str">'most_frequent'</span>)),
+    (<span class="str">'encode'</span>, OneHotEncoder(handle_unknown=<span class="str">'ignore'</span>))
+])
+<span class="var">preprocessor</span> = ColumnTransformer([
+    (<span class="str">'num'</span>, num_pipe, <span class="var">num_features</span>),
+    (<span class="str">'cat'</span>, cat_pipe, <span class="var">cat_features</span>)
+])
+      </div>
+    </div>
+
+    <!-- SPLITTING -->
+    <div class="section-block fade-up-d5">
+      <div class="section-title"><div class="icon" style="background:rgba(244,114,182,0.1)">✂️</div>Train/Validation/Test Split</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div>train_test_split — stratified splitting for imbalanced classes</li>
+        <li><div class="check">✓</div>80/20 or 70/15/15 splits — common practice</li>
+        <li><div class="check">✓</div>No data leakage — always fit scaler on train only!</li>
+        <li><div class="check">✓</div>Stratified splits — preserve class distribution</li>
+      </ul>
+      <div class="info-box warn"><strong>⚠️ Data Leakage Warning:</strong> Never fit your preprocessor on the test set. Always fit on training data only, then transform both train and test. This is one of the most common ML mistakes.</div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;gap:12px;flex-wrap:wrap">
+      <a href="programming.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600">
+        <i class="fa-solid fa-arrow-left"></i> Programming
+      </a>
+      <a href="core-ml.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600">
+        Next: Core ML <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+  <footer class="page-footer">
+    <span><a href="index.html">← Dashboard</a></span>
+    <div class="footer-nav"><a href="programming.html">← Programming</a><a href="core-ml.html">Core ML →</a></div>
+  </footer>
+</div>
+<script src="shared.js"></script>
+<script>
+function updateDoneCount() {
+  const total = document.querySelectorAll('.checklist li').length;
+  const done = document.querySelectorAll('.checklist li.done').length;
+  document.getElementById('doneCount').textContent = done;
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.querySelector('.progress-pct').textContent = pct + '%';
+  document.querySelector('.progress-track-fill').style.width = pct + '%';
+}
+document.querySelectorAll('.checklist li').forEach(li => li.addEventListener('click', () => setTimeout(updateDoneCount, 50)));
+setTimeout(updateDoneCount, 100);
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prerequisites – ML Roadmap</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="bg-canvas"></div>
+<nav class="navbar">
+  <a class="nav-logo" href="index.html"><i class="fa-solid fa-brain"></i> ML Roadmap</a>
+  <div class="nav-links">
+    <a class="nav-link" href="prerequisites.html">Prerequisites</a>
+    <a class="nav-link" href="programming.html">Programming</a>
+    <a class="nav-link" href="data.html">Data</a>
+    <a class="nav-link" href="core-ml.html">Core ML</a>
+    <a class="nav-link" href="evaluation.html">Evaluation</a>
+    <a class="nav-link" href="intermediate.html">Intermediate</a>
+    <a class="nav-link" href="advanced.html">Advanced</a>
+    <a class="nav-link" href="projects.html">Projects</a>
+    <a class="nav-link" href="mlops.html">MLOps</a>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button>
+  </div>
+</nav>
+<div class="progress-bar-global"><div class="progress-fill"></div></div>
+
+<div class="page-wrap">
+  <div class="page-hero fade-up">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <span>Prerequisites</span></div>
+    <h1>🧮 <span class="gradient-text">Prerequisites</span></h1>
+    <p>Master the mathematical foundations that power every machine learning algorithm.</p>
+  </div>
+
+  <div class="content-area">
+
+    <div class="progress-overview">
+      <div class="progress-stat"><div class="num" id="doneCount">0</div><div class="lbl">Done</div></div>
+      <div class="progress-track">
+        <div class="progress-track-label"><span>Module Progress</span><span class="progress-pct">0%</span></div>
+        <div class="progress-track-bar"><div class="progress-track-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- LINEAR ALGEBRA -->
+    <div class="section-block fade-up-d1">
+      <div class="section-title">
+        <div class="icon" style="background:rgba(56,189,248,0.1)">📐</div>
+        Linear Algebra
+        <span class="badge badge-blue">Essential</span>
+      </div>
+      <div class="info-box note"><strong>Why it matters:</strong> Vectors, matrices and tensors are the data structures of ML. Every neural network layer is a matrix multiplication.</div>
+      <ul class="checklist">
+        <li><div class="check">✓</div><div><strong>Vectors & Scalars</strong> — Operations, dot product, magnitude, unit vectors</div></li>
+        <li><div class="check">✓</div><div><strong>Matrices</strong> — Addition, multiplication, transpose, inverse</div></li>
+        <li><div class="check">✓</div><div><strong>Eigenvalues & Eigenvectors</strong> — Critical for PCA and dimensionality reduction</div></li>
+        <li><div class="check">✓</div><div><strong>SVD (Singular Value Decomposition)</strong> — Used in recommendations, compression</div></li>
+        <li><div class="check">✓</div><div><strong>Norms & Distance Metrics</strong> — L1, L2, cosine similarity</div></li>
+      </ul>
+      <div class="code-block" style="margin-top:16px">
+        <div class="code-header">Python · NumPy Linear Algebra</div>
+<span class="kw">import</span> numpy <span class="kw">as</span> <span class="var">np</span>
+
+<span class="cm"># Matrix multiplication</span>
+<span class="var">A</span> = np.array([[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]])
+<span class="var">B</span> = np.array([[<span class="num">5</span>,<span class="num">6</span>],[<span class="num">7</span>,<span class="num">8</span>]])
+<span class="var">C</span> = np.<span class="fn">dot</span>(A, B)  <span class="cm"># or A @ B</span>
+
+<span class="cm"># Eigenvalues</span>
+<span class="var">eigenvalues</span>, <span class="var">eigenvectors</span> = np.linalg.<span class="fn">eig</span>(A)
+
+<span class="cm"># SVD decomposition</span>
+<span class="var">U</span>, <span class="var">S</span>, <span class="var">Vt</span> = np.linalg.<span class="fn">svd</span>(A)
+      </div>
+    </div>
+
+    <!-- CALCULUS -->
+    <div class="section-block fade-up-d2">
+      <div class="section-title">
+        <div class="icon" style="background:rgba(129,140,248,0.1)">📉</div>
+        Calculus
+        <span class="badge badge-purple">Essential</span>
+      </div>
+      <div class="info-box note"><strong>Why it matters:</strong> Gradient descent — the backbone of training — is pure calculus. You need derivatives to understand how models learn.</div>
+      <div class="two-col">
+        <div>
+          <ul class="checklist">
+            <li><div class="check">✓</div><div><strong>Derivatives</strong> — Rules, chain rule, partial derivatives</div></li>
+            <li><div class="check">✓</div><div><strong>Gradients</strong> — Multivariable calculus, gradient vectors</div></li>
+            <li><div class="check">✓</div><div><strong>Integrals</strong> — Area under curve (used in probability)</div></li>
+          </ul>
+        </div>
+        <div>
+          <ul class="checklist">
+            <li><div class="check">✓</div><div><strong>Optimization</strong> — Minima, maxima, saddle points</div></li>
+            <li><div class="check">✓</div><div><strong>Gradient Descent</strong> — SGD, mini-batch, learning rate</div></li>
+            <li><div class="check">✓</div><div><strong>Backpropagation</strong> — Chain rule applied to neural networks</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="section-block fade-up-d3">
+      <div class="section-title">
+        <div class="icon" style="background:rgba(52,211,153,0.1)">📊</div>
+        Statistics & Probability
+        <span class="badge badge-green">Essential</span>
+      </div>
+
+      <div class="collapsible open">
+        <div class="collapsible-header">Descriptive Statistics <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Mean, Median, Mode — Central tendency measures</li>
+            <li><div class="check">✓</div>Variance & Standard Deviation — Spread of data</li>
+            <li><div class="check">✓</div>Correlation & Covariance — Relationship between variables</li>
+            <li><div class="check">✓</div>Histograms, Box Plots, Scatter Plots</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="collapsible">
+        <div class="collapsible-header">Probability Theory <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Probability rules — addition, multiplication, conditional</li>
+            <li><div class="check">✓</div>Bayes' Theorem — P(A|B) = P(B|A)·P(A) / P(B)</li>
+            <li><div class="check">✓</div>Probability Distributions — Normal, Bernoulli, Binomial, Poisson</li>
+            <li><div class="check">✓</div>Expected Value & Variance</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="collapsible">
+        <div class="collapsible-header">Inferential Statistics <span class="arrow">▼</span></div>
+        <div class="collapsible-body"><div class="collapsible-body-inner">
+          <ul class="checklist">
+            <li><div class="check">✓</div>Hypothesis Testing — Null/alternative hypothesis, p-values</li>
+            <li><div class="check">✓</div>Confidence Intervals</li>
+            <li><div class="check">✓</div>t-test, Chi-square, ANOVA</li>
+            <li><div class="check">✓</div>Central Limit Theorem</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- RESOURCES -->
+    <div class="section-block fade-up-d4">
+      <div class="section-title"><div class="icon" style="background:rgba(251,146,60,0.1)">📚</div>Recommended Resources</div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <h3>📖 3Blue1Brown – Essence of Linear Algebra</h3>
+          <p>Visual intuition series on YouTube. Best way to truly understand vectors and matrices.</p>
+          <span class="tag badge badge-blue">Free · YouTube</span>
+        </div>
+        <div class="topic-card">
+          <h3>📖 Khan Academy – Statistics</h3>
+          <p>Complete statistics course covering all probability and inferential statistics topics.</p>
+          <span class="tag badge badge-green">Free · Interactive</span>
+        </div>
+        <div class="topic-card">
+          <h3>📖 Mathematics for ML (Book)</h3>
+          <p>Deisenroth, Faisal, Ong — the definitive free textbook for ML math foundations.</p>
+          <span class="tag badge badge-purple">Free PDF</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box tip fade-up-d5">
+      <strong>💡 Pro Tip:</strong> Don't try to master all of this before starting ML. Learn as you go — revisit these topics when they come up naturally in algorithms you're studying.
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:32px">
+      <a href="programming.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;color:var(--text);text-decoration:none;font-family:'Syne',sans-serif;font-weight:600;transition:all 0.25s">
+        Next: Programming <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <span><a href="index.html">← Back to Dashboard</a></span>
+    <div class="footer-nav"><a href="programming.html">Programming →</a></div>
+  </footer>
+</div>
+<script src="shared.js"></script>
+<script>
+// Update done count
+function updateDoneCount() {
+  const total = document.querySelectorAll('.checklist li').length;
+  const done = document.querySelectorAll('.checklist li.done').length;
+  document.getElementById('doneCount').textContent = done;
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.querySelector('.progress-pct').textContent = pct + '%';
+  document.querySelector('.progress-track-fill').style.width = pct + '%';
+}
+document.querySelectorAll('.checklist li').forEach(li => {
+  li.addEventListener('click', () => setTimeout(updateDoneCount, 50));
+});
+setTimeout(updateDoneCount, 100);
+</script>
+</body>
+</html>
