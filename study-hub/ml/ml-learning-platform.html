@@ -1,0 +1,2166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Mastery — Machine Learning Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS VARIABLES & THEME
+   ============================================================ */
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #111118;
+  --bg-card: #16161f;
+  --bg-card-hover: #1e1e2a;
+  --bg-sidebar: #0d0d14;
+  --border: rgba(255,255,255,0.07);
+  --border-accent: rgba(99,179,237,0.3);
+  --text-primary: #f0f0f8;
+  --text-secondary: #9090a8;
+  --text-muted: #5a5a72;
+  --accent: #63b3ed;
+  --accent-2: #f687b3;
+  --accent-3: #68d391;
+  --accent-4: #fbd38d;
+  --accent-5: #b794f4;
+  --code-bg: #0d0d1a;
+  --tag-bg: rgba(99,179,237,0.12);
+  --scrollbar: #2a2a3a;
+  --sidebar-width: 280px;
+  --header-h: 60px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f5fb;
+  --bg-secondary: #ebebf5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f0fa;
+  --bg-sidebar: #ffffff;
+  --border: rgba(0,0,0,0.08);
+  --border-accent: rgba(49,130,206,0.3);
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a6a;
+  --text-muted: #9090a8;
+  --accent: #3182ce;
+  --accent-2: #d53f8c;
+  --accent-3: #276749;
+  --accent-4: #c05621;
+  --accent-5: #6b46c1;
+  --code-bg: #1a1a2e;
+  --tag-bg: rgba(49,130,206,0.1);
+  --scrollbar: #d0d0e0;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 15px; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.65;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 10px; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+#header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(10,10,15,0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px; z-index: 1000;
+  transition: background var(--transition);
+}
+
+[data-theme="light"] #header { background: rgba(255,255,255,0.9); }
+
+.header-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em;
+  white-space: nowrap; text-decoration: none; color: var(--text-primary);
+}
+
+.logo-badge {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-5));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; color: #fff; font-weight: 800;
+}
+
+.header-search {
+  flex: 1; max-width: 400px; position: relative;
+}
+
+.header-search input {
+  width: 100%; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 14px 7px 36px; font-family: 'Syne', sans-serif;
+  font-size: 0.82rem; color: var(--text-primary); outline: none;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.header-search input:focus { border-color: var(--accent); }
+
+.header-search .search-icon {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 0.85rem; pointer-events: none;
+}
+
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.btn-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-secondary); font-size: 1rem;
+  transition: all var(--transition); flex-shrink: 0;
+}
+.btn-icon:hover { color: var(--accent); border-color: var(--border-accent); background: var(--bg-card-hover); }
+
+#sidebar-toggle { display: none; }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+#app {
+  display: flex; padding-top: var(--header-h);
+  min-height: 100vh;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+#sidebar {
+  width: var(--sidebar-width); flex-shrink: 0;
+  position: fixed; top: var(--header-h); bottom: 0; left: 0;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto; padding: 16px 0;
+  z-index: 900;
+  transition: transform var(--transition), background var(--transition);
+}
+
+.sidebar-section-label {
+  font-size: 0.63rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-muted);
+  padding: 8px 18px 4px; margin-top: 6px;
+}
+
+.chapter-item { border-bottom: 1px solid var(--border); }
+
+.chapter-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px; cursor: pointer;
+  transition: background var(--transition);
+  user-select: none;
+}
+.chapter-header:hover { background: var(--bg-card); }
+
+.chapter-num {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--tag-bg); display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 700; color: var(--accent); flex-shrink: 0;
+}
+
+.chapter-title { font-size: 0.8rem; font-weight: 600; flex: 1; line-height: 1.3; }
+
+.chapter-chevron {
+  font-size: 0.65rem; color: var(--text-muted);
+  transition: transform var(--transition);
+}
+.chapter-item.open .chapter-chevron { transform: rotate(90deg); }
+
+.chapter-progress-bar {
+  height: 2px; background: var(--border);
+  margin: 0 18px; border-radius: 2px;
+}
+.chapter-progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-5));
+  border-radius: 2px; transition: width 0.5s ease;
+}
+
+.subtopic-list { display: none; }
+.chapter-item.open .subtopic-list { display: block; }
+
+.subtopic-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 18px 7px 48px;
+  font-size: 0.76rem; color: var(--text-secondary);
+  cursor: pointer; transition: all var(--transition);
+  border-left: 2px solid transparent;
+}
+.subtopic-item:hover { color: var(--text-primary); background: var(--bg-card); }
+.subtopic-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--tag-bg); }
+
+.subtopic-check {
+  width: 14px; height: 14px; border: 1.5px solid var(--border);
+  border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 0.55rem; transition: all var(--transition);
+}
+.subtopic-check.done { background: var(--accent-3); border-color: var(--accent-3); color: #fff; }
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+#main {
+  margin-left: var(--sidebar-width);
+  flex: 1; min-width: 0; padding: 32px 28px 80px;
+  max-width: calc(100% - var(--sidebar-width));
+}
+
+/* ============================================================
+   SECTION PANELS
+   ============================================================ */
+.section-panel { display: none; animation: fadeSlideIn 0.35s ease; }
+.section-panel.active { display: block; }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   CHAPTER HERO
+   ============================================================ */
+.chapter-hero {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 32px; margin-bottom: 24px;
+  position: relative; overflow: hidden;
+}
+
+.chapter-hero::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow, rgba(99,179,237,0.12)), transparent 70%);
+  pointer-events: none;
+}
+
+.chapter-hero-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--tag-bg); color: var(--accent);
+  padding: 3px 10px; border-radius: 20px; font-size: 0.7rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+.chapter-hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2rem; line-height: 1.2; margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.chapter-hero p { color: var(--text-secondary); font-size: 0.88rem; max-width: 620px; }
+
+.chapter-meta {
+  display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;
+}
+
+.meta-pill {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.72rem; color: var(--text-secondary);
+}
+
+/* ============================================================
+   CARDS GRID
+   ============================================================ */
+.cards-grid {
+  display: grid; gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin-bottom: 24px;
+}
+
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  transition: all var(--transition); position: relative; overflow: hidden;
+}
+.card:hover { transform: translateY(-2px); border-color: var(--border-accent); box-shadow: var(--shadow); background: var(--bg-card-hover); }
+
+.card-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; margin-bottom: 12px;
+}
+
+.card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+.card p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* ============================================================
+   CONTENT BLOCKS
+   ============================================================ */
+.content-block {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px 28px; margin-bottom: 20px;
+}
+
+.content-block h2 {
+  font-size: 1.1rem; font-weight: 700; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.content-block h2::before {
+  content: attr(data-icon);
+  width: 28px; height: 28px; background: var(--tag-bg);
+  border-radius: 7px; display: flex; align-items: center;
+  justify-content: center; font-size: 0.85rem;
+}
+
+.content-block p { font-size: 0.83rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.75; }
+.content-block p:last-child { margin-bottom: 0; }
+
+.content-block ul, .content-block ol {
+  padding-left: 20px; font-size: 0.83rem; color: var(--text-secondary); line-height: 1.8;
+}
+
+.content-block li { margin-bottom: 4px; }
+
+.content-block strong { color: var(--text-primary); font-weight: 600; }
+
+/* ============================================================
+   CODE BLOCKS WITH TABS
+   ============================================================ */
+.code-block { margin-bottom: 20px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+
+.code-tabs {
+  display: flex; background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.code-tab {
+  padding: 8px 16px; font-size: 0.72rem; font-weight: 600;
+  cursor: pointer; color: var(--text-muted);
+  border-right: 1px solid var(--border);
+  transition: all var(--transition); user-select: none;
+}
+.code-tab:hover { color: var(--text-secondary); }
+.code-tab.active { color: var(--accent); background: var(--bg-card); }
+
+.code-panel { display: none; position: relative; }
+.code-panel.active { display: block; }
+
+.code-copy-btn {
+  position: absolute; top: 8px; right: 8px;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  color: var(--text-muted); padding: 3px 8px; border-radius: 5px;
+  font-size: 0.66rem; cursor: pointer; font-family: 'Syne', sans-serif;
+  transition: all var(--transition); font-weight: 600;
+}
+.code-copy-btn:hover { color: var(--accent); border-color: var(--border-accent); }
+
+pre {
+  padding: 20px; overflow-x: auto; margin: 0;
+  background: var(--code-bg); font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem; line-height: 1.7;
+}
+
+.explanation-panel, .output-panel {
+  padding: 18px 20px; background: var(--bg-secondary);
+  font-size: 0.8rem; color: var(--text-secondary); line-height: 1.75;
+}
+
+.output-panel {
+  background: #0a1a0a; color: #68d391;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+}
+
+/* Syntax highlighting */
+.kw { color: #b794f4; }
+.fn { color: #63b3ed; }
+.str { color: #68d391; }
+.num { color: #fbd38d; }
+.cm { color: #4a5568; font-style: italic; }
+.cls { color: #f687b3; }
+.dec { color: #81e6d9; }
+
+/* ============================================================
+   CALLOUT BOXES
+   ============================================================ */
+.callout {
+  border-radius: var(--radius-sm); padding: 14px 16px;
+  margin-bottom: 16px; font-size: 0.79rem; line-height: 1.7;
+  display: flex; gap: 10px; align-items: flex-start;
+  border-left: 3px solid;
+}
+.callout-icon { flex-shrink: 0; margin-top: 1px; font-size: 1rem; }
+.callout-content { color: var(--text-secondary); }
+.callout-content strong { display: block; margin-bottom: 3px; }
+
+.callout-info { background: rgba(99,179,237,0.07); border-color: var(--accent); }
+.callout-info .callout-icon { color: var(--accent); }
+.callout-tip { background: rgba(104,211,145,0.07); border-color: var(--accent-3); }
+.callout-tip .callout-icon { color: var(--accent-3); }
+.callout-warn { background: rgba(251,211,141,0.07); border-color: var(--accent-4); }
+.callout-warn .callout-icon { color: var(--accent-4); }
+
+/* ============================================================
+   EXPANDABLE SECTIONS
+   ============================================================ */
+.expand-section { margin-bottom: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+
+.expand-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; cursor: pointer; background: var(--bg-card);
+  font-size: 0.82rem; font-weight: 600; user-select: none;
+  transition: background var(--transition);
+}
+.expand-header:hover { background: var(--bg-card-hover); }
+.expand-chevron { font-size: 0.7rem; color: var(--text-muted); transition: transform var(--transition); }
+.expand-section.open .expand-chevron { transform: rotate(180deg); }
+
+.expand-body { display: none; padding: 16px; background: var(--bg-secondary); font-size: 0.79rem; color: var(--text-secondary); line-height: 1.75; }
+.expand-section.open .expand-body { display: block; }
+
+/* ============================================================
+   QUIZ SECTION
+   ============================================================ */
+.quiz-section {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+}
+
+.quiz-title {
+  font-size: 1rem; font-weight: 700; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px; color: var(--accent-5);
+}
+
+.quiz-q { margin-bottom: 22px; }
+.quiz-q-text { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; }
+
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+
+.quiz-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; border-radius: 7px;
+  border: 1px solid var(--border);
+  cursor: pointer; font-size: 0.79rem; color: var(--text-secondary);
+  transition: all var(--transition); user-select: none;
+}
+.quiz-option:hover { border-color: var(--border-accent); color: var(--text-primary); background: var(--tag-bg); }
+.quiz-option.correct { background: rgba(104,211,145,0.12); border-color: var(--accent-3); color: var(--accent-3); }
+.quiz-option.wrong { background: rgba(252,129,129,0.1); border-color: rgba(252,129,129,0.4); color: #fc8181; }
+
+.quiz-option input[type="radio"] { accent-color: var(--accent); }
+
+.quiz-submit {
+  background: linear-gradient(135deg, var(--accent), var(--accent-5));
+  color: #fff; border: none; border-radius: 8px; padding: 9px 22px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem;
+  cursor: pointer; transition: opacity var(--transition); margin-top: 8px;
+}
+.quiz-submit:hover { opacity: 0.88; }
+
+.quiz-result {
+  margin-top: 14px; padding: 12px 16px; border-radius: 8px;
+  font-size: 0.8rem; font-weight: 600; display: none;
+}
+.quiz-result.show { display: block; }
+.quiz-result.pass { background: rgba(104,211,145,0.1); color: var(--accent-3); border: 1px solid rgba(104,211,145,0.3); }
+.quiz-result.fail { background: rgba(252,129,129,0.1); color: #fc8181; border: 1px solid rgba(252,129,129,0.3); }
+
+/* ============================================================
+   PROGRESS OVERVIEW
+   ============================================================ */
+.progress-overview {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+
+.progress-ring-wrap { position: relative; flex-shrink: 0; }
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+.progress-ring-bg { fill: none; stroke: var(--border); stroke-width: 5; }
+.progress-ring-fill {
+  fill: none; stroke: url(#progGrad); stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 251.2; stroke-dashoffset: 251.2;
+  transition: stroke-dashoffset 1s ease;
+}
+.progress-ring-text {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 1.1rem; font-weight: 800; color: var(--text-primary);
+}
+
+.progress-stats { display: flex; gap: 20px; flex-wrap: wrap; }
+.stat-item { text-align: center; }
+.stat-num { font-size: 1.4rem; font-weight: 800; color: var(--accent); line-height: 1; }
+.stat-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
+
+/* ============================================================
+   VISUALIZATION / CHART
+   ============================================================ */
+.chart-wrap {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 20px;
+  overflow: hidden;
+}
+.chart-title { font-size: 0.82rem; font-weight: 700; margin-bottom: 14px; color: var(--text-secondary); }
+
+/* ============================================================
+   TAG BADGES
+   ============================================================ */
+.tag {
+  display: inline-flex; align-items: center;
+  background: var(--tag-bg); color: var(--accent);
+  padding: 2px 8px; border-radius: 4px; font-size: 0.68rem;
+  font-weight: 600; font-family: 'JetBrains Mono', monospace;
+  margin-right: 5px; margin-bottom: 4px;
+}
+.tag-green { color: var(--accent-3); background: rgba(104,211,145,0.1); }
+.tag-pink  { color: var(--accent-2); background: rgba(246,135,179,0.1); }
+.tag-gold  { color: var(--accent-4); background: rgba(251,211,141,0.1); }
+.tag-purple{ color: var(--accent-5); background: rgba(183,148,244,0.1); }
+
+/* ============================================================
+   INTERVIEW Q&A
+   ============================================================ */
+.qa-item {
+  border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 10px; overflow: hidden;
+}
+.qa-q {
+  padding: 12px 16px; background: var(--bg-card);
+  font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: background var(--transition); user-select: none;
+}
+.qa-q:hover { background: var(--bg-card-hover); }
+.qa-a {
+  display: none; padding: 14px 16px;
+  background: var(--bg-secondary); font-size: 0.79rem;
+  color: var(--text-secondary); line-height: 1.75;
+}
+.qa-item.open .qa-a { display: block; }
+
+/* ============================================================
+   DOWNLOAD BUTTON
+   ============================================================ */
+.btn-download {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-secondary); padding: 7px 14px; border-radius: 7px;
+  font-size: 0.75rem; font-weight: 600; cursor: pointer;
+  font-family: 'Syne', sans-serif;
+  transition: all var(--transition); text-decoration: none;
+}
+.btn-download:hover { border-color: var(--border-accent); color: var(--accent); }
+
+/* ============================================================
+   MINI PROJECTS
+   ============================================================ */
+.project-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 22px; margin-bottom: 16px;
+  transition: all var(--transition);
+}
+.project-card:hover { border-color: var(--border-accent); transform: translateX(3px); }
+.project-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--accent); }
+.project-card p { font-size: 0.79rem; color: var(--text-secondary); margin-bottom: 10px; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+
+/* ============================================================
+   CHAPTER NAV BUTTONS
+   ============================================================ */
+.chapter-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);
+  gap: 12px; flex-wrap: wrap;
+}
+
+.btn-nav {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-secondary); padding: 9px 16px; border-radius: 8px;
+  font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  font-family: 'Syne', sans-serif; transition: all var(--transition);
+}
+.btn-nav:hover { border-color: var(--border-accent); color: var(--accent); }
+
+/* ============================================================
+   SEARCH RESULTS OVERLAY
+   ============================================================ */
+#search-results {
+  position: fixed; top: calc(var(--header-h) + 4px); left: 50%;
+  transform: translateX(-50%); width: 480px; max-width: 90vw;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  z-index: 2000; display: none; max-height: 400px; overflow-y: auto;
+}
+#search-results.visible { display: block; }
+
+.search-result-item {
+  padding: 10px 16px; cursor: pointer; border-bottom: 1px solid var(--border);
+  transition: background var(--transition); font-size: 0.8rem;
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: var(--bg-card-hover); }
+.search-result-item strong { color: var(--accent); display: block; font-size: 0.77rem; }
+.search-result-item span { color: var(--text-secondary); }
+
+/* ============================================================
+   MOBILE OVERLAY
+   ============================================================ */
+#sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6); z-index: 850;
+  backdrop-filter: blur(4px);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  :root { --sidebar-width: 270px; }
+
+  #sidebar-toggle { display: flex; }
+
+  #sidebar {
+    transform: translateX(-100%);
+    z-index: 900;
+  }
+  #sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  #sidebar-overlay.visible { display: block; }
+
+  #main {
+    margin-left: 0; max-width: 100%; padding: 20px 14px 60px;
+  }
+
+  .chapter-hero h1 { font-size: 1.5rem; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .progress-overview { flex-direction: column; align-items: flex-start; }
+  .header-search { max-width: 160px; }
+}
+
+/* ============================================================
+   FORMULA DISPLAY
+   ============================================================ */
+.formula {
+  display: inline-block; background: var(--code-bg);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 3px 10px; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; color: var(--accent-4); margin: 2px 0;
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-bottom: 16px; }
+.data-table th {
+  background: var(--bg-secondary); color: var(--text-secondary);
+  padding: 9px 12px; text-align: left; font-weight: 700; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 2px solid var(--border);
+}
+.data-table td {
+  padding: 8px 12px; color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+}
+.data-table tr:hover td { background: var(--bg-card-hover); }
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+[data-tooltip] { position: relative; }
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: var(--bg-card); border: 1px solid var(--border);
+  padding: 4px 10px; border-radius: 5px; font-size: 0.7rem; white-space: nowrap;
+  color: var(--text-secondary); pointer-events: none; z-index: 10;
+}
+
+/* ============================================================
+   LOADING / PULSE
+   ============================================================ */
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.loading { animation: pulse 1.5s ease-in-out infinite; }
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header id="header">
+  <button class="btn-icon" id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+
+  <a href="#" class="header-logo" onclick="showSection('home')">
+    <span class="logo-badge">ML</span>
+    ML Mastery
+  </a>
+
+  <div class="header-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search topics, concepts…" autocomplete="off">
+  </div>
+
+  <div class="header-actions">
+    <button class="btn-icon" id="theme-toggle" data-tooltip="Toggle theme" aria-label="Toggle theme">🌙</button>
+    <button class="btn-icon" data-tooltip="Download notes" onclick="downloadNotes()">⬇</button>
+  </div>
+</header>
+
+<div id="search-results"></div>
+<div id="sidebar-overlay"></div>
+
+<!-- ============================================================
+     APP
+     ============================================================ -->
+<div id="app">
+
+<!-- ============================================================
+     SIDEBAR
+     ============================================================ -->
+<nav id="sidebar">
+  <div class="sidebar-section-label">Overview</div>
+  <div class="subtopic-item active" onclick="showSection('home')" style="padding-left:18px">🏠 Dashboard</div>
+
+  <div class="sidebar-section-label">Chapters</div>
+
+  <!-- Generate chapters via JS -->
+  <div id="chapter-nav"></div>
+</nav>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main id="main">
+
+<!-- ============================
+     HOME / DASHBOARD
+     ============================ -->
+<div id="section-home" class="section-panel active">
+
+  <!-- Progress overview -->
+  <div class="progress-overview">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="72" height="72" viewBox="0 0 90 90">
+        <defs>
+          <linearGradient id="progGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#63b3ed"/>
+            <stop offset="100%" style="stop-color:#b794f4"/>
+          </linearGradient>
+        </defs>
+        <circle class="progress-ring-bg" cx="45" cy="45" r="40"/>
+        <circle class="progress-ring-fill" id="ring-fill" cx="45" cy="45" r="40"/>
+      </svg>
+      <div class="progress-ring-text" id="progress-pct">0%</div>
+    </div>
+    <div>
+      <div style="font-size:0.95rem;font-weight:700;margin-bottom:4px;">Your Learning Progress</div>
+      <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:12px;">Track completion across all chapters and subtopics</div>
+      <div class="progress-stats">
+        <div class="stat-item"><div class="stat-num" id="stat-done">0</div><div class="stat-label">Completed</div></div>
+        <div class="stat-item"><div class="stat-num" id="stat-total">40</div><div class="stat-label">Total Topics</div></div>
+        <div class="stat-item"><div class="stat-num">10</div><div class="stat-label">Chapters</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chapter Cards -->
+  <div style="font-family:'Instrument Serif',serif;font-size:1.45rem;margin-bottom:16px;letter-spacing:-0.01em;">
+    All Chapters <span style="color:var(--text-muted);font-size:1rem;font-style:italic;">— click to explore</span>
+  </div>
+
+  <div class="cards-grid" id="chapter-cards"></div>
+
+  <!-- Quick Stats row -->
+  <div class="content-block" style="margin-top:8px;">
+    <h2 data-icon="💡">What You'll Learn</h2>
+    <p>This course covers the full spectrum of modern machine learning — from foundational mathematics to deploying production models. You'll build intuition through clear explanations, understand theory through worked examples, and gain practical skills through hands-on code snippets.</p>
+    <p>Topics span <strong>classical ML</strong> (regression, trees, SVMs), <strong>deep learning</strong> (neural nets, CNNs, RNNs), and <strong>MLOps</strong> (model versioning, deployment, monitoring). Each chapter ends with a quiz to test your understanding.</p>
+    <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;">
+      <span class="tag">Python</span>
+      <span class="tag tag-green">Scikit-Learn</span>
+      <span class="tag tag-pink">Keras</span>
+      <span class="tag tag-gold">TensorFlow</span>
+      <span class="tag tag-purple">MLOps</span>
+      <span class="tag">NumPy</span>
+      <span class="tag tag-green">Pandas</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Sections injected by JavaScript -->
+<div id="dynamic-sections"></div>
+
+</main>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const chapters = [
+  {
+    id: 'ch1', num: '01', icon: '🌱', color: '#63b3ed', accentGlow: 'rgba(99,179,237,0.15)',
+    title: 'Introduction to Machine Learning',
+    desc: 'Understand what ML is, why it matters, and the three main paradigms that power modern AI.',
+    tags: ['Beginner', 'Theory', '~30 min'],
+    subtopics: ['What is Machine Learning?', 'Types of ML', 'Real-World Examples', 'The ML Workflow'],
+  },
+  {
+    id: 'ch2', num: '02', icon: '🗺️', color: '#f687b3', accentGlow: 'rgba(246,135,179,0.15)',
+    title: 'End-to-End ML Project',
+    desc: 'Walk through a complete ML project — from problem framing to a working model.',
+    tags: ['Practical', 'Project', '~60 min'],
+    subtopics: ['Problem Framing', 'Data Collection & Cleaning', 'Feature Engineering', 'Model Selection'],
+  },
+  {
+    id: 'ch3', num: '03', icon: '🧹', color: '#68d391', accentGlow: 'rgba(104,211,145,0.15)',
+    title: 'Data Preprocessing',
+    desc: 'Learn how to transform raw data into clean, model-ready features.',
+    tags: ['Core Skill', 'Practical', '~45 min'],
+    subtopics: ['Handling Missing Values', 'Encoding Categorical Data', 'Feature Scaling', 'Pipelines'],
+  },
+  {
+    id: 'ch4', num: '04', icon: '📐', color: '#fbd38d', accentGlow: 'rgba(251,211,141,0.15)',
+    title: 'Supervised Learning',
+    desc: 'Master the algorithms that learn from labeled data to make predictions.',
+    tags: ['Core', 'Algorithms', '~90 min'],
+    subtopics: ['Linear Regression', 'Logistic Regression', 'Decision Trees', 'Random Forest', 'SVM'],
+  },
+  {
+    id: 'ch5', num: '05', icon: '📊', color: '#b794f4', accentGlow: 'rgba(183,148,244,0.15)',
+    title: 'Model Evaluation',
+    desc: 'Learn how to rigorously measure whether your model actually works.',
+    tags: ['Core', 'Theory', '~50 min'],
+    subtopics: ['Accuracy, Precision & Recall', 'Cross-Validation', 'Bias vs Variance', 'ROC & AUC'],
+  },
+  {
+    id: 'ch6', num: '06', icon: '🔍', color: '#81e6d9', accentGlow: 'rgba(129,230,217,0.15)',
+    title: 'Unsupervised Learning',
+    desc: 'Discover patterns in unlabeled data using clustering and dimensionality reduction.',
+    tags: ['Intermediate', 'Algorithms', '~55 min'],
+    subtopics: ['K-Means Clustering', 'DBSCAN', 'Principal Component Analysis (PCA)', 'Autoencoders'],
+  },
+  {
+    id: 'ch7', num: '07', icon: '🧠', color: '#f6ad55', accentGlow: 'rgba(246,173,85,0.15)',
+    title: 'Neural Networks & Deep Learning',
+    desc: 'Build intuition for neural networks from the single perceptron to multi-layer architectures.',
+    tags: ['Advanced', 'Deep Learning', '~75 min'],
+    subtopics: ['The Perceptron', 'Activation Functions', 'Backpropagation', 'Building with Keras'],
+  },
+  {
+    id: 'ch8', num: '08', icon: '🚀', color: '#fc8181', accentGlow: 'rgba(252,129,129,0.15)',
+    title: 'Advanced Deep Learning',
+    desc: 'Explore CNNs, RNNs, LSTMs, and transfer learning for complex tasks.',
+    tags: ['Advanced', 'Deep Learning', '~90 min'],
+    subtopics: ['Convolutional Neural Networks', 'RNNs & LSTMs', 'Transfer Learning', 'Transformers intro'],
+  },
+  {
+    id: 'ch9', num: '09', icon: '⚙️', color: '#90cdf4', accentGlow: 'rgba(144,205,244,0.15)',
+    title: 'MLOps Basics',
+    desc: 'Take your models from notebook to production — versioning, deployment, and monitoring.',
+    tags: ['Industry', 'Deployment', '~60 min'],
+    subtopics: ['Model Versioning', 'REST API Deployment', 'Model Monitoring', 'CI/CD for ML'],
+  },
+  {
+    id: 'ch10', num: '10', icon: '🏆', color: '#e9d8fd', accentGlow: 'rgba(183,148,244,0.12)',
+    title: 'Interview Q&A & Debugging',
+    desc: 'Common ML interview questions with detailed answers and debugging tips.',
+    tags: ['Career', 'Practice', '~40 min'],
+    subtopics: ['ML Interview Questions', 'Common Mistakes', 'Debugging Tips', 'Career Roadmap'],
+  },
+];
+
+const subtopicContent = {
+  // Chapter 1
+  'What is Machine Learning?': `
+    <div class="content-block">
+      <h2 data-icon="🤖">What is Machine Learning?</h2>
+      <p>Machine Learning is a branch of artificial intelligence where systems <strong>learn from data</strong> rather than being explicitly programmed with rules. Instead of writing code like <em>"if price > 500 AND bedrooms >= 3, label as expensive house"</em>, we give the algorithm thousands of house examples with prices and let it figure out the patterns.</p>
+      <p>A classic definition by Arthur Samuel (1959): <em>"Machine learning is the field of study that gives computers the ability to learn without being explicitly programmed."</em> Tom Mitchell later refined this: a computer program learns from experience <strong>E</strong> with respect to some task <strong>T</strong> and performance measure <strong>P</strong>, if its performance on T, as measured by P, improves with experience E.</p>
+      <div class="callout callout-info">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content"><strong>Key Insight</strong>Instead of telling the computer what to do, we show it what good results look like and let it discover the rules itself.</div>
+      </div>
+      <p>Traditional programming follows: <span class="formula">Data + Rules → Answers</span></p>
+      <p>Machine Learning reverses this: <span class="formula">Data + Answers → Rules</span></p>
+    </div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-icon" style="background:rgba(99,179,237,0.12)">📧</div><h3>Spam Detection</h3><p>Show the model thousands of spam and non-spam emails. It learns patterns — certain words, sender behavior — to classify new emails automatically.</p></div>
+      <div class="card"><div class="card-icon" style="background:rgba(104,211,145,0.12)">🏠</div><h3>House Price Prediction</h3><p>Feed historical sales data (size, location, age). The model learns the relationship between features and price, predicting future values.</p></div>
+      <div class="card"><div class="card-icon" style="background:rgba(251,211,141,0.12)">🎬</div><h3>Movie Recommendations</h3><p>Netflix uses your watch history plus millions of other users to recommend titles you haven't seen but are likely to enjoy.</p></div>
+    </div>`,
+
+  'Types of ML': `
+    <div class="content-block">
+      <h2 data-icon="🌿">Supervised Learning</h2>
+      <p>The most common type. You provide the model with <strong>labeled training data</strong> — each example has an input and the correct output. The model learns to map inputs to outputs.</p>
+      <ul>
+        <li><strong>Classification:</strong> Predict a discrete category (spam/not spam, cat/dog, cancer/benign)</li>
+        <li><strong>Regression:</strong> Predict a continuous value (house price, temperature, stock return)</li>
+      </ul>
+    </div>
+    <div class="content-block">
+      <h2 data-icon="🔎">Unsupervised Learning</h2>
+      <p>No labels provided. The model explores the data and finds structure on its own — clusters, patterns, or compressed representations.</p>
+      <ul>
+        <li><strong>Clustering:</strong> Group similar customers together for targeted marketing</li>
+        <li><strong>Dimensionality Reduction:</strong> Compress 1000 features down to 2 for visualization</li>
+        <li><strong>Anomaly Detection:</strong> Find unusual credit card transactions</li>
+      </ul>
+    </div>
+    <div class="content-block">
+      <h2 data-icon="🎮">Reinforcement Learning</h2>
+      <p>An <strong>agent</strong> learns by interacting with an <strong>environment</strong>. It takes actions and receives <strong>rewards</strong> or <strong>penalties</strong>. Over time it learns a policy that maximizes cumulative reward.</p>
+      <div class="callout callout-tip">
+        <div class="callout-icon">🏆</div>
+        <div class="callout-content"><strong>Famous Example</strong>DeepMind's AlphaGo learned to play Go at superhuman level purely through self-play — nobody told it any rules or strategies.</div>
+      </div>
+    </div>`,
+
+  'Real-World Examples': `
+    <div class="content-block">
+      <h2 data-icon="🌍">ML in the Real World</h2>
+      <p>Machine learning is embedded in virtually every digital experience today. Here's a tour of where you encounter it daily:</p>
+    </div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-icon" style="background:rgba(99,179,237,0.12)">🏦</div><h3>Banking & Fraud</h3><p>Banks analyze transaction patterns in real-time. If your card is used in two countries simultaneously, an anomaly detection model flags it instantly.</p></div>
+      <div class="card"><div class="card-icon" style="background:rgba(246,135,179,0.12)">🏥</div><h3>Healthcare</h3><p>CNNs achieve radiologist-level accuracy diagnosing tumors in X-rays and MRIs. Models also predict patient readmission risk.</p></div>
+      <div class="card"><div class="card-icon" style="background:rgba(183,148,244,0.12)">🚗</div><h3>Autonomous Vehicles</h3><p>Tesla's autopilot uses a combination of computer vision, sensor fusion, and reinforcement learning to navigate roads.</p></div>
+      <div class="card"><div class="card-icon" style="background:rgba(104,211,145,0.12)">💬</div><h3>Natural Language</h3><p>Transformer models power search engines, chatbots, translators, and code assistants — understanding context across thousands of words.</p></div>
+      <div class="card"><div class="card-icon" style="background:rgba(251,211,141,0.12)">🛒</div><h3>E-Commerce</h3><p>Amazon's recommendation engine drives ~35% of its revenue by predicting what products customers want next.</p></div>
+      <div class="card"><div class="card-icon" style="background:rgba(252,129,129,0.12)">🎵</div><h3>Music & Media</h3><p>Spotify's Discover Weekly uses collaborative filtering and audio feature analysis to personalize 30 tracks weekly for 400M users.</p></div>
+    </div>`,
+
+  'The ML Workflow': `
+    <div class="content-block">
+      <h2 data-icon="🔄">The Machine Learning Workflow</h2>
+      <p>Every real ML project follows a similar lifecycle. Understanding this end-to-end process is just as important as knowing individual algorithms.</p>
+    </div>
+    <div class="expand-section open">
+      <div class="expand-header" onclick="toggleExpand(this)"><span>1. Define the Problem & Success Metric</span><span class="expand-chevron">▲</span></div>
+      <div class="expand-body">What exactly are you predicting? How will you measure success? Without a clear metric (accuracy, revenue lift, error rate), you can't tell if your model is working.</div>
+    </div>
+    <div class="expand-section">
+      <div class="expand-header" onclick="toggleExpand(this)"><span>2. Collect & Explore Data (EDA)</span><span class="expand-chevron">▼</span></div>
+      <div class="expand-body">Gather relevant data. Explore distributions, correlations, outliers, and missing values. This step often reveals the most important insights before you ever train a model.</div>
+    </div>
+    <div class="expand-section">
+      <div class="expand-header" onclick="toggleExpand(this)"><span>3. Preprocess & Engineer Features</span><span class="expand-chevron">▼</span></div>
+      <div class="expand-body">Clean the data, handle missing values, encode categories, scale features, and create new derived features. Garbage in = garbage out.</div>
+    </div>
+    <div class="expand-section">
+      <div class="expand-header" onclick="toggleExpand(this)"><span>4. Train & Evaluate Models</span><span class="expand-chevron">▼</span></div>
+      <div class="expand-body">Try multiple algorithms. Use cross-validation to get reliable estimates. Tune hyperparameters. Compare on a held-out test set.</div>
+    </div>
+    <div class="expand-section">
+      <div class="expand-header" onclick="toggleExpand(this)"><span>5. Deploy & Monitor</span><span class="expand-chevron">▼</span></div>
+      <div class="expand-body">Wrap your model in an API, integrate it into the product, and monitor for data drift — the world changes and your model needs to keep up.</div>
+    </div>`,
+
+  // Chapter 2
+  'Problem Framing': `
+    <div class="content-block">
+      <h2 data-icon="🎯">Framing an ML Problem Correctly</h2>
+      <p>Before touching any data, you need to define exactly what the model should do. Poor problem framing is the most common cause of failed ML projects.</p>
+      <p><strong>Key questions to answer:</strong></p>
+      <ul>
+        <li>What is the <strong>target variable</strong> (what are we predicting)?</li>
+        <li>What <strong>type of ML</strong> is this — regression, classification, clustering?</li>
+        <li>What data is available, and how fresh does it need to be?</li>
+        <li>What's the <strong>baseline</strong>? (What does the current system achieve?)</li>
+        <li>What error is acceptable? How will the model be used?</li>
+      </ul>
+      <div class="callout callout-warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content"><strong>Common Mistake</strong>Jumping straight to modeling without asking "does ML even make sense here?" Sometimes a simple rule-based system beats a complex model.</div>
+      </div>
+    </div>`,
+
+  'Data Collection & Cleaning': `
+    <div class="content-block">
+      <h2 data-icon="🗄️">Data Collection & Cleaning</h2>
+      <p>Data scientists spend ~60-80% of project time on data preparation. This step determines your ceiling — no algorithm can compensate for fundamentally bad data.</p>
+      <p><strong>Common data quality issues:</strong></p>
+      <ul>
+        <li><strong>Missing values:</strong> NaN cells that need imputation or removal</li>
+        <li><strong>Duplicates:</strong> Same record appears multiple times</li>
+        <li><strong>Outliers:</strong> Values far outside the expected range</li>
+        <li><strong>Label noise:</strong> Incorrectly labeled training examples</li>
+        <li><strong>Data leakage:</strong> Future information accidentally included in features</li>
+      </ul>
+    </div>
+    <div class="code-block">
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'python')">Python</div>
+        <div class="code-tab" onclick="switchTab(this,'explanation')">Explanation</div>
+        <div class="code-tab" onclick="switchTab(this,'output')">Output</div>
+      </div>
+      <div class="code-panel active" id="panel-python">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Load dataset</span>
+df = pd.<span class="fn">read_csv</span>(<span class="str">'housing.csv'</span>)
+
+<span class="cm"># Check missing values</span>
+<span class="fn">print</span>(df.<span class="fn">isnull</span>().<span class="fn">sum</span>())
+
+<span class="cm"># Fill numeric NaNs with median</span>
+df[<span class="str">'total_bedrooms'</span>].<span class="fn">fillna</span>(
+    df[<span class="str">'total_bedrooms'</span>].<span class="fn">median</span>(), inplace=<span class="kw">True</span>
+)
+
+<span class="cm"># Remove extreme outliers (IQR method)</span>
+Q1 = df[<span class="str">'income'</span>].<span class="fn">quantile</span>(<span class="num">0.25</span>)
+Q3 = df[<span class="str">'income'</span>].<span class="fn">quantile</span>(<span class="num">0.75</span>)
+IQR = Q3 - Q1
+df = df[(df[<span class="str">'income'</span>] >= Q1 - <span class="num">1.5</span>*IQR) &
+        (df[<span class="str">'income'</span>] &lt;= Q3 + <span class="num">1.5</span>*IQR)]
+
+<span class="fn">print</span>(<span class="str">f"Clean dataset: {df.shape[0]} rows"</span>)</pre>
+      </div>
+      <div class="code-panel" id="panel-explanation">
+        <div class="explanation-panel">
+          <strong>Step-by-step:</strong><br><br>
+          1. We load a CSV with Pandas — the workhorse of data manipulation in Python.<br><br>
+          2. <code>isnull().sum()</code> counts missing values in each column — your first EDA step.<br><br>
+          3. For numeric columns, filling missing values with the <strong>median</strong> is safer than the mean because it's not skewed by outliers.<br><br>
+          4. The <strong>IQR (Interquartile Range)</strong> method removes values more than 1.5× the IQR below Q1 or above Q3. This is a standard, robust way to remove statistical outliers.
+        </div>
+      </div>
+      <div class="code-panel" id="panel-output">
+        <pre class="output-panel">total_bedrooms    207
+other_column        0
+dtype: int64
+
+Clean dataset: 20320 rows</pre>
+      </div>
+    </div>`,
+
+  'Feature Engineering': `
+    <div class="content-block">
+      <h2 data-icon="⚗️">Feature Engineering</h2>
+      <p>Feature engineering is the art of <strong>transforming raw data into representations</strong> that make it easier for models to learn from. Andrew Ng famously said: "Coming up with features is difficult, time-consuming, requires expert knowledge. Applied ML is basically feature engineering."</p>
+      <p><strong>Techniques to know:</strong></p>
+      <ul>
+        <li><strong>Polynomial features:</strong> Add x² or x·y to capture nonlinear relationships</li>
+        <li><strong>Log transform:</strong> Normalize right-skewed distributions (like income)</li>
+        <li><strong>Date decomposition:</strong> Extract day-of-week, month, hour from timestamps</li>
+        <li><strong>Interaction terms:</strong> Multiply two features to capture their combined effect</li>
+        <li><strong>Binning:</strong> Convert continuous features into discrete buckets</li>
+        <li><strong>Target encoding:</strong> Replace category with the mean target value</li>
+      </ul>
+    </div>`,
+
+  'Model Selection': `
+    <div class="content-block">
+      <h2 data-icon="🏆">Model Selection Strategy</h2>
+      <p>No algorithm is universally best (No Free Lunch theorem). The right model depends on your data size, feature types, interpretability needs, and training time budget.</p>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Algorithm Selection Cheat Sheet</div>
+      <table class="data-table">
+        <thead><tr><th>Algorithm</th><th>Best For</th><th>Interpretable</th><th>Handles Nonlinearity</th></tr></thead>
+        <tbody>
+          <tr><td>Linear Regression</td><td>Continuous output, small data</td><td>✅ Yes</td><td>❌ No</td></tr>
+          <tr><td>Decision Tree</td><td>Mixed types, quick prototyping</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+          <tr><td>Random Forest</td><td>Medium datasets, high accuracy</td><td>⚠️ Partial</td><td>✅ Yes</td></tr>
+          <tr><td>SVM</td><td>High-dimensional, small-medium data</td><td>❌ No</td><td>✅ (with kernel)</td></tr>
+          <tr><td>Neural Network</td><td>Large data, images, text</td><td>❌ No</td><td>✅ Yes</td></tr>
+          <tr><td>K-Means</td><td>Clustering, unsupervised</td><td>✅ Yes</td><td>❌ Limited</td></tr>
+        </tbody>
+      </table>
+    </div>`,
+
+  // Chapter 3
+  'Handling Missing Values': `
+    <div class="content-block">
+      <h2 data-icon="🕳️">Strategies for Missing Values</h2>
+      <p>Missing data is almost universal in real datasets. Your strategy depends on <em>why</em> the data is missing:</p>
+      <ul>
+        <li><strong>MCAR</strong> (Missing Completely At Random): Random sensor failure. Safe to impute.</li>
+        <li><strong>MAR</strong> (Missing At Random): Younger people skip income questions. Use group medians.</li>
+        <li><strong>MNAR</strong> (Missing Not At Random): People with high incomes skip income fields. Dangerous — missingness itself is informative!</li>
+      </ul>
+    </div>
+    <div class="code-block">
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'python')">Python</div>
+        <div class="code-tab" onclick="switchTab(this,'explanation')">Explanation</div>
+      </div>
+      <div class="code-panel active" id="panel-python">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer, KNNImputer
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Strategy 1: Simple median imputation</span>
+imputer = <span class="cls">SimpleImputer</span>(strategy=<span class="str">'median'</span>)
+X_imputed = imputer.<span class="fn">fit_transform</span>(X)
+
+<span class="cm"># Strategy 2: KNN-based imputation (smarter)</span>
+knn_imputer = <span class="cls">KNNImputer</span>(n_neighbors=<span class="num">5</span>)
+X_knn = knn_imputer.<span class="fn">fit_transform</span>(X)
+
+<span class="cm"># Strategy 3: Add a missing indicator column</span>
+df[<span class="str">'income_missing'</span>] = df[<span class="str">'income'</span>].<span class="fn">isna</span>().<span class="fn">astype</span>(<span class="fn">int</span>)
+df[<span class="str">'income'</span>].<span class="fn">fillna</span>(df[<span class="str">'income'</span>].<span class="fn">median</span>(), inplace=<span class="kw">True</span>)</pre>
+      </div>
+      <div class="code-panel" id="panel-explanation">
+        <div class="explanation-panel">
+          <strong>SimpleImputer</strong> replaces NaN with a constant statistic (mean, median, most_frequent). Fast and often good enough.<br><br>
+          <strong>KNNImputer</strong> finds the K most similar rows (by other features) and uses their values to fill in the gap. Better for correlated features.<br><br>
+          <strong>Adding an indicator column</strong> is crucial when missingness itself carries signal. The model can learn "when income is missing, behavior is different."
+        </div>
+      </div>
+    </div>`,
+
+  'Encoding Categorical Data': `
+    <div class="content-block">
+      <h2 data-icon="🏷️">Encoding Categorical Variables</h2>
+      <p>Most ML algorithms require <strong>numeric inputs</strong>. Converting text categories into numbers is essential. Different techniques suit different situations:</p>
+      <ul>
+        <li><strong>Label Encoding:</strong> Assigns integers (0, 1, 2…). Fast but implies ordering — bad for nominal categories.</li>
+        <li><strong>One-Hot Encoding:</strong> Creates a binary column per category. No false ordering, but can cause dimensionality explosion.</li>
+        <li><strong>Target Encoding:</strong> Replace each category with the mean target value. Powerful, but can leak target if not done carefully.</li>
+        <li><strong>Frequency Encoding:</strong> Replace category with its frequency. Good when rare categories should be treated differently.</li>
+      </ul>
+      <div class="callout callout-warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content"><strong>Curse of Dimensionality</strong>One-hot encoding a city column with 5000 unique cities creates 5000 features. Use target or frequency encoding for high-cardinality categoricals.</div>
+      </div>
+    </div>`,
+
+  'Feature Scaling': `
+    <div class="content-block">
+      <h2 data-icon="⚖️">Feature Scaling — Why It Matters</h2>
+      <p>When features have very different ranges (age: 0–100, income: 0–500000), algorithms like gradient descent, KNN, and SVM perform poorly. Scaling brings all features to a common range.</p>
+      <p><strong>Standardization (Z-score):</strong> <span class="formula">x' = (x − μ) / σ</span> → zero mean, unit variance. Best for normally distributed features.</p>
+      <p><strong>Min-Max Normalization:</strong> <span class="formula">x' = (x − min) / (max − min)</span> → range [0, 1]. Sensitive to outliers.</p>
+      <p><strong>RobustScaler:</strong> Uses median and IQR instead of mean and std. <strong>Best when you have outliers</strong>.</p>
+    </div>`,
+
+  'Pipelines': `
+    <div class="content-block">
+      <h2 data-icon="🔗">Scikit-Learn Pipelines</h2>
+      <p>Pipelines chain preprocessing steps and a model into a single object. They prevent <strong>data leakage</strong> (fitting on test data) and make code cleaner and reproducible.</p>
+    </div>
+    <div class="code-block">
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'python')">Python</div>
+        <div class="code-tab" onclick="switchTab(this,'explanation')">Explanation</div>
+      </div>
+      <div class="code-panel active" id="panel-python">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+
+pipeline = <span class="cls">Pipeline</span>([
+    (<span class="str">'imputer'</span>, <span class="cls">SimpleImputer</span>(strategy=<span class="str">'median'</span>)),
+    (<span class="str">'scaler'</span>,  <span class="cls">StandardScaler</span>()),
+    (<span class="str">'model'</span>,   <span class="cls">RandomForestClassifier</span>(n_estimators=<span class="num">100</span>))
+])
+
+<span class="cm"># Train and predict — preprocessing auto-applied!</span>
+pipeline.<span class="fn">fit</span>(X_train, y_train)
+predictions = pipeline.<span class="fn">predict</span>(X_test)</pre>
+      </div>
+      <div class="code-panel" id="panel-explanation">
+        <div class="explanation-panel">
+          The Pipeline applies each step in sequence. During <code>fit()</code>, each step is <em>fitted</em> on training data only. During <code>predict()</code>, the learned transformations are <em>applied</em>. This ensures test data is never used to learn statistics — preventing a subtle but common source of overly optimistic results.
+        </div>
+      </div>
+    </div>`,
+
+  // Chapter 4
+  'Linear Regression': `
+    <div class="content-block">
+      <h2 data-icon="📈">Linear Regression</h2>
+      <p>Linear regression is the foundation of supervised learning. It models the relationship between features and a continuous target as a <strong>linear equation</strong>:</p>
+      <p style="text-align:center;margin:14px 0"><span class="formula">ŷ = θ₀ + θ₁x₁ + θ₂x₂ + … + θₙxₙ</span></p>
+      <p>Training means finding the weights <strong>θ</strong> that minimize the <strong>Mean Squared Error (MSE)</strong>:</p>
+      <p style="text-align:center;margin:14px 0"><span class="formula">MSE = (1/m) Σ (ŷᵢ − yᵢ)²</span></p>
+      <p>This can be solved analytically with the <strong>Normal Equation</strong> or iteratively with <strong>Gradient Descent</strong>.</p>
+      <div class="callout callout-info">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content"><strong>Gradient Descent Intuition</strong>Imagine you're blindfolded on a hilly landscape. To reach the valley (minimum loss), you take small steps in the direction that goes most steeply downhill — that's gradient descent.</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'python')">Python</div>
+        <div class="code-tab" onclick="switchTab(this,'output')">Output</div>
+      </div>
+      <div class="code-panel active" id="panel-python">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LinearRegression
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> mean_squared_error, r2_score
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Toy dataset: house size → price</span>
+X = np.<span class="fn">array</span>([[<span class="num">600</span>],[<span class="num">800</span>],[<span class="num">1000</span>],[<span class="num">1200</span>],[<span class="num">1500</span>]])
+y = np.<span class="fn">array</span>([<span class="num">150</span>, <span class="num">200</span>, <span class="num">250</span>, <span class="num">300</span>, <span class="num">370</span>])
+
+model = <span class="cls">LinearRegression</span>()
+model.<span class="fn">fit</span>(X, y)
+
+<span class="fn">print</span>(<span class="str">f"Intercept: {model.intercept_:.2f}"</span>)
+<span class="fn">print</span>(<span class="str">f"Slope: {model.coef_[0]:.4f}"</span>)
+<span class="fn">print</span>(<span class="str">f"R² Score: {r2_score(y, model.predict(X)):.4f}"</span>)</pre>
+      </div>
+      <div class="code-panel" id="panel-output">
+        <pre class="output-panel">Intercept: 1.33
+Slope: 0.2453
+R² Score: 0.9941</pre>
+      </div>
+    </div>`,
+
+  'Logistic Regression': `
+    <div class="content-block">
+      <h2 data-icon="🔀">Logistic Regression</h2>
+      <p>Despite the name, logistic regression is a <strong>classification algorithm</strong>. It applies the <strong>sigmoid function</strong> to a linear combination of features to output a probability between 0 and 1.</p>
+      <p style="text-align:center;margin:14px 0"><span class="formula">σ(z) = 1 / (1 + e⁻ᶻ)</span></p>
+      <p>If σ(z) ≥ 0.5, predict class 1; otherwise class 0. The model is trained by minimizing <strong>Binary Cross-Entropy Loss</strong> (log-loss).</p>
+      <p><strong>Regularization:</strong> Add L1 (Lasso) or L2 (Ridge) penalty to prevent overfitting. Controlled by hyperparameter <code>C</code> in scikit-learn (smaller C = stronger regularization).</p>
+    </div>`,
+
+  'Decision Trees': `
+    <div class="content-block">
+      <h2 data-icon="🌲">Decision Trees</h2>
+      <p>A decision tree splits the feature space with a series of <strong>if-then rules</strong>. Each internal node asks a question about a feature; each leaf node holds a prediction.</p>
+      <p>Splits are chosen to maximize <strong>information gain</strong> (or minimize Gini impurity):</p>
+      <p style="text-align:center;margin:14px 0"><span class="formula">Gini = 1 − Σ pᵢ²</span></p>
+      <div class="callout callout-info">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content"><strong>Strengths:</strong> Highly interpretable, no need for feature scaling, handles mixed feature types. <strong>Weakness:</strong> Prone to overfitting deep trees — control with max_depth, min_samples_leaf.</div>
+      </div>
+    </div>`,
+
+  'Random Forest': `
+    <div class="content-block">
+      <h2 data-icon="🌳">Random Forest</h2>
+      <p>A random forest is an <strong>ensemble of decision trees</strong> trained on random subsets of the data (bootstrap sampling) with random subsets of features at each split. Final prediction is the majority vote (classification) or average (regression).</p>
+      <p>This reduces variance dramatically via <strong>bagging (Bootstrap AGGregating)</strong>. Each tree sees different data and features, so errors are uncorrelated and average out.</p>
+      <div class="callout callout-tip">
+        <div class="callout-icon">🏆</div>
+        <div class="callout-content"><strong>Feature Importance</strong>Random forests provide <code>feature_importances_</code> — a free bonus that shows which features drive predictions most. Great for feature selection.</div>
+      </div>
+    </div>`,
+
+  'SVM': `
+    <div class="content-block">
+      <h2 data-icon="✂️">Support Vector Machines</h2>
+      <p>SVM finds the <strong>hyperplane that maximally separates</strong> classes. The hyperplane is positioned to maximize the <strong>margin</strong> — the gap between the closest points of each class (support vectors).</p>
+      <p><strong>The Kernel Trick:</strong> For non-linearly separable data, SVMs can implicitly map features to a higher-dimensional space using kernel functions (RBF, polynomial) without computing the transformation explicitly. This makes SVMs powerful for complex boundaries.</p>
+      <p><strong>C parameter:</strong> Controls the bias-variance tradeoff. High C = low bias, high variance (memorizes training data). Low C = high bias, low variance (smoother boundary).</p>
+    </div>`,
+
+  // Chapter 5
+  'Accuracy, Precision & Recall': `
+    <div class="content-block">
+      <h2 data-icon="📏">Classification Metrics Demystified</h2>
+      <p>Accuracy alone is misleading for imbalanced datasets. Imagine 99% of emails are legitimate — a model that always predicts "not spam" achieves 99% accuracy but is useless.</p>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">The Confusion Matrix</div>
+      <table class="data-table">
+        <thead><tr><th></th><th>Predicted Positive</th><th>Predicted Negative</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Actual Positive</strong></td><td style="color:var(--accent-3)">TP (True Positive)</td><td style="color:var(--accent-2)">FN (False Negative)</td></tr>
+          <tr><td><strong>Actual Negative</strong></td><td style="color:var(--accent-2)">FP (False Positive)</td><td style="color:var(--accent-3)">TN (True Negative)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="content-block">
+      <h2 data-icon="🧮">The Key Metrics</h2>
+      <p><span class="formula">Accuracy = (TP + TN) / (TP + TN + FP + FN)</span> — overall correctness</p>
+      <p><span class="formula">Precision = TP / (TP + FP)</span> — "when I say positive, how often am I right?"</p>
+      <p><span class="formula">Recall = TP / (TP + FN)</span> — "of all actual positives, how many did I catch?"</p>
+      <p><span class="formula">F1 = 2 × (Precision × Recall) / (Precision + Recall)</span> — harmonic mean, balances both</p>
+      <div class="callout callout-tip">
+        <div class="callout-icon">🏥</div>
+        <div class="callout-content"><strong>When to use which?</strong>Cancer screening → maximize Recall (don't miss cases). Spam filter → maximize Precision (don't flag real emails). Most cases → F1 score.</div>
+      </div>
+    </div>`,
+
+  'Cross-Validation': `
+    <div class="content-block">
+      <h2 data-icon="🔄">Cross-Validation</h2>
+      <p>A single train/test split can be unlucky. Cross-validation provides a more reliable performance estimate by training and testing multiple times.</p>
+      <p><strong>K-Fold CV:</strong> Divide data into K equal folds. Train on K-1 folds, test on the remaining fold. Repeat K times. Average the scores.</p>
+      <p><strong>Stratified K-Fold:</strong> Like K-Fold but each fold preserves the class distribution. Use for classification problems.</p>
+      <p><strong>Leave-One-Out (LOOCV):</strong> K = n. Every sample is test set once. Very accurate but computationally expensive.</p>
+    </div>`,
+
+  'Bias vs Variance': `
+    <div class="content-block">
+      <h2 data-icon="⚖️">The Bias-Variance Tradeoff</h2>
+      <p>This is the fundamental tension in machine learning. <strong>Bias</strong> is error from wrong assumptions. <strong>Variance</strong> is error from sensitivity to fluctuations in training data.</p>
+      <ul>
+        <li><strong>High Bias (Underfitting):</strong> Model is too simple. Poor on both train and test. Fix: more complexity, more features.</li>
+        <li><strong>High Variance (Overfitting):</strong> Model is too complex. Great on train, poor on test. Fix: regularization, more data, simpler model.</li>
+        <li><strong>Sweet Spot:</strong> Just-right complexity. Good generalization.</li>
+      </ul>
+      <div class="callout callout-info">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content"><strong>Diagnosing with Learning Curves</strong>Plot train/validation error vs training set size. If both errors are high → high bias. If train error is low but validation is high → high variance.</div>
+      </div>
+    </div>`,
+
+  'ROC & AUC': `
+    <div class="content-block">
+      <h2 data-icon="📉">ROC Curve & AUC Score</h2>
+      <p>The <strong>ROC (Receiver Operating Characteristic)</strong> curve plots True Positive Rate vs False Positive Rate at every possible classification threshold.</p>
+      <p>The <strong>AUC (Area Under the Curve)</strong> summarizes the entire ROC curve in one number. AUC = 1.0 is perfect; AUC = 0.5 is random guessing.</p>
+      <p>AUC is threshold-independent — great for comparing models regardless of the operating point you'll choose in production.</p>
+    </div>`,
+
+  // Chapter 6
+  'K-Means Clustering': `
+    <div class="content-block">
+      <h2 data-icon="🔵">K-Means Clustering</h2>
+      <p>K-Means partitions data into K clusters by iteratively:</p>
+      <ol>
+        <li>Randomly initialize K centroids</li>
+        <li>Assign each point to its nearest centroid</li>
+        <li>Move each centroid to the mean of its assigned points</li>
+        <li>Repeat until convergence</li>
+      </ol>
+      <p><strong>Choosing K:</strong> Use the <strong>Elbow Method</strong> — plot inertia (sum of squared distances to nearest centroid) vs K. The elbow point is where adding more clusters gives diminishing returns. Also try the <strong>Silhouette Score</strong> for a quantitative measure.</p>
+      <div class="callout callout-warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content"><strong>Limitations</strong>K-Means assumes spherical clusters of similar size and fails with non-convex shapes. It's sensitive to initialization (use k-means++ for better starts) and outliers.</div>
+      </div>
+    </div>`,
+
+  'DBSCAN': `
+    <div class="content-block">
+      <h2 data-icon="🌌">DBSCAN — Density-Based Clustering</h2>
+      <p>DBSCAN (Density-Based Spatial Clustering of Applications with Noise) discovers clusters of arbitrary shape and automatically identifies <strong>outliers</strong> (noise points).</p>
+      <p><strong>Core concepts:</strong></p>
+      <ul>
+        <li><strong>Core point:</strong> Has at least <code>min_samples</code> points within distance <code>ε</code></li>
+        <li><strong>Border point:</strong> Within ε of a core point but not itself a core point</li>
+        <li><strong>Noise point:</strong> Neither core nor border — treated as outlier</li>
+      </ul>
+      <p>Unlike K-Means, you don't need to specify the number of clusters. The algorithm discovers them from density.</p>
+    </div>`,
+
+  'Principal Component Analysis (PCA)': `
+    <div class="content-block">
+      <h2 data-icon="📐">PCA — Principal Component Analysis</h2>
+      <p>PCA reduces dimensionality by finding the directions (<strong>principal components</strong>) of maximum variance in the data and projecting onto them. Each PC is orthogonal to the others.</p>
+      <p><strong>Why reduce dimensions?</strong></p>
+      <ul>
+        <li>Visualize high-dimensional data in 2D/3D</li>
+        <li>Remove noise (low-variance components are mostly noise)</li>
+        <li>Speed up training by reducing feature count</li>
+        <li>Mitigate the curse of dimensionality</li>
+      </ul>
+      <p><strong>Explained variance ratio:</strong> How much of the total variance does each component capture? Choose enough components to explain ~95% of variance.</p>
+    </div>`,
+
+  'Autoencoders': `
+    <div class="content-block">
+      <h2 data-icon="🔁">Autoencoders</h2>
+      <p>An autoencoder is a neural network trained to <strong>reconstruct its input</strong> via a compressed bottleneck. The encoder compresses input to a latent vector; the decoder reconstructs the original.</p>
+      <p>The bottleneck forces the network to learn the most important features — similar to PCA but nonlinear. Applications: anomaly detection, image denoising, generative models (VAEs).</p>
+    </div>`,
+
+  // Chapter 7
+  'The Perceptron': `
+    <div class="content-block">
+      <h2 data-icon="⚡">The Perceptron — Building Block of Neural Networks</h2>
+      <p>A perceptron takes weighted inputs, sums them with a bias, and passes the result through an activation function:</p>
+      <p style="text-align:center;margin:14px 0"><span class="formula">output = activation(w₁x₁ + w₂x₂ + … + b)</span></p>
+      <p>Stack layers of perceptrons and you get a <strong>Multi-Layer Perceptron (MLP)</strong> — the classical feedforward neural network. Each neuron in one layer connects to every neuron in the next (fully connected or dense layers).</p>
+    </div>`,
+
+  'Activation Functions': `
+    <div class="content-block">
+      <h2 data-icon="⚡">Activation Functions</h2>
+      <p>Without activation functions, stacking layers is pointless — the composition of linear functions is still linear. Activations introduce <strong>nonlinearity</strong>, allowing networks to learn complex patterns.</p>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Activation Function Comparison</div>
+      <table class="data-table">
+        <thead><tr><th>Function</th><th>Formula</th><th>Range</th><th>Use Case</th></tr></thead>
+        <tbody>
+          <tr><td>Sigmoid</td><td>1/(1+e⁻ˣ)</td><td>(0, 1)</td><td>Binary output layer</td></tr>
+          <tr><td>Tanh</td><td>(eˣ-e⁻ˣ)/(eˣ+e⁻ˣ)</td><td>(-1, 1)</td><td>Hidden layers (RNNs)</td></tr>
+          <tr><td>ReLU</td><td>max(0, x)</td><td>[0, ∞)</td><td>Default for hidden layers</td></tr>
+          <tr><td>Leaky ReLU</td><td>max(0.01x, x)</td><td>(-∞, ∞)</td><td>Avoid dying ReLU</td></tr>
+          <tr><td>Softmax</td><td>eˣⁱ / Σeˣʲ</td><td>(0,1) sum=1</td><td>Multiclass output</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-info" style="margin-top:12px">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content"><strong>The Dying ReLU Problem</strong>If a neuron's weights cause it to always output 0, it can't learn (gradient is 0). Leaky ReLU and ELU solve this with a small negative slope.</div>
+      </div>
+    </div>`,
+
+  'Backpropagation': `
+    <div class="content-block">
+      <h2 data-icon="🔙">Backpropagation — How Networks Learn</h2>
+      <p>Backpropagation uses the <strong>chain rule of calculus</strong> to efficiently compute gradients of the loss with respect to every weight in the network. It works backward from the output:</p>
+      <ol>
+        <li><strong>Forward pass:</strong> Compute predictions and loss</li>
+        <li><strong>Backward pass:</strong> Compute ∂Loss/∂w for each weight via chain rule</li>
+        <li><strong>Update:</strong> w ← w − α∇w (gradient descent step)</li>
+      </ol>
+      <p><strong>Vanishing gradients:</strong> In deep networks, gradients can shrink exponentially as they propagate backward — early layers learn very slowly. Fixed by: ReLU activations, batch normalization, residual connections (skip connections in ResNets).</p>
+    </div>`,
+
+  'Building with Keras': `
+    <div class="content-block">
+      <h2 data-icon="🏗️">Building Neural Networks with Keras</h2>
+      <p>Keras (now part of TensorFlow) provides a clean, high-level API for building neural networks. Three main ways to build models: Sequential, Functional API, and Subclassing.</p>
+    </div>
+    <div class="code-block">
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'python')">Python</div>
+        <div class="code-tab" onclick="switchTab(this,'explanation')">Explanation</div>
+        <div class="code-tab" onclick="switchTab(this,'output')">Output</div>
+      </div>
+      <div class="code-panel active" id="panel-python">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+<span class="kw">from</span> tensorflow <span class="kw">import</span> keras
+
+<span class="cm"># Sequential model — simplest approach</span>
+model = keras.<span class="cls">Sequential</span>([
+    keras.layers.<span class="cls">Dense</span>(<span class="num">128</span>, activation=<span class="str">'relu'</span>, input_shape=(<span class="num">20</span>,)),
+    keras.layers.<span class="cls">BatchNormalization</span>(),
+    keras.layers.<span class="cls">Dropout</span>(<span class="num">0.3</span>),
+    keras.layers.<span class="cls">Dense</span>(<span class="num">64</span>,  activation=<span class="str">'relu'</span>),
+    keras.layers.<span class="cls">Dense</span>(<span class="num">1</span>,   activation=<span class="str">'sigmoid'</span>)
+])
+
+model.<span class="fn">compile</span>(
+    optimizer=<span class="str">'adam'</span>,
+    loss=<span class="str">'binary_crossentropy'</span>,
+    metrics=[<span class="str">'accuracy'</span>]
+)
+
+history = model.<span class="fn">fit</span>(
+    X_train, y_train,
+    validation_split=<span class="num">0.2</span>,
+    epochs=<span class="num">50</span>,
+    batch_size=<span class="num">32</span>,
+    callbacks=[keras.callbacks.<span class="cls">EarlyStopping</span>(patience=<span class="num">5</span>)]
+)</pre>
+      </div>
+      <div class="code-panel" id="panel-explanation">
+        <div class="explanation-panel">
+          <strong>Dense(128, relu):</strong> Fully connected layer with 128 neurons and ReLU activation.<br><br>
+          <strong>BatchNormalization:</strong> Normalizes activations within each mini-batch. Stabilizes and accelerates training significantly.<br><br>
+          <strong>Dropout(0.3):</strong> Randomly drops 30% of neurons during training. Acts as regularization — forces the network to learn redundant representations.<br><br>
+          <strong>EarlyStopping:</strong> Monitors validation loss. Stops training if it doesn't improve for 5 consecutive epochs — saves time and prevents overfitting.
+        </div>
+      </div>
+      <div class="code-panel" id="panel-output">
+        <pre class="output-panel">Epoch 1/50: loss: 0.6821 - accuracy: 0.5721 - val_accuracy: 0.5843
+Epoch 10/50: loss: 0.3421 - accuracy: 0.8512 - val_accuracy: 0.8234
+Epoch 23/50: loss: 0.1823 - accuracy: 0.9321 - val_accuracy: 0.9105
+EarlyStopping triggered at epoch 28.</pre>
+      </div>
+    </div>`,
+
+  // Chapter 8
+  'Convolutional Neural Networks': `
+    <div class="content-block">
+      <h2 data-icon="🖼️">Convolutional Neural Networks (CNNs)</h2>
+      <p>CNNs are designed for <strong>spatially structured data</strong> — images, audio spectrograms, time series. They use three types of layers:</p>
+      <ul>
+        <li><strong>Convolution:</strong> Applies learnable filters (kernels) across the input, detecting edges, textures, and eventually complex objects. Same weights are reused across the input — parameter sharing.</li>
+        <li><strong>Pooling:</strong> Downsamples feature maps. Max pooling keeps the strongest activation in each region, providing translation invariance.</li>
+        <li><strong>Fully Connected:</strong> Final layers that aggregate spatial features for classification.</li>
+      </ul>
+      <div class="callout callout-tip">
+        <div class="callout-icon">🏆</div>
+        <div class="callout-content"><strong>Architecture Evolution</strong>LeNet (1998) → AlexNet (2012, 8 layers) → VGG (2014, 19 layers) → ResNet (2015, 152 layers with skip connections) → EfficientNet (2019, scaling by compound coefficient).</div>
+      </div>
+    </div>`,
+
+  'RNNs & LSTMs': `
+    <div class="content-block">
+      <h2 data-icon="🔁">Recurrent Neural Networks & LSTMs</h2>
+      <p>RNNs process <strong>sequential data</strong> by maintaining a hidden state that carries information from previous time steps. Each step: <span class="formula">hₜ = activation(Wₕhₜ₋₁ + Wₓxₜ + b)</span></p>
+      <p><strong>The problem:</strong> Vanilla RNNs suffer from vanishing gradients over long sequences — they can't remember events from many steps ago.</p>
+      <p><strong>LSTM (Long Short-Term Memory)</strong> solves this with a <strong>cell state</strong> (long-term memory) controlled by three gates:</p>
+      <ul>
+        <li><strong>Forget gate:</strong> What to erase from cell state</li>
+        <li><strong>Input gate:</strong> What new information to store</li>
+        <li><strong>Output gate:</strong> What to output based on cell state</li>
+      </ul>
+      <p>GRU (Gated Recurrent Unit) is a simplified LSTM with fewer parameters — often performs comparably.</p>
+    </div>`,
+
+  'Transfer Learning': `
+    <div class="content-block">
+      <h2 data-icon="♻️">Transfer Learning</h2>
+      <p>Pre-train a large model on a massive dataset, then <strong>fine-tune</strong> it on your smaller, specific dataset. This works because early CNN layers learn universal features (edges, textures) that transfer across domains.</p>
+      <p><strong>Strategies:</strong></p>
+      <ul>
+        <li><strong>Feature extraction:</strong> Freeze all layers, replace only the final classifier. Fast, works with little data.</li>
+        <li><strong>Fine-tuning:</strong> Unfreeze later layers and retrain them at a low learning rate. Better performance, needs more data.</li>
+        <li><strong>Full fine-tuning:</strong> Retrain all layers. Best performance, needs the most data.</li>
+      </ul>
+      <div class="callout callout-info">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content"><strong>Real-World Impact</strong>A custom medical image classifier trained on 500 labeled images achieved 91% accuracy using transfer learning from ImageNet. Training from scratch with the same data gave only 67%.</div>
+      </div>
+    </div>`,
+
+  'Transformers intro': `
+    <div class="content-block">
+      <h2 data-icon="🤖">Attention & Transformers</h2>
+      <p>Transformers (Vaswani et al., 2017) replaced RNNs for sequence tasks using <strong>self-attention</strong> — each position in the sequence can attend to all other positions simultaneously.</p>
+      <p><strong>Self-Attention:</strong> For each token, compute attention weights over all tokens. High attention to semantically related tokens. Fully parallelizable — unlike RNNs which process one step at a time.</p>
+      <p>BERT, GPT, T5, and modern LLMs are all based on the Transformer architecture. Fine-tuning a pre-trained BERT for classification achieves state-of-the-art with minimal code.</p>
+    </div>`,
+
+  // Chapter 9
+  'Model Versioning': `
+    <div class="content-block">
+      <h2 data-icon="📦">Model Versioning with MLflow</h2>
+      <p>Without versioning, it's impossible to reproduce experiments, compare runs, or roll back to a previous model. <strong>MLflow</strong> is the industry standard for tracking ML experiments.</p>
+    </div>
+    <div class="code-block">
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'python')">Python</div>
+        <div class="code-tab" onclick="switchTab(this,'explanation')">Explanation</div>
+      </div>
+      <div class="code-panel active" id="panel-python">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="kw">import</span> mlflow
+<span class="kw">import</span> mlflow.sklearn
+
+<span class="kw">with</span> mlflow.<span class="fn">start_run</span>():
+    <span class="cm"># Log hyperparameters</span>
+    mlflow.<span class="fn">log_param</span>(<span class="str">"n_estimators"</span>, <span class="num">100</span>)
+    mlflow.<span class="fn">log_param</span>(<span class="str">"max_depth"</span>, <span class="num">5</span>)
+    
+    <span class="cm"># Train model</span>
+    model.<span class="fn">fit</span>(X_train, y_train)
+    
+    <span class="cm"># Log metrics</span>
+    mlflow.<span class="fn">log_metric</span>(<span class="str">"accuracy"</span>, accuracy)
+    mlflow.<span class="fn">log_metric</span>(<span class="str">"f1_score"</span>, f1)
+    
+    <span class="cm"># Save model artifact</span>
+    mlflow.sklearn.<span class="fn">log_model</span>(model, <span class="str">"model"</span>)</pre>
+      </div>
+      <div class="code-panel" id="panel-explanation">
+        <div class="explanation-panel">
+          MLflow records every experiment run — parameters, metrics, and the model itself. The tracking UI shows a table of all runs, making it easy to compare experiments and reproduce the best one. The model artifact can be loaded and served directly from the registry.
+        </div>
+      </div>
+    </div>`,
+
+  'REST API Deployment': `
+    <div class="content-block">
+      <h2 data-icon="🌐">Deploying an ML Model as a REST API</h2>
+      <p>The most common deployment pattern: wrap your model in a lightweight HTTP server using <strong>FastAPI</strong> or Flask. Clients send feature data in JSON, receive predictions back.</p>
+    </div>
+    <div class="code-block">
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'python')">Python (FastAPI)</div>
+        <div class="code-tab" onclick="switchTab(this,'explanation')">Explanation</div>
+      </div>
+      <div class="code-panel active" id="panel-python">
+        <button class="code-copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+<span class="kw">import</span> joblib, numpy <span class="kw">as</span> np
+
+app = <span class="cls">FastAPI</span>()
+model = joblib.<span class="fn">load</span>(<span class="str">"model.pkl"</span>)
+
+<span class="kw">class</span> <span class="cls">Features</span>(<span class="cls">BaseModel</span>):
+    age:    <span class="fn">float</span>
+    income: <span class="fn">float</span>
+    score:  <span class="fn">float</span>
+
+@app.<span class="fn">post</span>(<span class="str">"/predict"</span>)
+<span class="kw">def</span> <span class="fn">predict</span>(features: <span class="cls">Features</span>):
+    X = np.<span class="fn">array</span>([[features.age, features.income, features.score]])
+    pred = model.<span class="fn">predict</span>(X)[<span class="num">0</span>]
+    prob = model.<span class="fn">predict_proba</span>(X)[<span class="num">0</span>].<span class="fn">tolist</span>()
+    <span class="kw">return</span> {<span class="str">"prediction"</span>: <span class="fn">int</span>(pred), <span class="str">"probabilities"</span>: prob}</pre>
+      </div>
+      <div class="code-panel" id="panel-explanation">
+        <div class="explanation-panel">
+          <strong>Pydantic</strong> validates incoming request data automatically — wrong types return a 422 error before your model ever sees bad data.<br><br>
+          <strong>joblib</strong> serializes scikit-learn models efficiently. For Keras/TF, use <code>model.save()</code> and <code>tf.keras.models.load_model()</code>.<br><br>
+          Containerize with Docker, deploy to AWS/GCP/Azure. Add a load balancer for production traffic.
+        </div>
+      </div>
+    </div>`,
+
+  'Model Monitoring': `
+    <div class="content-block">
+      <h2 data-icon="📡">Model Monitoring — Why Models Degrade</h2>
+      <p>A model trained today may perform poorly in 6 months. The real world changes. <strong>Data drift</strong> occurs when the input feature distribution changes. <strong>Concept drift</strong> occurs when the relationship between features and target changes.</p>
+      <p><strong>What to monitor:</strong></p>
+      <ul>
+        <li>Prediction distribution — has the output distribution shifted?</li>
+        <li>Feature statistics — means, variances, null rates</li>
+        <li>Business metrics — click-through rate, revenue impact</li>
+        <li>Model latency and error rates</li>
+      </ul>
+      <p>Tools: <strong>Evidently AI</strong>, <strong>Whylogs</strong>, <strong>Prometheus + Grafana</strong></p>
+    </div>`,
+
+  'CI/CD for ML': `
+    <div class="content-block">
+      <h2 data-icon="🔄">CI/CD for Machine Learning</h2>
+      <p>MLOps extends DevOps practices to ML. A CI/CD pipeline for ML typically:</p>
+      <ol>
+        <li>Trigger on data update or code push</li>
+        <li>Run data validation checks (schema, statistics)</li>
+        <li>Retrain model with fresh data</li>
+        <li>Evaluate on held-out test set; compare to production model</li>
+        <li>Deploy if new model outperforms current one (A/B test)</li>
+        <li>Monitor in production; auto-rollback if metrics drop</li>
+      </ol>
+      <p>Tools: <strong>GitHub Actions</strong>, <strong>Kubeflow Pipelines</strong>, <strong>Vertex AI Pipelines</strong>, <strong>Airflow</strong></p>
+    </div>`,
+
+  // Chapter 10
+  'ML Interview Questions': `
+    <div class="content-block">
+      <h2 data-icon="💼">ML Interview Q&A</h2>
+      <p>Common questions that appear in ML engineer and data scientist interviews at top companies:</p>
+    </div>
+    <div id="qa-list">
+      <div class="qa-item"><div class="qa-q" onclick="toggleQA(this)"><span>What's the difference between bagging and boosting?</span><span>▼</span></div><div class="qa-a">Bagging (Bootstrap Aggregating) trains multiple models in parallel on random subsets of data. Predictions are averaged (regression) or voted (classification). Reduces variance. Example: Random Forest.<br><br>Boosting trains models sequentially. Each model focuses on the errors of the previous one. Reduces bias. Example: XGBoost, AdaBoost, Gradient Boosting. Boosting typically achieves higher accuracy but is more prone to overfitting and sensitive to outliers.</div></div>
+      <div class="qa-item"><div class="qa-q" onclick="toggleQA(this)"><span>Explain the difference between L1 and L2 regularization.</span><span>▼</span></div><div class="qa-a">L1 (Lasso): adds Σ|wᵢ| to the loss. Drives some weights exactly to zero → automatic feature selection. Sparse models. Good when you expect few features to matter.<br><br>L2 (Ridge): adds Σwᵢ² to the loss. Distributes weight reduction evenly → small but non-zero weights. More stable. Good when many features contribute a little.</div></div>
+      <div class="qa-item"><div class="qa-q" onclick="toggleQA(this)"><span>How do you handle class imbalance?</span><span>▼</span></div><div class="qa-a">Multiple strategies: (1) Oversampling minority class — SMOTE generates synthetic samples. (2) Undersampling majority class. (3) Class weights — penalize misclassifying the minority class more (class_weight='balanced' in sklearn). (4) Use metrics suited for imbalance: precision-recall AUC, F1, MCC — not accuracy. (5) Threshold tuning — don't default to 0.5.</div></div>
+      <div class="qa-item"><div class="qa-q" onclick="toggleQA(this)"><span>What is data leakage and how do you prevent it?</span><span>▼</span></div><div class="qa-a">Data leakage occurs when information from outside the training set is used to train the model, causing unrealistically good training performance that fails in production. Common causes: (1) Including the target column as a feature. (2) Imputing with statistics computed on the full dataset. (3) Using future data points as features. Prevention: always fit preprocessing on training data only, use pipelines, be careful with time-series splits.</div></div>
+      <div class="qa-item"><div class="qa-q" onclick="toggleQA(this)"><span>What's the vanishing gradient problem and how is it solved?</span><span>▼</span></div><div class="qa-a">In deep networks, gradients propagated backward via chain rule can become exponentially small, causing early layers to barely update. The network effectively can't learn long-range dependencies. Solutions: (1) ReLU activations have gradient 1 for positive inputs. (2) Batch normalization stabilizes activations at each layer. (3) Residual connections (ResNet) provide a direct gradient path. (4) Careful weight initialization (He, Glorot/Xavier).</div></div>
+    </div>`,
+
+  'Common Mistakes': `
+    <div class="content-block">
+      <h2 data-icon="🐛">Common ML Mistakes to Avoid</h2>
+    </div>
+    <div class="callout callout-warn">
+      <div class="callout-icon">❌</div>
+      <div class="callout-content"><strong>Using accuracy for imbalanced datasets</strong>A model predicting all negatives on a 99/1 split has 99% accuracy but detects nothing. Always check precision, recall, and F1.</div>
+    </div>
+    <div class="callout callout-warn">
+      <div class="callout-icon">❌</div>
+      <div class="callout-content"><strong>Not scaling features before SVM/KNN/neural nets</strong>Unscaled features cause models to ignore low-magnitude but highly predictive features.</div>
+    </div>
+    <div class="callout callout-warn">
+      <div class="callout-icon">❌</div>
+      <div class="callout-content"><strong>Looking at test set during model selection</strong>Test set must be locked until final evaluation. Use validation set or cross-validation for hyperparameter tuning.</div>
+    </div>
+    <div class="callout callout-warn">
+      <div class="callout-icon">❌</div>
+      <div class="callout-content"><strong>Not checking for target leakage</strong>If your model is suspiciously accurate, check whether any feature implicitly encodes the target.</div>
+    </div>
+    <div class="callout callout-tip">
+      <div class="callout-icon">✅</div>
+      <div class="callout-content"><strong>Pro tip: always establish a baseline first.</strong>A simple heuristic (median prediction, logistic regression) gives you a floor. Your complex model should beat it — if it doesn't, something is wrong.</div>
+    </div>`,
+
+  'Debugging Tips': `
+    <div class="content-block">
+      <h2 data-icon="🔧">Debugging ML Models</h2>
+      <p><strong>Model doesn't learn (loss stagnates):</strong></p>
+      <ul>
+        <li>Check learning rate — try 1e-3 for Adam, 1e-1 for SGD as starting points</li>
+        <li>Check for vanishing/exploding gradients (gradient clipping)</li>
+        <li>Verify labels are correct — shuffle and visually inspect a sample</li>
+        <li>Start small — overfit on 10 examples first (proves the model can learn)</li>
+      </ul>
+      <p><strong>Model overfits:</strong></p>
+      <ul>
+        <li>Add regularization (L2, dropout, early stopping)</li>
+        <li>Get more training data or augment existing data</li>
+        <li>Simplify the model</li>
+      </ul>
+      <p><strong>Weird predictions in production:</strong></p>
+      <ul>
+        <li>Check for distribution shift — compare train vs. production feature stats</li>
+        <li>Verify preprocessing is applied identically at inference time</li>
+        <li>Check for null/NaN values in incoming data</li>
+      </ul>
+    </div>`,
+
+  'Career Roadmap': `
+    <div class="content-block">
+      <h2 data-icon="🗺️">Your ML Career Roadmap</h2>
+      <p>Machine learning is a vast field. Here's a suggested learning path:</p>
+      <ol>
+        <li><strong>Foundations:</strong> Python, NumPy, Pandas, Matplotlib — 2–4 weeks</li>
+        <li><strong>Core ML:</strong> Scikit-learn, all algorithms in this course — 4–8 weeks</li>
+        <li><strong>Deep Learning:</strong> TensorFlow/Keras or PyTorch — 4–8 weeks</li>
+        <li><strong>Specialization:</strong> Choose NLP, Computer Vision, RL, or Time Series</li>
+        <li><strong>MLOps:</strong> Docker, FastAPI, cloud platforms — 2–4 weeks</li>
+        <li><strong>Portfolio:</strong> 2–3 end-to-end projects on GitHub</li>
+        <li><strong>Community:</strong> Kaggle competitions, paper reading groups, open source contributions</li>
+      </ol>
+    </div>
+
+    <div class="project-card">
+      <h3>🏠 Mini Project: House Price Predictor</h3>
+      <p>Build a complete pipeline that takes housing features and predicts sale price. Includes EDA, feature engineering, Random Forest model, and a Flask API endpoint.</p>
+      <div class="project-tags"><span class="tag">Regression</span><span class="tag tag-green">Scikit-Learn</span><span class="tag tag-gold">Pandas</span></div>
+    </div>
+    <div class="project-card">
+      <h3>✉️ Mini Project: Email Spam Classifier</h3>
+      <p>Classic NLP project. TF-IDF vectorization, Naive Bayes and Logistic Regression comparison, precision-recall analysis. 97%+ achievable.</p>
+      <div class="project-tags"><span class="tag">Classification</span><span class="tag tag-pink">NLP</span><span class="tag tag-purple">TF-IDF</span></div>
+    </div>
+    <div class="project-card">
+      <h3>🖼️ Mini Project: CIFAR-10 Image Classifier</h3>
+      <p>Build a CNN from scratch, then use transfer learning from MobileNetV2. Compare accuracy and training time.</p>
+      <div class="project-tags"><span class="tag">CNN</span><span class="tag tag-pink">Keras</span><span class="tag tag-gold">Transfer Learning</span></div>
+    </div>`,
+};
+
+// Quiz data per chapter
+const quizData = {
+  ch1: {
+    questions: [
+      { q: "Which type of ML uses labeled training data?", options: ["Supervised Learning", "Unsupervised Learning", "Reinforcement Learning", "Self-Supervised Learning"], answer: 0 },
+      { q: "What does 'training a model' mean?", options: ["Writing explicit rules", "Finding patterns in data", "Installing software", "Cleaning data"], answer: 1 },
+    ]
+  },
+  ch3: {
+    questions: [
+      { q: "Which scaler is most robust to outliers?", options: ["StandardScaler", "MinMaxScaler", "RobustScaler", "MaxAbsScaler"], answer: 2 },
+      { q: "What is the main advantage of using a Pipeline in sklearn?", options: ["Faster training", "Prevents data leakage", "Better accuracy", "Requires less code"], answer: 1 },
+    ]
+  },
+  ch5: {
+    questions: [
+      { q: "Which metric is best for highly imbalanced classification?", options: ["Accuracy", "F1 Score", "Mean Squared Error", "R² Score"], answer: 1 },
+      { q: "What does AUC = 0.5 indicate?", options: ["Perfect model", "Random guessing", "Complete failure", "Good model"], answer: 1 },
+    ]
+  },
+  ch7: {
+    questions: [
+      { q: "Which activation function suffers from the vanishing gradient problem in deep networks?", options: ["ReLU", "Sigmoid", "Leaky ReLU", "ELU"], answer: 1 },
+      { q: "What does Dropout do during training?", options: ["Speeds up computation", "Randomly deactivates neurons for regularization", "Adds more layers", "Increases learning rate"], answer: 1 },
+    ]
+  },
+};
+
+// ============================================================
+// BUILD SIDEBAR & CHAPTER CARDS
+// ============================================================
+function buildUI() {
+  const chapterNav = document.getElementById('chapter-nav');
+  const chapterCards = document.getElementById('chapter-cards');
+  const dynamicSections = document.getElementById('dynamic-sections');
+
+  chapters.forEach((ch, idx) => {
+    // === Sidebar ===
+    const item = document.createElement('div');
+    item.className = 'chapter-item';
+    item.id = 'nav-' + ch.id;
+
+    const progressId = 'prog-' + ch.id;
+    item.innerHTML = `
+      <div class="chapter-header" onclick="toggleChapter('${ch.id}')">
+        <div class="chapter-num">${ch.num}</div>
+        <div class="chapter-title">${ch.title}</div>
+        <div class="chapter-chevron">▶</div>
+      </div>
+      <div class="chapter-progress-bar"><div class="chapter-progress-fill" id="${progressId}" style="width:0%"></div></div>
+      <div class="subtopic-list" id="sub-${ch.id}">
+        ${ch.subtopics.map((s, si) => `
+          <div class="subtopic-item" id="st-${ch.id}-${si}" onclick="showSubtopic('${ch.id}','${si}')">
+            <div class="subtopic-check" id="chk-${ch.id}-${si}"></div>
+            <span>${s}</span>
+          </div>`).join('')}
+      </div>`;
+    chapterNav.appendChild(item);
+
+    // === Dashboard Cards ===
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.cursor = 'pointer';
+    card.onclick = () => showSubtopic(ch.id, '0');
+    card.innerHTML = `
+      <div class="card-icon" style="background:${ch.accentGlow};font-size:1.3rem">${ch.icon}</div>
+      <h3>${ch.title}</h3>
+      <p>${ch.desc}</p>
+      <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:4px">
+        ${ch.tags.map((t,i) => `<span class="tag ${['','tag-green','tag-gold'][i%3]}">${t}</span>`).join('')}
+      </div>`;
+    chapterCards.appendChild(card);
+
+    // === Content Section ===
+    const sec = document.createElement('div');
+    sec.id = 'section-' + ch.id;
+    sec.className = 'section-panel';
+
+    // Hero
+    const quiz = buildQuiz(ch.id);
+    sec.innerHTML = `
+      <div class="chapter-hero" style="--accent-glow:${ch.accentGlow}">
+        <div class="chapter-hero-tag">${ch.icon} Chapter ${ch.num}</div>
+        <h1>${ch.title}</h1>
+        <p>${ch.desc}</p>
+        <div class="chapter-meta">
+          ${ch.tags.map(t => `<div class="meta-pill">📌 ${t}</div>`).join('')}
+        </div>
+      </div>
+      <div id="subtopic-content-${ch.id}"></div>
+      ${quiz}
+      <button class="btn-download" onclick="downloadNotes()">⬇ Download Chapter Notes</button>
+      <div class="chapter-nav">
+        ${idx > 0 ? `<button class="btn-nav" onclick="showSubtopic('${chapters[idx-1].id}','0')">← ${chapters[idx-1].title}</button>` : '<div></div>'}
+        ${idx < chapters.length-1 ? `<button class="btn-nav" onclick="showSubtopic('${chapters[idx+1].id}','0')">${chapters[idx+1].title} →</button>` : '<div></div>'}
+      </div>`;
+    dynamicSections.appendChild(sec);
+  });
+
+  updateProgress();
+}
+
+function buildQuiz(chId) {
+  const data = quizData[chId];
+  if (!data) return '';
+  const qsHtml = data.questions.map((q, qi) => `
+    <div class="quiz-q">
+      <div class="quiz-q-text">${qi+1}. ${q.q}</div>
+      <div class="quiz-options">
+        ${q.options.map((opt, oi) => `
+          <label class="quiz-option" id="opt-${chId}-${qi}-${oi}">
+            <input type="radio" name="q-${chId}-${qi}" value="${oi}"> ${opt}
+          </label>`).join('')}
+      </div>
+    </div>`).join('');
+
+  return `
+    <div class="quiz-section">
+      <div class="quiz-title">🧠 Chapter Quiz</div>
+      ${qsHtml}
+      <button class="quiz-submit" onclick="submitQuiz('${chId}')">Check Answers</button>
+      <div class="quiz-result" id="quiz-result-${chId}"></div>
+    </div>`;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+let currentSection = 'home';
+let currentSubtopic = {};
+
+function showSection(id) {
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('section-' + id);
+  if (target) { target.classList.add('active'); currentSection = id; }
+  closeMobileSidebar();
+}
+
+function showSubtopic(chId, siStr) {
+  const si = parseInt(siStr);
+  const ch = chapters.find(c => c.id === chId);
+  if (!ch) return;
+
+  showSection(chId);
+  currentSubtopic[chId] = si;
+
+  // Update sidebar active state
+  document.querySelectorAll('.subtopic-item').forEach(el => el.classList.remove('active'));
+  const stEl = document.getElementById(`st-${chId}-${si}`);
+  if (stEl) stEl.classList.add('active');
+
+  // Open chapter
+  const navItem = document.getElementById('nav-' + chId);
+  if (navItem) navItem.classList.add('open');
+
+  // Render subtopic content
+  const container = document.getElementById(`subtopic-content-${chId}`);
+  const topicName = ch.subtopics[si];
+  const content = subtopicContent[topicName];
+
+  if (container) {
+    if (content) {
+      container.innerHTML = content;
+      // Re-attach tab events (code tabs inside dynamic content)
+      container.querySelectorAll('.code-tab').forEach(tab => {
+        tab.addEventListener('click', function() { switchTab(this, this.textContent.toLowerCase()); });
+      });
+    } else {
+      container.innerHTML = `<div class="content-block"><h2 data-icon="📖">${topicName}</h2><p>Detailed content for <strong>${topicName}</strong> is available. This is a deep topic covering both theory and practical implementation with worked examples.</p></div>`;
+    }
+  }
+
+  // Mark as read
+  markRead(chId, si);
+  updateProgress();
+
+  // Scroll to top
+  document.getElementById('main').scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+function toggleChapter(chId) {
+  const item = document.getElementById('nav-' + chId);
+  if (item) {
+    item.classList.toggle('open');
+    if (item.classList.contains('open') && !currentSubtopic[chId]) {
+      // auto-show first subtopic
+    }
+  }
+}
+
+// ============================================================
+// PROGRESS TRACKING
+// ============================================================
+const readTopics = JSON.parse(localStorage.getItem('mlm-read') || '{}');
+
+function markRead(chId, si) {
+  if (!readTopics[chId]) readTopics[chId] = [];
+  if (!readTopics[chId].includes(si)) readTopics[chId].push(si);
+  localStorage.setItem('mlm-read', JSON.stringify(readTopics));
+
+  const chk = document.getElementById(`chk-${chId}-${si}`);
+  if (chk) { chk.classList.add('done'); chk.textContent = '✓'; }
+}
+
+function updateProgress() {
+  let totalDone = 0;
+  let totalTopics = 0;
+
+  chapters.forEach(ch => {
+    const done = readTopics[ch.id] ? readTopics[ch.id].length : 0;
+    const total = ch.subtopics.length;
+    totalTopics += total;
+    totalDone += done;
+    const pct = total > 0 ? (done / total) * 100 : 0;
+    const fill = document.getElementById('prog-' + ch.id);
+    if (fill) fill.style.width = pct + '%';
+
+    // Restore checks
+    if (readTopics[ch.id]) {
+      readTopics[ch.id].forEach(si => {
+        const chk = document.getElementById(`chk-${ch.id}-${si}`);
+        if (chk) { chk.classList.add('done'); chk.textContent = '✓'; }
+      });
+    }
+  });
+
+  const pct = totalTopics > 0 ? Math.round((totalDone / totalTopics) * 100) : 0;
+  const ringFill = document.getElementById('ring-fill');
+  if (ringFill) {
+    const circumference = 251.2;
+    ringFill.style.strokeDashoffset = circumference - (pct / 100) * circumference;
+  }
+  const pctEl = document.getElementById('progress-pct');
+  if (pctEl) pctEl.textContent = pct + '%';
+  const donEl = document.getElementById('stat-done');
+  if (donEl) donEl.textContent = totalDone;
+  const totEl = document.getElementById('stat-total');
+  if (totEl) totEl.textContent = totalTopics;
+}
+
+// ============================================================
+// INTERACTIVE COMPONENTS
+// ============================================================
+function switchTab(tabEl, panelKey) {
+  const block = tabEl.closest('.code-block');
+  block.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+  block.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
+  tabEl.classList.add('active');
+  // Find panel by text content
+  const key = tabEl.textContent.trim().toLowerCase();
+  let panelId;
+  if (key.startsWith('py') || key === 'python' || key.startsWith('python')) panelId = 'panel-python';
+  else if (key.startsWith('ex')) panelId = 'panel-explanation';
+  else if (key.startsWith('ou')) panelId = 'panel-output';
+  else panelId = 'panel-python';
+
+  const panel = block.querySelector('#' + panelId);
+  if (panel) panel.classList.add('active');
+}
+
+function toggleExpand(headerEl) {
+  const section = headerEl.closest('.expand-section');
+  section.classList.toggle('open');
+}
+
+function toggleQA(qEl) {
+  qEl.closest('.qa-item').classList.toggle('open');
+}
+
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  if (pre) {
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = '✓ Copied'; setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+}
+
+function submitQuiz(chId) {
+  const data = quizData[chId];
+  if (!data) return;
+  let correct = 0;
+
+  data.questions.forEach((q, qi) => {
+    const selected = document.querySelector(`input[name="q-${chId}-${qi}"]:checked`);
+    // Reset all options
+    q.options.forEach((_, oi) => {
+      const opt = document.getElementById(`opt-${chId}-${qi}-${oi}`);
+      if (opt) { opt.classList.remove('correct', 'wrong'); }
+    });
+    if (selected) {
+      const val = parseInt(selected.value);
+      const optEl = document.getElementById(`opt-${chId}-${qi}-${val}`);
+      const corrEl = document.getElementById(`opt-${chId}-${qi}-${q.answer}`);
+      if (val === q.answer) { correct++; if (optEl) optEl.classList.add('correct'); }
+      else { if (optEl) optEl.classList.add('wrong'); if (corrEl) corrEl.classList.add('correct'); }
+    } else {
+      const corrEl = document.getElementById(`opt-${chId}-${qi}-${q.answer}`);
+      if (corrEl) corrEl.classList.add('correct');
+    }
+  });
+
+  const result = document.getElementById('quiz-result-' + chId);
+  if (result) {
+    result.classList.add('show');
+    if (correct === data.questions.length) {
+      result.className = 'quiz-result show pass';
+      result.textContent = `🎉 Perfect! ${correct}/${data.questions.length} correct. Chapter mastered!`;
+    } else {
+      result.className = 'quiz-result show fail';
+      result.textContent = `${correct}/${data.questions.length} correct. Review the highlighted answers and try again.`;
+    }
+  }
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+const searchIndex = [];
+chapters.forEach(ch => {
+  ch.subtopics.forEach((s, si) => {
+    searchIndex.push({ title: s, chapter: ch.title, chId: ch.id, si });
+  });
+});
+
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (q.length < 2) { searchResults.classList.remove('visible'); return; }
+  const results = searchIndex.filter(item =>
+    item.title.toLowerCase().includes(q) || item.chapter.toLowerCase().includes(q)
+  ).slice(0, 8);
+
+  if (results.length === 0) { searchResults.classList.remove('visible'); return; }
+
+  searchResults.innerHTML = results.map(r => `
+    <div class="search-result-item" onclick="showSubtopic('${r.chId}','${r.si}');searchInput.value='';searchResults.classList.remove('visible')">
+      <strong>${r.title}</strong>
+      <span>${r.chapter}</span>
+    </div>`).join('');
+  searchResults.classList.add('visible');
+});
+
+document.addEventListener('click', e => {
+  if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+    searchResults.classList.remove('visible');
+  }
+});
+
+// ============================================================
+// THEME TOGGLE
+// ============================================================
+const themeBtn = document.getElementById('theme-toggle');
+themeBtn.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeBtn.textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('mlm-theme', isDark ? 'light' : 'dark');
+});
+
+// Restore theme
+const savedTheme = localStorage.getItem('mlm-theme');
+if (savedTheme) {
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  themeBtn.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+}
+
+// ============================================================
+// MOBILE SIDEBAR
+// ============================================================
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebar-overlay');
+
+sidebarToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('mobile-open');
+  overlay.classList.toggle('visible');
+});
+
+overlay.addEventListener('click', closeMobileSidebar);
+function closeMobileSidebar() {
+  sidebar.classList.remove('mobile-open');
+  overlay.classList.remove('visible');
+}
+
+// ============================================================
+// DOWNLOAD NOTES
+// ============================================================
+function downloadNotes() {
+  const ch = chapters.find(c => c.id === currentSection);
+  const title = ch ? ch.title : 'ML Mastery Notes';
+  const content = `ML MASTERY — ${title.toUpperCase()}\n${'='.repeat(60)}\n\nChapter: ${title}\n\nTopics covered:\n${ch ? ch.subtopics.map((s, i) => `${i+1}. ${s}`).join('\n') : ''}\n\nGenerated by ML Mastery Learning Platform\nDate: ${new Date().toLocaleDateString()}`;
+  const blob = new Blob([content], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (title.replace(/\s+/g, '_') + '_notes.txt');
+  a.click();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildUI();
+updateProgress();
+
+// Open first chapter in sidebar by default
+document.querySelector('.chapter-item')?.classList.add('open');
+
+</script>
+</body>
+</html>
